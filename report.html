@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Report</title>
+
+  <style>
+  body {
+    font-family: sans-serif;
+    padding: 20px;
+  }
+
+  input, button {
+    padding: 6px;
+    margin: 4px 0;
+  }
+
+  table {
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  th {
+    background: #f0f0f0;
+  }
+</style>
+
+</head>
+
+<body>
+  <nav>
+  <a href="index.html">HOME</a> |
+  <a href="claim.html">แจ้งเคลม</a> |
+  <a href="trips.html">Trip</a> |
+  <a href="reports.html">Report</a>
+</nav>
+<hr>
+
+  <h1>รายงานการเดินทาง</h1>
+
+  <table border="1" cellpadding="8">
+    <thead>
+      <tr>
+        <th>ลำดับ</th>
+        <th>สถานที่</th>
+        <th>ค่าใช้จ่าย</th>
+      </tr>
+    </thead>
+    <tbody id="reportBody"></tbody>
+  </table>
+
+  <p id="total"></p>
+  <p id="summary"></p>
+
+  <script src="report.js"></script>
+</body>
+</html>

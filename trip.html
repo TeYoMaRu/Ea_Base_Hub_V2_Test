@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Trip</title>
+
+  <style>
+  body {
+    font-family: sans-serif;
+    padding: 20px;
+  }
+
+  input, button {
+    padding: 6px;
+    margin: 4px 0;
+  }
+
+  table {
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  th {
+    background: #f0f0f0;
+  }
+</style>
+
+</head>
+
+<body>
+  <nav>
+  <a href="index.html">หน้าแรก</a> |
+  <a href="claim.html">Claim</a> |
+  <a href="trip.html">Trip</a> |
+  <a href="report.html">Report</a>
+</nav>
+<hr>
+
+
+  <h1>หน้า Trip</h1>
+
+  <input id="placeInput" placeholder="สถานที่">
+  <input id="costInput" placeholder="ค่าใช้จ่าย">
+
+  <br><br>
+
+  <button onclick="addTrip()">เพิ่มทริป</button>
+  <button onclick="exportTrips()">Export CSV</button>
+
+
+  <table border="1" cellpadding="8" style="margin-top:10px">
+    <thead>
+      <tr>
+        <th>ลำดับ</th>
+        <th>สถานที่</th>
+        <th>ค่าใช้จ่าย</th>
+        <th>จัดการ</th>
+      </tr>
+    </thead>
+    <tbody id="tripBody"></tbody>
+  </table>
+
+  <script src="trip.js"></script>
+</body>
+</html>

@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <!-- =========================
+         BASIC META
+         ========================= -->
+    <meta charset="UTF-8" />
+    <title>Home</title>
+
+    <!-- =========================
+         PWA CONFIG
+         ========================= -->
+    <!-- ไฟล์ manifest สำหรับเพิ่มเป็นแอป -->
+    <link rel="manifest" href="manifest.json" />
+    <!-- สีแถบด้านบนของแอป -->
+    <meta name="theme-color" content="#4caf50" />
+
+    <!-- =========================
+         CSS (เขียนรวมไว้ในไฟล์เดียวก่อน)
+         ========================= -->
+    <style>
+      /* =========================
+         RESET พื้นฐาน
+         ========================= */
+      body {
+        margin: 0;
+        font-family: sans-serif;
+      }
+
+      /* =========================
+         LAYOUT หลัก (ซ้าย = sidebar, ขวา = content)
+         ========================= */
+      .layout {
+        display: flex;
+        height: 100vh;
+      }
+
+      /* =========================
+         SIDEBAR
+         ========================= */
+      .sidebar {
+        width: 260px;
+        background: #dff3e3;
+        padding: 20px;
+        border-radius: 24px;
+        margin: 16px;
+      }
+
+      /* =========================
+   Logo (Image + Text)
+   ========================= */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #1b7a3c;
+  margin-bottom: 30px;
+}
+
+.logo img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+
+      /* เมนู */
+      .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .menu-item {
+        text-decoration: none;
+        padding: 12px;
+        border-radius: 10px;
+        color: #1b7a3c;
+        font-weight: 500;
+      }
+
+      /* เมนูที่เลือกอยู่ */
+      .menu-item.active {
+        background: #4caf50;
+        color: white;
+      }
+
+      /* เมนูที่ยังไม่เปิดใช้ */
+      .menu-item.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      /* =========================
+         HAMBURGER (ใช้เฉพาะมือถือ)
+         ========================= */
+      .hamburger {
+        display: none; /* desktop / tablet ซ่อนไว้ */
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
+
+      /* =========================
+         CONTENT AREA
+         ========================= */
+      .content {
+        flex: 1;
+        padding: 30px;
+      }
+
+      /* แบ่งเนื้อหาเป็น 2 คอลัมน์ */
+      .content-layout {
+        display: flex;
+        gap: 20px;
+      }
+
+      .main-content {
+        flex: 3; /* เนื้อหาหลัก */
+      }
+
+      .right-panel {
+        flex: 1; /* โปรไฟล์ + อื่น ๆ */
+        background: #e8f5e9;
+        border-radius: 24px;
+        padding: 20px;         
+        display: flex;
+        flex-direction: column;
+
+
+      }
+      
+      /* =========================
+         HEADER ด้านบน
+         ========================= */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .header-left h2 {
+        margin: 0;
+        color: #1b7a3c;
+      }
+
+      .subtext {
+        margin-top: 4px;
+        color: #777;
+        font-size: 14px;
+      }
+
+      .user-badge {
+        background: #4caf50;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+      }
+
+      /* =========================
+         SUMMARY CARDS
+         ========================= */
+      .cards {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+        
+      }
+
+      .card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        width: 200px;
+        min-height: 90px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      }
+
+      .card.disabled {
+        opacity: 0.5;
+      }
+
+      /* =========================
+         ACTION CARDS
+         ========================= */
+      .actions {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .action-card {
+        flex: 1;
+        background: #e9f7ef;
+        border-radius: 20px;
+        padding: 24px;
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .action-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      }
+
+      .action-card:first-child {
+        background: #2e7d32;
+        color: white;
+      }
+
+
+      /* =========================
+         TABLE (รายงานของฉัน)
+         ========================= */
+      .my-report {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      }
+
+      /* =========================
+         RIGHT PANEL
+         ========================= */
+      .profile-card,
+      .calendar-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      }
+
+      .avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: #4caf50;
+        color: white;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+      }
+
+      /* =========================
+   Forms Hub Card
+   ========================= */
+.forms-hub {
+  background: #e8f5e9;        /* เขียวอ่อนแบบภาพ */
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 20px;
+}
+
+.forms-hub h4 {
+  margin: 0 0 12px;
+  color: #2e7d32;
+  font-size: 16px;
+}
+
+.forms-hub .muted {
+  font-size: 12px;
+  color: #9e9e9e;
+  margin-left: 6px;
+}
+
+/* ปุ่มฟอร์ม */
+.form-btn {
+  width: 100%;
+  background: white;
+  border: 1px solid #4caf50;
+  color: #2e7d32;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: center;
+}
+
+.form-btn:last-child {
+  margin-bottom: 0;
+}
+
+.form-btn:hover {
+  background: #f1f8f4;
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* ระยะห่างระหว่างการ์ด */
+}
+
+ /* =========================
+   Report Progress Card
+   ========================= */
+.progress-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin: 20px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.progress-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1b7a3c;
+  margin-bottom: 8px;
+}
+
+.progress-note {
+  font-size: 13px;
+  color: #777;
+  margin-top: 8px;
+}
+
+/* แถบสถานะ */
+.progress-bar {
+  width: 100%;
+  height: 6px;          /* แถบเล็ก */
+  background: #eee;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4caf50;
+  width: 0%;            /* เดี๋ยวค่อยให้ JS คุม */
+  transition: width 0.3s ease;
+}
+
+/* =========================
+   My Report Item Card
+   ========================= */
+.report-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px dashed #c8e6c9;
+}
+
+.report-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.report-left a {
+  text-decoration: none;
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.report-left a:hover {
+  text-decoration: underline;
+}
+
+.report-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.report-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.report-actions .edit {
+  color: #ff9800;
+}
+
+.report-actions .delete {
+  color: #f44336;
+}
+
+
+      /* =========================
+         TABLET RESPONSIVE
+         ========================= */
+      @media (max-width: 900px) {
+        .sidebar { width: 200px; }
+        .cards { flex-wrap: wrap; }
+        .card { width: calc(50% - 10px); }
+        .actions { flex-wrap: wrap; }
+        .action-card { flex: 1 1 calc(50% - 10px); }
+      }
+
+      /* =========================
+         MOBILE RESPONSIVE
+         ========================= */
+      @media (max-width: 767px) {
+        /* layout เรียงแนวตั้ง */
+        .layout {
+          flex-direction: column;
+          height: auto;
+        }
+
+        /* sidebar เป็น top bar */
+        .sidebar {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          border-radius: 24px;
+          margin: 16px;
+        }
+
+        /* แสดง hamburger */
+        .hamburger {
+          display: block;
+        }
+
+        /* เมนูซ่อนก่อน */
+        .menu {
+          display: none;
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+
+        /* เมื่อกด hamburger */
+        .menu.show {
+          display: flex;
+        }
+
+        /* content */
+        .content {
+          padding: 16px;
+        }
+
+        .content-layout {
+          flex-direction: column;
+        }
+
+        /* cards เต็มบรรทัด */
+        .cards,
+        .actions {
+          flex-direction: column;
+        }
+
+        .card,
+        .action-card {
+          width: 100%;
+        }
+
+        /* ซ่อน right panel บนมือถือ */
+        .rightanel {
+          display: none;
+        }
+
+        /* =========================
+   Report Progress Card
+   ========================= */
+        .progress-card {
+          background: white;
+          border-radius: 16px;
+          padding: 16px 20px;
+          margin-bottom: 20px;
+        }
+
+        .progress-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-weight: 500;
+          margin-bottom: 8px;
+        }
+
+        .progress-day {
+          color: #1b7a3c;
+        }
+
+        /* แถบสถานะ (เล็ก) */
+        .progress-bar.small {
+          height: 6px;
+          background: #eee;
+          border-radius: 6px;
+          overflow: hidden;
+        }
+
+        .progress-fill {
+          height: 100%;
+          width: 0%;
+          background: #26a69a;
+          transition: width 0.3s ease;
+        }
+
+        .progress-note {
+          margin-top: 6px;
+          font-size: 12px;
+          color: #777;
+        }
+       
+
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- =========================
+         APP LAYOUT
+         ========================= -->
+    <div class="layout">
+
+      <!-- =========================
+           SIDEBAR
+           ========================= -->
+      <aside class="sidebar">
+        <!-- ปุ่ม hamburger (มือถือ) -->
+        <button class="hamburger" onclick="toggleMenu()">☰</button>
+
+        <!-- โลโก้ระบบ -->
+        <div class="logo">
+        <img src="icons/icon-512.png" alt="EABaseHub Logo" />
+        <span>EABaseHub</span>
+      </div>
+
+
+        <!-- เมนูหลัก -->
+        <nav class="menu">
+          <a class="menu-item active" href="#">HOME</a>
+          <a class="menu-item" href="report.html">เขียนใบรายงาน</a>
+          <a class="menu-item" href="trip.html">ร้านค้าของฉัน</a>
+          <a class="menu-item disabled" href="#">Coming Soon</a>
+        </nav>
+      </aside>
+
+      <!-- =========================
+           CONTENT
+           ========================= -->
+      <main class="content">
+        <div class="content-layout">
+
+          <!-- เนื้อหาหลัก -->
+          <div class="main-content">
+
+            <!-- 1. Header -->
+            <header class="header">
+              <div class="header-left">
+                <h2>สวัสดี : นฤมล มูลละหัตร์</h2>
+                <p class="subtext">ยินดีต้อนรับเข้าสู่ระบบ</p>
+              </div>
+              <div class="user-badge">Loremipsum@Lorem.sum</div>
+            </header>
+
+            <!-- 2. Cards summary -->
+            <div class="cards">
+              <div class="card">
+                <h3 id="storeCount">0</h3>
+                <p>ร้านค้าของฉัน</p>
+              </div>
+              <div class="card disabled">
+                <h3 id="tripCount">0</h3>
+                <p>Trip</p>
+              </div>
+              <div class="card disabled">
+                <h3 id="claimCount">0</h3>
+                <p>Claim</p>
+              </div>
+            </div>
+
+            
+
+            <!-- 3. Action cards (เขียนรายงาน / เพิ่มลูกค้า / แจ้งเคลม) -->
+            <div class="actions">
+              <a href="report.html" class="action-card">✍️ เขียนรายงาน</a>
+              <a href="trip.html" class="action-card">➕ เพิ่มลูกค้า</a>
+              <a href="claim.html" class="action-card">🧾 แจ้งเคลม</a>
+            </div>
+               <!-- =========================
+     Report Progress Card
+     ========================= -->
+<div class="progress-card">
+  <div class="progress-title">
+    ✍️ เขียนรายงานแล้ว <strong id="reportDays">0</strong> วัน
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-fill" style="width: 0%"></div>
+  </div>
+
+  <div class="progress-note">
+    ส่งรายงานสัปดาห์ละ 1 ครั้ง
+  </div>
+</div>
+            <!-- 4. รายงานของฉัน (ตาราง) -->
+            <div class="my-report">
+              <h3>รายงานของฉัน</h3>
+              <!-- รายการจะถูก JS ใส่เข้ามาตรงนี้ -->
+              <div id="myReportList"></div>
+            </div>
+          </div>
+
+          <!-- ฝั่งขวา (เป็นคอลัมน์) -->
+          <div class="right-column">
+          <!-- RIGHT PANEL -->
+          <aside class="right-panel">
+             <!-- Profile -->
+            <div class="profile-card">
+
+              <div class="avatar">NM</div>
+              <p>Sales Executive</p>
+            </div>
+            <!-- Calendar -->
+            <div class="calendar-card">
+            <h4>ปฏิทิน</h4>
+            <p class="calendar-note">Coming Soon</p>
+          </div>
+          </aside>
+          <!-- =========================
+     Forms Hub (Coming Soon)
+     ========================= -->
+            <div class="forms-hub">
+            <h4>Forms Hub <span class="muted">Coming Soon</span></h4>
+
+            <button class="form-btn">
+              แบบฟอร์มแผนการเดินทาง<br />
+              และบันทึกค่าใช้จ่าย 1
+            </button>
+
+            <button class="form-btn">
+              แบบฟอร์มเดินทางจริง<br />
+              และเคลียร์ค่าใช้จ่าย 2
+            </button>
+          </div>        
+      
+
+
+        </div>
+      </main>
+    </div>
+
+    <!-- =========================
+         JAVASCRIPT
+         ========================= -->
+    <script src="home.js"></script>
+    <script>
+  // =========================
+  // Register Service Worker
+  // =========================
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("sw.js")
+      .then(() => console.log("Service Worker registered"))
+      .catch(err => console.error("SW registration failed:", err));
+  }
+</script>
+
+  </body>
+</html>
