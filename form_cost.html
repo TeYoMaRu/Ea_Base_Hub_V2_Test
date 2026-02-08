@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <title>ใบเดินทางจริงและเคลียค่าใช้จ่าย</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Kanit', Tahoma, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+    }
+
+    .paper {
+      max-width: 950px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 { text-align: center; color: #1565c0; margin-bottom: 25px; }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #1565c0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th { background: #e3f2fd; font-weight: 500; }
+
+    td input {
+      width: 100%;
+      border: none;
+      padding: 6px;
+      text-align: center;
+      background: transparent;
+    }
+
+    td input:focus { background: #fff9c4; }
+
+    td input[type="number"] { width: 80px; }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    button:hover { opacity: 0.9; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+
+    .btn-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+
+    .btn-add { background: #10b981; color: #fff; }
+    .btn-delete { background: #ef4444; color: #fff; }
+    .btn-save { background: #1565c0; color: #fff; }
+    .btn-print { background: #2196F3; color: #fff; }
+    .btn-export { background: #FF9800; color: #fff; }
+    .btn-edit { background: #9C27B0; color: #fff; }
+    .btn-secondary { background: #757575; color: #fff; }
+
+    .summary-box {
+      background: #e3f2fd;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    /* Preview Section */
+    .preview-section {
+      display: none;
+      margin-top: 30px;
+      padding: 25px;
+      background: #e3f2fd;
+      border: 2px solid #1565c0;
+      border-radius: 8px;
+    }
+    .preview-section.show { display: block; }
+
+    .preview-header { text-align: center; margin-bottom: 20px; }
+    .success-badge {
+      background: #4CAF50;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 25px;
+      display: inline-block;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .preview-info {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 20px 0;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+    }
+
+    .preview-info p { margin: 5px 0; }
+
+    .preview-summary {
+      background: #fff3e0;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      background: linear-gradient(135deg, #1565c0, #0d47a1);
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+    
+    .top-nav .brand { font-size: 18px; font-weight: 600; }
+    
+    .btn-back {
+      background: #ff9800;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Loading */
+    #loadingOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .loading-card {
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e0e0e0;
+      border-top: 4px solid #1565c0;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text { font-weight: 500; color: #1565c0; }
+
+    @media print {
+      .top-nav, button, .btn-group { display: none !important; }
+      .preview-section { display: block !important; background: none; border: none; }
+      .paper { margin: 0; padding: 10mm; box-shadow: none; }
+      .success-badge { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Top Navigation -->
+<div class="top-nav">
+  <div class="brand">🌿 บริษัท เอิร์นนี่ แอดวานซ์</div>
+  <button class="btn-back" onclick="goBack()">← กลับ Dashboard</button>
+</div>
+
+<div class="paper">
+  <h2>💰 ใบเดินทางจริงและเคลียค่าใช้จ่าย ๒</h2>
+
+  <!-- FORM SECTION -->
+  <div id="formSection">
+    <label>วันที่เริ่มต้น</label>
+    <input type="date" id="start">
+
+    <label>วันที่สิ้นสุด</label>
+    <input type="date" id="end">
+
+    <label>ชื่อพนักงานขาย</label>
+    <select id="emp">
+      <option value="">-- เลือก --</option>
+    </select>
+
+    <label>ภาค</label>
+    <select id="zone">
+      <option value="">-- เลือก --</option>
+      <option>โซนภาคเหนือ</option>
+      <option>โซนภาคกลาง</option>
+      <option>โซนภาคอีสาน</option>
+      <option>โซนภาคใต้</option>
+    </select>
+
+    <table id="t2">
+      <thead>
+        <tr>
+          <th style="width:110px">ว/ด/ป</th>
+          <th>เส้นทางจริง</th>
+          <th style="width:100px">ค่าเบี้ยเลี้ยง</th>
+          <th style="width:100px">ค่าโรงแรม</th>
+          <th style="width:100px">ค่าน้ำมัน</th>
+          <th style="width:100px">ค่าใช้จ่ายอื่น</th>
+          <th>หมายเหตุ</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+
+    <div class="btn-group">
+      <button type="button" class="btn-add" onclick="addRow()">➕ เพิ่มแถว</button>
+      <button type="button" class="btn-delete" onclick="deleteRow()">➖ ลบแถว</button>
+    </div>
+
+    <div class="summary-box">
+      📊 รวม <strong id="days">0</strong> วัน | 💰 รวมเงิน <strong id="total">0.00</strong> บาท
+    </div>
+
+    <div class="btn-group" style="margin-top: 25px;">
+      <button type="button" class="btn-save" onclick="saveForm()">💾 บันทึกและดูตัวอย่าง</button>
+    </div>
+  </div>
+
+  <!-- PREVIEW SECTION -->
+  <div id="previewSection" class="preview-section">
+    <div class="preview-header">
+      <div class="success-badge">✅ บันทึกสำเร็จ</div>
+      <p style="font-size:18px;">เลขเอกสาร: <strong id="previewDocNo"></strong></p>
+    </div>
+
+    <div class="preview-info">
+      <p><strong>วันที่เริ่มต้น:</strong> <span id="previewStart"></span></p>
+      <p><strong>วันที่สิ้นสุด:</strong> <span id="previewEnd"></span></p>
+      <p><strong>ชื่อพนักงานขาย:</strong> <span id="previewEmp"></span></p>
+      <p><strong>ภาค:</strong> <span id="previewZone"></span></p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ว/ด/ป</th>
+          <th>เส้นทางจริง</th>
+          <th>ค่าเบี้ยเลี้ยง</th>
+          <th>ค่าโรงแรม</th>
+          <th>ค่าน้ำมัน</th>
+          <th>ค่าใช้จ่ายอื่น</th>
+          <th>หมายเหตุ</th>
+          <th>รวม</th>
+        </tr>
+      </thead>
+      <tbody id="previewBody"></tbody>
+    </table>
+
+    <div class="preview-summary">
+      📊 รวม <strong id="previewDays">0</strong> วัน | 💰 รวมเงินทั้งหมด <strong id="previewTotal">0.00</strong> บาท
+    </div>
+
+    <p style="text-align:right; margin-top:40px;">ลงชื่อผู้เคลียร์ ___________________________________________________</p>
+
+    <div class="btn-group">
+      <button type="button" class="btn-print" onclick="printPage()">🖨️ พิมพ์</button>
+      <button type="button" class="btn-export" onclick="exportPDF()">📄 Export PDF</button>
+      <button type="button" class="btn-edit" onclick="backToEdit()">✏️ แก้ไข</button>
+      <button type="button" class="btn-secondary" onclick="goBack()">🏠 กลับ</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="loadingOverlay">
+  <div class="loading-card">
+    <div class="spinner"></div>
+    <div class="loading-text">กำลังดำเนินการ...</div>
+  </div>
+</div>
+
+<script>
+  var DOC_NO = '';
+  var currentUser = null;
+  var savedFormData = null;
+
+  // ===== Initialize =====
+  document.addEventListener('DOMContentLoaded', function() {
+    var userData = sessionStorage.getItem('user');
+    if (userData) {
+      currentUser = JSON.parse(userData);
+    }
+    
+    loadEmployeeList();
+    setDefaultDates();
+    addRow();
+  });
+
+  function setDefaultDates() {
+    var today = new Date();
+    var dateStr = today.getFullYear() + '-' + 
+                  String(today.getMonth()+1).padStart(2,'0') + '-' + 
+                  String(today.getDate()).padStart(2,'0');
+    document.getElementById('start').value = dateStr;
+    document.getElementById('end').value = dateStr;
+  }
+
+  function loadEmployeeList() {
+    google.script.run
+      .withSuccessHandler(function(users) {
+        var select = document.getElementById('emp');
+        select.innerHTML = '<option value="">-- เลือก --</option>';
+        if (users && users.length > 0) {
+          users.forEach(function(u) {
+            var name = u.displayName || u.name || u.username;
+            var opt = document.createElement('option');
+            opt.value = name;
+            opt.textContent = name;
+            select.appendChild(opt);
+          });
+        }
+        if (currentUser) {
+          var currentName = currentUser.displayName || currentUser.name;
+          select.value = currentName;
+        }
+      })
+      .withFailureHandler(function(e) {
+        console.error('Load employees error:', e);
+      })
+      .getSalesList();
+  }
+
+  // ===== Loading =====
+  function showLoading() { 
+    document.getElementById('loadingOverlay').style.display = 'flex';
+  }
+
+  function hideLoading() { 
+    document.getElementById('loadingOverlay').style.display = 'none';
+  }
+
+  // ===== Table Functions =====
+  function addRow() {
+    var tbody = document.getElementById('tableBody');
+    var row = document.createElement('tr');
+    row.innerHTML = 
+      '<td><input type="date"></td>' +
+      '<td><input type="text" placeholder="เส้นทาง"></td>' +
+      '<td><input type="number" value="0" min="0" oninput="calcTotal()"></td>' +
+      '<td><input type="number" value="0" min="0" oninput="calcTotal()"></td>' +
+      '<td><input type="number" value="0" min="0" oninput="calcTotal()"></td>' +
+      '<td><input type="number" value="0" min="0" oninput="calcTotal()"></td>' +
+      '<td><input type="text" placeholder="หมายเหตุ"></td>';
+    tbody.appendChild(row);
+    calcTotal();
+  }
+
+  function deleteRow() {
+    var tbody = document.getElementById('tableBody');
+    if (tbody.rows.length > 0) {
+      tbody.deleteRow(-1);
+      calcTotal();
+    }
+  }
+
+  function calcTotal() {
+    var tbody = document.getElementById('tableBody');
+    var total = 0;
+    
+    for (var i = 0; i < tbody.rows.length; i++) {
+      var inputs = tbody.rows[i].querySelectorAll('input[type="number"]');
+      inputs.forEach(function(inp) {
+        total += Number(inp.value || 0);
+      });
+    }
+    
+    document.getElementById('total').textContent = total.toFixed(2);
+    document.getElementById('days').textContent = tbody.rows.length;
+  }
+
+  // ===== Save =====
+  function saveForm() {
+    var start = document.getElementById('start').value;
+    var end = document.getElementById('end').value;
+    var emp = document.getElementById('emp').value;
+    var zone = document.getElementById('zone').value;
+
+    if (!start || !end || !emp || !zone) {
+      alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+      return;
+    }
+
+    var tbody = document.getElementById('tableBody');
+    if (tbody.rows.length === 0) {
+      alert('กรุณาเพิ่มข้อมูลอย่างน้อย 1 แถว');
+      return;
+    }
+
+    showLoading();
+
+    google.script.run
+      .withSuccessHandler(function(docNo) {
+        DOC_NO = docNo;
+        saveData();
+      })
+      .withFailureHandler(function(e) {
+        hideLoading();
+        alert('เกิดข้อผิดพลาด: ' + (e.message || e));
+      })
+      .genDocNo('COST');
+  }
+
+  function saveData() {
+    var rows = [];
+    var tbody = document.getElementById('tableBody');
+    
+    for (var i = 0; i < tbody.rows.length; i++) {
+      var inputs = tbody.rows[i].querySelectorAll('input');
+      rows.push({
+        date: inputs[0].value,
+        route: inputs[1].value,
+        allowance: Number(inputs[2].value || 0),
+        hotel: Number(inputs[3].value || 0),
+        fuel: Number(inputs[4].value || 0),
+        other: Number(inputs[5].value || 0),
+        note: inputs[6].value
+      });
+    }
+
+    savedFormData = {
+      docNo: DOC_NO,
+      start: document.getElementById('start').value,
+      end: document.getElementById('end').value,
+      emp: document.getElementById('emp').value,
+      zone: document.getElementById('zone').value,
+      rows: rows
+    };
+
+    google.script.run
+      .withSuccessHandler(function() {
+        hideLoading();
+        showPreview(savedFormData);
+      })
+      .withFailureHandler(function(e) {
+        hideLoading();
+        alert('บันทึกไม่สำเร็จ: ' + (e.message || e));
+      })
+      .saveTripCost(savedFormData);
+  }
+
+  // ===== Preview =====
+  function showPreview(data) {
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('previewSection').classList.add('show');
+    
+    document.getElementById('previewDocNo').textContent = data.docNo;
+    document.getElementById('previewStart').textContent = data.start;
+    document.getElementById('previewEnd').textContent = data.end;
+    document.getElementById('previewEmp').textContent = data.emp;
+    document.getElementById('previewZone').textContent = data.zone;
+    
+    var grandTotal = 0;
+    var html = '';
+    
+    data.rows.forEach(function(r) {
+      var rowTotal = (r.allowance || 0) + (r.hotel || 0) + (r.fuel || 0) + (r.other || 0);
+      grandTotal += rowTotal;
+      
+      html += '<tr>' +
+        '<td>' + (r.date || '-') + '</td>' +
+        '<td>' + (r.route || '-') + '</td>' +
+        '<td>' + Number(r.allowance || 0).toFixed(2) + '</td>' +
+        '<td>' + Number(r.hotel || 0).toFixed(2) + '</td>' +
+        '<td>' + Number(r.fuel || 0).toFixed(2) + '</td>' +
+        '<td>' + Number(r.other || 0).toFixed(2) + '</td>' +
+        '<td>' + (r.note || '-') + '</td>' +
+        '<td><strong>' + rowTotal.toFixed(2) + '</strong></td>' +
+      '</tr>';
+    });
+    
+    document.getElementById('previewBody').innerHTML = html;
+    document.getElementById('previewDays').textContent = data.rows.length;
+    document.getElementById('previewTotal').textContent = grandTotal.toFixed(2);
+    
+    window.scrollTo(0, 0);
+  }
+
+  function backToEdit() {
+    document.getElementById('previewSection').classList.remove('show');
+    document.getElementById('formSection').style.display = 'block';
+  }
+
+  function printPage() {
+    window.print();
+  }
+
+  function exportPDF() {
+    if (!DOC_NO) {
+      alert('ไม่พบเลขเอกสาร กรุณาบันทึกก่อน');
+      return;
+    }
+    showLoading();
+    
+    google.script.run
+      .withSuccessHandler(function(url) {
+        hideLoading();
+        if (url) {
+          window.open(url, '_blank');
+        } else {
+          alert('ไม่สามารถสร้าง PDF ได้');
+        }
+      })
+      .withFailureHandler(function(e) {
+        hideLoading();
+        alert('Export Error: ' + (e.message || e));
+      })
+      .exportTripCostPDF(DOC_NO);
+  }
+
+  function goBack() {
+    google.script.run
+      .withSuccessHandler(function(url) {
+        window.top.location.href = url + '?page=dashboard';
+      })
+      .getBaseUrl();
+  }
+</script>
+
+</body>
+</html>

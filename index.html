@@ -6,6 +6,7 @@
          ========================= -->
     <meta charset="UTF-8" />
     <title>Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- =========================
          PWA CONFIG
@@ -24,7 +25,7 @@
          ========================= */
       body {
         margin: 0;
-        font-family: sans-serif;
+        font-family: kanit;
       }
 
       /* =========================
@@ -47,23 +48,23 @@
       }
 
       /* =========================
-   Logo (Image + Text)
-   ========================= */
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 22px;
-  font-weight: bold;
-  color: #1b7a3c;
-  margin-bottom: 30px;
-}
+        Logo (Image + Text)
+        ========================= */
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        font-weight: bold;
+        color: #1b7a3c;
+        margin-bottom: 30px;
+      }
 
-.logo img {
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-}
+      .logo img {
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+      }
 
 
       /* เมนู */
@@ -164,23 +165,59 @@
       }
 
       /* =========================
-         SUMMARY CARDS
+         SUMMARY CARDS (Responsive Grid)
          ========================= */
       .cards {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* desktop */
         gap: 20px;
         margin-bottom: 30px;
         
       }
 
       .card {
-        background: white;
+        background: #E9F8F0;
+        border: 2px solid #4caf50;
         border-radius: 16px;
-        padding: 20px;
-        width: 200px;
-        min-height: 90px;
+        padding: 10px;
+        width: auto;
+        min-height: 20px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.08);
       }
+
+      .card-shop {
+        background: #e9f8f0;
+        border-color: #45c78a;
+      }
+
+      .card-shop h3 {
+        color: #1e8f5a;
+      }
+
+      .card-trip {
+        background: #FFF6D8;
+        border-color: #F5C842;
+      }
+
+      .card-trip h3 {
+        color: #2f6fe0;
+      }
+
+      .card-claim {
+        background: #f3eeff;
+        border-color: #8e63f8;
+      }
+
+      .card-claim h3 {
+        color: #6b3fe0;
+      }
+
+      .card-soon {
+        background: #f7f7f7;
+        border-color: #ddd;
+        color: #999;
+      }
+
 
       .card.disabled {
         opacity: 0.5;
@@ -190,7 +227,8 @@
          ACTION CARDS
          ========================= */
       .actions {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* desktop */
         gap: 20px;
         margin-bottom: 30px;
       }
@@ -215,11 +253,45 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.12);
       }
 
-      .action-card:first-child {
+      
+
+      .theme-green {
         background: #2e7d32;
-        color: white;
+        color: #fff;
       }
 
+      .theme-green:hover {
+        background: #256628;
+      }
+
+      .theme-yellow {
+        background: #fde7a3;
+        color: #6b4b00;
+      }
+
+      .theme-yellow:hover {
+        background: #f9dc85;
+      }
+
+      .theme-pink {
+        background: #f7b7a3;
+        color: #6b1f1f;
+      }
+
+      .theme-pink:hover {
+        background: #f2a48e;
+      }
+
+      /*Badge “Coming Soon” (เหมือน mockup)*/
+      .badge {
+        margin-top: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        opacity: .7;
+      }
+
+
+    
 
       /* =========================
          TABLE (รายงานของฉัน)
@@ -258,153 +330,221 @@
       }
 
       /* =========================
-   Forms Hub Card
-   ========================= */
-.forms-hub {
-  background: #e8f5e9;        /* เขียวอ่อนแบบภาพ */
-  border-radius: 16px;
-  padding: 16px;
-  margin-top: 20px;
-}
+          Forms Hub Card
+          ========================= */
+        .forms-hub {
+          background: #e8f5e9;        /* เขียวอ่อนแบบภาพ */
+          border-radius: 16px;
+          padding: 16px;
+          margin-top: 20px;
+        }
 
-.forms-hub h4 {
-  margin: 0 0 12px;
-  color: #2e7d32;
-  font-size: 16px;
-}
+        .forms-hub h4 {
+          margin: 0 0 12px;
+          color: #2e7d32;
+          font-size: 16px;
+        }
 
-.forms-hub .muted {
-  font-size: 12px;
-  color: #9e9e9e;
-  margin-left: 6px;
-}
+        .forms-hub .muted {
+          font-size: 12px;
+          color: #9e9e9e;
+          margin-left: 6px;
+        }
 
-/* ปุ่มฟอร์ม */
-.form-btn {
-  width: 100%;
-  background: white;
-  border: 1px solid #4caf50;
-  color: #2e7d32;
-  border-radius: 12px;
-  padding: 10px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  font-size: 13px;
-  text-align: center;
-}
+        /* ปุ่มฟอร์ม */
+        .form-btn {
+          width: 100%;
+          background: white;
+          border: 1px solid #4caf50;
+          color: #2e7d32;
+          border-radius: 12px;
+          padding: 10px;
+          margin-bottom: 10px;
+          cursor: pointer;
+          font-size: 13px;
+          text-align: center;
+        }
 
-.form-btn:last-child {
-  margin-bottom: 0;
-}
+        .form-btn:last-child {
+          margin-bottom: 0;
+        }
 
-.form-btn:hover {
-  background: #f1f8f4;
-}
+        .form-btn:hover {
+          background: #f1f8f4;
+        }
 
-.right-column {
-  display: flex;
-  flex-direction: column;
-  gap: 20px; /* ระยะห่างระหว่างการ์ด */
-}
+        .right-column {
+          display: flex;
+          flex-direction: column;
+          gap: 20px; /* ระยะห่างระหว่างการ์ด */
+        }
 
- /* =========================
-   Report Progress Card
-   ========================= */
-.progress-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 16px 20px;
-  margin: 20px 0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
+        /* =========================
+          Report Progress Card
+          ========================= */
+        .progress-card {
+          background: #ffffff;
+          border-radius: 16px;
+          padding: 16px 20px;
+          margin: 20px 0;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
 
-.progress-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1b7a3c;
-  margin-bottom: 8px;
-}
+        .progress-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: #1b7a3c;
+          margin-bottom: 8px;
+        }
 
-.progress-note {
-  font-size: 13px;
-  color: #777;
-  margin-top: 8px;
-}
+        .progress-note {
+          font-size: 13px;
+          color: #777;
+          margin-top: 8px;
+        }
 
-/* แถบสถานะ */
-.progress-bar {
-  width: 100%;
-  height: 6px;          /* แถบเล็ก */
-  background: #eee;
-  border-radius: 999px;
-  overflow: hidden;
-}
+        /* แถบสถานะ */
+        .progress-bar {
+          width: 100%;
+          height: 6px;          /* แถบเล็ก */
+          background: #eee;
+          border-radius: 999px;
+          overflow: hidden;
+        }
 
-.progress-fill {
-  height: 100%;
-  background: #4caf50;
-  width: 0%;            /* เดี๋ยวค่อยให้ JS คุม */
-  transition: width 0.3s ease;
-}
+        .progress-fill {
+          height: 100%;
+          background: #4caf50;
+          width: 0%;            /* เดี๋ยวค่อยให้ JS คุม */
+          transition: width 0.3s ease;
+        }
 
-/* =========================
-   My Report Item Card
-   ========================= */
-.report-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  border-bottom: 1px dashed #c8e6c9;
-}
+        /* =========================
+          My Report Item Card
+          ========================= */
+        .report-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 12px 14px;
+          border-bottom: 1px dashed #c8e6c9;
+        }
 
-.report-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+        .report-left {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
 
-.report-left a {
-  text-decoration: none;
-  color: #2e7d32;
-  font-weight: 500;
-}
+        .report-left a {
+          text-decoration: none;
+          color: #2e7d32;
+          font-weight: 500;
+        }
 
-.report-left a:hover {
-  text-decoration: underline;
-}
+        .report-left a:hover {
+          text-decoration: underline;
+        }
 
-.report-actions {
-  display: flex;
-  gap: 10px;
-}
+        .report-actions {
+          display: flex;
+          gap: 10px;
+        }
 
-.report-actions button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-}
+        .report-actions button {
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: 16px;
+        }
 
-.report-actions .edit {
-  color: #ff9800;
-}
+        .report-actions .edit {
+          color: #ff9800;
+        }
 
-.report-actions .delete {
-  color: #f44336;
-}
+        .report-actions .delete {
+          color: #f44336;
+        }
+
+        /* =========================
+          Report Progress Card
+          ========================= */
+        .progress-card {
+          background: white;
+          border-radius: 16px;
+          padding: 16px 20px;
+          margin-bottom: 20px;
+        }
+
+        .progress-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-weight: 500;
+          margin-bottom: 8px;
+        }
+
+        .progress-day {
+          color: #1b7a3c;
+        }
+
+        /* แถบสถานะ (เล็ก) */
+        .progress-bar.small {
+          height: 6px;
+          background: #eee;
+          border-radius: 6px;
+          overflow: hidden;
+        }
+
+        .progress-fill {
+          height: 100%;
+          width: 0%;
+          background: #26a69a;
+          transition: width 0.3s ease;
+        }
+
+        .progress-note {
+          margin-top: 6px;
+          font-size: 12px;
+          color: #777;
+        }
+
+        /* =========================
+          NOTEBOOK (≤1200px)
+          ========================= */
+        @media (max-width: 1200px) {
+
+          /* Summary card จาก 4 → 2 */
+          .cards {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          /* Action card จาก 3 → 2 */
+          .actions {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          /* Sidebar แคบลง */
+          .sidebar {
+            width: 220px;
+          }
+        }
 
 
       /* =========================
-         TABLET RESPONSIVE
-         ========================= */
+        TABLET
+        ========================= */
       @media (max-width: 900px) {
-        .sidebar { width: 200px; }
-        .cards { flex-wrap: wrap; }
-        .card { width: calc(50% - 10px); }
-        .actions { flex-wrap: wrap; }
-        .action-card { flex: 1 1 calc(50% - 10px); }
+        .cards,
+        .actions {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .content-layout {
+          flex-direction: column;
+        }
       }
+
 
       /* =========================
          MOBILE RESPONSIVE
@@ -456,7 +596,7 @@
         /* cards เต็มบรรทัด */
         .cards,
         .actions {
-          flex-direction: column;
+          grid-template-columns: 1fr;
         }
 
         .card,
@@ -464,55 +604,12 @@
           width: 100%;
         }
 
-        /* ซ่อน right panel บนมือถือ */
-        .rightanel {
+       /* ซ่อนฝั่งขวา */
+        .right-panel {
           display: none;
         }
 
-        /* =========================
-   Report Progress Card
-   ========================= */
-        .progress-card {
-          background: white;
-          border-radius: 16px;
-          padding: 16px 20px;
-          margin-bottom: 20px;
-        }
-
-        .progress-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          font-weight: 500;
-          margin-bottom: 8px;
-        }
-
-        .progress-day {
-          color: #1b7a3c;
-        }
-
-        /* แถบสถานะ (เล็ก) */
-        .progress-bar.small {
-          height: 6px;
-          background: #eee;
-          border-radius: 6px;
-          overflow: hidden;
-        }
-
-        .progress-fill {
-          height: 100%;
-          width: 0%;
-          background: #26a69a;
-          transition: width 0.3s ease;
-        }
-
-        .progress-note {
-          margin-top: 6px;
-          font-size: 12px;
-          color: #777;
-        }
-       
-
+        
       }
     </style>
   </head>
@@ -543,6 +640,7 @@
           <a class="menu-item" href="report.html">เขียนใบรายงาน</a>
           <a class="menu-item" href="trip.html">ร้านค้าของฉัน</a>
           <a class="menu-item disabled" href="#">Coming Soon</a>
+          <a class="menu-item disabled" href="#">Coming Soon</a>
         </nav>
       </aside>
 
@@ -566,17 +664,21 @@
 
             <!-- 2. Cards summary -->
             <div class="cards">
-              <div class="card">
+              <div class="card card-shop">
                 <h3 id="storeCount">0</h3>
                 <p>ร้านค้าของฉัน</p>
               </div>
-              <div class="card disabled">
+              <div class="card card-trip">
                 <h3 id="tripCount">0</h3>
                 <p>Trip</p>
               </div>
-              <div class="card disabled">
+              <div class="card card-claim">
                 <h3 id="claimCount">0</h3>
                 <p>Claim</p>
+              </div>
+              <div class="card card-soon">
+                <h3 id="claimCount">0</h3>
+                <p>Coming Soon</p>
               </div>
             </div>
 
@@ -584,27 +686,30 @@
 
             <!-- 3. Action cards (เขียนรายงาน / เพิ่มลูกค้า / แจ้งเคลม) -->
             <div class="actions">
-              <a href="report.html" class="action-card">✍️ เขียนรายงาน</a>
-              <a href="trip.html" class="action-card">➕ เพิ่มลูกค้า</a>
-              <a href="claim.html" class="action-card">🧾 แจ้งเคลม</a>
+              <a href="report.html" class="action-card theme-green">เขียนรายงาน</a>
+              <a href="trip.html" class="action-card theme-yellow">ฟอร์ม</a>
+              <a href="claim.html" class="action-card theme-pink">แจ้งเคลม
+                <div class="badge">Coming Soon</div>
+              </a>
+              
             </div>
                <!-- =========================
      Report Progress Card
      ========================= -->
-<div class="progress-card">
-  <div class="progress-title">
-    ✍️ เขียนรายงานแล้ว <strong id="reportDays">0</strong> วัน
-  </div>
+            <div class="progress-card">
+              <div class="progress-title">
+                ✍️ เขียนรายงานแล้ว <strong id="reportDays">0</strong> วัน
+            </div>
 
-  <div class="progress-bar">
-    <div class="progress-fill" style="width: 0%"></div>
-  </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 0%"></div>
+            </div>
 
-  <div class="progress-note">
-    ส่งรายงานสัปดาห์ละ 1 ครั้ง
-  </div>
-</div>
-            <!-- 4. รายงานของฉัน (ตาราง) -->
+            <div class="progress-note">
+              ส่งรายงานสัปดาห์ละ 1 ครั้ง
+            </div>
+            </div>
+              <!-- 4. รายงานของฉัน (ตาราง) -->
             <div class="my-report">
               <h3>รายงานของฉัน</h3>
               <!-- รายการจะถูก JS ใส่เข้ามาตรงนี้ -->
@@ -629,8 +734,8 @@
           </div>
           </aside>
           <!-- =========================
-     Forms Hub (Coming Soon)
-     ========================= -->
+              Forms Hub (Coming Soon)
+              ========================= -->
             <div class="forms-hub">
             <h4>Forms Hub <span class="muted">Coming Soon</span></h4>
 

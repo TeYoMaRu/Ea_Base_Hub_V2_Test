@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EABaseHub - ยืนยันอีเมล</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Kanit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 50px 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin: 0 auto 25px;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+        
+        /* Status Icons */
+        .status-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            margin: 0 auto 25px;
+        }
+        
+        .status-icon.loading {
+            background: #e3f2fd;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .status-icon.success {
+            background: #e8f5e9;
+        }
+        
+        .status-icon.error {
+            background: #ffebee;
+        }
+        
+        .status-icon.pending {
+            background: #fff3e0;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        
+        h1 {
+            font-size: 26px;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        
+        .subtitle {
+            color: #888;
+            font-size: 15px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .email-display {
+            background: #f5f5f5;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 25px;
+            word-break: break-all;
+        }
+        
+        /* OTP Input */
+        .otp-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        
+        .otp-input {
+            width: 55px;
+            height: 65px;
+            border: 2px solid #e0e0e0;
+            border-radius: 14px;
+            font-size: 28px;
+            font-weight: 600;
+            text-align: center;
+            font-family: 'Kanit', sans-serif;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .otp-input:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
+        }
+        
+        .otp-input.error {
+            border-color: #f44336;
+            animation: shake 0.5s;
+        }
+        
+        .otp-input.success {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #555;
+            margin-top: 12px;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        .btn .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+        
+        .btn.loading .spinner {
+            display: block;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Resend Section */
+        .resend-section {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .resend-text {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .resend-link {
+            color: #4caf50;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .resend-link:hover {
+            text-decoration: underline;
+        }
+        
+        .resend-link.disabled {
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .countdown {
+            color: #ff9800;
+            font-weight: 500;
+        }
+        
+        /* Alert Messages */
+        .alert {
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            text-align: left;
+        }
+        
+        .alert.show {
+            display: flex;
+        }
+        
+        .alert.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+        
+        .alert.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+        
+        .alert.info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #90caf9;
+        }
+        
+        /* Links */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #888;
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 25px;
+        }
+        
+        .back-link:hover {
+            color: #4caf50;
+        }
+        
+        /* Success State */
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #e8f5e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 40px;
+            animation: scaleIn 0.5s ease;
+        }
+        
+        @keyframes scaleIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Hidden sections */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="logo">EA</div>
+            
+            <!-- Alert -->
+            <div class="alert" id="alert">
+                <span id="alertIcon">ℹ️</span>
+                <span id="alertMessage"></span>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="loadingState">
+                <div class="status-icon loading">⏳</div>
+                <h1>กำลังตรวจสอบ...</h1>
+                <p class="subtitle">กรุณารอสักครู่</p>
+            </div>
+            
+            <!-- Verification Form -->
+            <div id="verifyForm" class="hidden">
+                <div class="status-icon pending">📧</div>
+                <h1>ยืนยันอีเมลของคุณ</h1>
+                <p class="subtitle">เราได้ส่งรหัสยืนยัน 6 หลักไปที่</p>
+                <div class="email-display" id="emailDisplay">loading@email.com</div>
+                
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1" data-index="0" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" data-index="1" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" data-index="2" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" data-index="3" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" data-index="4" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" data-index="5" inputmode="numeric">
+                </div>
+                
+                <button class="btn btn-primary" id="verifyBtn" onclick="verifyCode()" disabled>
+                    <span class="spinner"></span>
+                    <span class="btn-text">ยืนยันอีเมล</span>
+                </button>
+                
+                <div class="resend-section">
+                    <p class="resend-text">ไม่ได้รับรหัส?</p>
+                    <span class="resend-link" id="resendLink" onclick="resendCode()">ส่งรหัสใหม่</span>
+                    <span class="countdown hidden" id="countdown"></span>
+                </div>
+            </div>
+            
+            <!-- Success State -->
+            <div id="successState" class="hidden">
+                <div class="success-checkmark">✓</div>
+                <h1>ยืนยันอีเมลสำเร็จ!</h1>
+                <p class="subtitle">บัญชีของคุณพร้อมใช้งานแล้ว<br>คุณสามารถเข้าสู่ระบบได้ทันที</p>
+                
+                <button class="btn btn-primary" onclick="goToLogin()">
+                    เข้าสู่ระบบ
+                </button>
+            </div>
+            
+            <!-- Error State -->
+            <div id="errorState" class="hidden">
+                <div class="status-icon error">❌</div>
+                <h1>เกิดข้อผิดพลาด</h1>
+                <p class="subtitle" id="errorMessage">ลิงก์ยืนยันไม่ถูกต้องหรือหมดอายุ</p>
+                
+                <button class="btn btn-primary" onclick="requestNewVerification()">
+                    ขอลิงก์ยืนยันใหม่
+                </button>
+                
+                <a href="<?= ScriptApp.getService().getUrl() ?>?page=login" class="back-link">
+                    ← กลับไปหน้าเข้าสู่ระบบ
+                </a>
+            </div>
+            
+            <!-- Already Verified -->
+            <div id="alreadyVerified" class="hidden">
+                <div class="status-icon success">✅</div>
+                <h1>อีเมลได้รับการยืนยันแล้ว</h1>
+                <p class="subtitle">บัญชีนี้ได้รับการยืนยันเรียบร้อยแล้ว<br>คุณสามารถเข้าสู่ระบบได้ทันที</p>
+                
+                <button class="btn btn-primary" onclick="goToLogin()">
+                    เข้าสู่ระบบ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =====================================================
+        // GLOBAL VARIABLES
+        // =====================================================
+        let userEmail = '';
+        let verificationToken = '';
+        let resendCooldown = 0;
+        let cooldownInterval = null;
+        
+        // =====================================================
+        // INITIALIZATION
+        // =====================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get parameters from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const email = urlParams.get('email');
+            
+            if (token) {
+                // Direct verification via link
+                verificationToken = token;
+                verifyWithToken(token);
+            } else if (email) {
+                // Show OTP form
+                userEmail = decodeURIComponent(email);
+                showVerificationForm();
+            } else {
+                // Check session for pending verification
+                const pendingEmail = sessionStorage.getItem('pendingVerification');
+                if (pendingEmail) {
+                    userEmail = pendingEmail;
+                    showVerificationForm();
+                } else {
+                    showError('ไม่พบข้อมูลการยืนยันอีเมล');
+                }
+            }
+            
+            setupOTPInputs();
+        });
+        
+        // =====================================================
+        // OTP INPUT HANDLING
+        // =====================================================
+        function setupOTPInputs() {
+            const inputs = document.querySelectorAll('.otp-input');
+            
+            inputs.forEach((input, index) => {
+                // Handle input
+                input.addEventListener('input', function(e) {
+                    const value = e.target.value;
+                    
+                    // Only allow numbers
+                    if (!/^\d*$/.test(value)) {
+                        e.target.value = '';
+                        return;
+                    }
+                    
+                    // Move to next input
+                    if (value && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                    
+                    // Check if all inputs are filled
+                    checkOTPComplete();
+                });
+                
+                // Handle backspace
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                    
+                    // Handle Enter
+                    if (e.key === 'Enter') {
+                        verifyCode();
+                    }
+                });
+                
+                // Handle paste
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+                    
+                    pastedData.split('').forEach((char, i) => {
+                        if (inputs[i]) {
+                            inputs[i].value = char;
+                        }
+                    });
+                    
+                    // Focus last filled or next empty
+                    const focusIndex = Math.min(pastedData.length, inputs.length - 1);
+                    inputs[focusIndex].focus();
+                    
+                    checkOTPComplete();
+                });
+            });
+        }
+        
+        function checkOTPComplete() {
+            const inputs = document.querySelectorAll('.otp-input');
+            const code = Array.from(inputs).map(i => i.value).join('');
+            document.getElementById('verifyBtn').disabled = code.length !== 6;
+        }
+        
+        function getOTPCode() {
+            const inputs = document.querySelectorAll('.otp-input');
+            return Array.from(inputs).map(i => i.value).join('');
+        }
+        
+        function clearOTP() {
+            document.querySelectorAll('.otp-input').forEach(input => {
+                input.value = '';
+                input.classList.remove('error', 'success');
+            });
+            document.querySelector('.otp-input').focus();
+            document.getElementById('verifyBtn').disabled = true;
+        }
+        
+        function setOTPError() {
+            document.querySelectorAll('.otp-input').forEach(input => {
+                input.classList.add('error');
+            });
+            setTimeout(() => {
+                clearOTP();
+            }, 500);
+        }
+        
+        function setOTPSuccess() {
+            document.querySelectorAll('.otp-input').forEach(input => {
+                input.classList.add('success');
+            });
+        }
+        
+        // =====================================================
+        // STATE MANAGEMENT
+        // =====================================================
+        function showVerificationForm() {
+            hideAllStates();
+            document.getElementById('verifyForm').classList.remove('hidden');
+            document.getElementById('emailDisplay').textContent = maskEmail(userEmail);
+            document.querySelector('.otp-input').focus();
+        }
+        
+        function showSuccess() {
+            hideAllStates();
+            document.getElementById('successState').classList.remove('hidden');
+            sessionStorage.removeItem('pendingVerification');
+        }
+        
+        function showError(message) {
+            hideAllStates();
+            document.getElementById('errorState').classList.remove('hidden');
+            document.getElementById('errorMessage').textContent = message;
+        }
+        
+        function showAlreadyVerified() {
+            hideAllStates();
+            document.getElementById('alreadyVerified').classList.remove('hidden');
+        }
+        
+        function hideAllStates() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('verifyForm').classList.add('hidden');
+            document.getElementById('successState').classList.add('hidden');
+            document.getElementById('errorState').classList.add('hidden');
+            document.getElementById('alreadyVerified').classList.add('hidden');
+        }
+        
+        // =====================================================
+        // VERIFICATION FUNCTIONS
+        // =====================================================
+        function verifyWithToken(token) {
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        if (result.alreadyVerified) {
+                            showAlreadyVerified();
+                        } else {
+                            showSuccess();
+                        }
+                    } else {
+                        showError(result.message || 'ลิงก์ยืนยันไม่ถูกต้องหรือหมดอายุ');
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    showError('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+                })
+                .verifyEmailToken(token);
+        }
+        
+        function verifyCode() {
+            const code = getOTPCode();
+            if (code.length !== 6) return;
+            
+            const btn = document.getElementById('verifyBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    btn.classList.remove('loading');
+                    
+                    if (result.success) {
+                        setOTPSuccess();
+                        setTimeout(showSuccess, 500);
+                    } else {
+                        setOTPError();
+                        showAlert('error', '❌', result.message || 'รหัสยืนยันไม่ถูกต้อง');
+                        btn.disabled = false;
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    setOTPError();
+                    showAlert('error', '❌', 'เกิดข้อผิดพลาดในการเชื่อมต่อ');
+                })
+                .verifyEmailCode(userEmail, code);
+        }
+        
+        // =====================================================
+        // RESEND CODE
+        // =====================================================
+        function resendCode() {
+            if (resendCooldown > 0) return;
+            
+            const link = document.getElementById('resendLink');
+            link.classList.add('disabled');
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    if (result.success) {
+                        showAlert('success', '✓', 'ส่งรหัสยืนยันใหม่แล้ว');
+                        startCooldown(60);
+                    } else {
+                        showAlert('error', '❌', result.message || 'ไม่สามารถส่งรหัสได้');
+                        link.classList.remove('disabled');
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    showAlert('error', '❌', 'เกิดข้อผิดพลาด');
+                    link.classList.remove('disabled');
+                })
+                .resendVerificationCode(userEmail);
+        }
+        
+        function startCooldown(seconds) {
+            resendCooldown = seconds;
+            const link = document.getElementById('resendLink');
+            const countdown = document.getElementById('countdown');
+            
+            link.classList.add('hidden');
+            countdown.classList.remove('hidden');
+            
+            cooldownInterval = setInterval(function() {
+                resendCooldown--;
+                countdown.textContent = 'ส่งรหัสใหม่ได้ใน ' + resendCooldown + ' วินาที';
+                
+                if (resendCooldown <= 0) {
+                    clearInterval(cooldownInterval);
+                    link.classList.remove('hidden', 'disabled');
+                    countdown.classList.add('hidden');
+                }
+            }, 1000);
+            
+            countdown.textContent = 'ส่งรหัสใหม่ได้ใน ' + resendCooldown + ' วินาที';
+        }
+        
+        function requestNewVerification() {
+            const email = prompt('กรุณากรอกอีเมลของคุณ:');
+            if (email) {
+                userEmail = email;
+                
+                google.script.run
+                    .withSuccessHandler(function(result) {
+                        if (result.success) {
+                            showAlert('success', '✓', 'ส่งลิงก์ยืนยันใหม่แล้ว');
+                            showVerificationForm();
+                        } else {
+                            showAlert('error', '❌', result.message);
+                        }
+                    })
+                    .sendVerificationEmail(email);
+            }
+        }
+        
+        // =====================================================
+        // UTILITY FUNCTIONS
+        // =====================================================
+        function maskEmail(email) {
+            if (!email) return '';
+            const [localPart, domain] = email.split('@');
+            if (localPart.length <= 3) {
+                return localPart[0] + '***@' + domain;
+            }
+            return localPart.slice(0, 3) + '***@' + domain;
+        }
+        
+        function showAlert(type, icon, message) {
+            const alert = document.getElementById('alert');
+            const alertIcon = document.getElementById('alertIcon');
+            const alertMessage = document.getElementById('alertMessage');
+            
+            alert.className = 'alert ' + type + ' show';
+            alertIcon.textContent = icon;
+            alertMessage.textContent = message;
+            
+            setTimeout(function() {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+        
+        function goToLogin() {
+            window.location.href = '<?= ScriptApp.getService().getUrl() ?>?page=login';
+        }
+    </script>
+</body>
+</html>
