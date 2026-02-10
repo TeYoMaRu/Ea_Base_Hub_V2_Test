@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Admin | Sales</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="brand">🌿 EABaseHub | Admin</div>
+  <a href="index.html" class="btn">กลับหน้าหลัก</a>
+</header>
+
+<main class="container">
+
+  <h2>จัดการ Sales</h2>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <a class="tab" href="admin.html">ผู้ใช้งาน</a>
+    <a class="tab active" href="admin-sales.html">Sales</a>
+    <a class="tab" href="admin-shops.html">ร้านค้า</a>
+  </div>
+
+  <input class="search" placeholder="ค้นหารหัส / ชื่อ Sales">
+
+  <table>
+    <thead>
+      <tr>
+        <th>รหัส</th>
+        <th>ชื่อ Sales</th>
+        <th>พื้นที่</th>
+        <th>Email</th>
+        <th>จำนวนร้านค้า</th>
+        <th>จัดการ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>19100</td>
+        <td>พิชัย สัมมา</td>
+        <td>ภาคเหนือ</td>
+        <td>-</td>
+        <td><span class="badge active">0 ร้าน</span></td>
+        <td>
+          <a class="btn-sm edit" href="admin-shops.html?sale=19100">จัดการร้านค้า</a>
+        </td>
+      </tr>
+
+      <tr>
+        <td>tonteuy</td>
+        <td>นฤมล มูลละหัตร์</td>
+        <td>ภาคกลาง</td>
+        <td>tonteuy55@gmail.com</td>
+        <td><span class="badge active">122 ร้าน</span></td>
+        <td>
+          <a class="btn-sm edit" href="admin-shops.html?sale=tonteuy">จัดการร้านค้า</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</main>
+
+</body>
+</html>

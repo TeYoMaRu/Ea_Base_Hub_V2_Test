@@ -1,862 +1,165 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <base target="_top">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EABaseHub - Admin Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Kanit', sans-serif;
-            background: #e8f5e9;
-            min-height: 100vh;
-        }
-        
-        .app-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        /* Top Header */
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background: white;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo-icon {
-            width: 45px;
-            height: 45px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="80" r="15" fill="%23795548"/><ellipse cx="50" cy="40" rx="30" ry="35" fill="%234caf50"/><ellipse cx="35" cy="35" rx="15" ry="20" fill="%2366bb6a"/><ellipse cx="65" cy="35" rx="15" ry="20" fill="%2366bb6a"/></svg>') center/contain no-repeat;
-        }
-        
-        .logo-text {
-            font-size: 20px;
-            font-weight: 700;
-            color: #2e7d32;
-        }
-        
-        .nav-tabs {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .nav-tab {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            color: #666;
-            font-size: 14px;
-            font-weight: 500;
-            background: #f5f5f5;
-            border: none;
-            font-family: 'Kanit', sans-serif;
-        }
-        
-        .nav-tab:hover {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-        
-        .nav-tab.active {
-            background: #ff9800;
-            color: white;
-        }
-        
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .user-btn {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #4caf50;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 25px;
-            font-size: 13px;
-            cursor: pointer;
-            border: none;
-            font-family: 'Kanit', sans-serif;
-        }
-        
-        .user-avatar {
-            width: 30px;
-            height: 30px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #4caf50;
-            font-weight: 600;
-        }
-        
-        /* Page Title */
-        .page-title {
-            background: white;
-            border-radius: 16px;
-            padding: 20px 25px;
-            margin-bottom: 20px;
-        }
-        
-        .page-title h1 {
-            font-size: 24px;
-            color: #e65100;
-        }
-        
-        .page-title p {
-            color: #888;
-            font-size: 14px;
-        }
-        
-        /* Admin Tabs */
-        .admin-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .admin-tab {
-            padding: 12px 24px;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-family: 'Kanit', sans-serif;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .admin-tab:hover {
-            border-color: #4caf50;
-            background: #e8f5e9;
-        }
-        
-        .admin-tab.active {
-            background: #4caf50;
-            color: white;
-            border-color: #4caf50;
-        }
-        
-        /* Tab Content */
-        .tab-content {
-            display: none;
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .section-header h2 {
-            font-size: 18px;
-            color: #333;
-        }
-        
-        .btn-add {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-family: 'Kanit', sans-serif;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        
-        /* Stats Row */
-        .stats-row-admin {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-mini {
-            background: #f5f5f5;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-        }
-        
-        .stat-number {
-            display: block;
-            font-size: 28px;
-            font-weight: 600;
-            color: #4caf50;
-        }
-        
-        .stat-label {
-            font-size: 12px;
-            color: #888;
-        }
-        
-        /* Table */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .data-table th,
-        .data-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .data-table th {
-            background: #f5f5f5;
-            font-weight: 500;
-            color: #666;
-            font-size: 13px;
-        }
-        
-        .data-table td {
-            font-size: 14px;
-        }
-        
-        .data-table tr:hover {
-            background: #f9f9f9;
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
-        
-        .badge.admin { background: #fff3e0; color: #e65100; }
-        .badge.manager { background: #e3f2fd; color: #1976d2; }
-        .badge.sales { background: #e8f5e9; color: #2e7d32; }
-        .badge.active { background: #e8f5e9; color: #2e7d32; }
-        .badge.inactive { background: #ffebee; color: #c62828; }
-        
-        .action-btns {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .btn-icon {
-            width: 32px;
-            height: 32px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        
-        .btn-edit { background: #e3f2fd; color: #1976d2; }
-        .btn-delete { background: #ffebee; color: #c62828; }
-        
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        
-        .modal-overlay.show { display: flex; }
-        
-        .modal {
-            background: white;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .modal-header h3 { font-size: 18px; }
-        
-        .modal-close {
-            width: 36px; height: 36px;
-            border: none;
-            background: #f5f5f5;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-        }
-        
-        .modal-body { padding: 20px; }
-        
-        .form-group { margin-bottom: 15px; }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 14px;
-            color: #333;
-        }
-        
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-family: 'Kanit', sans-serif;
-            font-size: 14px;
-        }
-        
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #4caf50;
-            outline: none;
-        }
-        
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .btn-cancel, .btn-submit {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            font-family: 'Kanit', sans-serif;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        
-        .btn-cancel {
-            background: white;
-            border: 2px solid #e0e0e0;
-            color: #666;
-        }
-        
-        .btn-submit {
-            background: #4caf50;
-            border: none;
-            color: white;
-        }
-        
-        /* Loading */
-        .loading-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.9);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-        
-        .loading-overlay.show { display: flex; }
-        
-        .loading-spinner {
-            width: 45px; height: 45px;
-            border: 4px solid #e8f5e9;
-            border-top-color: #4caf50;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #333;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 10px;
-            opacity: 0;
-            transition: all 0.3s;
-            z-index: 3000;
-        }
-        
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .toast.success { background: #4caf50; }
-        .toast.error { background: #e53935; }
-        
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-        }
-        
-        .empty-state .icon { font-size: 48px; margin-bottom: 10px; }
-        
-        @media (max-width: 768px) {
-            .top-header { flex-wrap: wrap; gap: 10px; }
-            .nav-tabs { width: 100%; justify-content: center; }
-            .admin-tabs { justify-content: center; }
-            .admin-tab { padding: 10px 16px; font-size: 12px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Admin | จัดการผู้ใช้</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Kanit', sans-serif;
+  background: #f4f6f8;
+}
+
+/* ===== Top Bar ===== */
+.topbar {
+  background: #2e7d32;
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ===== Layout ===== */
+.container {
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.header {
+  background: white;
+  padding: 16px 20px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+.tab {
+  padding: 8px 18px;
+  border-radius: 20px;
+  background: #e0e0e0;
+  font-size: 14px;
+  text-decoration: none;
+  color: #333;
+}
+.tab.active {
+  background: #2e7d32;
+  color: white;
+}
+
+/* ===== Table ===== */
+.table-box {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th {
+  background: #43a047;
+  color: white;
+  padding: 10px;
+  font-size: 13px;
+  text-align: left;
+}
+td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+.active { background: #c8e6c9; color: #2e7d32; }
+.wait { background: #fff3cd; color: #856404; }
+
+.action a {
+  margin-right: 6px;
+  text-decoration: none;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+.edit { background: #e3f2fd; color: #1565c0; }
+.delete { background: #ffebee; color: #c62828; }
+</style>
 </head>
+
 <body>
-    <div class="app-container">
-        <!-- Top Header -->
-        <header class="top-header">
-            <div class="logo">
-                <div class="logo-icon"></div>
-                <span class="logo-text">EABaseHub</span>
-            </div>
-            
-            <nav class="nav-tabs">
-                <button class="nav-tab" onclick="goToPage('dashboard')">🏠 Dashboard</button>
-                <button class="nav-tab active">⚙️ Admin</button>
-            </nav>
-            
-            <div class="header-right">
-                <button class="user-btn" onclick="logout()">
-                    <div class="user-avatar" id="userAvatar">?</div>
-                    <span id="userEmail">Admin</span>
-                </button>
-            </div>
-        </header>
-        
-        <!-- Page Title -->
-        <div class="page-title">
-            <h1>⚙️ Admin Panel</h1>
-            <p>จัดการผู้ใช้ ร้านค้า และตั้งค่าระบบ</p>
-        </div>
-        
-        <!-- Admin Tabs -->
-        <div class="admin-tabs">
-            <button class="admin-tab active" onclick="switchTab('users')">👥 จัดการผู้ใช้</button>
-            <button class="admin-tab" onclick="switchTab('shops')">🏪 จัดการร้านค้า</button>
-            <button class="admin-tab" onclick="switchTab('permissions')">🔐 กำหนดสิทธิ์</button>
-        </div>
-        
-        <!-- Users Tab -->
-        <div class="tab-content active" id="tab-users">
-            <div class="section-header">
-                <h2>รายชื่อผู้ใช้งาน</h2>
-                <button class="btn-add" onclick="openUserModal()">➕ เพิ่มผู้ใช้</button>
-            </div>
-            
-            <div class="stats-row-admin">
-                <div class="stat-mini">
-                    <span class="stat-number" id="totalUsers">0</span>
-                    <span class="stat-label">ผู้ใช้ทั้งหมด</span>
-                </div>
-                <div class="stat-mini">
-                    <span class="stat-number" id="activeSales">0</span>
-                    <span class="stat-label">เซลล์ใช้งาน</span>
-                </div>
-                <div class="stat-mini">
-                    <span class="stat-number" id="totalManagers">0</span>
-                    <span class="stat-label">ผู้จัดการ</span>
-                </div>
-            </div>
-            
-            <div id="usersTableContainer">
-                <div class="empty-state">
-                    <div class="icon">👥</div>
-                    <p>กำลังโหลดข้อมูล...</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Shops Tab -->
-        <div class="tab-content" id="tab-shops">
-            <div class="section-header">
-                <h2>รายชื่อร้านค้า</h2>
-                <button class="btn-add" onclick="openShopModal()">➕ เพิ่มร้านค้า</button>
-            </div>
-            
-            <div id="shopsTableContainer">
-                <div class="empty-state">
-                    <div class="icon">🏪</div>
-                    <p>กำลังโหลดข้อมูล...</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Permissions Tab -->
-        <div class="tab-content" id="tab-permissions">
-            <div class="section-header">
-                <h2>กำหนดสิทธิ์การเข้าถึงร้านค้า</h2>
-                <button class="btn-add" onclick="openPermissionModal()">➕ เพิ่มสิทธิ์</button>
-            </div>
-            
-            <div id="permissionsTableContainer">
-                <div class="empty-state">
-                    <div class="icon">🔐</div>
-                    <p>กำลังโหลดข้อมูล...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- User Modal -->
-    <div class="modal-overlay" id="userModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 id="userModalTitle">เพิ่มผู้ใช้ใหม่</h3>
-                <button class="modal-close" onclick="closeUserModal()">×</button>
-            </div>
-            <div class="modal-body">
-                <form id="userForm" onsubmit="saveUser(event)">
-                    <input type="hidden" id="editRowIndex">
-                    <input type="hidden" id="userId">
-                    <div class="form-group">
-                        <label>ชื่อผู้ใช้ (Username) - สำหรับ Login</label>
-                        <input type="text" id="userName" required placeholder="เช่น somchai">
-                    </div>
-                    <div class="form-group">
-                        <label>รหัสผ่าน</label>
-                        <input type="text" id="userPassword" required>
-                    </div>
-                    <div class="form-group">
-                        <label>ชื่อ-นามสกุล (แสดงใน Dashboard)</label>
-                        <input type="text" id="userDisplayName" placeholder="เช่น สมชาย ใจดี">
-                    </div>
-                    <div class="form-group">
-                        <label>ประเภทผู้ใช้</label>
-                        <select id="userType">
-                            <option value="sales">Sales (เซลล์)</option>
-                            <option value="manager">Manager (ผู้จัดการ)</option>
-                            <option value="admin">Admin (ผู้ดูแล)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>อีเมล</label>
-                        <input type="email" id="userEmailInput">
-                    </div>
-                    <div class="form-group">
-                        <label>สถานะ</label>
-                        <select id="userStatus">
-                            <option value="active">ใช้งาน</option>
-                            <option value="inactive">ไม่ใช้งาน</option>
-                        </select>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="button" class="btn-cancel" onclick="closeUserModal()">ยกเลิก</button>
-                        <button type="submit" class="btn-submit">💾 บันทึก</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-    </div>
-    
-    <div class="toast" id="toast"></div>
-    
-    <script>
-        let currentUser = null;
-        let allUsers = [];
-        let allShops = [];
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const userData = sessionStorage.getItem('user');
-            if (!userData) {
-                goToPage('login');
-                return;
-            }
-            currentUser = JSON.parse(userData);
-            
-            // Check if admin
-            if (currentUser.type !== 'admin' && currentUser.type !== 'manager') {
-                goToPage('dashboard');
-                return;
-            }
-            
-            updateUserUI();
-            loadUsers();
-            loadShops();
-            loadPermissions();
-        });
-        
-        function updateUserUI() {
-            const name = currentUser.displayName || currentUser.name;
-            document.getElementById('userEmail').textContent = name;
-            document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
-        }
-        
-        function goToPage(page) {
-            google.script.run.withSuccessHandler(function(url) {
-                window.top.location.href = url + '?page=' + page;
-            }).getBaseUrl();
-        }
-        
-        function logout() {
-            if (confirm('ต้องการออกจากระบบ?')) {
-                sessionStorage.clear();
-                goToPage('login');
-            }
-        }
-        
-        function switchTab(tabName) {
-            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            event.target.classList.add('active');
-            document.getElementById('tab-' + tabName).classList.add('active');
-        }
-        
-        // =====================================================
-        // USERS
-        // =====================================================
-        function loadUsers() {
-            showLoading(true);
-            google.script.run
-                .withSuccessHandler(function(result) {
-                    showLoading(false);
-                    if (result && result.success) {
-                        allUsers = result.users || [];
-                        renderUsersTable();
-                        updateUserStats();
-                    }
-                })
-                .withFailureHandler(function(error) {
-                    showLoading(false);
-                    showToast('ไม่สามารถโหลดข้อมูลผู้ใช้ได้', 'error');
-                })
-                .getUsers();
-        }
-        
-        function renderUsersTable() {
-            const container = document.getElementById('usersTableContainer');
-            if (allUsers.length === 0) {
-                container.innerHTML = '<div class="empty-state"><div class="icon">👥</div><p>ยังไม่มีผู้ใช้ในระบบ</p></div>';
-                return;
-            }
-            
-            let html = '<table class="data-table"><thead><tr><th>UserID</th><th>Username</th><th>ชื่อ-นามสกุล</th><th>ประเภท</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody>';
-            allUsers.forEach(function(user, index) {
-                const typeBadge = user.type === 'admin' ? 'admin' : (user.type === 'manager' ? 'manager' : 'sales');
-                const statusBadge = user.status === 'inactive' ? 'inactive' : 'active';
-                html += '<tr>';
-                html += '<td><code>' + (user.id || '-') + '</code></td>';
-                html += '<td><strong>' + (user.username || user.name || '-') + '</strong></td>';
-                html += '<td>' + (user.displayName || '-') + '</td>';
-                html += '<td><span class="badge ' + typeBadge + '">' + user.type + '</span></td>';
-                html += '<td><span class="badge ' + statusBadge + '">' + (user.status || 'active') + '</span></td>';
-                html += '<td class="action-btns">';
-                html += '<button class="btn-icon btn-edit" onclick="editUser(' + user.rowIndex + ')">✏️</button>';
-                html += '<button class="btn-icon btn-delete" onclick="deleteUser(' + user.rowIndex + ')">🗑️</button>';
-                html += '</td></tr>';
-            });
-            html += '</tbody></table>';
-            container.innerHTML = html;
-        }
-        
-        function updateUserStats() {
-            document.getElementById('totalUsers').textContent = allUsers.length;
-            document.getElementById('activeSales').textContent = allUsers.filter(u => u.type === 'sales' && u.status !== 'inactive').length;
-            document.getElementById('totalManagers').textContent = allUsers.filter(u => u.type === 'manager' || u.type === 'admin').length;
-        }
-        
-        function openUserModal() {
-            document.getElementById('userModalTitle').textContent = 'เพิ่มผู้ใช้ใหม่';
-            document.getElementById('userForm').reset();
-            document.getElementById('editRowIndex').value = '';
-            document.getElementById('userModal').classList.add('show');
-        }
-        
-        function closeUserModal() {
-            document.getElementById('userModal').classList.remove('show');
-        }
-        
-        function editUser(rowIndex) {
-            const user = allUsers.find(u => u.rowIndex === rowIndex);
-            if (!user) return;
-            
-            document.getElementById('userModalTitle').textContent = 'แก้ไขผู้ใช้';
-            document.getElementById('editRowIndex').value = rowIndex;
-            document.getElementById('userId').value = user.id || '';
-            document.getElementById('userName').value = user.username || user.name || '';
-            document.getElementById('userPassword').value = user.password || '';
-            document.getElementById('userDisplayName').value = user.displayName || '';
-            document.getElementById('userType').value = user.type || 'sales';
-            document.getElementById('userEmailInput').value = user.email || '';
-            document.getElementById('userStatus').value = user.status || 'active';
-            document.getElementById('userModal').classList.add('show');
-        }
-        
-        function saveUser(e) {
-            e.preventDefault();
-            const rowIndex = document.getElementById('editRowIndex').value;
-            const userData = {
-                username: document.getElementById('userName').value,
-                password: document.getElementById('userPassword').value,
-                displayName: document.getElementById('userDisplayName').value,
-                type: document.getElementById('userType').value,
-                email: document.getElementById('userEmailInput').value,
-                status: document.getElementById('userStatus').value
-            };
-            
-            showLoading(true);
-            if (rowIndex) {
-                google.script.run
-                    .withSuccessHandler(function(result) {
-                        showLoading(false);
-                        if (result.success) {
-                            closeUserModal();
-                            showToast('อัพเดทสำเร็จ', 'success');
-                            loadUsers();
-                        } else {
-                            showToast(result.message || 'เกิดข้อผิดพลาด', 'error');
-                        }
-                    })
-                    .updateUser(parseInt(rowIndex), userData);
-            } else {
-                google.script.run
-                    .withSuccessHandler(function(result) {
-                        showLoading(false);
-                        if (result.success) {
-                            closeUserModal();
-                            showToast('เพิ่มผู้ใช้สำเร็จ (UserID: ' + result.userId + ')', 'success');
-                            loadUsers();
-                        } else {
-                            showToast(result.message || 'เกิดข้อผิดพลาด', 'error');
-                        }
-                    })
-                    .addUser(userData);
-            }
-        }
-        
-        function deleteUser(rowIndex) {
-            if (!confirm('ต้องการลบผู้ใช้นี้?')) return;
-            showLoading(true);
-            google.script.run
-                .withSuccessHandler(function(result) {
-                    showLoading(false);
-                    if (result.success) {
-                        showToast('ลบสำเร็จ', 'success');
-                        loadUsers();
-                    }
-                })
-                .deleteUser(rowIndex);
-        }
-        
-        // =====================================================
-        // SHOPS
-        // =====================================================
-        function loadShops() {
-            google.script.run
-                .withSuccessHandler(function(result) {
-                    if (result && result.success) {
-                        allShops = result.shops || [];
-                        renderShopsTable();
-                    }
-                })
-                .getShops();
-        }
-        
-        function renderShopsTable() {
-            const container = document.getElementById('shopsTableContainer');
-            if (allShops.length === 0) {
-                container.innerHTML = '<div class="empty-state"><div class="icon">🏪</div><p>ยังไม่มีร้านค้าในระบบ</p></div>';
-                return;
-            }
-            
-            let html = '<table class="data-table"><thead><tr><th>รหัส</th><th>ชื่อร้าน</th><th>เขต</th><th>ที่อยู่</th></tr></thead><tbody>';
-            allShops.forEach(function(shop) {
-                html += '<tr>';
-                html += '<td>' + (shop.id || '-') + '</td>';
-                html += '<td><strong>' + (shop.name || '-') + '</strong></td>';
-                html += '<td>' + (shop.zone || '-') + '</td>';
-                html += '<td>' + (shop.address || '-') + '</td>';
-                html += '</tr>';
-            });
-            html += '</tbody></table>';
-            container.innerHTML = html;
-        }
-        
-        // =====================================================
-        // PERMISSIONS
-        // =====================================================
-        function loadPermissions() {
-            google.script.run
-                .withSuccessHandler(function(result) {
-                    if (result && result.success) {
-                        renderPermissionsTable(result.permissions || []);
-                    }
-                })
-                .getPermissions();
-        }
-        
-        function renderPermissionsTable(permissions) {
-            const container = document.getElementById('permissionsTableContainer');
-            if (permissions.length === 0) {
-                container.innerHTML = '<div class="empty-state"><div class="icon">🔐</div><p>ยังไม่มีการกำหนดสิทธิ์</p></div>';
-                return;
-            }
-            
-            let html = '<table class="data-table"><thead><tr><th>ผู้ใช้</th><th>รหัสร้าน</th><th>ชื่อร้าน</th></tr></thead><tbody>';
-            permissions.forEach(function(perm) {
-                html += '<tr>';
-                html += '<td>' + (perm.user || '-') + '</td>';
-                html += '<td>' + (perm.shopId || '-') + '</td>';
-                html += '<td>' + (perm.shopName || '-') + '</td>';
-                html += '</tr>';
-            });
-            html += '</tbody></table>';
-            container.innerHTML = html;
-        }
-        
-        // =====================================================
-        // UTILS
-        // =====================================================
-        function showLoading(show) {
-            document.getElementById('loadingOverlay').classList.toggle('show', show);
-        }
-        
-        function showToast(msg, type) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.className = 'toast show ' + (type || '');
-            setTimeout(() => t.classList.remove('show'), 3000);
-        }
-    </script>
+
+<div class="topbar">
+  <strong>EABaseHub | Admin</strong>
+  <a href="index.html" style="color:white;">Logout</a>
+</div>
+
+<div class="container">
+
+  <div class="header">
+    <h2>จัดการผู้ใช้และสิทธิ์</h2>
+    <a href="admin-user.html" class="tab active">➕ เพิ่มผู้ใช้</a>
+  </div>
+
+  <div class="tabs">
+    <a class="tab active" href="admin.html">ผู้ใช้งาน</a>
+    <a class="tab" href="admin-sales.html">Sales</a>
+    <a class="tab" href="admin-shop.html">ร้านค้า</a>
+  </div>
+
+  <div class="table-box">
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Username</th>
+          <th>ชื่อที่แสดง</th>
+          <th>สถานะ</th>
+          <th>บทบาท</th>
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>tonteuy55@gmail.com</td>
+          <td>tonteuy</td>
+          <td>นฤมล</td>
+          <td><span class="badge active">Active</span></td>
+          <td>Sales</td>
+          <td class="action">
+            <a class="edit" href="admin-user-edit.html?id=tonteuy">แก้ไข</a>
+            <a class="delete" href="#">ลบ</a>
+          </td>
+        </tr>
+
+        <tr>
+          <td>mkreport2026@gmail.com</td>
+          <td>adminmk</td>
+          <td>Admin Marketing</td>
+          <td><span class="badge active">Active</span></td>
+          <td>Admin</td>
+          <td class="action">
+            <a class="edit" href="admin-user-edit.html?id=adminmk">แก้ไข</a>
+            <a class="delete" href="#">ลบ</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
 </body>
 </html>

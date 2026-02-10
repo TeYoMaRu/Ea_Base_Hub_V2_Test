@@ -1,272 +1,366 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <base target="_top">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EABaseHub - รายงาน</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+  <!-- =====================================================
+       BASIC META
+       ===================================================== -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EABaseHub - Report Management</title>
 
- <style>
-  body {
-    font-family: kanit;
-    padding: 20px;
-  }
+  <!-- =====================================================
+       FONT
+       ===================================================== -->
+  <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
 
-  input, button {
-    padding: 6px;
-    margin: 4px 0;
-  }
+  <!-- =====================================================
+       STYLE (รวมทั้งหน้า เพื่อให้ง่ายต่อการดูแล)
+       ===================================================== -->
+  <style>
+    /* =====================================================
+       BASE STYLE
+       ===================================================== */
+    * {
+      box-sizing: border-box;
+    }
 
-  table {
-    border-collapse: collapse;
-    margin-top: 10px;
-  }
+    body {
+      margin: 0;
+      font-family: 'Kanit', sans-serif;
+      background: #f4f6f8;
+      color: #333;
+    }
 
-  th {
-    background: #f0f0f0;
-  }
-</style>
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
 
+    /* =====================================================
+       STICKY HEADER (แถบบนสุด)
+       ===================================================== */
+    .app-header {
+      position: sticky;      /* ทำให้ header ติดบน */
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .logo {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .user-name {
+      font-size: 13px;
+      color: #555;
+    }
+
+    /* =====================================================
+       STICKY NAVIGATION (เมนู)
+       ===================================================== */
+    .app-nav {
+      position: sticky;      /* ติดใต้ header */
+      top: 56px;             /* ความสูง header */
+      z-index: 999;
+      display: flex;
+      gap: 12px;
+      padding: 10px 20px;
+      background: #f7f7f7;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .app-nav a {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #333;
+    }
+
+    .app-nav a:hover {
+      background: #eaeaea;
+    }
+
+    .app-nav a.active {
+      background: #1976d2;
+      color: #fff;
+    }
+
+    /* =====================================================
+       PAGE HEADER (ชื่อหน้า)
+       ===================================================== */
+    .page-header {
+      background: #ffffff;
+      padding: 24px 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .page-header h1 {
+      margin: 0 0 6px;
+      font-size: 22px;
+    }
+
+    .page-header p {
+      margin: 0;
+      font-size: 13px;
+      color: #666;
+    }
+
+    /* =====================================================
+       MAIN CONTAINER
+       ===================================================== */
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    /* =====================================================
+       SECTION / CARD
+       ===================================================== */
+    .section {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 14px rgba(0,0,0,.08);
+    }
+
+    .section h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    /* =====================================================
+       FORM LAYOUT
+       ===================================================== */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group.full {
+      grid-column: span 4;
+    }
+
+    label {
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: #555;
+    }
+
+    input, select, textarea {
+      padding: 8px;
+      font-family: inherit;
+    }
+
+    /* =====================================================
+       ACTION BUTTONS
+       ===================================================== */
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-draft {
+      background: #fbc02d;
+    }
+
+    .btn-save {
+      background: #4caf50;
+      color: #fff;
+    }
+
+    /* =====================================================
+       TABLE
+       ===================================================== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      background: #f7f7f7;
+    }
+
+    /* =====================================================
+       FOOTER
+       ===================================================== */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+      padding: 16px;
+    }
+  </style>
 </head>
 
 <body>
-  <nav>
-  <a href="index.html">HOME</a> |
-  <a href="reports.html">Report</a>|
-  <a href="claim.html">แจ้งเคลม</a> |
-  <a href="trips.html">Trip</a> |
-  <a href="reports.html">Report</a>
-</nav>
+
+<!-- =====================================================
+     APP HEADER (ติดบน)
+     ===================================================== -->
+<header class="app-header">
+  <div class="logo">🌳 EABaseHub</div>
+  <div class="user-name">ผู้ใช้งาน</div>
+</header>
+
+<!-- =====================================================
+     NAVIGATION (ติดบน)
+     ===================================================== -->
+<nav class="app-nav">
+    <a href="index.html">หน้าแรก</a>
+    <a href="report.html" class="active">รายงานเยี่ยมร้านค้า</a>
+    <a href="formsHub.html">FormsHub</a>      
+    <a href="formClaim.html">แจ้งเคลมสินค้า</a>
  
+</nav>
 
+<!-- =====================================================
+     PAGE TITLE
+     ===================================================== -->
+<header class="page-header">
+  <h1>📋 Report Management</h1>
+  <p>กรอกข้อมูล • บันทึก • จัดการ • ส่งออก</p>
+</header>
 
-<body>
-    <div class="container">
-       
+<!-- =====================================================
+     MAIN CONTENT
+     ===================================================== -->
+<main class="container">
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Header -->
-            <header class="header">
-                <div class="page-title">
-                    <h1>📋 รายงานการเยี่ยม</h1>
-                    <p>จัดการและติดตามรายงานทั้งหมด</p>
-                </div>
-                <div class="header-right">
-                    <button class="btn-export" onclick="exportReports()">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                        ส่งออก
-                    </button>
-                    <button class="btn-add" onclick="openAddReportModal()">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                        เพิ่มรายงาน
-                    </button>
-                    <div class="user-info" onclick="toggleUserMenu()">
-                        <div class="user-avatar" id="userAvatar">?</div>
-                        <span id="userEmail">Loading...</span>
-                        <div class="user-menu" id="userMenu">
-                            <div class="user-menu-item" onclick="logout()">ออกจากระบบ</div>
-                        </div>
-                    </div>
-                </div>
-            </header>
+  <!-- ===== A: FORM INPUT ===== -->
+  <div class="section">
+    <h2>📝 กรอกข้อมูลรายงาน</h2>
 
-            <!-- Filters Section -->
-            <div class="filters-section">
-                <div class="filter-group">
-                    <label>วันที่เริ่มต้น</label>
-                    <input type="date" id="filterStartDate" onchange="applyFilters()">
-                </div>
-                <div class="filter-group">
-                    <label>วันที่สิ้นสุด</label>
-                    <input type="date" id="filterEndDate" onchange="applyFilters()">
-                </div>
-                <div class="filter-group" id="salesFilterGroup">
-                    <label>เซลล์</label>
-                    <select id="filterSales" onchange="applyFilters()">
-                        <option value="">ทั้งหมด</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>สถานะ</label>
-                    <select id="filterStatus" onchange="applyFilters()">
-                        <option value="">ทั้งหมด</option>
-                        <option value="รอดำเนินการ">รอดำเนินการ</option>
-                        <option value="กำลังดำเนินการ">กำลังดำเนินการ</option>
-                        <option value="สำเร็จ">สำเร็จ</option>
-                        <option value="ยกเลิก">ยกเลิก</option>
-                    </select>
-                </div>
-                <button class="btn-clear-filter" onclick="clearFilters()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                    ล้าง
-                </button>
-            </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>วันที่</label>
+        <input type="date">
+      </div>
 
-            
-            <!-- Reports Table -->
-            <div class="table-container">
-                <div class="table-header">
-                    <div class="table-search">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#999"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                        <input type="text" id="tableSearch" placeholder="ค้นหาร้านค้า, สินค้า..." onkeyup="searchTable()">
-                    </div>
-                    <div class="table-actions">
-                        <span id="selectedCount" style="display:none;">เลือก 0 รายการ</span>
-                        <button class="btn-bulk-action" id="bulkActionBtn" style="display:none;" onclick="showBulkActions()">
-                            ดำเนินการ ▼
-                        </button>
-                    </div>
-                </div>
+      <div class="form-group">
+        <label>ร้านค้า</label>
+        <select></select>
+      </div>
 
-                <table class="reports-table">
-                    <thead>
-                        <tr>
-                            <th class="checkbox-col">
-                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
-                            </th>
-                            <th>วันที่</th>
-                            <th>เซลล์</th>
-                            <th>ร้านค้า</th>
-                            <th>สินค้า</th>
-                            <th>ยอด</th>
-                            <th>แหล่งที่มา</th>
-                            <th>สถานะ</th>
-                            <th>จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reportsTableBody">
-                        <tr class="empty-row">
-                            <td colspan="9">
-                                <div class="empty-state">
-                                    <svg width="64" height="64" viewBox="0 0 24 24" fill="#ccc"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-                                    <p>กำลังโหลดข้อมูล...</p>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+      <div class="form-group">
+        <label>หมวดสินค้า</label>
+        <select></select>
+      </div>
 
-                <div class="table-footer">
-                    <div class="pagination-info">
-                        แสดง <span id="showingFrom">0</span> - <span id="showingTo">0</span> จาก <span id="totalItems">0</span> รายการ
-                    </div>
-                    <div class="pagination" id="pagination">
-                        <!-- Pagination will be added by JavaScript -->
-                    </div>
-                </div>
-            </div>
-        </main>
+      <div class="form-group">
+        <label>สินค้า</label>
+        <select></select>
+      </div>
+
+      <div class="form-group">
+        <label>แหล่งที่มา</label>
+        <select>
+          <option>Walk-in</option>
+          <option>LINE</option>
+          <option>Facebook</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>สถานะ</label>
+        <select>
+          <option>เยี่ยมแล้ว</option>
+          <option>รอติดตาม</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>ยอดสั่งซื้อ (บาท)</label>
+        <input type="number">
+      </div>
+
+      <div class="form-group">
+        <label>วันที่ติดตาม</label>
+        <input type="date">
+      </div>
+
+      <div class="form-group full">
+        <label>หมายเหตุ</label>
+        <textarea rows="3"></textarea>
+      </div>
     </div>
 
-    <!-- Add/Edit Report Modal -->
-    <div class="modal-overlay" id="reportModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 id="modalTitle">เพิ่มรายงานการเยี่ยม</h3>
-                <button class="modal-close" onclick="closeReportModal()">&times;</button>
-            </div>
-            <form id="reportForm" onsubmit="submitReport(event)">
-                <input type="hidden" id="editRowIndex">
-                
-                <!-- วันที่ -->
-                <div class="form-group">
-                    <label>วันที่เยี่ยม *</label>
-                    <input type="date" id="reportDate" required>
-                </div>
-                
-                <!-- ร้านค้า -->
-                <div class="form-group">
-                    <label>ร้านค้า *</label>
-                    <select id="reportShop" required>
-                        <option value="">-- เลือกร้านค้า --</option>
-                    </select>
-                </div>
-                
-                <!-- หมวดสินค้า + สินค้า (Cascading) -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>หมวดสินค้า *</label>
-                        <select id="reportCategory" required onchange="onCategoryChange()">
-                            <option value="">-- เลือกหมวด --</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>สินค้า *</label>
-                        <select id="reportProduct" required disabled>
-                            <option value="">-- เลือกหมวดก่อน --</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>แหล่งที่มา</label>
-                        <select id="reportSource">
-                            <option value="Walk-in">Walk-in (เข้าพบ)</option>
-                            <option value="LINE">LINE</option>
-                            <option value="Facebook">Facebook</option>
-                            <option value="โทรศัพท์">โทรศัพท์</option>
-                            <option value="แนะนำ">แนะนำ</option>
-                            <option value="อื่นๆ">อื่นๆ</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>สถานะ</label>
-                        <select id="reportStatus">
-                            <option value="เยี่ยมแล้ว">เยี่ยมแล้ว</option>
-                            <option value="มีออเดอร์">มีออเดอร์</option>
-                            <option value="รอติดตาม">รอติดตาม</option>
-                            <option value="ยกเลิก">❌ ยกเลิก</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>ยอดสั่งซื้อ (บาท) <small style="color:#888">- ถ้ามี</small></label>
-                        <input type="number" id="reportAmount" placeholder="0 (ไม่จำเป็น)" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>วันที่ติดตาม</label>
-                        <input type="date" id="reportFollowUp">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>📝 หมายเหตุ / รายละเอียดการเยี่ยม</label>
-                    <textarea id="reportNote" placeholder="บันทึกรายละเอียด เช่น พูดคุยเรื่องอะไร, ลูกค้าสนใจอะไร..." rows="4"></textarea>
-                </div>
-                
-                <div class="modal-actions">
-                    <button type="button" class="btn-secondary" onclick="closeReportModal()">ยกเลิก</button>
-                    <button type="submit" class="btn-primary">💾 บันทึก</button>
-                </div>
-            </form>
-        </div>
+    <div class="actions">
+      <button class="btn-draft">💾 Save Draft</button>
+      <button class="btn-save">✅ บันทึก</button>
     </div>
+  </div>
 
-    <!-- Bulk Actions Menu -->
-    <div class="bulk-menu" id="bulkMenu">
-        <div class="bulk-menu-item" onclick="bulkUpdateStatus('กำลังดำเนินการ')">⏳ กำลังดำเนินการ</div>
-        <div class="bulk-menu-item" onclick="bulkUpdateStatus('สำเร็จ')">✅ สำเร็จ</div>
-        <div class="bulk-menu-item" onclick="bulkUpdateStatus('ยกเลิก')">❌ ยกเลิก</div>
-        <div class="bulk-menu-divider"></div>
-        <div class="bulk-menu-item danger" onclick="bulkDelete()">🗑️ ลบรายการที่เลือก</div>
+  <!-- ===== B+C: RESULT TABLE ===== -->
+  <div class="section">
+    <h2>📋 รายการรายงาน</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>วันที่</th>
+          <th>ร้านค้า</th>
+          <th>สินค้า</th>
+          <th>ยอด</th>
+          <th>สถานะ</th>
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="6">ยังไม่มีข้อมูล</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== D: EXPORT ===== -->
+  <div class="section">
+    <h2>📤 ส่งออกข้อมูล</h2>
+    <div class="actions">
+      <button>Export CSV</button>
+      <button>Export Excel</button>
+      <button>Export PDF</button>
     </div>
+  </div>
 
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-        <p>กำลังโหลดข้อมูล...</p>
-    </div>
+</main>
 
-   
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+<footer class="footer">
+  © 2026 EABaseHub
+</footer>
 
-
-
-<script src="report.js"></script>
 </body>
 </html>

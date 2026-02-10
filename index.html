@@ -6,6 +6,7 @@
          ========================= -->
     <meta charset="UTF-8" />
     <title>Home</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- =========================
@@ -40,11 +41,14 @@
          SIDEBAR
          ========================= */
       .sidebar {
-        width: 260px;
+        width: 250px;
         background: #dff3e3;
         padding: 20px;
         border-radius: 24px;
         margin: 16px;
+        display: flex;
+        flex-direction: column;
+        height: calc(95vh - 22px); /* 100vh - margin บนล่าง */
       }
 
       /* =========================
@@ -245,6 +249,7 @@
         min-height: 140px;
         display: flex;
         flex-direction: column;
+        align-items: center;
         justify-content: center;
       }
 
@@ -328,6 +333,94 @@
         justify-content: center;
         margin: 0 auto 10px;
       }
+
+       .calendar-card {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+        
+        .calendar-header h4 {
+            font-size: 13px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .calendar-nav button {
+            width: 24px;
+            height: 24px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            color: #4caf50;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            text-align: center;
+            flex: 1;
+            align-content: start;
+        }
+        
+        .calendar-day-header {
+            font-size: 10px;
+            color: #999;
+            padding: 4px 0;
+            font-weight: 500;
+        }
+        
+        .calendar-day {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #333;
+            margin: 0 auto;
+        }
+        
+        .calendar-day:hover { background: #e8f5e9; }
+        .calendar-day.today { background: #4caf50; color: white; font-weight: 600; }
+        .calendar-day.has-report { background: #c8e6c9; color: #2e7d32; font-weight: 500; }
+        .calendar-day.other-month { color: #ccc; }
+        
+        .forms-hub-btn {
+            background: linear-gradient(135deg, #fff9c4, #fff176);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            width: 100%;
+            font-family: 'Kanit', sans-serif;
+            flex-shrink: 0;
+        }
+        
 
       /* =========================
           Forms Hub Card
@@ -509,6 +602,95 @@
           color: #777;
         }
 
+
+        /* =========================
+          Open Shop Card (ซ้ายล่าง)
+          ========================= */
+        .open-shop-card {
+          background: #f3c892;
+          border-radius: 16px;
+          padding: 16px;
+          text-align: center;
+          cursor: pointer;
+          transition: transform .2s, box-shadow .2s;
+          margin-top: auto;
+        }
+
+        .open-shop-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 4px 10px rgba(0,0,0,.12);
+        }
+
+        .open-shop-icon {
+          font-size: 34px;
+          margin-bottom: 8px;
+        }
+
+        .open-shop-card h4 {
+          margin: 6px 0 4px;
+          font-size: 15px;
+          color: #6b4b00;
+        }
+
+        .open-shop-card p {
+          margin: 0;
+          font-size: 12px;
+          color: #6b4b00;
+          opacity: .8;
+        }
+
+        .open-shop-badge {
+          display: inline-block;
+          margin-top: 10px;
+          background: #fff;
+          padding: 6px 14px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 500;
+        }
+/*“has-report” เป็นจุดสี (สวยขึ้น)*/
+        .calendar-day.has-report {
+  position: relative;
+  font-weight: 600;
+}
+
+.calendar-day.has-report::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: #2e7d32;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* =========================
+   LOGOUT BUTTON
+   ========================= */
+.logout-btn {
+  background: #f44336;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.logout-btn:hover {
+  background: #d32f2f;
+}
+
+.logout-btn:active {
+  transform: scale(0.95);
+}
+
+
+
         /* =========================
           NOTEBOOK (≤1200px)
           ========================= */
@@ -564,6 +746,8 @@
           gap: 10px;
           border-radius: 24px;
           margin: 16px;
+          flex-direction: column;
+          height: calc(100vh - 32px); /* ลบ margin บนล่างออก */
         }
 
         /* แสดง hamburger */
@@ -634,16 +818,30 @@
       </div>
 
 
+   
+
         <!-- เมนูหลัก -->
         <nav class="menu">
-          <a class="menu-item active" href="#">HOME</a>
-          <a class="menu-item" href="report.html">เขียนใบรายงาน</a>
-          <a class="menu-item" href="trip.html">ร้านค้าของฉัน</a>
-          <a class="menu-item disabled" href="#">Coming Soon</a>
-          <a class="menu-item disabled" href="#">Coming Soon</a>
+          <a class="menu-item active" href="#">หน้าแรก</a>
+          <a class="menu-item" href="report.html">เขียนรายงานเยี่ยมร้านค้า</a>
+          <a class="menu-item" href="shop.html">ร้านค้าของฉัน</a>
+          <a class="menu-item" href="formClaim.html">แจ้งเคลมสินค้า</a>
+          <a class="menu-item" href="formHub.html">แบบฟอร์มต่างๆ</a>
+          
         </nav>
-      </aside>
+        <!-- =========================
+              Open Shop Card
+              ========================= -->
+          <div class="open-shop-card" onclick="openShopModal()">
+            <div class="open-shop-icon">🏪</div>
+            <h4>เพิ่ม / เปิดร้านค้า</h4>
+            <p>ลงทะเบียนร้านค้าใหม่</p>
+            <span class="open-shop-badge">เปิดฟอร์ม</span>
+          </div>
 
+      </aside>
+      
+      
       <!-- =========================
            CONTENT
            ========================= -->
@@ -659,7 +857,16 @@
                 <h2>สวัสดี : นฤมล มูลละหัตร์</h2>
                 <p class="subtext">ยินดีต้อนรับเข้าสู่ระบบ</p>
               </div>
+
+              <!-- กลุ่ม user + logout -->
+            <div style="display:flex; align-items:center; gap:10px;">
               <div class="user-badge">Loremipsum@Lorem.sum</div>
+
+              <!-- ปุ่ม Logout -->
+              <button class="logout-btn" onclick="logout()">
+                ออกจากระบบ
+              </button>
+            </div>
             </header>
 
             <!-- 2. Cards summary -->
@@ -685,11 +892,29 @@
             
 
             <!-- 3. Action cards (เขียนรายงาน / เพิ่มลูกค้า / แจ้งเคลม) -->
+             <!-- MAIN CONTENT -->
             <div class="actions">
-              <a href="report.html" class="action-card theme-green">เขียนรายงาน</a>
-              <a href="trip.html" class="action-card theme-yellow">ฟอร์ม</a>
-              <a href="claim.html" class="action-card theme-pink">แจ้งเคลม
-                <div class="badge">Coming Soon</div>
+              <a href="report.html" class="action-card theme-green">
+              <i class="material-icons">edit_document</i>
+              <h3>เขียนรายงาน</h3>
+              <p>บันทึกการเยี่ยมร้านลูกค้า</p>
+            </a>
+
+              <!-- ปุ่มเปิด Forms Hub -->
+            <!-- <button onclick="openFormsMenuModal()">📋 เปิด Forms Hub</button> -->
+
+              <a href="formHub.html" class="action-card theme-yellow">
+              <i class="material-icons">assignment_add</i>
+              <h3>ฟอร์ม Forms Hub</h3>
+              <p>แบบฟอร์มเบิกค่าใช้จ่าย</p>
+            </a>
+
+
+              <a href="formClaim.html" class="action-card theme-pink">
+                <i class="material-icons">error</i>
+                <h3>แจ้งเคลมสินค้า</h3>
+                <p>แจ้งเคลมสินค้ามีปัญหา</p>
+              <!-- <div class="badge">Coming Soon</div> -->
               </a>
               
             </div>
@@ -729,9 +954,19 @@
             </div>
             <!-- Calendar -->
             <div class="calendar-card">
-            <h4>ปฏิทิน</h4>
-            <p class="calendar-note">Coming Soon</p>
-          </div>
+  <div class="calendar-header">
+    <h4 id="calendarTitle">ปฏิทิน</h4>
+    <div class="calendar-nav">
+      <button onclick="prevMonth()">◀</button>
+      <button onclick="nextMonth()">▶</button>
+    </div>
+  </div>
+
+  <div class="calendar-grid" id="calendarGrid">
+    <!-- JS จะสร้างวันให้ -->
+  </div>
+</div>
+
           </aside>
           <!-- =========================
               Forms Hub (Coming Soon)
@@ -748,7 +983,10 @@
               แบบฟอร์มเดินทางจริง<br />
               และเคลียร์ค่าใช้จ่าย 2
             </button>
-          </div>        
+          </div>
+          
+          
+
       
 
 

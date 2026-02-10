@@ -31,7 +31,7 @@
   <nav>
   <a href="index.html">หน้าแรก</a> |
   <a href="claim.html">Claim</a> |
-  <a href="trip.html">Trip</a> |
+  <a href="form_plan.html">Trip</a> |
   <a href="report.html">Report</a>
 </nav>
 <hr>

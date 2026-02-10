@@ -187,6 +187,139 @@ const progressFill = document.getElementById("reportProgress");
 if (progressFill) {
   progressFill.style.width = progressPercent + "%";
 }
+//เปดร้านค้า
+function openShopModal() {
+  alert('เปิดฟอร์มเพิ่มร้านค้า (เดี๋ยวทำหน้าฟอร์มต่อได้)');
+}
+
+//calendar
+// =========================
+// วันที่ที่มีรายงาน (YYYY-MM-DD)
+// =========================
+const reportDates = [
+  "2026-02-01",
+  "2026-02-05",
+  "2026-02-09", // วันนี้ตามรูปคุณ
+  "2026-02-12"
+];
+
+let currentDate = new Date();
+let selectedDate = null;
+
+function renderCalendar() {
+  const grid = document.getElementById("calendarGrid");
+  const title = document.getElementById("calendarTitle");
+  grid.innerHTML = "";
+
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  // ชื่อเดือนภาษาไทย
+  const monthNames = [
+    "มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน",
+    "กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"
+  ];
+  title.textContent = `${monthNames[month]} ${year}`;
+
+  // วันแรกของเดือน
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  // หัวตารางวัน
+  const dayHeaders = ["อา","จ","อ","พ","พฤ","ศ","ส"];
+  dayHeaders.forEach(d => {
+    const el = document.createElement("div");
+    el.className = "calendar-day-header";
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  // ช่องว่างก่อนวันแรก
+  for (let i = 0; i < firstDay; i++) {
+    const empty = document.createElement("div");
+    grid.appendChild(empty);
+  }
+
+  // วันในเดือน
+  for (let day = 1; day <= daysInMonth; day++) {
+  const dateEl = document.createElement("div");
+  dateEl.className = "calendar-day";
+  dateEl.textContent = day;
+
+  const dateStr =
+    `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+  // 🔴 ถ้ามีรายงาน → ใส่ class
+  if (reportDates.includes(dateStr)) {
+    dateEl.classList.add("has-report");
+  }
+
+  // วันนี้
+  const today = new Date();
+  if (
+    day === today.getDate() &&
+    month === today.getMonth() &&
+    year === today.getFullYear()
+  ) {
+    dateEl.classList.add("today");
+  }
+
+  dateEl.onclick = () => selectDate(year, month, day, dateEl);
+  grid.appendChild(dateEl);
+}
+
+}
+
+function selectDate(year, month, day, el) {
+  document.querySelectorAll(".calendar-day").forEach(d =>
+    d.classList.remove("selected")
+  );
+
+  el.classList.add("selected");
+
+  const dateStr =
+    `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+  if (reportDates.includes(dateStr)) {
+    console.log("📄 วันนี้มีรายงาน:", dateStr);
+    // ต่อยอด: กรองรายงาน / เปิด modal
+  } else {
+    console.log("ไม่มีรายงาน:", dateStr);
+  }
+}
+
+
+function prevMonth() {
+  currentDate.setMonth(currentDate.getMonth() - 1);
+  renderCalendar();
+}
+
+function nextMonth() {
+  currentDate.setMonth(currentDate.getMonth() + 1);
+  renderCalendar();
+}
+
+// โหลดครั้งแรก
+renderCalendar();
+
+/* =================================================
+   LOGOUT
+   -------------------------------------------------
+   - ล้างข้อมูล session / localStorage
+   - กลับหน้า login
+================================================= */
+function logout() {
+  if (!confirm("ต้องการออกจากระบบใช่หรือไม่?")) return;
+
+  // ตัวอย่างล้างข้อมูล (ปรับตามที่คุณใช้จริง)
+  localStorage.removeItem("user");
+  sessionStorage.clear();
+
+  // กลับหน้า login
+  window.location.href = "login.html";
+}
+
+
 
 
 // Debug

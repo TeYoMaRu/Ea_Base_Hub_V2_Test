@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <!-- =====================================================
+       BASIC META
+       ===================================================== -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trip</title>
+
+  <!-- =====================================================
+       STYLE (รวมทั้งหน้า – อ่านง่าย แก้ต่อสะดวก)
+       ===================================================== -->
+  <style>
+    /* ================= BASE ================= */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #f4f6f8;
+      color: #333;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ================= STICKY HEADER ================= */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #ffffff;
+      border-bottom: 1px solid #ddd;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .user {
+      font-size: 13px;
+      color: #555;
+    }
+
+    /* ================= STICKY NAV ================= */
+    .app-nav {
+      position: sticky;
+      top: 52px; /* ความสูง header */
+      z-index: 999;
+      background: #f0f0f0;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .app-nav a {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .app-nav a:hover {
+      background: #e0e0e0;
+    }
+
+    .app-nav a.active {
+      background: #1976d2;
+      color: #fff;
+    }
+
+    /* ================= PAGE ================= */
+    .page {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    /* ================= FORM ================= */
+    label {
+      display: inline-block;
+      width: 120px;
+      margin-top: 6px;
+      font-size: 13px;
+    }
+
+    input, button {
+      padding: 6px;
+      margin: 4px 6px 4px 0;
+    }
+
+    /* ================= SECTION ================= */
+    .section {
+      background: #fff;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.08);
+    }
+
+    /* ================= TABLE ================= */
+    table {
+      border-collapse: collapse;
+      margin-top: 10px;
+      width: 100%;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: #f0f0f0;
+    }
+
+    /* ================= ACTION ================= */
+    .actions {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     HEADER (ติดบน)
+     ===================================================== -->
+<header class="app-header">
+  <div class="logo">🌳 EABaseHub</div>
+  <div class="user">ผู้ใช้งาน</div>
+</header>
+
+<!-- =====================================================
+     NAVIGATION (ติดบน)
+     ===================================================== -->
+<nav class="app-nav">
+  <a href="index.html">หน้าแรก</a>
+  <a href="report.html">รายงานเยี่ยมร้านค้า</a>
+  <a href="formPlan.html" class="active">ฟอร์ม ๑</a>
+  <a href="formActual.html">ฟอร์ม ๒</a>
+</nav>
+
+
+<!-- =====================================================
+     MAIN PAGE
+     ===================================================== -->
+<div class="page">
+
+  <!-- ================= TITLE ================= -->
+  <h1>ฟอร์มแผนการเดินทางและเบิกจ่าย ๑ (Trip)</h1>
+
+  <!-- ================= SECTION: ข้อมูลหลัก ================= -->
+  <div class="section">
+    <h3>ข้อมูลพนักงาน / ช่วงเวลา</h3>
+
+    <div>
+      <label for="empName">พนักงานขาย</label>
+      <input id="empName" placeholder="ชื่อพนักงานขาย">
+
+      <label for="zone">เขตการขาย</label>
+      <input id="zone" placeholder="เขตการขาย">
+    </div>
+
+    <div>
+      <label for="startDate">ระหว่างวันที่</label>
+      <input type="date" id="startDate">
+
+      <label for="endDate">ถึงวันที่</label>
+      <input type="date" id="endDate">
+    </div>
+  </div>
+
+  <!-- ================= SECTION: ข้อมูลทริป ================= -->
+  <div class="section">
+    <h3>รายละเอียดทริป</h3>
+
+    <div>
+      <label for="tripDate">วันที่</label>
+      <input type="date" id="tripDate">
+
+      <label for="from">เดินทางจาก</label>
+      <input id="from" placeholder="จังหวัดต้นทาง">
+
+      <label for="to">ไปจังหวัด</label>
+      <input id="to" placeholder="จังหวัดปลายทาง">
+    </div>
+
+    <div>
+      <label for="shop1">ร้านค้า 1</label>
+      <input id="shop1">
+
+      <label for="shop2">ร้านค้า 2</label>
+      <input id="shop2">
+
+      <label for="shop3">ร้านค้า 3</label>
+      <input id="shop3">
+
+      <label for="cost">ค่าใช้จ่าย</label>
+      <input type="number" id="cost" placeholder="บาท">
+    </div>
+
+    <div class="actions">
+      <button onclick="addTrip()">➕ เพิ่มทริป</button>
+    </div>
+  </div>
+
+  <!-- ================= SECTION: ตารางแสดงผล ================= -->
+  <div class="section">
+    <h3>รายการทริป</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ลำดับ</th>
+          <th>วันที่</th>
+          <th>เดินทางจาก</th>
+          <th>ไปจังหวัด</th>
+          <th>ร้านค้า 1</th>
+          <th>ร้านค้า 2</th>
+          <th>ร้านค้า 3</th>
+          <th>ค่าใช้จ่าย</th>
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody id="tripBody"></tbody>
+    </table>
+  </div>
+
+  <!-- ================= SECTION: สรุปค่าใช้จ่าย ================= -->
+  <div class="section">
+    <h3>สรุปแผนการเดินทางและเบิกจ่าย</h3>
+
+    <div>
+      <label>ค่าใช้จ่าย</label>
+      <input type="number"> <span>ต่อวัน</span>
+
+      <label>จำนวน</label>
+      <input type="number"> <span>วัน</span>
+    </div>
+
+    <div>
+      <label>ค่าที่พัก</label>
+      <input type="number"> <span>ต่อวัน</span>
+
+      <label>ค่าใช้จ่ายอื่นๆ</label>
+      <input type="number"> <span>บาท</span>
+    </div>
+
+    <div>
+      <label>รวมเบิก</label>
+      <input type="number"> <span>บาท</span>
+    </div>
+
+    <div class="actions">
+      <button onclick="exportTrips()">📤 Export CSV</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- =====================================================
+     SCRIPT
+     ===================================================== -->
+<script src="trip.js"></script>
+
+</body>
+</html>

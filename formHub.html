@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forms Hub</title>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+/* ================= BASE ================= */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f4f6f8;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* ================= STICKY HEADER ================= */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #ffffff;
+  border-bottom: 1px solid #ddd;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-header .logo {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* ================= STICKY NAV ================= */
+.app-nav {
+  position: sticky;
+  top: 52px;
+  z-index: 999;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.app-nav a {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.app-nav a:hover {
+  background: #e0e0e0;
+}
+
+.app-nav a.active {
+  background: #1976d2;
+  color: #fff;
+}
+
+/* ================= CONTAINER ================= */
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 24px 16px;
+}
+
+/* ================= PAGE TITLE ================= */
+.page-title {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.page-title h1 {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.page-title p {
+  font-size: 13px;
+  color: #666;
+}
+
+/* ================= GRID ================= */
+.forms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+/* ================= CARD ================= */
+.form-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08);
+}
+
+.form-card:hover {
+  transform: translateY(-4px);
+}
+
+/* ================= ICON ================= */
+.form-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  color: #fff;
+}
+
+.blue { background: #1976d2; }
+.green { background: #2e7d32; }
+
+.form-card h3 {
+  font-size: 16px;
+  margin: 12px 0 6px;
+}
+
+.form-card p {
+  font-size: 12px;
+  color: #777;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="app-header">
+  <div class="logo">🌳 EABaseHub</div>
+  <div class="user">ผู้ใช้งาน</div>
+</header>
+
+<!-- ================= NAVIGATION ================= -->
+
+  <nav class="app-nav">
+    <a href="index.html">หน้าแรก</a>
+    <a href="report.html">รายงานเยี่ยมร้านค้า</a>
+    <a href="formsHub.html" class="active">FormsHub</a>      
+    <a href="formClaim.html">แจ้งเคลมสินค้า</a>
+ 
+</nav>
+
+<!-- ================= PAGE ================= -->
+<div class="container">
+
+  <div class="page-title">
+    <h1>📋 Forms Hub</h1>
+    <p>เลือกแบบฟอร์มที่ต้องการใช้งาน</p>
+  </div>
+
+  <div class="forms-grid">
+
+    <!-- ===== Trip Plan ===== -->
+    <div class="form-card" onclick="location.href='formPlan.html'">
+      <div class="form-icon blue">
+        <span class="material-icons">assignment</span>
+      </div>
+      <h3>แผนการเดินทาง</h3>
+      <p>และเบิกทดลองจ่าย</p>
+    </div>
+
+    <!-- ===== Actual Trip ===== -->
+    <div class="form-card" onclick="location.href='formActual.html'">
+      <div class="form-icon green">
+        <span class="material-icons">receipt_long</span>
+      </div>
+      <h3>ใบเดินทางจริง</h3>
+      <p>และเคลียร์ค่าใช้จ่าย</p>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

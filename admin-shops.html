@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Admin | ร้านค้า</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="brand">🌿 EABaseHub | Admin</div>
+  <a href="admin-sales.html" class="btn">← กลับ Sales</a>
+</header>
+
+<main class="container">
+
+  <h2>ร้านค้า</h2>
+  <p id="saleTitle" style="color:#666;font-size:14px;"></p>
+
+  <div class="tabs">
+    <a class="tab" href="admin.html">ผู้ใช้งาน</a>
+    <a class="tab" href="admin-sales.html">Sales</a>
+    <a class="tab active" href="#">ร้านค้า</a>
+  </div>
+
+  <input class="search" placeholder="ค้นหาร้านค้า">
+
+  <table>
+    <thead>
+      <tr>
+        <th>รหัสร้าน</th>
+        <th>ชื่อร้าน</th>
+        <th>จังหวัด</th>
+        <th>Sales</th>
+        <th>สถานะ</th>
+        <th>จัดการ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>S001</td>
+        <td>ร้าน ABC</td>
+        <td>กรุงเทพ</td>
+        <td>นฤมล</td>
+        <td><span class="badge active">ใช้งาน</span></td>
+        <td>
+          <a class="btn-sm edit" href="#">แก้ไข</a>
+          <button class="btn-sm delete" onclick="removeShop()">ลบ</button>
+        </td>
+      </tr>
+
+      <tr>
+        <td>S002</td>
+        <td>ร้าน XYZ</td>
+        <td>เชียงใหม่</td>
+        <td>พิชัย</td>
+        <td><span class="badge active">ใช้งาน</span></td>
+        <td>
+          <a class="btn-sm edit" href="#">แก้ไข</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</main>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const sale = params.get('sale');
+
+if (sale) {
+  document.getElementById('saleTitle').innerText =
+    'ร้านค้าของ Sales: ' + sale;
+}
+
+function removeShop() {
+  if (confirm('ยืนยันลบร้านค้านี้?')) {
+    alert('ลบแล้ว (ตัวอย่าง)');
+  }
+}
+</script>
+
+</body>
+</html>
