@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+
+  <link rel="stylesheet" href="css/login.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>      
+  
+</head>
+<body> 
+
+
+
+<div class="container">
+
+  <div class="left">
+
+  <svg class="shape-bg" viewBox="0 0 500 600" preserveAspectRatio="none">
+
+    <!-- เส้นแดง (shape หลัก) -->
+    <path d="
+  M0,0
+  L220,0
+  C280,80 340,200 320,300
+  C300,420 260,520 200,600
+  L0,600
+  Z"
+  fill="#2bbbad"/>
+
+
+    <!-- เส้นส้ม (overlay โปร่ง) -->
+   <path d="
+  M0,0
+  L190,0
+  C240,100 290,220 270,320
+  C250,430 210,520 170,600
+  L0,600
+  Z"
+  fill="rgba(255,255,255,0.18)"/>
+
+
+  </svg>
+
+  <div class="welcome-text">EA BASE HUB</div>
+
+  <p class="intro-text">
+    INTRODUCING BROKER OPERATING SYSTEM
+  </p>
+
+</div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <h2>LOGIN</h2>
+
+    <form id="loginForm">
+      <div class="input-group">
+        <input type="email" id="email" required>
+        <label>Email</label>
+      </div>
+
+      <div class="input-group">
+        <input type="password" id="password" required>
+        <label>Password</label>
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <p class="extra-links">
+      <a href="#">Forgot</a> |
+      <a href="#">Help</a>
+    </p>
+
+    <p id="message"></p>
+  </div>
+
+</div>
+
+<script src="js/login.js"></script>
+</body>
+</html>
