@@ -36,21 +36,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
   const loginBtn = document.getElementById("loginBtn");
-  const togglePassword = document.getElementById("togglePassword");
+  const togglePasswordBtn = document.getElementById("togglePassword");
 
   // ===============================
   // Toggle Password
   // ===============================
-  if (togglePassword && passwordInput) {
-    togglePassword.addEventListener("click", () => {
+  if (togglePasswordBtn && passwordInput) {
+    togglePasswordBtn.addEventListener("click", () => {
       const isHidden = passwordInput.type === "password";
+      const iconSpan = togglePasswordBtn.querySelector('.material-symbols-outlined');
 
       if (isHidden) {
         passwordInput.type = "text";
-        togglePassword.textContent = "visibility_off";
+        if (iconSpan) iconSpan.textContent = "visibility_off";
       } else {
         passwordInput.type = "password";
-        togglePassword.textContent = "visibility";
+        if (iconSpan) iconSpan.textContent = "visibility";
       }
     });
   }
@@ -63,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
 
       const identifier = emailInput.value.trim();
-      const password = passwordInput.value;
+      const password = passwordInput.value.trim();
 
       // ตรวจสอบว่ากรอกข้อมูลครบหรือไม่
       if (!identifier || !password) {
@@ -77,20 +78,35 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         let emailToUse = identifier;
 
-        // ถ้าไม่มี @ → แปลว่าเป็น username
+        // ถ้าไม่มี @ → แปลว่าเป็น username ต้องแปลงเป็น email ก่อน
         if (!identifier.includes("@")) {
+          console.log("กำลังค้นหา email จาก username:", identifier);
+
           const { data, error } = await supabaseClient
             .from("profiles")
             .select("email")
             .eq("username", identifier)
-            .single();
+            .maybeSingle(); // ใช้ maybeSingle แทน single เพื่อไม่ให้ error ถ้าไม่เจอ
 
-          if (error || !data) {
-            throw new Error("ไม่พบ Username นี้");
+          if (error) {
+            console.error("Error querying profiles:", error);
+            throw new Error("เกิดข้อผิดพลาดในการค้นหา Username");
+          }
+
+          if (!data) {
+            throw new Error("ไม่พบ Username นี้ในระบบ");
           }
 
           emailToUse = data.email;
+          console.log("พบ email:", emailToUse);
         }
+
+        // ตรวจสอบว่า emailToUse มีค่า
+        if (!emailToUse) {
+          throw new Error("ไม่พบข้อมูล Email");
+        }
+
+        console.log("กำลังเข้าสู่ระบบด้วย email:", emailToUse);
 
         // Login with email
         const { data: authData, error: loginError } =
@@ -99,14 +115,30 @@ document.addEventListener("DOMContentLoaded", () => {
             password: password
           });
 
-        if (loginError) throw loginError;
+        if (loginError) {
+          console.error("Login error:", loginError);
+          throw loginError;
+        }
+
+        console.log("เข้าสู่ระบบสำเร็จ:", authData);
 
         // เปลี่ยนหน้าเมื่อ login สำเร็จ
         window.location.href = "index.html";
 
       } catch (err) {
         console.error("Login error:", err);
-        alert("เข้าสู่ระบบไม่สำเร็จ: " + err.message);
+        
+        // แสดง error message ที่เข้าใจง่าย
+        let errorMessage = err.message;
+        
+        if (err.message.includes("Invalid login credentials")) {
+          errorMessage = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
+        } else if (err.message.includes("Email not confirmed")) {
+          errorMessage = "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ";
+        }
+        
+        alert("เข้าสู่ระบบไม่สำเร็จ: " + errorMessage);
+        
       } finally {
         loginBtn.disabled = false;
         loginBtn.textContent = "เข้าสู่ระบบ";
