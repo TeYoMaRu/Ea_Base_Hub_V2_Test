@@ -24,14 +24,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // Toggle Password
   // ===============================
   if (togglePassword) {
-    togglePassword.addEventListener("click", () => {
-      const isHidden = passwordInput.type === "password";
-      passwordInput.type = isHidden ? "text" : "password";
-      togglePassword.textContent = isHidden
-        ? "visibility_off"
-        : "visibility";
-    });
-  }
+  togglePassword.addEventListener("click", () => {
+
+    const isHidden = passwordInput.type === "password";
+
+    if (isHidden) {
+      passwordInput.type = "text";
+      togglePassword.innerText = "visibility_off";
+    } else {
+      passwordInput.type = "password";
+      togglePassword.innerText = "visibility";
+    }
+
+  });
+}
 
   // ===============================
   // Login Submit (รองรับ username / email)
