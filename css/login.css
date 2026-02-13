@@ -1,30 +1,56 @@
+<<<<<<< HEAD
 /* ===============================
    RESET
 ================================ */
+=======
+>>>>>>> 4dfac8f (save before pull)
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+<<<<<<< HEAD
   font-family: 'Segoe UI', sans-serif;
+=======
+  font-family: kanit,"Segoe UI", sans-serif;
+>>>>>>> 4dfac8f (save before pull)
 }
 
 body {
   height: 100vh;
+<<<<<<< HEAD
   background: #9fc9c6;
+=======
+  background: linear-gradient(135deg, #dcefe2, #8ec29a);
+>>>>>>> 4dfac8f (save before pull)
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+<<<<<<< HEAD
 /* ===============================
    CARD
 ================================ */
 .container {
   width: 850px;
+=======
+h1 {
+  font-size: large;
+}
+
+h2{
+  font-size: 30px;
+}
+
+
+.container {
+  width: 900px;
+>>>>>>> 4dfac8f (save before pull)
   height: 520px;
   display: flex;
   border-radius: 20px;
   overflow: hidden;
+<<<<<<< HEAD
   background: #f1f1f1;
   box-shadow: 0 25px 40px rgba(0,0,0,0.15);
   position: relative;
@@ -173,10 +199,178 @@ button {
   font-size: 16px;
   cursor: pointer;
   box-shadow: 0 10px 20px rgba(43,187,173,0.4);
+=======
+  background: white;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+}
+
+/* ================= LEFT ================= */
+
+.left {
+  width: 45%;
+  background: linear-gradient(135deg, #4CAF50, #2e7d32);
+  color: white;
+  padding: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* วงกลมโปร่ง */
+.left::before {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  top: -100px;
+  right: -100px;
+}
+
+.left::after {
+  content: "";
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+  bottom: -80px;
+  left: -80px;
+}
+
+.logo-box {
+  width: 160px;
+  height: 160px;
+  background: white;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logo-box img {
+  width: 135px;
+}
+
+.left h1 {
+  margin-bottom: 15px;
+}
+
+.desc {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.feature {
+  margin-bottom: 15px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ================= RIGHT ================= */
+
+.right {
+  width: 55%;
+  padding: 60px;
+  background: #f9f9f9;
+}
+
+.right h2 {
+  margin-bottom: 10px;
+  
+}
+
+.sub {
+  font-size: 13px;
+  margin-bottom: 25px;
+  color: #666;
+}
+
+label {
+  font-size: 14px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 12px 45px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  outline: none;
+  transition: 0.3s;
+}
+
+.input-wrapper input:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76,175,80,0.2);
+}
+.icon-left,
+.icon-right {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.icon-left {
+  position: absolute;
+  left: 12px;
+  font-size: 20px;
+  color: #888;
+}
+
+.icon-right {
+  position: absolute;
+  right: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #888;
+  transition: 0.2s;
+}
+
+.icon-right:hover {
+  color: #2e7d32;
+}
+
+.forgot {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.forgot a {
+  font-size: 13px;
+  color: #4CAF50;
+  text-decoration: none;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background: #388e3c;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+>>>>>>> 4dfac8f (save before pull)
   transition: 0.3s;
 }
 
 button:hover {
+<<<<<<< HEAD
   transform: translateY(-3px);
   box-shadow: 0 15px 25px rgba(43,187,173,0.5);
 }
@@ -221,3 +415,92 @@ button:hover {
     font-size: 28px;
   }
 }
+=======
+  background: #2e7d32;
+}
+
+.register {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.register a {
+  color: #388e3c;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 12px 40px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.icon-left {
+  position: absolute;
+  left: 12px;
+  color: #888;
+}
+
+.icon-right {
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+  color: #888;
+}
+
+.icon-right:hover {
+  color: #2563eb;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    width: 95%;
+    height: auto;
+  }
+
+  .left,
+  .right {
+    width: 100%;
+  }
+}
+/* =====================================================
+    RESPONSIVE - MOBILE
+   ===================================================== */
+@media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                max-width: 450px;
+            }
+            
+            .brand-panel {
+                padding: 35px 30px;
+            }
+            
+            .brand-content h1 {
+                font-size: 26px;
+            }
+            
+            .features {
+                display: none;
+            }
+            
+            .login-panel {
+                padding: 35px 30px;
+            }
+        }
+        
+        
+>>>>>>> 4dfac8f (save before pull)
