@@ -319,6 +319,25 @@ renderCalendar();
 //   window.location.href = "login.html";
 // }
 
+
+
+
+// =======================================
+// PROTECT INDEX PAGE
+// =======================================
+async function protectPage() {
+
+    const { data: { session } } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+        // ถ้าไม่ได้ login → เด้งไปหน้า login
+        window.location.href = "login.html";
+    }
+}
+
+// เรียกทันทีเมื่อโหลดหน้า
+protectPage();
+
 // =======================================
 // SESSION CHECK (ป้องกันคนไม่ login)
 // =======================================
@@ -337,6 +356,8 @@ checkSession();
 
 async function logout() {
     await supabaseClient.auth.signOut();
+
+    // ลบ session แล้วเด้งกลับ login
     window.location.href = "login.html";
 }
 

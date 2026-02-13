@@ -1013,18 +1013,22 @@
     <!-- =========================
          JAVASCRIPT
          ========================= -->
-    <script src="home.js"></script>
-    <script>
-  // =========================
-  // Register Service Worker
-  // =========================
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("sw.js")
-      .then(() => console.log("Service Worker registered"))
-      .catch(err => console.error("SW registration failed:", err));
-  }
-</script>
+         <script>
+           // =========================
+           // Register Service Worker
+           // =========================
+           if ("serviceWorker" in navigator) {
+             navigator.serviceWorker
+             .register("sw.js")
+             .then(() => console.log("Service Worker registered"))
+             .catch(err => console.error("SW registration failed:", err));
+            }
+          </script>
+
+      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+      <script src="js/supabaseClient.js"></script>
+      <script src="js/home.js"></script>
+
 
   </body>
 </html>

@@ -139,3 +139,16 @@ async function handleLogin(e) {
         alert("เข้าสู่ระบบไม่สำเร็จ: " + err.message);
     }
 }
+
+
+// ถ้า login อยู่แล้ว → ห้ามกลับหน้า login
+async function redirectIfLoggedIn() {
+
+    const { data: { session } } = await supabaseClient.auth.getSession();
+
+    if (session) {
+        window.location.href = "index.html";
+    }
+}
+
+redirectIfLoggedIn();
