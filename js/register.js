@@ -328,7 +328,8 @@ async function handleRegister(e) {
                 {
                     id: data.user.id, // ผูกกับ auth.users
                     username: username,
-                    display_name: displayName
+                    display_name: displayName,
+                    email: email 
                 }
             ]);
 

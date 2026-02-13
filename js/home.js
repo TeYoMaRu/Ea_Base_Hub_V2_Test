@@ -308,16 +308,16 @@ renderCalendar();
    - ล้างข้อมูล session / localStorage
    - กลับหน้า login
 ================================================= */
-function logout() {
-  if (!confirm("ต้องการออกจากระบบใช่หรือไม่?")) return;
+// function logout() {
+//   if (!confirm("ต้องการออกจากระบบใช่หรือไม่?")) return;
 
-  // ตัวอย่างล้างข้อมูล (ปรับตามที่คุณใช้จริง)
-  localStorage.removeItem("user");
-  sessionStorage.clear();
+//   // ตัวอย่างล้างข้อมูล (ปรับตามที่คุณใช้จริง)
+//   localStorage.removeItem("user");
+//   sessionStorage.clear();
 
-  // กลับหน้า login
-  window.location.href = "login.html";
-}
+//   // กลับหน้า login
+//   window.location.href = "login.html";
+// }
 
 // =======================================
 // SESSION CHECK (ป้องกันคนไม่ login)

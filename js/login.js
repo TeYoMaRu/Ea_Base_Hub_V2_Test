@@ -80,23 +80,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // =======================================
-// LOGIN FUNCTION
+// LOGIN WITH EMAIL OR USERNAME
 // =======================================
 async function handleLogin(e) {
     e.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
+    const identifier = document.getElementById("email").value.trim(); 
+    // ช่อง input เดิม แต่ตอนนี้รับได้ทั้ง email หรือ username
+
     const password = document.getElementById("password").value;
 
     try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-        });
 
-        if (error) throw error;
+        let emailToUse = identifier;
 
-        // เข้าสู่ระบบสำเร็จ → ไปหน้า index
+        // ==========================================
+        // ถ้าไม่มี @ → แปลว่าเป็น username
+        // ==========================================
+        if (!identifier.includes("@")) {
+
+            // ค้นหา email จาก profiles table
+            const { data, error } = await supabaseClient
+                .from("profiles")
+                .select("id")
+                .eq("username", identifier)
+                .single();
+
+            if (error || !data) {
+                throw new Error("ไม่พบ Username นี้");
+            }
+
+            // ดึง email จาก auth.users ผ่าน getUserById
+            const { data: userData, error: userError } =
+                await supabaseClient.auth.admin.getUserById(data.id);
+
+            if (userError || !userData.user) {
+                throw new Error("ไม่พบข้อมูลผู้ใช้");
+            }
+
+            emailToUse = userData.user.email;
+        }
+
+        // ==========================================
+        // LOGIN ด้วย email จริง
+        // ==========================================
+        const { error: loginError } =
+            await supabaseClient.auth.signInWithPassword({
+                email: emailToUse,
+                password: password
+            });
+
+        if (loginError) throw loginError;
+
+        // เข้าสู่ระบบสำเร็จ
         window.location.href = "index.html";
 
     } catch (err) {
