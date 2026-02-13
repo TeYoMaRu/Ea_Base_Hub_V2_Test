@@ -77,3 +77,29 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+
+
+// =======================================
+// LOGIN FUNCTION
+// =======================================
+async function handleLogin(e) {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) throw error;
+
+        // เข้าสู่ระบบสำเร็จ → ไปหน้า index
+        window.location.href = "index.html";
+
+    } catch (err) {
+        alert("เข้าสู่ระบบไม่สำเร็จ: " + err.message);
+    }
+}

@@ -1,80 +1,239 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EABaseHub - สมัครสมาชิก</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EABaseHub - สมัครสมาชิก</title>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/register.css" />
+  </head>
+  <!-- <a href="login.html">เข้าสู่ระบบ</a> -->
+  <body>
+    <div class="container">
+      <!-- Brand Panel -->
+      <div class="brand-panel">
+        <div class="brand-content">
+          <div class="brand-logo">EA</div>
+          <h1>EABaseHub</h1>
+          <p>ระบบจัดการ</p>
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="register.css">
-  <style>
-    @media (min-width: 768px) and (max-width: 1280px) and (orientation: landscape) {
-  body {
-    align-items: center;
-    justify-content: center;
-  }
-
-  .card {
-    max-width: 480px;
-    padding: 32px 36px;
-  }
-}
-
-  </style>
-</head>
-
-<body>
-<div class="container">
-
-  <div class="register-card">
-
-    <h2>สมัครสมาชิก</h2>
-
-    <form id="registerForm">
-
-      <div class="form-group">
-        <label>อีเมล</label>
-        <input type="email" id="email" required>
+          <div class="features-list">
+            <div class="feature-item">
+              <div class="feature-icon">📊</div>
+              <div class="feature-text">
+                <h4>Dashboard ทันสมัย</h4>
+                <p>ดูภาพรวมยอดขายแบบ Real-time</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">📋</div>
+              <div class="feature-text">
+                <h4>จัดการรายงานง่าย</h4>
+                <p>บันทึกและติดตามการเยี่ยมลูกค้า</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">👥</div>
+              <div class="feature-text">
+                <h4>ส่วนต่อประสาน</h4>
+                <p>แชร์ข้อมูล</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>Username</label>
-        <input type="text" id="username" required>
+      <!-- Register Panel -->
+      <div class="register-panel">
+        <div class="register-card">
+          <div class="register-header">
+            <h2>สมัครสมาชิก</h2>
+            <p>สร้างบัญชีใหม่เพื่อเริ่มใช้งาน EABaseHub</p>
+          </div>
+
+          <!-- Alert -->
+          <div class="alert" id="alert">
+            <span class="alert-icon" id="alertIcon">✓</span>
+            <span id="alertMessage">สมัครสมาชิกสำเร็จ!</span>
+          </div>
+
+          <form id="registerForm" onsubmit="handleRegister(event)">
+            <!-- Email -->
+            <div class="form-group">
+              <label>อีเมล <span class="required">*</span></label>
+              <div class="input-wrapper">
+                <span class="input-icon"
+                  ><i class="material-icons">mail</i></span
+                >
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="example@email.com"
+                  required
+                  oninput="validateEmail()"
+                />
+                <span class="validation-icon" id="emailIcon"></span>
+              </div>
+              <div class="error-message" id="emailError">
+                กรุณากรอกอีเมลให้ถูกต้อง
+              </div>
+            </div>
+
+            <!-- Username & Display Name -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>Username <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <span class="input-icon"
+                    ><i class="material-icons">person</i></span
+                  >
+                  <input
+                    type="text"
+                    id="username"
+                    placeholder="username"
+                    required
+                    oninput="validateUsername()"
+                  />
+                  <span class="validation-icon" id="usernameIcon"></span>
+                </div>
+                <div class="error-message" id="usernameError">
+                  Username ซ้ำหรือไม่ถูกต้อง
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>ชื่อที่แสดง <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <span class="input-icon"
+                    ><i class="material-icons">sell</i></span
+                  >
+                  <input
+                    type="text"
+                    id="displayName"
+                    placeholder="ชื่อ-นามสกุล"
+                    required
+                    oninput="validateDisplayName()"
+                  />
+                  <span class="validation-icon" id="displayNameIcon"></span>
+                </div>
+                <div class="error-message" id="displayNameError">
+                  กรุณากรอกชื่อที่แสดง
+                </div>
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+              <label>รหัสผ่าน <span class="required">*</span></label>
+              <div class="input-wrapper has-toggle">
+                <span class="input-icon"
+                  ><i class="material-icons">lock</i></span
+                >
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="••••••••"
+                  required
+                  oninput="validatePassword()"
+                />
+                <span class="validation-icon" id="passwordIcon"></span>
+                <button
+                  type="button"
+                  class="toggle-password"
+                  onclick="togglePassword('password')"
+                >
+                  <span class="material-icons">visibility_off</span>
+                </button>
+              </div>
+
+              <!-- Password Strength -->
+              <div class="password-strength">
+                <div class="strength-bar">
+                  <div class="strength-fill" id="strengthFill"></div>
+                </div>
+                <span class="strength-text" id="strengthText"
+                  >กรอกรหัสผ่าน</span
+                >
+              </div>
+
+              <!-- Password Rules -->
+              <div class="password-rules">
+                <h5>กฎรหัสผ่าน:</h5>
+                <div class="rule-item" id="rule-length">
+                  <span class="rule-icon">✓</span>
+                  <span>อย่างน้อย 8 ตัวอักษร</span>
+                </div>
+                <div class="rule-item" id="rule-number">
+                  <span class="rule-icon">✓</span>
+                  <span>มีตัวเลขอย่างน้อย 1 ตัว</span>
+                </div>
+                <div class="rule-item" id="rule-lowercase">
+                  <span class="rule-icon">✓</span>
+                  <span>มีตัวพิมพ์เล็กอย่างน้อย 1 ตัว</span>
+                </div>
+                <div class="rule-item" id="rule-uppercase">
+                  <span class="rule-icon">✓</span>
+                  <span>มีตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว</span>
+                </div>
+                <div class="rule-item" id="rule-notcommon">
+                  <span class="rule-icon">✓</span>
+                  <span>ไม่ใช่รหัสที่คาดเดาง่าย</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+              <label>ยืนยันรหัสผ่าน <span class="required">*</span></label>
+              <div class="input-wrapper has-toggle">
+                <span class="input-icon"
+                  ><i class="material-icons">lock</i></span
+                >
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  placeholder="••••••••"
+                  required
+                  oninput="validateConfirmPassword()"
+                />
+                <span class="validation-icon" id="confirmPasswordIcon"></span>
+                <button
+                  type="button"
+                  class="toggle-password"
+                  onclick="togglePassword('confirmPassword')"
+                >
+                  <span class="material-icons">visibility_off</span>
+                </button>
+              </div>
+              <div class="error-message" id="confirmPasswordError">
+                รหัสผ่านไม่ตรงกัน
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn-register" id="submitBtn" disabled>
+              <span class="spinner"></span>
+              <span class="btn-text">สมัครสมาชิก</span>
+            </button>
+          </form>
+
+          <div class="login-link">
+            มีบัญชีอยู่แล้ว? <a href="login.html">เข้าสู่ระบบ</a>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <div class="form-group">
-        <label>ชื่อที่แสดง</label>
-        <input type="text" id="displayName" required>
-      </div>
-
-      <div class="form-group">
-        <label>รหัสผ่าน</label>
-        <input type="password" id="password" required>
-      </div>
-
-      <div class="form-group">
-        <label>ยืนยันรหัสผ่าน</label>
-        <input type="password" id="confirmPassword" required>
-      </div>
-
-      <button id="submitBtn" disabled>สมัครสมาชิก</button>
-    </form>
-
-    <p class="login-link">
-      มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a>
-    </p>
-
-  </div>
-</div>
-
-<!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- JS -->
-<script src="register.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/register.js"></script>
+  </body>
 </html>

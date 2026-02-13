@@ -319,7 +319,26 @@ function logout() {
   window.location.href = "login.html";
 }
 
+// =======================================
+// SESSION CHECK (ป้องกันคนไม่ login)
+// =======================================
+async function checkSession() {
 
+    const { data: { session } } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+        // ถ้าไม่มี session → กลับ login
+        window.location.href = "login.html";
+    }
+}
+
+// เรียกทันทีเมื่อโหลดหน้า
+checkSession();
+
+async function logout() {
+    await supabaseClient.auth.signOut();
+    window.location.href = "login.html";
+}
 
 
 // Debug
