@@ -23,132 +23,78 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===============================
   // Toggle Password
   // ===============================
-  if (togglePassword && passwordInput) {
+  if (togglePassword) {
     togglePassword.addEventListener("click", () => {
-
       const isHidden = passwordInput.type === "password";
-
       passwordInput.type = isHidden ? "text" : "password";
       togglePassword.textContent = isHidden
         ? "visibility_off"
         : "visibility";
-
     });
   }
 
   // ===============================
-  // Login Submit
+  // Login Submit (รองรับ username / email)
   // ===============================
-  if (loginForm) {
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-
-      loginBtn.disabled = true;
-      loginBtn.textContent = "กำลังเข้าสู่ระบบ...";
-
-      const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-          email,
-          password
-        });
-
-      if (error) {
-        alert(error.message);
-        loginBtn.disabled = false;
-        loginBtn.textContent = "เข้าสู่ระบบ";
-        return;
-      }
-
-      const { data: profile } = await supabaseClient
-        .from("profiles")
-        .select("*")
-        .eq("id", data.user.id)
-        .single();
-
-      if (profile?.role === "admin") {
-        window.location.href = "admin.html";
-      } else {
-        window.location.href = "index.html";
-      }
-    });
-  }
-
-});
-
-
-// =======================================
-// LOGIN WITH EMAIL OR USERNAME
-// =======================================
-async function handleLogin(e) {
+  loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const identifier = document.getElementById("email").value.trim(); 
-    // ช่อง input เดิม แต่ตอนนี้รับได้ทั้ง email หรือ username
+    let identifier = emailInput.value.trim();
+    const password = passwordInput.value;
 
-    const password = document.getElementById("password").value;
+    loginBtn.disabled = true;
+    loginBtn.textContent = "กำลังเข้าสู่ระบบ...";
 
     try {
 
-        let emailToUse = identifier;
+      let emailToUse = identifier;
 
-        // ==========================================
-        // ถ้าไม่มี @ → แปลว่าเป็น username
-        // ==========================================
-        if (!identifier.includes("@")) {
+      // ถ้าไม่มี @ → แปลว่าเป็น username
+      if (!identifier.includes("@")) {
 
-            // ค้นหา email จาก profiles table
-            const { data, error } = await supabaseClient
-                .from("profiles")
-                .select("id")
-                .eq("username", identifier)
-                .single();
+        const { data, error } = await supabaseClient
+          .from("profiles")
+          .select("email")
+          .eq("username", identifier)
+          .single();
 
-            if (error || !data) {
-                throw new Error("ไม่พบ Username นี้");
-            }
-
-            // ดึง email จาก auth.users ผ่าน getUserById
-            const { data: userData, error: userError } =
-                await supabaseClient.auth.admin.getUserById(data.id);
-
-            if (userError || !userData.user) {
-                throw new Error("ไม่พบข้อมูลผู้ใช้");
-            }
-
-            emailToUse = userData.user.email;
+        if (error || !data) {
+          throw new Error("ไม่พบ Username นี้");
         }
 
-        // ==========================================
-        // LOGIN ด้วย email จริง
-        // ==========================================
-        const { error: loginError } =
-            await supabaseClient.auth.signInWithPassword({
-                email: emailToUse,
-                password: password
-            });
+        emailToUse = data.email;
+      }
 
-        if (loginError) throw loginError;
+      const { error: loginError } =
+        await supabaseClient.auth.signInWithPassword({
+          email: emailToUse,
+          password
+        });
 
-        // เข้าสู่ระบบสำเร็จ
-        window.location.href = "index.html";
+      if (loginError) throw loginError;
+
+      window.location.href = "index.html";
 
     } catch (err) {
-        alert("เข้าสู่ระบบไม่สำเร็จ: " + err.message);
+      alert("เข้าสู่ระบบไม่สำเร็จ: " + err.message);
+      loginBtn.disabled = false;
+      loginBtn.textContent = "เข้าสู่ระบบ";
     }
-}
 
+  });
 
-// ถ้า login อยู่แล้ว → ห้ามกลับหน้า login
+});
+
+// ===============================
+// Redirect if already logged in
+// ===============================
 async function redirectIfLoggedIn() {
+  const { data: { session } } =
+    await supabaseClient.auth.getSession();
 
-    const { data: { session } } = await supabaseClient.auth.getSession();
-
-    if (session) {
-        window.location.href = "index.html";
-    }
+  if (session) {
+    window.location.href = "index.html";
+  }
 }
 
 redirectIfLoggedIn();
