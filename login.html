@@ -1,77 +1,126 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EABaseHub - เข้าสู่ระบบ</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EABaseHub Login</title>
 
-  <!-- Fonts -->
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="register.css">
-  <style>@media (min-width: 768px) and (max-width: 1280px) and (orientation: landscape) {
-  body {
-    align-items: center;
-    justify-content: center;
-  }
+  <link rel="stylesheet" href="css/login.css">
 
-  .card {
-    max-width: 480px;
-    padding: 32px 36px;
-  }
-}
-</style>
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- iOS Support -->
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="EA Base Hub">
 </head>
+
 <body>
-<div class="container">
-  <div class="register-card">
 
-    <h2>เข้าสู่ระบบ</h2>
+  <div class="container">
 
-    <!-- Alert -->
-    <div class="alert" id="alert"></div>
+    <!-- ================= LEFT ================= -->
+    <div class="left">
+      <div class="logo-box">
+        <img src="icons/icon-512.png" alt="Logo">
+      </div>
+
+      <h1>EABaseHub</h1>
+
+      <p class="desc">
+        ระบบจัดการใบงานครบวงจร<br>
+        บันทึกการเรียนลูกค้า ติดตามงาน<br>
+        และวิเคราะห์ผลการดำเนินงาน
+      </p>
+
+      <div class="feature">
+        <span class="material-symbols-outlined">analytics</span>
+        Dashboard แสดงผลแบบ Real-time
+      </div>
+
+      <div class="feature">
+        <span class="material-symbols-outlined">assignment</span>
+        บันทึกงานการเรียนลูกค้า
+      </div>
+
+      <div class="feature">
+        <span class="material-symbols-outlined">show_chart</span>
+        วิเคราะห์ยอดขายและแนวโน้ม
+      </div>
+    </div>
+
+    <!-- ================= RIGHT ================= -->
+    <div class="right">
+
+      <h2>เข้าสู่ระบบ</h2>
+      <p class="sub">กรุณากรอกข้อมูลเพื่อเข้าใช้งาน</p>
 
       <form id="loginForm">
 
-      <div class="form-group">
-        <label for="email">อีเมล</label>
-        <input
-          type="email"
-          id="email"
-          required
-          autocomplete="username"
-          placeholder="example@email.com"
-        >
+        <!-- Email -->
+        <div class="form-group">
+          <label>อีเมล</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-outlined icon-left">person</span>
+            <input 
+              type="email" 
+              id="email"
+              placeholder="กรอกอีเมล"
+              required
+            >
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label>รหัสผ่าน</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-outlined icon-left">lock</span>
+            <input 
+              type="password" 
+              id="password"
+              placeholder="กรอกรหัสผ่าน"
+              required
+            >
+            <span 
+              class="material-symbols-outlined icon-right"
+              id="togglePassword"
+            >
+              visibility
+            </span>
+          </div>
+        </div>
+
+        <div class="forgot">
+          <a href="#">ลืมรหัสผ่าน?</a>
+        </div>
+
+        <button type="submit" id="loginBtn">
+          เข้าสู่ระบบ
+        </button>
+
+      </form>
+
+      <div class="register">
+        ยังไม่มีบัญชี? <a href="#">สมัครสมาชิก</a>
       </div>
 
-      <div class="form-group">
-        <label for="password">รหัสผ่าน</label>
-        <input
-          type="password"
-          id="password"
-          required
-          autocomplete="current-password"
-          placeholder="••••••••"
-        >
-      </div>
-
-      <button id="loginBtn" type="submit">
-        เข้าสู่ระบบ
-      </button>
-    </form>
-
-    <p class="login-link">
-      ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
-    </p>
+    </div>
 
   </div>
-</div>
 
-<!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/login.js"></script>
 
-<!-- JS -->
-<script src="login.js"></script>
+
 </body>
 </html>
