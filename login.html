@@ -30,7 +30,7 @@
     <!-- ================= LEFT ================= -->
     <div class="left">
       <div class="logo-box">
-        <img src="icons/icon-512.png" alt="Logo">
+        <img src="icons/icon-512.png" alt="EABaseHub Logo">
       </div>
 
       <h1>EABaseHub</h1>
@@ -42,17 +42,17 @@
       </p>
 
       <div class="feature">
-        <span class="material-symbols-outlined">analytics</span>
+        <span class="material-symbols-outlined" aria-hidden="true">analytics</span>
         Dashboard แสดงผลแบบ Real-time
       </div>
 
       <div class="feature">
-        <span class="material-symbols-outlined">assignment</span>
+        <span class="material-symbols-outlined" aria-hidden="true">assignment</span>
         บันทึกงานการเรียนลูกค้า
       </div>
 
       <div class="feature">
-        <span class="material-symbols-outlined">show_chart</span>
+        <span class="material-symbols-outlined" aria-hidden="true">show_chart</span>
         วิเคราะห์ยอดขายและแนวโน้ม
       </div>
     </div>
@@ -63,44 +63,52 @@
       <h2>เข้าสู่ระบบ</h2>
       <p class="sub">กรุณากรอกข้อมูลเพื่อเข้าใช้งาน</p>
 
-      <form id="loginForm">
+      <form id="loginForm" novalidate>
 
-        <!-- Email -->
+        <!-- Email/Username -->
         <div class="form-group">
-          <label>อีเมล หรือ Username</label>
+          <label for="email">อีเมล หรือ Username</label>
           <div class="input-wrapper">
-            <span class="material-symbols-outlined icon-left">person</span>
+            <span class="material-symbols-outlined icon-left" aria-hidden="true">person</span>
             <input 
               type="text" 
               id="email"
+              name="email"
               placeholder="email หรือ username"
+              autocomplete="username"
               required
+              aria-required="true"
             >
           </div>
         </div>
 
         <!-- Password -->
         <div class="form-group">
-          <label>รหัสผ่าน</label>
+          <label for="password">รหัสผ่าน</label>
           <div class="input-wrapper">
-            <span class="material-symbols-outlined icon-left">lock</span>
+            <span class="material-symbols-outlined icon-left" aria-hidden="true">lock</span>
             <input 
               type="password" 
               id="password"
+              name="password"
               placeholder="กรอกรหัสผ่าน"
+              autocomplete="current-password"
               required
+              aria-required="true"
             >
-            <span 
-              class="material-symbols-outlined icon-right"
+            <button
+              type="button"
+              class="icon-right-btn"
               id="togglePassword"
+              aria-label="แสดง/ซ่อนรหัสผ่าน"
             >
-              visibility
-            </span>
+              <span class="material-symbols-outlined">visibility</span>
+            </button>
           </div>
         </div>
 
         <div class="forgot">
-          <a href="#">ลืมรหัสผ่าน?</a>
+          <a href="forgot-password.html">ลืมรหัสผ่าน?</a>
         </div>
 
         <button type="submit" id="loginBtn">
@@ -110,7 +118,7 @@
       </form>
 
       <div class="register">
-        ยังไม่มีบัญชี? <a href="#">สมัครสมาชิก</a>
+        ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
       </div>
 
     </div>
@@ -119,9 +127,7 @@
 
   <!-- JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabaseClient.js"></script>
-<script src="js/login.js"></script>
-
+  <script src="js/login.js"></script>
 
 </body>
 </html>
