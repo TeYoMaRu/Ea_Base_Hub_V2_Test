@@ -24,7 +24,6 @@ async function redirectIfLoggedIn() {
   }
 }
 
-// เรียกใช้ก่อน DOMContentLoaded
 redirectIfLoggedIn();
 
 // ===============================
@@ -78,35 +77,68 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         let emailToUse = identifier;
 
-        // ถ้าไม่มี @ → แปลว่าเป็น username ต้องแปลงเป็น email ก่อน
+        // ถ้าไม่มี @ → แปลว่าเป็น username
         if (!identifier.includes("@")) {
-          console.log("กำลังค้นหา email จาก username:", identifier);
+          console.log("🔍 ค้นหา email จาก username:", identifier);
 
-          const { data, error } = await supabaseClient
+          // ตรวจสอบว่ามีตาราง profiles หรือไม่
+          const { data: profiles, error: profileError } = await supabaseClient
             .from("profiles")
-            .select("email")
-            .eq("username", identifier)
-            .maybeSingle(); // ใช้ maybeSingle แทน single เพื่อไม่ให้ error ถ้าไม่เจอ
+            .select("*")
+            .limit(1);
 
-          if (error) {
-            console.error("Error querying profiles:", error);
+          if (profileError) {
+            console.error("❌ Error accessing profiles table:", profileError);
+            throw new Error("ไม่สามารถเข้าถึงตาราง profiles ได้ กรุณาติดต่อผู้ดูแลระบบ");
+          }
+
+          console.log("✅ สามารถเข้าถึงตาราง profiles ได้");
+
+          // ค้นหา email จาก username
+          const { data: userData, error: queryError } = await supabaseClient
+            .from("profiles")
+            .select("email, username")
+            .eq("username", identifier)
+            .maybeSingle();
+
+          console.log("📊 ผลการค้นหา username:", { userData, queryError });
+
+          if (queryError) {
+            console.error("❌ Query error:", queryError);
             throw new Error("เกิดข้อผิดพลาดในการค้นหา Username");
           }
 
-          if (!data) {
-            throw new Error("ไม่พบ Username นี้ในระบบ");
+          if (!userData) {
+            console.warn("⚠️ ไม่พบ username:", identifier);
+            
+            // ลองค้นหาว่ามี username อะไรบ้างในระบบ (สำหรับ debug)
+            const { data: allUsers } = await supabaseClient
+              .from("profiles")
+              .select("username")
+              .limit(5);
+            
+            console.log("📋 Username ที่มีในระบบ (5 รายการแรก):", allUsers);
+            
+            throw new Error("ไม่พบ Username นี้ในระบบ กรุณาตรวจสอบอีกครั้ง");
           }
 
-          emailToUse = data.email;
-          console.log("พบ email:", emailToUse);
+          if (!userData.email) {
+            console.error("❌ ไม่มีข้อมูล email ในโปรไฟล์:", userData);
+            throw new Error("ข้อมูล Email ไม่ครบถ้วน กรุณาติดต่อผู้ดูแลระบบ");
+          }
+
+          emailToUse = userData.email;
+          console.log("✅ พบ email:", emailToUse);
+        } else {
+          console.log("📧 ใช้ email โดยตรง:", identifier);
         }
 
-        // ตรวจสอบว่า emailToUse มีค่า
-        if (!emailToUse) {
+        // ตรวจสอบอีกครั้งว่ามี email
+        if (!emailToUse || emailToUse.trim() === "") {
           throw new Error("ไม่พบข้อมูล Email");
         }
 
-        console.log("กำลังเข้าสู่ระบบด้วย email:", emailToUse);
+        console.log("🔐 กำลังเข้าสู่ระบบด้วย email:", emailToUse);
 
         // Login with email
         const { data: authData, error: loginError } =
@@ -116,25 +148,27 @@ document.addEventListener("DOMContentLoaded", () => {
           });
 
         if (loginError) {
-          console.error("Login error:", loginError);
+          console.error("❌ Login error:", loginError);
           throw loginError;
         }
 
-        console.log("เข้าสู่ระบบสำเร็จ:", authData);
+        console.log("✅ เข้าสู่ระบบสำเร็จ!");
 
         // เปลี่ยนหน้าเมื่อ login สำเร็จ
         window.location.href = "index.html";
 
       } catch (err) {
-        console.error("Login error:", err);
+        console.error("💥 Error:", err);
         
-        // แสดง error message ที่เข้าใจง่าย
         let errorMessage = err.message;
         
+        // แปลง error message เป็นภาษาไทย
         if (err.message.includes("Invalid login credentials")) {
           errorMessage = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
         } else if (err.message.includes("Email not confirmed")) {
           errorMessage = "กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ";
+        } else if (err.message.includes("missing email or phone")) {
+          errorMessage = "ข้อมูล Email ไม่ครบถ้วน กรุณาลองใหม่อีกครั้ง";
         }
         
         alert("เข้าสู่ระบบไม่สำเร็จ: " + errorMessage);
