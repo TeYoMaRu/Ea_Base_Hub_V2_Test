@@ -62,11 +62,31 @@
              - แบบฟอร์มต่างๆ
              ========================= -->
         <nav class="menu">
-          <a class="menu-item active" href="#">หน้าแรก</a>
-          <a class="menu-item" href="report.html">เขียนรายงาน</a>
-          <a class="menu-item" href="shop.html">ร้านค้าของฉัน</a>
-          <a class="menu-item" href="formClaim.html">แจ้งเคลมสินค้า</a>
-          <a class="menu-item" href="formHub.html">แบบฟอร์มต่างๆ</a>
+
+          <a class="menu-item active" href="#">
+            <span class="material-symbols-outlined menu-icon">home</span>
+            หน้าแรก
+          </a>
+
+          <a class="menu-item" href="report.html">
+            <span class="material-symbols-outlined menu-icon">edit_document</span>
+            เขียนรายงาน
+          </a>
+
+          <a class="menu-item" href="shop.html">
+          <span class="material-symbols-outlined menu-icon">store</span>
+          ร้านค้าของฉัน
+        </a>
+
+          <a class="menu-item" href="formClaim.html">
+          <span class="material-symbols-outlined menu-icon">assignment_late</span>
+            แจ้งเคลมสินค้า
+          </a>
+          
+          <a class="menu-item" href="formHub.html">
+          <span class="material-symbols-outlined menu-icon">description</span>
+          แบบฟอร์มต่างๆ
+        </a>
         </nav>
 
         <!-- =========================
@@ -329,7 +349,7 @@
       // ลงทะเบียน Service Worker ถ้า browser รองรับ
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker
-          .register("sw.js")
+          .register("js/sw.js")
           .then(() => console.log("Service Worker registered"))
           .catch(err => console.error("SW registration failed:", err));
       }

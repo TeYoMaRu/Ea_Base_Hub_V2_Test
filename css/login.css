@@ -21,7 +21,7 @@ body {
   justify-content: center;     /* จัดแนวนอนให้อยู่กลาง */
   align-items: center;         /* จัดแนวตั้งให้อยู่กลาง */
   
-  padding: 20px;               /* เว้นขอบกันติดจอ */
+  padding: 60px;               /* เว้นขอบกันติดจอ */
 }
 
 /* หัวข้อใหญ่ */
@@ -63,7 +63,7 @@ h2 {
   width: 45%; /* กินพื้นที่ 45% */
   
   /* ไล่สีเขียว */
-  background: linear-gradient(135deg, #4CAF50, #2e7d32);
+  background: linear-gradient(135deg, #5db960, #3b8f3f);
   
   color: white;          /* ตัวอักษรสีขาว */
   padding: 40px 30px;    /* เว้นขอบด้านใน */
@@ -109,8 +109,8 @@ h2 {
 
 /* กล่องโลโก้ */
 .logo-box {
-  width: 160px;
-  height: 160px;
+  width: 120px;
+  height: 120px;
   background: white;
   border-radius: 20px;
   
@@ -124,7 +124,7 @@ h2 {
 
 /* รูปโลโก้ */
 .logo-box img {
-  width: 160px;
+  width: 110px;
   height: auto; /* รักษาสัดส่วน */
 }
 
@@ -150,7 +150,7 @@ h2 {
 
 /* ขนาดไอคอน */
 .feature .material-symbols-outlined {
-  font-size: 40px;
+  font-size: 30px;
 }
 
 /* ===============================
