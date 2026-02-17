@@ -61,11 +61,49 @@ async function protectPage() {
    4️⃣ Load Data
 ================================================= */
 
-function loadData() {
-  reports = getStorageArray("reports");
-  trips   = getStorageArray("trips");
-  claims  = getStorageArray("claims");
+async function loadData() {
+
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) return;
+
+  const userId = user.id;
+
+  // โหลด reports
+  const { data: reportData, error: reportError } =
+    await supabaseClient
+      .from("reports")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+  if (reportError) {
+    console.error("โหลด reports ไม่ได้:", reportError);
+  }
+
+  // โหลด trips
+  const { data: tripData, error: tripError } =
+    await supabaseClient
+      .from("trips")
+      .select("*");
+
+  if (tripError) {
+    console.error("โหลด trips ไม่ได้:", tripError);
+  }
+
+  // โหลด claims
+  const { data: claimData, error: claimError } =
+    await supabaseClient
+      .from("claims")
+      .select("*");
+
+  if (claimError) {
+    console.error("โหลด claims ไม่ได้:", claimError);
+  }
+
+  reports = reportData || [];
+  trips   = tripData || [];
+  claims  = claimData || [];
 }
+
 
 
 /* =================================================
@@ -95,14 +133,14 @@ function renderReportList() {
     ...reports.map(r => ({
       type: "report",
       title: r.title || "รายงาน (ยังไม่ตั้งชื่อ)",
-      date: r.date,
+      date: r.report_date,
       link: `report.html?id=${r.id}`,
       id: r.id
     })),
     ...trips.map(t => ({
       type: "trip",
       title: `Trip : ${t.place || "-"}`,
-      date: t.date,
+      date: t.trip_date,
       link: `trip.html?id=${t.id}`,
       id: t.id
     }))
@@ -134,17 +172,27 @@ function renderReportList() {
     });
 }
 
-function deleteItem(type, id) {
+async function deleteItem(type, id) {
+
   if (!confirm("ต้องการลบใช่หรือไม่?")) return;
 
-  const key = type === "report" ? "reports" : "trips";
-  const data = getStorageArray(key);
+  const table =
+    type === "report" ? "reports" :
+    type === "trip"   ? "trips" :
+                        "claims";
 
-  const newData = data.filter(item => item.id !== id);
-  localStorage.setItem(key, JSON.stringify(newData));
+  const { error } = await supabaseClient
+    .from(table)
+    .delete()
+    .eq("id", id);
 
-  init(); // re-render ใหม่แทน reload
+  if (error) {
+    console.error("ลบไม่สำเร็จ:", error);
+  } else {
+    await init();
+  }
 }
+
 
 
 /* =================================================
@@ -286,12 +334,13 @@ async function logout() {
 
 async function init() {
   await protectPage();
-  loadData();
+  await loadData();   // สำคัญมาก
   renderSummary();
   renderReportList();
   renderWeeklyProgress();
   renderCalendar();
 }
+
 
 document.addEventListener("DOMContentLoaded", init);
 

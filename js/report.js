@@ -47,3 +47,14 @@ claims.forEach((claim, index) => {
 // แสดงยอดรวม
 // ==============================
 totalEl.textContent = "รวมค่าใช้จ่ายทั้งหมด: " + total;
+
+
+const { data: { user } } = await supabaseClient.auth.getUser();
+
+await supabaseClient.from("reports").insert([
+  {
+    user_id: user.id,
+    title: "รายงานวันนี้",
+    report_date: "2026-02-17"
+  }
+]);
