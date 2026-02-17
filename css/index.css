@@ -924,13 +924,13 @@ body {
 /* ===== SIDEBAR COLLAPSE ===== */
 
 .sidebar {
-  width: 80px;
+  width: 240px;
   transition: 0.3s ease;
 }
 
-.sidebar:hover {
-  width: 240px;
-}
+/* .sidebar:hover {
+  width: 80px;
+} */
 
 .sidebar:hover .menu-text,
 .sidebar:hover .logo-text {

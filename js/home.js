@@ -365,6 +365,28 @@ async function logout() {
 function toggleSidebar() {
   document.getElementById("sidebar").classList.toggle("collapsed");
 }
+document.addEventListener("DOMContentLoaded", async () => {
+
+  // ดึง user จาก session
+  const { data: { user }, error } = await supabase.auth.getUser();
+
+  // ถ้าไม่มี user ให้กลับหน้า login
+  if (error || !user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // ===== ดึงข้อมูลจาก auth =====
+  const email = user.email;
+
+  // ถ้าเก็บชื่อไว้ใน metadata ตอนสมัคร
+  const fullName = user.user_metadata?.full_name || email;
+
+  // ===== ใส่ข้อมูลลงหน้าเว็บ =====
+  document.getElementById("userName").textContent = fullName;
+  document.getElementById("userEmail").textContent = email;
+
+});
 
 // Debug
 console.log("home.js loaded ✅");
