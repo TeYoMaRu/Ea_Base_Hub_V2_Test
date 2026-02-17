@@ -362,5 +362,9 @@ async function logout() {
 }
 
 
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("collapsed");
+}
+
 // Debug
 console.log("home.js loaded ✅");

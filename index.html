@@ -43,14 +43,14 @@
            - เมนูนำทาง
            - ปุ่มเปิดร้านค้า (ซ่อนไว้ในโค้ด)
            ========================= -->
-      <aside class="sidebar">
+      <aside class="sidebar" id="sidebar">
         <!-- ปุ่ม Hamburger สำหรับมือถือ - เปิด/ปิดเมนู -->
-        <button class="hamburger" onclick="toggleMenu()">☰</button>
+        <!-- <button class="hamburger" onclick="toggleMenu()">☰</button> -->
 
         <!-- โลโก้และชื่อแอป -->
         <div class="logo">
           <img src="icons/icon-512.png" alt="EABaseHub Logo" />
-          <span>EABaseHub</span>
+          <span class="logo-text">EABaseHub</span>
         </div>
 
         <!-- =========================
@@ -65,27 +65,30 @@
 
           <a class="menu-item active" href="#">
             <span class="material-symbols-outlined menu-icon">home</span>
-            หน้าแรก
+            <span class="menu-text">หน้าแรก</span>
           </a>
 
           <a class="menu-item" href="report.html">
             <span class="material-symbols-outlined menu-icon">edit_document</span>
-            เขียนรายงาน
+            <span class="menu-text">เขียนรายงาน</span>
           </a>
 
           <a class="menu-item" href="shop.html">
           <span class="material-symbols-outlined menu-icon">store</span>
-          ร้านค้าของฉัน
+          <span class="menu-text">ร้านค้าของฉัน</span>
+          
         </a>
 
           <a class="menu-item" href="formClaim.html">
           <span class="material-symbols-outlined menu-icon">assignment_late</span>
-            แจ้งเคลมสินค้า
+          <span class="menu-text">แจ้งเคลมสินค้า</span>
+            
           </a>
           
           <a class="menu-item" href="formHub.html">
           <span class="material-symbols-outlined menu-icon">description</span>
-          แบบฟอร์มต่างๆ
+           <span class="menu-text">แบบฟอร์มต่างๆ</span>
+          
         </a>
         </nav>
 
@@ -99,6 +102,8 @@
           <p>ลงทะเบียนร้านค้าใหม่</p>
           <span class="open-shop-badge">เปิดฟอร์ม</span>
         </div> -->
+        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
       </aside>
 
       <!-- =========================

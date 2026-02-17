@@ -27,7 +27,7 @@ body {
    ========================= */
 .layout {
   display: flex;
-  height: 100vh;
+  /* height: 100vh; */
   overflow: hidden;
 }
 
@@ -42,11 +42,12 @@ body {
 .sidebar {
   width: 180px;
   background: #dff3e3;
-  padding: 16px;
-  border-radius: 24px;
-  margin: 16px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  padding: 20px 10px;
+  margin: 16px;
+  border-radius: 0 40px 40px 0; /* ชิดซ้าย */
   height: calc(100vh - 64px); /* ลบ margin บนล่าง */
   /* flex-shrink: 0; ป้องกันไม่ให้ถูกย่อ */
 }
@@ -920,6 +921,56 @@ body {
 .logout-btn:active {
   transform: scale(0.95); /* ย่อเล็กลงเมื่อคลิก */
 }
+/* ===== SIDEBAR COLLAPSE ===== */
+
+.sidebar {
+  width: 80px;
+  transition: 0.3s ease;
+}
+
+.sidebar:hover {
+  width: 240px;
+}
+
+.sidebar:hover .menu-text,
+.sidebar:hover .logo-text {
+  display: inline;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.sidebar.collapsed {
+  width: 80px;
+}
+
+/* ซ่อนข้อความตอนย่อ */
+.sidebar.collapsed .menu-text,
+.sidebar.collapsed .logo-text {
+  display: none;
+}
+
+/* จัดเมนูตอนย่อให้อยู่กลาง */
+.sidebar.collapsed .menu-item {
+  justify-content: center;
+}
+
+/* ปุ่ม toggle */
+.toggle-btn {
+  margin-top: auto;
+  width: 50%;
+  padding: 10px;
+  border: none;
+  background: #4caf50;
+  color: white;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+
 
 /* =========================
    RESPONSIVE DESIGN - การปรับตัวตามขนาดหน้าจอ
