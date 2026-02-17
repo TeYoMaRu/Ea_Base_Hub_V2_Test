@@ -104,6 +104,52 @@ async function loadData() {
   claims  = claimData || [];
 }
 
+async function loadUserProfile() {
+
+  const { data: { user } } =
+    await supabaseClient.auth.getUser();
+
+  if (!user) return;
+
+  // 🔎 ดึง display_name จาก profiles
+  const { data: profile, error } =
+    await supabaseClient
+      .from("profiles")
+      .select("display_name, username")
+      .eq("id", user.id)
+      .single();
+
+  if (error) {
+    console.error("โหลด profile ไม่ได้:", error);
+    return;
+  }
+
+  const nameToShow =
+    profile.display_name ||
+    profile.username ||
+    user.email;
+
+  document.getElementById("userName").textContent = nameToShow;
+}
+
+
+/* =================================================
+  Load User Data
+================================================= */
+async function loadUserInfo() {
+
+  const { data: { user }, error } =
+    await supabaseClient.auth.getUser();
+
+  if (error || !user) {
+    console.log("ไม่พบ user");
+    return;
+  }
+
+  document.getElementById("userName").textContent =
+    user.email;  // ชั่วคราวใช้ email ก่อน
+}
+
 
 
 /* =================================================
@@ -335,6 +381,8 @@ async function logout() {
 async function init() {
   await protectPage();
   await loadData();   // สำคัญมาก
+  await loadUserInfo();   // ต้องมีอันนี้
+  await loadUserProfile();
   renderSummary();
   renderReportList();
   renderWeeklyProgress();
@@ -345,3 +393,15 @@ async function init() {
 document.addEventListener("DOMContentLoaded", init);
 
 console.log("Home loaded (Production Ready) 🚀");
+
+
+
+// Debug Temporary ขั่วคราว
+document.addEventListener("DOMContentLoaded", async () => {
+
+  const { data: { user } } =
+    await supabaseClient.auth.getUser();
+
+  console.log("User:", user);
+
+});
