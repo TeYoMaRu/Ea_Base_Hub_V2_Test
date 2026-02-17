@@ -3,48 +3,111 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin | แก้ไขผู้ใช้</title>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="css/admin-base.css">
+<link rel="stylesheet" href="css/admin-edit.css">
+
 </head>
 
 <body>
 
 <header class="topbar">
-  <div class="brand">🌿 EABaseHub | Admin</div>
+  <div class="brand">Admin Panel</div>
   <a href="admin.html" class="btn">← กลับ</a>
 </header>
 
 <main class="container small">
 
-  <h2>แก้ไขข้อมูลผู้ใช้</h2>
+  <h2>แก้ไขผู้ใช้</h2>
 
+  <!-- Input ต่าง ๆ จะถูกเติมค่าโดย JS -->
   <label>Email</label>
-  <input value="tonteuy55@gmail.com" disabled>
+  <input id="email" disabled>
 
   <label>Username</label>
-  <input value="tonteuy" disabled>
+  <input id="username" disabled>
 
   <label>ชื่อที่แสดง</label>
-  <input value="นฤมล">
+  <input id="displayName">
 
-  <label>บทบาท</label>
-  <select>
-    <option>Sales</option>
-    <option>Admin</option>
+  <label>Role</label>
+  <select id="role">
+    <option value="user">User</option>
+    <option value="sales">Sales</option>
+    <option value="manager">Manager</option>
+    <option value="admin">Admin</option>
   </select>
 
-  <label>สถานะ</label>
-  <select>
-    <option>Active</option>
-    <option>ระงับ</option>
+  <label>Status</label>
+  <select id="status">
+    <option value="Active">Active</option>
+    <option value="Suspended">Suspended</option>
   </select>
 
-  <div class="actions">
-    <button class="btn primary">บันทึก</button>
-    <a class="btn" href="admin.html">ยกเลิก</a>
-  </div>
+  <button onclick="saveUser()">บันทึก</button>
 
 </main>
+
+<script>
+// ===============================
+// Config
+// ===============================
+const supabaseClient = supabase.createClient(
+  "https://vhazgytcfvjhhikiqpwm.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoYXpneXRjZnZqaGhpa2lxcHdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjA1MjgsImV4cCI6MjA4NjIzNjUyOH0.wHHUPop0xMrUgX6X8Jkk-fahVfIMW-iYx4NT0zg5lxM"
+
+);
+
+const params = new URLSearchParams(window.location.search);
+const userId = params.get("id");
+
+// ===============================
+// Load User Data
+// ===============================
+async function loadUser() {
+
+  const { data } =
+    await supabaseClient
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
+
+  document.getElementById("email").value = data.email;
+  document.getElementById("username").value = data.username;
+  document.getElementById("displayName").value = data.display_name;
+  document.getElementById("role").value = data.role;
+  document.getElementById("status").value = data.status;
+}
+
+// ===============================
+// Save
+// ===============================
+async function saveUser() {
+
+  const { error } =
+    await supabaseClient
+      .from("profiles")
+      .update({
+        display_name: document.getElementById("displayName").value,
+        role: document.getElementById("role").value,
+        status: document.getElementById("status").value
+      })
+      .eq("id", userId);
+
+  if (error) {
+    console.error("Update error:", error);
+    alert("บันทึกไม่สำเร็จ: " + error.message);
+    return;
+  }
+
+  alert("บันทึกสำเร็จ");
+  window.location.href = "admin.html";
+}
+
+
+loadUser();
+</script>
 
 </body>
 </html>

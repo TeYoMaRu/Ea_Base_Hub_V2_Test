@@ -1,0 +1,15 @@
+/* ===============================
+   SALES PAGE ONLY
+================================ */
+
+.search {
+  width: 300px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.badge.active {
+  background: #c8e6c9;
+  color: #2e7d32;
+}

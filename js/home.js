@@ -57,6 +57,23 @@ async function protectPage() {
 }
 
 
+async function loadUserEmail() {
+
+  const { data: { user }, error } =
+    await supabaseClient.auth.getUser();
+
+  if (error || !user) {
+    console.log("ไม่พบ user");
+    return;
+  }
+
+  const emailEl = document.getElementById("userEmail");
+  if (emailEl) {
+    emailEl.textContent = user.email;
+  }
+}
+
+
 /* =================================================
    4️⃣ Load Data
 ================================================= */
@@ -383,10 +400,32 @@ async function init() {
   await loadData();   // สำคัญมาก
   await loadUserInfo();   // ต้องมีอันนี้
   await loadUserProfile();
+  await loadUserEmail();
+  await loadUserRole();
   renderSummary();
   renderReportList();
   renderWeeklyProgress();
   renderCalendar();
+}
+
+
+async function loadUserRole() {
+
+  const { data: { user } } =
+    await supabaseClient.auth.getUser();
+
+  if (!user) return;
+
+  const { data: profile } =
+    await supabaseClient
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+  if (profile?.role === "admin") {
+    document.body.classList.add("is-admin");
+  }
 }
 
 

@@ -1,0 +1,19 @@
+/* ===============================
+   EDIT USER PAGE
+================================ */
+
+.container.small {
+  max-width: 500px;
+}
+
+label {
+  margin-top: 14px;
+  display: block;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}

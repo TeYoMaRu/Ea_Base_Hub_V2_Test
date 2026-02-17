@@ -5,7 +5,9 @@
 <title>Admin | ร้านค้า</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="css/admin-base.css">
+<link rel="stylesheet" href="css/admin-shops.css">
+
 </head>
 
 <body>
@@ -39,35 +41,15 @@
         <th>จัดการ</th>
       </tr>
     </thead>
-    <tbody>
-      <tr>
-        <td>S001</td>
-        <td>ร้าน ABC</td>
-        <td>กรุงเทพ</td>
-        <td>นฤมล</td>
-        <td><span class="badge active">ใช้งาน</span></td>
-        <td>
-          <a class="btn-sm edit" href="#">แก้ไข</a>
-          <button class="btn-sm delete" onclick="removeShop()">ลบ</button>
-        </td>
-      </tr>
+    <tbody id="shopTable">
+  <!-- JS จะเติมข้อมูลตรงนี้ -->
+</tbody>
 
-      <tr>
-        <td>S002</td>
-        <td>ร้าน XYZ</td>
-        <td>เชียงใหม่</td>
-        <td>พิชัย</td>
-        <td><span class="badge active">ใช้งาน</span></td>
-        <td>
-          <a class="btn-sm edit" href="#">แก้ไข</a>
-        </td>
-      </tr>
-    </tbody>
   </table>
 
 </main>
 
-<script>
+<!-- <script>
 const params = new URLSearchParams(window.location.search);
 const sale = params.get('sale');
 
@@ -80,8 +62,135 @@ function removeShop() {
   if (confirm('ยืนยันลบร้านค้านี้?')) {
     alert('ลบแล้ว (ตัวอย่าง)');
   }
-}
-</script>
+} -->
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+// ===============================
+// 1️⃣ Supabase Config
+// ===============================
+const supabaseClient = supabase.createClient(
+  "https://vhazgytcfvjhhikiqpwm.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoYXpneXRjZnZqaGhpa2lxcHdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjA1MjgsImV4cCI6MjA4NjIzNjUyOH0.wHHUPop0xMrUgX6X8Jkk-fahVfIMW-iYx4NT0zg5lxM"
+
+);
+
+// ===============================
+// 2️⃣ อ่าน sale_id จาก URL
+// ===============================
+const urlParams = new URLSearchParams(window.location.search);
+const saleId = urlParams.get("sale");
+
+// ===============================
+// 3️⃣ โหลดข้อมูลร้าน
+// ===============================
+async function loadShops() {
+
+  if (!saleId) {
+    alert("ไม่พบ sale id");
+    return;
+  }
+
+  // -----------------------------
+  // ดึงข้อมูล Sales
+  // -----------------------------
+  const { data: saleData, error: saleError } =
+    await supabaseClient
+      .from("profiles")
+      .select("display_name, username")
+      .eq("id", saleId)
+      .single();
+
+  if (saleError) {
+    console.error("โหลด Sales ไม่ได้:", saleError);
+  } else {
+    document.getElementById("saleTitle").innerText =
+      "ร้านค้าของ Sales: " +
+      (saleData.display_name || saleData.username);
+  }
+
+  // -----------------------------
+  // ดึงร้าน
+  // -----------------------------
+  const { data: shops, error } =
+    await supabaseClient
+      .from("shops")
+      .select("*")
+      .eq("sale_id", saleId)
+      .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("โหลดร้านไม่สำเร็จ:", error);
+    return;
+  }
+
+  const tbody = document.getElementById("shopTable");
+  tbody.innerHTML = "";
+
+  if (!shops || shops.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align:center;">
+          ไม่พบร้านค้า
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  shops.forEach(shop => {
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${shop.shop_code || "-"}</td>
+      <td>${shop.shop_name}</td>
+      <td>${shop.province || "-"}</td>
+      <td>${saleData?.display_name || "-"}</td>
+      <td>
+        <span class="badge">
+          ${shop.status || "Active"}
+        </span>
+      </td>
+      <td>
+        <button onclick="deleteShop('${shop.id}')">
+          ลบ
+        </button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+// ===============================
+// 4️⃣ ลบร้าน
+// ===============================
+async function deleteShop(shopId) {
+
+  if (!confirm("ยืนยันลบร้านค้านี้?")) return;
+
+  const { error } =
+    await supabaseClient
+      .from("shops")
+      .delete()
+      .eq("id", shopId);
+
+  if (error) {
+    alert("ลบไม่สำเร็จ");
+    console.error(error);
+  } else {
+    loadShops();
+  }
+}
+
+// ===============================
+// 5️⃣ เรียกตอนโหลดหน้า
+// ===============================
+document.addEventListener("DOMContentLoaded", loadShops);
+
+</script>
 </body>
 </html>

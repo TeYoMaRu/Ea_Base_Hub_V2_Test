@@ -3,193 +3,136 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin | จัดการผู้ใช้</title>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<style>
-body {
-  margin: 0;
-  font-family: 'Kanit', sans-serif;
-  background: #f4f6f8;
-}
+<!-- โหลด Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-/* ===== Top Bar ===== */
-.topbar {
-  background: #2e7d32;
-  color: white;
-  padding: 12px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+<!-- CSS แยกไฟล์ -->
+<link rel="stylesheet" href="css/admin-base.css">
+<link rel="stylesheet" href="css/admin-users.css">
 
-/* ===== Layout ===== */
-.container {
-  max-width: 1100px;
-  margin: 24px auto;
-  padding: 0 16px;
-}
-
-.header {
-  background: white;
-  padding: 16px 20px;
-  border-radius: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* ===== Tabs ===== */
-.tabs {
-  display: flex;
-  gap: 10px;
-  margin: 20px 0;
-}
-.tab {
-  padding: 8px 18px;
-  border-radius: 20px;
-  background: #e0e0e0;
-  font-size: 14px;
-  text-decoration: none;
-  color: #333;
-}
-.tab.active {
-  background: #2e7d32;
-  color: white;
-}
-
-/* ===== Table ===== */
-.table-box {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-th {
-  background: #43a047;
-  color: white;
-  padding: 10px;
-  font-size: 13px;
-  text-align: left;
-}
-td {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  font-size: 13px;
-}
-
-.badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-}
-.active { background: #c8e6c9; color: #2e7d32; }
-.wait { background: #fff3cd; color: #856404; }
-
-.action a {
-  margin-right: 6px;
-  text-decoration: none;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 8px;
-}
-.edit { background: #e3f2fd; color: #1565c0; }
-.delete { background: #ffebee; color: #c62828; }
-
-@media (min-width: 768px) and (max-width: 1280px) and (orientation: landscape) {
-
-  .table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-  }
-
-  table {
-    width: 100%;
-    min-width: 900px; /* สำคัญมากสำหรับแนวนอน */
-  }
-
-  th, td {
-    padding: 10px 12px;
-    font-size: 14px;
-    white-space: nowrap;
-  }
-  @media (min-width: 768px) and (max-width: 1280px) and (orientation: landscape) {
-  button {
-    min-height: 44px;   /* มาตรฐาน touch */
-    font-size: 15px;
-  }
-}
-
-
-}
-
-</style>
 </head>
 
 <body>
 
-<div class="topbar">
-  <strong>EABaseHub | Admin</strong>
-  <a href="index.html" style="color:white;">Logout</a>
-</div>
+<header class="topbar">
+  <div class="brand">🌿 EABaseHub | Admin</div>
+  <button onclick="logout()" class="btn">Logout</button>
+</header>
 
-<div class="container">
+<main class="container">
 
-  <div class="header">
-    <h2>จัดการผู้ใช้และสิทธิ์</h2>
-    <a href="admin-user.html" class="tab active">➕ เพิ่มผู้ใช้</a>
-  </div>
+  <h2>จัดการผู้ใช้</h2>
 
-  <div class="tabs">
-    <a class="tab active" href="admin.html">ผู้ใช้งาน</a>
-    <a class="tab" href="admin-sales.html">Sales</a>
-    <a class="tab" href="admin-shop.html">ร้านค้า</a>
-  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Username</th>
+        <th>ชื่อที่แสดง</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>จัดการ</th>
+      </tr>
+    </thead>
 
-  
-    <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>Email</th>
-          <th>Username</th>
-          <th>ชื่อที่แสดง</th>
-          <th>สถานะ</th>
-          <th>บทบาท</th>
-          <th>จัดการ</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>tonteuy55@gmail.com</td>
-          <td>tonteuy</td>
-          <td>นฤมล</td>
-          <td><span class="badge active">Active</span></td>
-          <td>Sales</td>
-          <td class="action">
-            <a class="edit" href="admin-user-edit.html?id=tonteuy">แก้ไข</a>
-            <a class="delete" href="#">ลบ</a>
-          </td>
-        </tr>
+    <!-- tbody จะถูกเติมจาก JS -->
+    <tbody id="userTable"></tbody>
+  </table>
 
-        <tr>
-          <td>mkreport2026@gmail.com</td>
-          <td>adminmk</td>
-          <td>Admin Marketing</td>
-          <td><span class="badge active">Active</span></td>
-          <td>Admin</td>
-          <td class="action">
-            <a class="edit" href="admin-user-edit.html?id=adminmk">แก้ไข</a>
-            <a class="delete" href="#">ลบ</a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-  
+</main>
 
-</div>
+<script>
+// ===============================
+// 1️⃣ Supabase Config
+// ===============================
+const supabaseClient = supabase.createClient(
+  "https://vhazgytcfvjhhikiqpwm.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoYXpneXRjZnZqaGhpa2lxcHdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjA1MjgsImV4cCI6MjA4NjIzNjUyOH0.wHHUPop0xMrUgX6X8Jkk-fahVfIMW-iYx4NT0zg5lxM"
+
+);
+
+// ===============================
+// 2️⃣ Protect Admin Page
+// ===============================
+async function protectAdmin() {
+
+  const { data: { user } } =
+    await supabaseClient.auth.getUser();
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // เช็ค role
+  const { data: profile } =
+    await supabaseClient
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+  if (profile.role !== "admin") {
+    alert("ไม่มีสิทธิ์เข้าใช้งาน");
+    window.location.href = "index.html";
+  }
+}
+
+// ===============================
+// 3️⃣ Load Users
+// ===============================
+async function loadUsers() {
+
+  const { data, error } =
+    await supabaseClient
+      .from("profiles")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const table = document.getElementById("userTable");
+  table.innerHTML = "";
+
+  data.forEach(user => {
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${user.email}</td>
+      <td>${user.username}</td>
+      <td>${user.display_name || "-"}</td>
+      <td>${user.role}</td>
+      <td>${user.status || "Active"}</td>
+      <td>
+        <a href="adminUserEdit.html?id=${user.id}">แก้ไข</a>
+      </td>
+    `;
+
+    table.appendChild(tr);
+  });
+}
+
+// ===============================
+// 4️⃣ Logout
+// ===============================
+async function logout() {
+  await supabaseClient.auth.signOut();
+  window.location.href = "login.html";
+}
+
+// ===============================
+// 5️⃣ Init
+// ===============================
+(async () => {
+  await protectAdmin();
+  await loadUsers();
+})();
+</script>
+
 </body>
 </html>

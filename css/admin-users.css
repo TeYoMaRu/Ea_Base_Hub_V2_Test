@@ -1,0 +1,13 @@
+/* ===============================
+   USERS PAGE ONLY
+================================ */
+
+/* ทำให้ table users มี hover effect */
+tbody tr:hover {
+  background: #f1f8f4;
+}
+
+/* ขนาด column */
+td:nth-child(1) {
+  width: 220px; /* email */
+}

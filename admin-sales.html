@@ -4,8 +4,11 @@
 <meta charset="UTF-8">
 <title>Admin | Sales</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="css/admin-base.css">
+<link rel="stylesheet" href="css/admin-sales.css">
+
 </head>
 
 <body>
@@ -19,52 +22,107 @@
 
   <h2>จัดการ Sales</h2>
 
-  <!-- Tabs -->
   <div class="tabs">
     <a class="tab" href="admin.html">ผู้ใช้งาน</a>
     <a class="tab active" href="admin-sales.html">Sales</a>
     <a class="tab" href="admin-shops.html">ร้านค้า</a>
   </div>
 
-  <input class="search" placeholder="ค้นหารหัส / ชื่อ Sales">
-
   <table>
     <thead>
       <tr>
-        <th>รหัส</th>
+        <th>Username</th>
         <th>ชื่อ Sales</th>
-        <th>พื้นที่</th>
         <th>Email</th>
         <th>จำนวนร้านค้า</th>
         <th>จัดการ</th>
       </tr>
     </thead>
-    <tbody>
-      <tr>
-        <td>19100</td>
-        <td>พิชัย สัมมา</td>
-        <td>ภาคเหนือ</td>
-        <td>-</td>
-        <td><span class="badge active">0 ร้าน</span></td>
-        <td>
-          <a class="btn-sm edit" href="admin-shops.html?sale=19100">จัดการร้านค้า</a>
-        </td>
-      </tr>
-
-      <tr>
-        <td>tonteuy</td>
-        <td>นฤมล มูลละหัตร์</td>
-        <td>ภาคกลาง</td>
-        <td>tonteuy55@gmail.com</td>
-        <td><span class="badge active">122 ร้าน</span></td>
-        <td>
-          <a class="btn-sm edit" href="admin-shops.html?sale=tonteuy">จัดการร้านค้า</a>
-        </td>
-      </tr>
-    </tbody>
+    <tbody id="salesTable"></tbody>
   </table>
 
 </main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+// ===============================
+// 1️⃣ Supabase Config
+// ===============================
+const supabaseClient = supabase.createClient(
+  "https://vhazgytcfvjhhikiqpwm.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoYXpneXRjZnZqaGhpa2lxcHdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjA1MjgsImV4cCI6MjA4NjIzNjUyOH0.wHHUPop0xMrUgX6X8Jkk-fahVfIMW-iYx4NT0zg5lxM"
+);
+
+// ===============================
+// 2️⃣ โหลด Sales พร้อมนับร้าน
+// ===============================
+async function loadSales() {
+
+  const { data: sales, error } =
+    await supabaseClient
+      .from("profiles")
+      .select("id, username, display_name, email")
+      .eq("role", "sales")
+      .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("โหลด sales ไม่ได้:", error);
+    return;
+  }
+
+  const tbody = document.getElementById("salesTable");
+  tbody.innerHTML = "";
+
+  if (!sales || sales.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align:center;">
+          ไม่พบข้อมูล Sales
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  // 🔥 วนทีละ Sales แล้วนับร้านจริง
+  for (const sale of sales) {
+
+    const { count } =
+      await supabaseClient
+        .from("shops")
+        .select("*", { count: "exact", head: true })
+        .eq("sale_id", sale.id);
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${sale.username}</td>
+      <td>${sale.display_name || "-"}</td>
+      <td>${sale.email}</td>
+      <td>
+        <span class="badge">
+          ${count || 0} ร้าน
+        </span>
+      </td>
+      <td>
+        <a class="btn-sm edit"
+           href="admin-shops.html?sale=${sale.id}">
+           จัดการร้านค้า
+        </a>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  }
+}
+
+// ===============================
+document.addEventListener("DOMContentLoaded", loadSales);
+
+</script>
 
 </body>
 </html>

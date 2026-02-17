@@ -970,6 +970,13 @@ body {
   border-radius: 8px;
 }
 
+.admin-only {
+  display: none;
+}
+
+body.is-admin .admin-only {
+  display: inline-block;
+}
 
 
 /* =========================

@@ -320,6 +320,22 @@ async function handleRegister(e) {
         }
 
         // ==========================================
+// ตรวจสอบว่า username ซ้ำหรือไม่
+// ==========================================
+const { data: existingUser, error: checkError } = await supabaseClient
+    .from("profiles")
+    .select("id")
+    .eq("username", username)
+    .maybeSingle();
+
+if (checkError) throw checkError;
+
+if (existingUser) {
+    throw new Error("Username นี้ถูกใช้แล้ว กรุณาเลือกใหม่");
+}
+
+
+        // ==========================================
         // STEP 2: สร้าง profile เพิ่มใน table profiles
         // ==========================================
         const { error: profileError } = await supabaseClient
@@ -329,7 +345,9 @@ async function handleRegister(e) {
                     id: data.user.id, // ผูกกับ auth.users
                     username: username,
                     display_name: displayName,
-                    email: email 
+                    email: email,
+                    role: "user",        // ⭐ บังคับเป็น user เสมอ
+                    status: "Active" 
                 }
             ]);
 
@@ -341,7 +359,7 @@ async function handleRegister(e) {
         showAlert("success", "✓", "สมัครสมาชิกสำเร็จ! กำลังเข้าสู่ระบบ...");
 
         setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "login.html";
         }, 2000);
 
     } catch (err) {
