@@ -1,55 +1,96 @@
 /*************************************************
- * HOME.JS
- * ใช้สำหรับหน้า Home (Dashboard)
- * - อ่านข้อมูลจาก localStorage
- * - แสดง "รายงานของฉัน"
- * - แสดงตัวนับ Trip / Claim
- * - แสดงสถานะการเขียนรายงานรายสัปดาห์
- * - ควบคุม Hamburger menu
+ * HOME.JS (Production Ready)
+ * ------------------------------------------------
+ * - Protect page (Supabase session)
+ * - Load data from localStorage safely
+ * - Render Dashboard summary
+ * - Render My Reports list
+ * - Weekly report progress
+ * - Dynamic calendar
+ * - UI controls (menu / sidebar)
  *************************************************/
 
 
 /* =================================================
-   Safe LocalStorage Reader
-   -------------------------------------------------
-   ใช้แทน JSON.parse ตรง ๆ
-   - กัน error
-   - ถ้าไม่ใช่ array → คืน []
+   1️⃣ Utilities
 ================================================= */
+
+// Safe JSON parse
 function getStorageArray(key) {
   try {
     const data = JSON.parse(localStorage.getItem(key));
     return Array.isArray(data) ? data : [];
-  } catch (e) {
-    console.warn("อ่าน localStorage ไม่ได้:", key);
+  } catch (err) {
+    console.warn("Storage error:", key);
     return [];
+  }
+}
+
+// Format Date → YYYY-MM-DD
+function formatDate(date) {
+  return date.toISOString().split("T")[0];
+}
+
+
+/* =================================================
+   2️⃣ Global State
+================================================= */
+
+let reports = [];
+let trips   = [];
+let claims  = [];
+
+let currentDate = new Date();
+
+
+/* =================================================
+   3️⃣ Protect Page (Auth Required)
+================================================= */
+
+async function protectPage() {
+  const { data: { session } } =
+    await supabaseClient.auth.getSession();
+
+  if (!session) {
+    window.location.href = "login.html";
   }
 }
 
 
 /* =================================================
-   อ่านข้อมูลหลักจาก localStorage
-   -------------------------------------------------
-   ⚠️ ประกาศแค่ครั้งเดียว ห้ามซ้ำ
+   4️⃣ Load Data
 ================================================= */
-const reports = getStorageArray("reports"); // ใบรายงาน
-const trips   = getStorageArray("trips");   // ฟอร์ม trip
-const claims  = getStorageArray("claims");  // เคลม
+
+function loadData() {
+  reports = getStorageArray("reports");
+  trips   = getStorageArray("trips");
+  claims  = getStorageArray("claims");
+}
 
 
 /* =================================================
-   Render : "รายงานของฉัน"
-   -------------------------------------------------
-   - รวม report + trip
-   - เรียงจากใหม่ → เก่า
-   - คลิกชื่อเพื่อแก้ไข
+   5️⃣ Render Dashboard Summary
 ================================================= */
-const listEl = document.getElementById("myReportList");
 
-if (listEl) {
+function renderSummary() {
+  const tripCountEl  = document.getElementById("tripCount");
+  const claimCountEl = document.getElementById("claimCount");
+
+  if (tripCountEl)  tripCountEl.textContent  = trips.length;
+  if (claimCountEl) claimCountEl.textContent = claims.length;
+}
+
+
+/* =================================================
+   6️⃣ Render My Reports
+================================================= */
+
+function renderReportList() {
+  const listEl = document.getElementById("myReportList");
+  if (!listEl) return;
+
   listEl.innerHTML = "";
 
-  // รวมข้อมูลหลายประเภทให้เป็นรูปแบบเดียว
   const items = [
     ...reports.map(r => ({
       type: "report",
@@ -67,45 +108,34 @@ if (listEl) {
     }))
   ];
 
-  // ถ้าไม่มีข้อมูล
-  if (items.length === 0) {
+  if (!items.length) {
     listEl.innerHTML =
-      `<p style="color:#999">ยังไม่มีรายงานหรือฟอร์มที่บันทึกไว้</p>`;
-  } else {
-    // เรียงใหม่ → เก่า
-    items
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .forEach(item => {
-        const div = document.createElement("div");
-        div.className = "report-item";
-
-        div.innerHTML = `
-          <div class="report-left">
-            📄
-            <a href="${item.link}">
-              ${item.title}
-            </a>
-          </div>
-
-          <div class="report-actions">
-            <button title="แก้ไข" onclick="location.href='${item.link}'">✏️</button>
-            <button title="ลบ" onclick="deleteItem('${item.type}', '${item.id}')">🗑️</button>
-          </div>
-        `;
-
-        listEl.appendChild(div);
-      });
+      `<p style="color:#999">ยังไม่มีข้อมูล</p>`;
+    return;
   }
+
+  items
+    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+    .forEach(item => {
+      const div = document.createElement("div");
+      div.className = "report-item";
+
+      div.innerHTML = `
+        <div class="report-left">
+          📄 <a href="${item.link}">${item.title}</a>
+        </div>
+        <div class="report-actions">
+          <button onclick="location.href='${item.link}'">✏️</button>
+          <button onclick="deleteItem('${item.type}','${item.id}')">🗑️</button>
+        </div>
+      `;
+
+      listEl.appendChild(div);
+    });
 }
 
-
-/* =================================================
-   Delete Item (Report / Trip)
-   -------------------------------------------------
-   ลบข้อมูลออกจาก localStorage
-================================================= */
 function deleteItem(type, id) {
-  if (!confirm("ต้องการลบรายการนี้ใช่หรือไม่?")) return;
+  if (!confirm("ต้องการลบใช่หรือไม่?")) return;
 
   const key = type === "report" ? "reports" : "trips";
   const data = getStorageArray(key);
@@ -113,119 +143,78 @@ function deleteItem(type, id) {
   const newData = data.filter(item => item.id !== id);
   localStorage.setItem(key, JSON.stringify(newData));
 
-  // รีเฟรชหน้าเพื่อ render ใหม่
-  location.reload();
+  init(); // re-render ใหม่แทน reload
 }
 
 
 /* =================================================
-   Card Summary (ตัวเลขด้านบน)
+   7️⃣ Weekly Report Progress
 ================================================= */
-const tripCountEl  = document.getElementById("tripCount");
-const claimCountEl = document.getElementById("claimCount");
 
-if (tripCountEl)  tripCountEl.textContent  = trips.length;
-if (claimCountEl) claimCountEl.textContent = claims.length;
+function renderWeeklyProgress() {
+  const reportDaysEl = document.getElementById("reportDays");
+  const progressFill = document.getElementById("reportProgress");
+
+  if (!reports.length) {
+    if (reportDaysEl) reportDaysEl.textContent = "0";
+    if (progressFill) progressFill.style.width = "0%";
+    return;
+  }
+
+  const latestReport =
+    reports.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
+  const lastDate = new Date(latestReport.date);
+  const now = new Date();
+
+  const diffDays = Math.floor(
+    (now - lastDate) / (1000 * 60 * 60 * 24)
+  );
+
+  if (reportDaysEl) reportDaysEl.textContent = diffDays;
+
+  const percent = Math.min((diffDays / 7) * 100, 100);
+
+  if (progressFill)
+    progressFill.style.width = percent + "%";
+}
 
 
 /* =================================================
-   Reset Data (Admin / Debug)
-================================================= */
-function resetData() {
-  if (!confirm("ล้างข้อมูลทั้งหมด?")) return;
-
-  localStorage.removeItem("reports");
-  localStorage.removeItem("trips");
-  localStorage.removeItem("claims");
-
-  location.reload();
-}
-
-
-/* =================================================
-   Hamburger Menu (Mobile)
-================================================= */
-function toggleMenu() {
-  const menu = document.querySelector(".menu");
-  if (menu) menu.classList.toggle("show");
-}
-
-
-/* =================================================
-   Report Progress (Weekly)
-   -------------------------------------------------
-   - ส่งรายงานสัปดาห์ละ 1 ครั้ง
-   - แสดงจำนวนวันที่ผ่านไป
+   8️⃣ Calendar
 ================================================= */
 
-// วันที่เขียนรายงานล่าสุด (mock ก่อน)
-let lastReportDate = localStorage.getItem("lastReportDate");
-
-// ถ้าไม่เคยมี → ใช้วันนี้
-if (!lastReportDate) {
-  lastReportDate = new Date().toISOString();
-  localStorage.setItem("lastReportDate", lastReportDate);
+function getReportDates() {
+  return reports
+    .map(r => r.date)
+    .filter(Boolean)
+    .map(d => d.split("T")[0]);
 }
-
-// คำนวณจำนวนวัน
-const now  = new Date();
-const last = new Date(lastReportDate);
-const diffDays = Math.floor(
-  (now - last) / (1000 * 60 * 60 * 24)
-);
-
-// แสดงจำนวนวัน
-const reportDaysEl = document.getElementById("reportDays");
-if (reportDaysEl) {
-  reportDaysEl.textContent = diffDays;
-}
-
-// คำนวณ progress (7 วัน = 100%)
-const progressPercent = Math.min((diffDays / 7) * 100, 100);
-const progressFill = document.getElementById("reportProgress");
-
-if (progressFill) {
-  progressFill.style.width = progressPercent + "%";
-}
-//เปดร้านค้า
-function openShopModal() {
-  alert('เปิดฟอร์มเพิ่มร้านค้า (เดี๋ยวทำหน้าฟอร์มต่อได้)');
-}
-
-//calendar
-// =========================
-// วันที่ที่มีรายงาน (YYYY-MM-DD)
-// =========================
-const reportDates = [
-  "2026-02-01",
-  "2026-02-05",
-  "2026-02-09", // วันนี้ตามรูปคุณ
-  "2026-02-12"
-];
-
-let currentDate = new Date();
-let selectedDate = null;
 
 function renderCalendar() {
   const grid = document.getElementById("calendarGrid");
   const title = document.getElementById("calendarTitle");
+  if (!grid || !title) return;
+
   grid.innerHTML = "";
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
+  const today = new Date();
 
-  // ชื่อเดือนภาษาไทย
   const monthNames = [
     "มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน",
     "กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"
   ];
+
   title.textContent = `${monthNames[month]} ${year}`;
 
-  // วันแรกของเดือน
   const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInMonth =
+    new Date(year, month + 1, 0).getDate();
 
-  // หัวตารางวัน
+  const reportDates = getReportDates();
+
   const dayHeaders = ["อา","จ","อ","พ","พฤ","ศ","ส"];
   dayHeaders.forEach(d => {
     const el = document.createElement("div");
@@ -234,60 +223,32 @@ function renderCalendar() {
     grid.appendChild(el);
   });
 
-  // ช่องว่างก่อนวันแรก
   for (let i = 0; i < firstDay; i++) {
-    const empty = document.createElement("div");
-    grid.appendChild(empty);
+    grid.appendChild(document.createElement("div"));
   }
 
-  // วันในเดือน
   for (let day = 1; day <= daysInMonth; day++) {
-  const dateEl = document.createElement("div");
-  dateEl.className = "calendar-day";
-  dateEl.textContent = day;
+    const dateEl = document.createElement("div");
+    dateEl.className = "calendar-day";
+    dateEl.textContent = day;
 
-  const dateStr =
-    `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    const dateStr =
+      `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-  // 🔴 ถ้ามีรายงาน → ใส่ class
-  if (reportDates.includes(dateStr)) {
-    dateEl.classList.add("has-report");
-  }
+    if (reportDates.includes(dateStr))
+      dateEl.classList.add("has-report");
 
-  // วันนี้
-  const today = new Date();
-  if (
-    day === today.getDate() &&
-    month === today.getMonth() &&
-    year === today.getFullYear()
-  ) {
-    dateEl.classList.add("today");
-  }
+    if (
+      day === today.getDate() &&
+      month === today.getMonth() &&
+      year === today.getFullYear()
+    ) {
+      dateEl.classList.add("today");
+    }
 
-  dateEl.onclick = () => selectDate(year, month, day, dateEl);
-  grid.appendChild(dateEl);
-}
-
-}
-
-function selectDate(year, month, day, el) {
-  document.querySelectorAll(".calendar-day").forEach(d =>
-    d.classList.remove("selected")
-  );
-
-  el.classList.add("selected");
-
-  const dateStr =
-    `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
-  if (reportDates.includes(dateStr)) {
-    console.log("📄 วันนี้มีรายงาน:", dateStr);
-    // ต่อยอด: กรองรายงาน / เปิด modal
-  } else {
-    console.log("ไม่มีรายงาน:", dateStr);
+    grid.appendChild(dateEl);
   }
 }
-
 
 function prevMonth() {
   currentDate.setMonth(currentDate.getMonth() - 1);
@@ -299,94 +260,39 @@ function nextMonth() {
   renderCalendar();
 }
 
-// โหลดครั้งแรก
-renderCalendar();
 
 /* =================================================
-   LOGOUT
-   -------------------------------------------------
-   - ล้างข้อมูล session / localStorage
-   - กลับหน้า login
+   9️⃣ UI Controls
 ================================================= */
-// function logout() {
-//   if (!confirm("ต้องการออกจากระบบใช่หรือไม่?")) return;
 
-//   // ตัวอย่างล้างข้อมูล (ปรับตามที่คุณใช้จริง)
-//   localStorage.removeItem("user");
-//   sessionStorage.clear();
-
-//   // กลับหน้า login
-//   window.location.href = "login.html";
-// }
-
-
-
-
-// =======================================
-// PROTECT INDEX PAGE
-// =======================================
-async function protectPage() {
-
-    const { data: { session } } = await supabaseClient.auth.getSession();
-
-    if (!session) {
-        // ถ้าไม่ได้ login → เด้งไปหน้า login
-        window.location.href = "login.html";
-    }
+function toggleMenu() {
+  document.querySelector(".menu")?.classList.toggle("show");
 }
-
-// เรียกทันทีเมื่อโหลดหน้า
-protectPage();
-
-// =======================================
-// SESSION CHECK (ป้องกันคนไม่ login)
-// =======================================
-async function checkSession() {
-
-    const { data: { session } } = await supabaseClient.auth.getSession();
-
-    if (!session) {
-        // ถ้าไม่มี session → กลับ login
-        window.location.href = "login.html";
-    }
-}
-
-// เรียกทันทีเมื่อโหลดหน้า
-checkSession();
-
-async function logout() {
-    await supabaseClient.auth.signOut();
-
-    // ลบ session แล้วเด้งกลับ login
-    window.location.href = "login.html";
-}
-
 
 function toggleSidebar() {
-  document.getElementById("sidebar").classList.toggle("collapsed");
+  document.getElementById("sidebar")
+    ?.classList.toggle("collapsed");
 }
-document.addEventListener("DOMContentLoaded", async () => {
 
-  // ดึง user จาก session
-  const { data: { user }, error } = await supabase.auth.getUser();
+async function logout() {
+  await supabaseClient.auth.signOut();
+  window.location.href = "login.html";
+}
 
-  // ถ้าไม่มี user ให้กลับหน้า login
-  if (error || !user) {
-    window.location.href = "login.html";
-    return;
-  }
 
-  // ===== ดึงข้อมูลจาก auth =====
-  const email = user.email;
+/* =================================================
+   🔟 INIT
+================================================= */
 
-  // ถ้าเก็บชื่อไว้ใน metadata ตอนสมัคร
-  const fullName = user.user_metadata?.full_name || email;
+async function init() {
+  await protectPage();
+  loadData();
+  renderSummary();
+  renderReportList();
+  renderWeeklyProgress();
+  renderCalendar();
+}
 
-  // ===== ใส่ข้อมูลลงหน้าเว็บ =====
-  document.getElementById("userName").textContent = fullName;
-  document.getElementById("userEmail").textContent = email;
+document.addEventListener("DOMContentLoaded", init);
 
-});
-
-// Debug
-console.log("home.js loaded ✅");
+console.log("Home loaded (Production Ready) 🚀");
