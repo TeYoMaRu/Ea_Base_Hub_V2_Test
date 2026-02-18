@@ -6,6 +6,8 @@
 
 <!-- โหลด Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <!-- CSS แยกไฟล์ -->
 <link rel="stylesheet" href="css/admin-base.css">
@@ -23,6 +25,15 @@
 <main class="container">
 
   <h2>จัดการผู้ใช้</h2>
+
+  <div class="tabs">
+    <a class="tab" href="admin.html">ผู้ใช้งาน</a>
+     <a class="btn-sm edit"
+           href="admin-shops.html?sale=${sale.id}">
+           จัดการร้านค้า
+        </a>
+    <a class="tab active" href="#">ร้านค้า</a>
+  </div>
 
   <table>
     <thead>

@@ -17,12 +17,24 @@ async function redirectIfLoggedIn() {
     const { data: { session } } = await supabaseClient.auth.getSession();
 
     if (session) {
-      window.location.href = "index.html";
+
+      const { data: profile } = await supabaseClient
+        .from("profiles")
+        .select("role")
+        .eq("id", session.user.id)
+        .single();
+
+      if (profile && profile.role === "admin") {
+        window.location.href = "admin-dashboard.html";
+      } else {
+        await supabaseClient.auth.signOut();
+      }
     }
   } catch (error) {
     console.error("Error checking session:", error);
   }
 }
+
 
 redirectIfLoggedIn();
 
@@ -155,7 +167,26 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("✅ เข้าสู่ระบบสำเร็จ!");
 
         // เปลี่ยนหน้าเมื่อ login สำเร็จ
-        window.location.href = "index.html";
+        // ===============================
+// เช็ค role หลัง login
+// ===============================
+const { data: profile, error: roleError } = await supabaseClient
+  .from("profiles")
+  .select("role")
+  .eq("id", authData.user.id)
+  .single();
+
+if (roleError || !profile) {
+  throw new Error("ไม่สามารถตรวจสอบสิทธิ์ได้");
+}
+
+if (profile.role === "admin") {
+  window.location.href = "admin.html";
+} else {
+  await supabaseClient.auth.signOut();
+  throw new Error("คุณไม่มีสิทธิ์เข้าใช้งานระบบนี้");
+}
+
 
       } catch (err) {
         console.error("💥 Error:", err);
