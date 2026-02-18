@@ -2,12 +2,12 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Admin | จัดการผู้ใช้</title>
+<title>Admin | จัดการสิทธิ์</title>
 
 <!-- โหลด Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <!-- CSS แยกไฟล์ -->
 <link rel="stylesheet" href="css/admin-base.css">
@@ -24,27 +24,296 @@
 
 <main class="container">
 
-  <h2>จัดการผู้ใช้</h2>
-
-  <div class="tabs">
-    <a class="tab" href="admin.html">ผู้ใช้งาน</a>
-     <a class="btn-sm edit"
-           href="admin-shops.html?sale=${sale.id}">
-           จัดการร้านค้า
-        </a>
-    <a class="tab active" href="#">ร้านค้า</a>
+  <div class="admin-header">
+    <h2 class="admin-title">
+      <span class="material-symbols-outlined admin-title-icon">admin_panel_settings</span>
+      จัดการผู้ใช้และสิทธิ์
+    </h2>
+    <button class="btn-back" onclick="goHome()">
+      <span class="material-symbols-outlined btn-back-icon">arrow_back</span>
+      กลับหน้าหลัก
+    </button>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Email</th>
-        <th>Username</th>
-        <th>ชื่อที่แสดง</th>
-        <th>Role</th>
-        <th>Status</th>
-        <th>จัดการ</th>
-      </tr>
+   <!-- ==================== TABS NAVIGATION ==================== -->
+  <!-- แถบเมนู 3 Tab -->
+  <div class="admin-tabs">
+
+    <!-- Tab 1: ผู้ใช้งาน -->
+    <button class="admin-tab active" onclick="showTab('users')">
+      <span class="material-symbols-outlined">people</span>
+      ผู้ใช้งาน
+    </button>
+
+    
+
+    <!-- Tab 2: Sales -->
+    <button class="admin-tab" onclick="showTab('sales')">
+      <span class="material-symbols-outlined">badge</span>
+      Sales
+    </button>
+    
+
+    <!-- Tab 3: สิทธิ์ร้านค้า -->
+    <a class="admin-tab" href="admin-shops.html">
+  <span class="material-symbols-outlined">store</span>
+  สิทธิ์ร้านค้า
+</a>
+
+
+  
+  </div>
+
+  <!-- ==================== TAB 1: ผู้ใช้งาน ==================== -->
+  <!-- 
+    แสดงรายชื่อผู้สมัครใช้งาน
+    - ดูสถานะการเชื่อมโยงกับ Sales
+    - เชื่อมโยง User กับ Sales
+  -->
+  <div id="tabUsers" class="tab-content active">
+
+    <!-- ปุ่ม Refresh -->
+    <button class="btn-refresh" onclick="loadUsers()">
+      <span class="material-symbols-outlined">refresh</span>
+      รีเฟรช
+    </button>
+  
+
+    <!-- ช่องค้นหา
+    <div class="search-box">
+      <input 
+        type="text" 
+        id="searchUser" 
+        placeholder="ค้นหา email, username..." 
+        oninput="filterUsers()"
+      >
+    </div> -->
+
+    <!-- ตารางผู้ใช้ -->
+    <div class="admin-table-card">
+      <div class="admin-table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Username</th>
+              <th>ชื่อที่แสดง</th>
+              <th>Role</th>
+              <th>สถานะ</th>
+              <th>จัดการ</th>
+              <!-- <th>ดำเนินการ</th> -->
+            </tr>
+          </thead>
+          <!-- tbody จะถูกเติมจาก JS -->
+    <tbody id="userTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== TAB 2: Sales ==================== -->
+  <!-- 
+    แสดงรายชื่อ Sales
+    - ดูข้อมูล Sales
+    - จัดการสิทธิ์ร้านค้า
+  -->
+  <div id="tabSales" class="tab-content">
+
+    
+
+    <!-- ปุ่ม Refresh -->
+    <button class="btn-refresh" onclick="loadSales()">
+      <span class="material-symbols-outlined">refresh</span>
+      รีเฟรช
+    </button>
+
+    <!-- ช่องค้นหา -->
+    <div class="search-box">
+      <input 
+        type="text" 
+        id="searchSales" 
+        placeholder="ค้นหา รหัส, ชื่อ Sales..." 
+        oninput="filterSales()"
+      >
+    </div>
+
+    <!-- ตาราง Sales -->
+    <div class="admin-table-card">
+      <div class="admin-table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>รหัส</th>
+              <th>ชื่อ Sales</th>
+              <th>พื้นที่</th>
+              <th>จำนวนร้านค้า</th>
+              <th>ดำเนินการ</th>
+            </tr>
+          </thead>
+          <tbody id="salesTableContainer">
+            <!-- Loading State -->
+            <tr>
+              <td colspan="5">
+                <div class="loading-state">
+                  <span class="material-symbols-outlined loading-spinner">progress_activity</span>
+                  <div>กำลังโหลดข้อมูล...</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+ <!-- ==================== TAB 3: สิทธิ์ร้านค้า ==================== -->
+  <!-- 
+    กำหนดร้านค้าให้ Sales
+    - เลือก Sales
+    - เลือกร้านค้าที่จะกำหนดให้
+  -->
+  <div id="tabPermissions" class="tab-content">
+
+    <!-- ฟอร์มเลือก Sales -->
+    <div class="form-group">
+      <label>
+        <span class="material-symbols-outlined label-icon">badge</span>
+        เลือก Sales
+      </label>
+      <select id="selectSaleForPerm" onchange="loadSaleShops()">
+        <option value="">-- เลือก Sales --</option>
+        <!-- Options จะถูกเพิ่มโดย JavaScript -->
+      </select>
+    </div>
+
+    <!-- รายการร้านค้า - Content จะถูกสร้างโดย JavaScript -->
+    <div id="permissionsContainer">
+      <!-- renderPermissionsCheckboxes() จะสร้าง content ที่นี่ -->
+      <div class="empty-state">
+        <span class="material-symbols-outlined">store</span>
+        <div class="empty-state-text">เลือก Sales เพื่อดูสิทธิ์ร้านค้า</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Background Overlay -->
+<div class="modal-bg" id="linkModalBg" onclick="closeLinkModal()"></div>
+
+<!-- Modal Box -->
+<div class="modal-box" id="linkModalBox">
+
+  <!-- Header -->
+  <div class="modal-head">
+    <h3>
+      <span class="material-symbols-outlined">link</span>
+      เชื่อมโยง User กับ Sales
+    </h3>
+    <button class="modal-close" onclick="closeLinkModal()">&times;</button>
+  </div>
+
+  <!-- Body -->
+  <div class="modal-body">
+
+    <!-- ข้อมูล User ที่เลือก -->
+    <div class="user-info-box">
+      <div class="user-info-row">
+        <span class="user-info-label">Email:</span>
+        <span class="user-info-value" id="linkUserEmail">-</span>
+      </div>
+      <div class="user-info-row">
+        <span class="user-info-label">Username:</span>
+        <span class="user-info-value" id="linkUserName">-</span>
+      </div>
+      <div class="user-info-row">
+        <span class="user-info-label">ชื่อ:</span>
+        <span class="user-info-value" id="linkUserDisplay">-</span>
+      </div>
+    </div>
+
+    <!-- Dropdown เลือก Sales -->
+    <div class="form-group">
+      <label>เลือก Sales ที่จะเชื่อมโยง</label>
+      <select id="linkSalesSelect">
+        <option value="">-- เลือก Sales --</option>
+        <!-- Options จะถูกเพิ่มโดย JavaScript -->
+      </select>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="modal-foot">
+    <button class="btn-modal-cancel" onclick="closeLinkModal()">ยกเลิก</button>
+    <button class="btn-modal-save" onclick="saveLinkUser()" id="btnSaveLink">
+      <span class="material-symbols-outlined">save</span>
+      บันทึก
+    </button>
+  </div>
+
+</div>
+
+<!-- =====================================================
+     MODAL: จัดการร้านค้าของ Sales
+     =====================================================
+     Modal สำหรับจัดการร้านค้าที่ Sales รับผิดชอบ
+     - แสดงข้อมูล Sales ที่เลือก
+     - Checkbox เลือกร้านค้า
+     ===================================================== -->
+
+<!-- Background Overlay -->
+<div class="modal-bg" id="shopModalBg" onclick="closeShopModal()"></div>
+
+<!-- Modal Box -->
+<div class="modal-box" id="shopModalBox">
+
+  <!-- Header -->
+  <div class="modal-head">
+    <h3>
+      <span class="material-symbols-outlined">store</span>
+      จัดการร้านค้า: <span id="shopModalSalesName">-</span>
+    </h3>
+    <button class="modal-close" onclick="closeShopModal()">&times;</button>
+  </div>
+
+  <!-- Body -->
+  <div class="modal-body">
+
+    <!-- ช่องค้นหาร้านค้า -->
+    <div class="search-box">
+      <input 
+        type="text" 
+        id="searchModalShops" 
+        placeholder="ค้นหาร้านค้า..." 
+        oninput="filterModalShops()"
+      >
+    </div>
+
+    <!-- รายการ Checkbox ร้านค้า -->
+    <div class="checkbox-list" id="shopModalList">
+      <!-- Checkboxes จะถูกเพิ่มโดย JavaScript -->
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="modal-foot">
+    <button class="btn-modal-cancel" onclick="closeShopModal()">ยกเลิก</button>
+    <button class="btn-modal-save" onclick="saveShopModal()" id="btnSaveShop">
+      <span class="material-symbols-outlined">save</span>
+      บันทึก
+    </button>
+  </div>
+
+</div>
+
+  
+
+  
     </thead>
 
     <!-- tbody จะถูกเติมจาก JS -->

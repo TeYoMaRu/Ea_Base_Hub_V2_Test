@@ -4,10 +4,9 @@
 <meta charset="UTF-8">
 <title>Admin | Sales</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/admin-base.css">
-<link rel="stylesheet" href="css/admin-sales.css">
+<link rel="stylesheet" href="css/admin-shops.css">
 
 </head>
 
@@ -15,37 +14,55 @@
 
 <header class="topbar">
   <div class="brand">🌿 EABaseHub | Admin</div>
-  <a href="index.html" class="btn">กลับหน้าหลัก</a>
+  <a href="admin-sales.html" class="btn">← กลับ</a>
 </header>
 
 <main class="container">
 
-  <h2>จัดการ Sales</h2>
+  <h2>Sales</h2>
+  <p id="saleTitle" style="color:#666;font-size:14px;"></p>
 
   <div class="tabs">
     <a class="tab" href="admin.html">ผู้ใช้งาน</a>
-    <a class="tab active" href="admin-sales.html">Sales</a>
-     <a class="btn-sm edit"
-           href="admin-shops.html?sale=${sale.id}">
-           จัดการร้านค้า
-        </a>
+    <a class="tab" href="admin-sales.html">Sales</a>
+    <a class="tab active" href="#">ร้านค้า</a>
   </div>
+
+  <input class="search" placeholder="ค้นหาร้านค้า">
 
   <table>
     <thead>
       <tr>
-        <th>Username</th>
-        <th>ชื่อ Sales</th>
-        <th>Email</th>
-        <th>จำนวนร้านค้า</th>
+        <th>รหัสร้าน</th>
+        <th>ชื่อร้าน</th>
+        <th>จังหวัด</th>
+        <th>Sales</th>
+        <th>สถานะ</th>
         <th>จัดการ</th>
       </tr>
     </thead>
-    <tbody id="salesTable"></tbody>
+    <tbody id="shopTable">
+  <!-- JS จะเติมข้อมูลตรงนี้ -->
+</tbody>
+
   </table>
 
 </main>
 
+<!-- <script>
+const params = new URLSearchParams(window.location.search);
+const sale = params.get('sale');
+
+if (sale) {
+  document.getElementById('saleTitle').innerText =
+    'ร้านค้าของ Sales: ' + sale;
+}
+
+function removeShop() {
+  if (confirm('ยืนยันลบร้านค้านี้?')) {
+    alert('ลบแล้ว (ตัวอย่าง)');
+  }
+} -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -57,75 +74,123 @@
 const supabaseClient = supabase.createClient(
   "https://vhazgytcfvjhhikiqpwm.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoYXpneXRjZnZqaGhpa2lxcHdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjA1MjgsImV4cCI6MjA4NjIzNjUyOH0.wHHUPop0xMrUgX6X8Jkk-fahVfIMW-iYx4NT0zg5lxM"
+
 );
 
 // ===============================
-// 2️⃣ โหลด Sales พร้อมนับร้าน
+// 2️⃣ อ่าน sale_id จาก URL
 // ===============================
-async function loadSales() {
+const urlParams = new URLSearchParams(window.location.search);
+const saleId = urlParams.get("sale");
 
-  const { data: sales, error } =
-    await supabaseClient
-      .from("profiles")
-      .select("id, username, display_name, email")
-      .eq("role", "sales")
-      .order("created_at", { ascending: false });
+// ===============================
+// 3️⃣ โหลดข้อมูลร้าน
+// ===============================
+async function loadShops() {
 
-  if (error) {
-    console.error("โหลด sales ไม่ได้:", error);
+  if (!saleId) {
+    alert("ไม่พบ sale id");
     return;
   }
 
-  const tbody = document.getElementById("salesTable");
+  // -----------------------------
+  // ดึงข้อมูล Sales
+  // -----------------------------
+  const { data: saleData, error: saleError } =
+    await supabaseClient
+      .from("profiles")
+      .select("display_name, username")
+      .eq("id", saleId)
+      .single();
+
+  if (saleError) {
+    console.error("โหลด Sales ไม่ได้:", saleError);
+  } else {
+    document.getElementById("saleTitle").innerText =
+      "ร้านค้าของ Sales: " +
+      (saleData.display_name || saleData.username);
+  }
+
+  // -----------------------------
+  // ดึงร้าน
+  // -----------------------------
+  const { data: shops, error } =
+    await supabaseClient
+      .from("shops")
+      .select("*")
+      .eq("sale_id", saleId)
+      .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("โหลดร้านไม่สำเร็จ:", error);
+    return;
+  }
+
+  const tbody = document.getElementById("shopTable");
   tbody.innerHTML = "";
 
-  if (!sales || sales.length === 0) {
+  if (!shops || shops.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="5" style="text-align:center;">
-          ไม่พบข้อมูล Sales
+        <td colspan="6" style="text-align:center;">
+          ไม่พบร้านค้า
         </td>
       </tr>
     `;
     return;
   }
 
-  // 🔥 วนทีละ Sales แล้วนับร้านจริง
-  for (const sale of sales) {
-
-    const { count } =
-      await supabaseClient
-        .from("shops")
-        .select("*", { count: "exact", head: true })
-        .eq("sale_id", sale.id);
+  shops.forEach(shop => {
 
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${sale.username}</td>
-      <td>${sale.display_name || "-"}</td>
-      <td>${sale.email}</td>
+      <td>${shop.shop_code || "-"}</td>
+      <td>${shop.shop_name}</td>
+      <td>${shop.province || "-"}</td>
+      <td>${saleData?.display_name || "-"}</td>
       <td>
         <span class="badge">
-          ${count || 0} ร้าน
+          ${shop.status || "Active"}
         </span>
       </td>
       <td>
-        <a class="btn-sm edit"
-           href="admin-shops.html?sale=${sale.id}">
-           จัดการร้านค้า
-        </a>
+        <button onclick="deleteShop('${shop.id}')">
+          ลบ
+        </button>
       </td>
     `;
 
     tbody.appendChild(tr);
+  });
+}
+
+// ===============================
+// 4️⃣ ลบร้าน
+// ===============================
+async function deleteShop(shopId) {
+
+  if (!confirm("ยืนยันลบร้านค้านี้?")) return;
+
+  const { error } =
+    await supabaseClient
+      .from("shops")
+      .delete()
+      .eq("id", shopId);
+
+  if (error) {
+    alert("ลบไม่สำเร็จ");
+    console.error(error);
+  } else {
+    loadShops();
   }
 }
 
 // ===============================
-document.addEventListener("DOMContentLoaded", loadSales);
+// 5️⃣ เรียกตอนโหลดหน้า
+// ===============================
+document.addEventListener("DOMContentLoaded", loadShops);
 
 </script>
-
 </body>
 </html>
