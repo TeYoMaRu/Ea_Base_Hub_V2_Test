@@ -13,3 +13,60 @@
   background: #c8e6c9;
   color: #2e7d32;
 }
+
+
+.area-text {
+  cursor: pointer;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.area-text:hover {
+  text-decoration: underline;
+}
+
+.area-input {
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+
+/* ===== Pill Base ===== */
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* ===== Area ===== */
+.badge-area {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+/* ===== Count ===== */
+.badge-count {
+  background: #f1f3f5;
+  color: #495057;
+}
+
+/* ===== Action ===== */
+.badge-action {
+  background: #fff3cd;
+  color: #8a6d3b;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.badge-action:hover {
+  background: #ffe69c;
+}
+
+.badge {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}

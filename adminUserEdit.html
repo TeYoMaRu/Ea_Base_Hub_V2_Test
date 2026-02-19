@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin | แก้ไขผู้ใช้</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+
 <link rel="stylesheet" href="css/admin-base.css">
 <link rel="stylesheet" href="css/admin-edit.css">
 
@@ -13,7 +19,7 @@
 
 <header class="topbar">
   <div class="brand">Admin Panel</div>
-  <a href="admin.html" class="btn">← กลับ</a>
+  <a href="admintor.html" class="btn">← กลับ</a>
 </header>
 
 <main class="container small">
@@ -29,6 +35,10 @@
 
   <label>ชื่อที่แสดง</label>
   <input id="displayName">
+
+  <label>พื้นที่</label>
+<input id="area" placeholder="เช่น กรุงเทพ, ภาคเหนือ, ภาคกลาง">
+
 
   <label>Role</label>
   <select id="role">
@@ -48,66 +58,10 @@
 
 </main>
 
-<script>
-// ===============================
-// Config
-// ===============================
-const supabaseClient = supabase.createClient(
-  "https://vhazgytcfvjhhikiqpwm.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoYXpneXRjZnZqaGhpa2lxcHdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjA1MjgsImV4cCI6MjA4NjIzNjUyOH0.wHHUPop0xMrUgX6X8Jkk-fahVfIMW-iYx4NT0zg5lxM"
+<script src="js/core/supabaseClient.js"></script>
+<script src="js/core/auth.js"></script>
+<script src="js/admin-edit.js"></script>
 
-);
-
-const params = new URLSearchParams(window.location.search);
-const userId = params.get("id");
-
-// ===============================
-// Load User Data
-// ===============================
-async function loadUser() {
-
-  const { data } =
-    await supabaseClient
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
-
-  document.getElementById("email").value = data.email;
-  document.getElementById("username").value = data.username;
-  document.getElementById("displayName").value = data.display_name;
-  document.getElementById("role").value = data.role;
-  document.getElementById("status").value = data.status;
-}
-
-// ===============================
-// Save
-// ===============================
-async function saveUser() {
-
-  const { error } =
-    await supabaseClient
-      .from("profiles")
-      .update({
-        display_name: document.getElementById("displayName").value,
-        role: document.getElementById("role").value,
-        status: document.getElementById("status").value
-      })
-      .eq("id", userId);
-
-  if (error) {
-    console.error("Update error:", error);
-    alert("บันทึกไม่สำเร็จ: " + error.message);
-    return;
-  }
-
-  alert("บันทึกสำเร็จ");
-  window.location.href = "admin.html";
-}
-
-
-loadUser();
-</script>
 
 </body>
 </html>

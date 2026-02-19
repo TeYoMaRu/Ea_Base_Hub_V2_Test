@@ -2,10 +2,12 @@
 // โหลด Sales เข้า Dropdown
 // ===============================
 async function loadSalesForPermissions() {
-  const { data, error } = await supabase
-    .from("sales")
-    .select("*")
-    .order("full_name", { ascending: true });
+
+  const { data, error } = await supabaseClient
+    .from("profiles")
+    .select("id, display_name, username")
+    .eq("role", "sales")
+    .order("display_name", { ascending: true });
 
   if (error) {
     console.error("Load sales error:", error);
@@ -18,10 +20,11 @@ async function loadSalesForPermissions() {
   data.forEach(sale => {
     const option = document.createElement("option");
     option.value = sale.id;
-    option.textContent = sale.full_name;
+    option.textContent = sale.display_name || sale.username;
     select.appendChild(option);
   });
 }
+
 
 // ===============================
 // โหลดร้านค้าของ Sales ที่เลือก
@@ -39,7 +42,7 @@ async function loadSaleShops() {
     return;
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("shops")
     .select("*")
     .eq("sale_id", saleId)
@@ -59,39 +62,104 @@ async function loadSaleShops() {
 function renderShops(shops, saleId) {
   const container = document.getElementById("permissionsContainer");
 
-  if (shops.length === 0) {
-    container.innerHTML = `
-      <button onclick="openEditModal('${shop.id}','${shop.shop_name}','${shop.shop_code}')">✏</button>
+if (shops.length === 0) {
+  container.innerHTML = `
+    <div class="empty-state">
+      ยังไม่มีร้านค้า
+      <br><br>
+        <button onclick="openAddModal('${saleId}')">➕ เพิ่มร้าน</button>
+    </div>
+  `;
+  return;
+}
 
-      <div class="empty-state">ยังไม่มีร้านค้า</div>
-    `;
-    return;
-  }
 
   let html = `
-    <button onclick="openEditModal('${shop.id}','${shop.shop_name}','${shop.shop_code}')">✏</button>
+    <div class="shop-header">
+      <h3>จำนวนร้านทั้งหมด: ${shops.length}</h3>
+      <button onclick="openAddModal('${saleId}')">➕ เพิ่มร้าน</button>
+    </div>
 
     <div class="shop-list">
   `;
 
   shops.forEach(shop => {
-    html += `
-      <div class="shop-card">
-        <div>
-          <strong>${shop.shop_name}</strong><br>
-          <small>${shop.shop_code || "-"}</small>
-        </div>
+  html += `
+  <div class="shop-card">
 
-        <div class="shop-actions">
-          <button onclick="editShop('${shop.id}','${shop.shop_name}','${shop.shop_code}')">✏</button>
-          <button onclick="deleteShop('${shop.id}')">🗑</button>
-        </div>
-      </div>
-    `;
+    <div class="shop-info">
+      <div class="shop-name">${shop.shop_name}</div>
+      <div class="shop-code">${shop.shop_code || "-"}</div>
+    </div>
+
+    <div class="shop-actions">
+      <button class="btn-icon btn-edit" onclick="editShop('${shop.id}','${shop.shop_name}','${shop.shop_code}')">
+        ✏
+      </button>
+
+      <button class="btn-icon btn-transfer" onclick="openTransferModal('${shop.id}')">
+        🔄
+      </button>
+
+      <button class="btn-icon btn-unlink" onclick="unlinkShop('${shop.id}')">
+        ❌
+      </button>
+
+      <button class="btn-icon btn-delete" onclick="deleteShop('${shop.id}')">
+        🗑
+      </button>
+    </div>
+
+  </div>
+`;
+
   });
 
   html += `</div>`;
   container.innerHTML = html;
+}
+
+// ===============================
+// ยกเลิกการเชื่อมโยง
+// ===============================
+async function unlinkShop(id) {
+
+  if (!confirm("ต้องการยกเลิกการเชื่อมโยงร้านค้านี้หรือไม่?")) return;
+
+  const { error } = await supabaseClient
+    .from("shops")
+    .update({ sale_id: null })
+    .eq("id", id);
+
+  if (error) {
+    alert("ไม่สำเร็จ");
+    console.error(error);
+  } else {
+    loadSaleShops();
+  }
+}
+
+// ===============================
+// “โอนร้านไป Sales คนอื่น
+// ===============================
+async function transferShop(shopId) {
+
+  const newSaleId = prompt("กรอก ID Sales ใหม่:");
+
+  if (!newSaleId) return;
+
+  const { error } = await supabaseClient
+    .from("shops")
+    .update({ sale_id: newSaleId })
+    .eq("id", shopId);
+
+  if (error) {
+    alert("โอนไม่สำเร็จ");
+    console.error(error);
+  } else {
+    alert("โอนสำเร็จ");
+    loadSaleShops();
+  }
 }
 
 // ===============================
@@ -103,7 +171,7 @@ async function addShop(saleId) {
 
   const shopCode = prompt("รหัสร้านค้า (ถ้ามี):");
 
-  const { error } = await supabase.from("shops").insert([
+  const { error } = await supabaseClient.from("shops").insert([
     {
       shop_name: shopName,
       shop_code: shopCode,
@@ -128,7 +196,7 @@ async function editShop(id, currentName, currentCode) {
 
   const newCode = prompt("แก้ไขรหัสร้าน:", currentCode);
 
-  const { error } = await supabase
+  const { error } = await supabaseClient
     .from("shops")
     .update({
       shop_name: newName,
@@ -150,7 +218,7 @@ async function editShop(id, currentName, currentCode) {
 async function deleteShop(id) {
   if (!confirm("ต้องการลบร้านค้านี้ใช่หรือไม่?")) return;
 
-  const { error } = await supabase
+  const { error } = await supabaseClient
     .from("shops")
     .delete()
     .eq("id", id);
@@ -166,9 +234,11 @@ async function deleteShop(id) {
 // ===============================
 // โหลดตอนเปิดหน้า
 // ===============================
-document.addEventListener("DOMContentLoaded", () => {
-  loadSalesForPermissions();
+window.addEventListener("load", async () => {
+  await protectAdmin();
+  await loadSalesForPermissions();
 });
+
 
 
 // ===============================
@@ -225,7 +295,7 @@ async function saveShop() {
 
   if (id) {
     // UPDATE
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from("shops")
       .update({
         shop_name: name,
@@ -241,7 +311,7 @@ async function saveShop() {
 
   } else {
     // INSERT
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from("shops")
       .insert({
         shop_name: name,
@@ -260,3 +330,63 @@ async function saveShop() {
   loadSaleShops();
 }
 
+//เปิด Modal และโหลด Sales เข้า Dropdown
+async function openTransferModal(shopId) {
+
+  document.getElementById("transferShopId").value = shopId;
+
+  const select = document.getElementById("transferSaleSelect");
+  select.innerHTML = `<option value="">-- เลือก Sales --</option>`;
+
+  const { data, error } = await supabaseClient
+    .from("profiles")
+    .select("id, display_name, username")
+    .eq("role", "sales")
+    .order("display_name", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  data.forEach(sale => {
+    const option = document.createElement("option");
+    option.value = sale.id;
+    option.textContent = sale.display_name || sale.username;
+    select.appendChild(option);
+  });
+
+  document.getElementById("transferModal").style.display = "flex";
+}
+
+
+//ปิด Modal
+function closeTransferModal() {
+  document.getElementById("transferModal").style.display = "none";
+}
+
+//ยืนยันโอน
+async function confirmTransfer() {
+
+  const shopId = document.getElementById("transferShopId").value;
+  const newSaleId = document.getElementById("transferSaleSelect").value;
+
+  if (!newSaleId) {
+    alert("กรุณาเลือก Sales");
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("shops")
+    .update({ sale_id: newSaleId })
+    .eq("id", shopId);
+
+  if (error) {
+    alert("โอนไม่สำเร็จ");
+    console.error(error);
+    return;
+  }
+
+  closeTransferModal();
+  loadSaleShops();
+}

@@ -27,18 +27,37 @@ async function loadUsers() {
       <td>${user.email}</td>
       <td>${user.username}</td>
       <td>${user.display_name || "-"}</td>
-      <td>${user.role}</td>
-      <td>${user.status || "Active"}</td>
       <td>
-        <a href="admin-user-edit.html?id=${user.id}">
-          แก้ไข
-        </a>
-      </td>
+  <span class="badge badge-role ${user.role}">
+    ${user.role}
+  </span>
+</td>
+
+<td>
+  <span class="badge badge-status ${user.status}">
+    ${user.status}
+  </span>
+</td>
+
+<td>
+  <span class="badge badge-edit"
+        onclick="goEdit('${user.id}')">
+    แก้ไข
+  </span>
+</td>
+
     `;
 
     table.appendChild(tr);
   });
 }
+
+
+function goEdit(id){
+  window.location.href = `adminUserEdit.html?id=${id}`;
+}
+
+
 
 // ======================================
 // เริ่มทำงานเมื่อหน้าโหลดเสร็จ

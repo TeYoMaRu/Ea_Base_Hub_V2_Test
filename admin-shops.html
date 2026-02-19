@@ -118,6 +118,35 @@
   </div>
 </div>
 
+<!-- ===============================
+     TRANSFER SHOP MODAL
+================================ -->
+<div id="transferModal" class="modal">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3>โอนร้านค้าไปยัง Sales อื่น</h3>
+      <span class="close-btn" onclick="closeTransferModal()">&times;</span>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" id="transferShopId">
+
+      <div class="form-group">
+        <label>เลือก Sales ใหม่</label>
+        <select id="transferSaleSelect">
+          <option value="">-- เลือก Sales --</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeTransferModal()">ยกเลิก</button>
+      <button class="btn-save" onclick="confirmTransfer()">ยืนยันโอน</button>
+    </div>
+
+  </div>
+</div>
 
 </main>
 
