@@ -1,5 +1,5 @@
 // ===============================
-// SUPABASE CLIENT SETUP
+// SUPABASE CLIENT SETUP / supabaseClient.js
 // ===============================
 
 // สร้างตัวแปร global สำหรับเรียกใช้ได้ทุกหน้า

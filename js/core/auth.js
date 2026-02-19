@@ -1,11 +1,7 @@
 // ===============================
-// SUPABASE CONFIG
+// auth.js
+// ใช้ supabaseClient จาก supabaseClient.js
 // ===============================
-const supabaseUrl = "YOUR_SUPABASE_URL";
-const supabaseKey = "YOUR_ANON_KEY";
-
-const { createClient } = supabase;
-const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
 // ===============================
 // LOGIN
@@ -32,7 +28,7 @@ if (loginForm) {
     } else {
       msg.innerText = "Login successful!";
       msg.style.color = "green";
-      window.location.href = "dashboard.html";
+      window.location.href = "index.html";
     }
   });
 }
@@ -54,9 +50,7 @@ if (registerForm) {
       email,
       password,
       options: {
-        data: {
-          username: username
-        }
+        data: { username }
       }
     });
 
@@ -70,4 +64,23 @@ if (registerForm) {
       msg.style.color = "green";
     }
   });
+}
+
+// ===============================
+// PROTECT ADMIN
+// ===============================
+async function protectAdmin() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+
+  if (!session) {
+    return window.location.href = "login.html";
+  }
+}
+
+// ===============================
+// LOGOUT
+// ===============================
+async function logout() {
+  await supabaseClient.auth.signOut();
+  window.location.href = "login.html";
 }

@@ -1,196 +1,134 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>Admin | ร้านค้า</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/admin-base.css">
-<link rel="stylesheet" href="css/admin-shops.css">
+  <meta charset="UTF-8">
+  <title>Admin | สิทธิ์ร้านค้า</title>
 
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Font & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/admin-base.css">
+  <link rel="stylesheet" href="css/admin-shops.css">
 </head>
 
 <body>
 
 <header class="topbar">
-  <div class="brand">🌿 EABaseHub | Admin</div>
-  <a href="admin-sales.html" class="btn">← กลับ Sales</a>
+  <div class="brand">🌿 EABaseHub | สิทธิ์ร้านค้า</div>
+  <button onclick="logout()" class="btn">Logout</button>
 </header>
 
 <main class="container">
 
-  <h2>ร้านค้า</h2>
-  <p id="saleTitle" style="color:#666;font-size:14px;"></p>
+  <!-- Header -->
+  <div class="admin-header">
+    <h2>
+      <span class="material-symbols-outlined">store</span>
+      จัดการสิทธิ์ร้านค้า
+    </h2>
 
-  <div class="tabs">
-    <a class="tab" href="admin.html">ผู้ใช้งาน</a>
-    <a class="tab" href="admin-sales.html">Sales</a>
-    <a class="tab active" href="#">ร้านค้า</a>
+    <button onclick="goHome()" class="btn-back">
+      <span class="material-symbols-outlined">arrow_back</span>
+      กลับหน้าหลัก
+    </button>
   </div>
 
-  <input class="search" placeholder="ค้นหาร้านค้า">
+  <!-- Tabs -->
+  <div class="admin-tabs">
 
-  <table>
-    <thead>
-      <tr>
-        <th>รหัสร้าน</th>
-        <th>ชื่อร้าน</th>
-        <th>จังหวัด</th>
-        <th>Sales</th>
-        <th>สถานะ</th>
-        <th>จัดการ</th>
-      </tr>
-    </thead>
-    <tbody id="shopTable">
-  <!-- JS จะเติมข้อมูลตรงนี้ -->
-</tbody>
+    <a class="admin-tab" href="admintor.html">
+      <span class="material-symbols-outlined">people</span>
+      ผู้ใช้งาน
+    </a>
 
-  </table>
+    <a class="admin-tab" href="admin-sales.html">
+      <span class="material-symbols-outlined">badge</span>
+      Sales
+    </a>
+
+    <a class="admin-tab active" href="admin-shops.html">
+      <span class="material-symbols-outlined">store</span>
+      สิทธิ์ร้านค้า
+    </a>
+
+  </div>
+
+  <!-- Refresh -->
+  <button class="btn-refresh" onclick="loadSalesForPermissions()">
+    <span class="material-symbols-outlined">refresh</span>
+    รีเฟรช
+  </button>
+
+  <!-- เลือก Sales -->
+  <div class="form-group">
+    <label>
+      <span class="material-symbols-outlined label-icon">badge</span>
+      เลือก Sales
+    </label>
+
+    <select id="selectSaleForPerm" onchange="loadSaleShops()">
+      <option value="">-- เลือก Sales --</option>
+    </select>
+  </div>
+
+  <!-- รายการร้านค้า -->
+  <div id="permissionsContainer">
+    <div class="empty-state">
+      <span class="material-symbols-outlined">store</span>
+      <div class="empty-state-text">เลือก Sales เพื่อดูสิทธิ์ร้านค้า</div>
+    </div>
+  </div>
+
+
+  <!-- ===============================
+     SHOP MODAL
+================================ -->
+<div id="shopModal" class="modal">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3 id="modalTitle">เพิ่มร้านค้า</h3>
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" id="shopId">
+
+      <div class="form-group">
+        <label>ชื่อร้านค้า</label>
+        <input type="text" id="shopName" placeholder="กรอกชื่อร้าน">
+      </div>
+
+      <div class="form-group">
+        <label>รหัสร้าน</label>
+        <input type="text" id="shopCode" placeholder="กรอกรหัสร้าน (ถ้ามี)">
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn-save" onclick="saveShop()">บันทึก</button>
+    </div>
+
+  </div>
+</div>
+
 
 </main>
 
-<!-- <script>
-const params = new URLSearchParams(window.location.search);
-const sale = params.get('sale');
+<!-- ===============================
+     JAVASCRIPT
+================================ -->
+<script src="js/core/supabaseClient.js"></script>
+<script src="js/core/auth.js"></script>
+<script src="js/admin-shops.js"></script>
 
-if (sale) {
-  document.getElementById('saleTitle').innerText =
-    'ร้านค้าของ Sales: ' + sale;
-}
 
-function removeShop() {
-  if (confirm('ยืนยันลบร้านค้านี้?')) {
-    alert('ลบแล้ว (ตัวอย่าง)');
-  }
-} -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-
-// ===============================
-// 1️⃣ Supabase Config
-// ===============================
-const supabaseClient = supabase.createClient(
-  "https://vhazgytcfvjhhikiqpwm.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoYXpneXRjZnZqaGhpa2lxcHdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjA1MjgsImV4cCI6MjA4NjIzNjUyOH0.wHHUPop0xMrUgX6X8Jkk-fahVfIMW-iYx4NT0zg5lxM"
-
-);
-
-// ===============================
-// 2️⃣ อ่าน sale_id จาก URL
-// ===============================
-const urlParams = new URLSearchParams(window.location.search);
-const saleId = urlParams.get("sale");
-
-// ===============================
-// 3️⃣ โหลดข้อมูลร้าน
-// ===============================
-async function loadShops() {
-
-  if (!saleId) {
-    alert("ไม่พบ sale id");
-    return;
-  }
-
-  // -----------------------------
-  // ดึงข้อมูล Sales
-  // -----------------------------
-  const { data: saleData, error: saleError } =
-    await supabaseClient
-      .from("profiles")
-      .select("display_name, username")
-      .eq("id", saleId)
-      .single();
-
-  if (saleError) {
-    console.error("โหลด Sales ไม่ได้:", saleError);
-  } else {
-    document.getElementById("saleTitle").innerText =
-      "ร้านค้าของ Sales: " +
-      (saleData.display_name || saleData.username);
-  }
-
-  // -----------------------------
-  // ดึงร้าน
-  // -----------------------------
-  const { data: shops, error } =
-    await supabaseClient
-      .from("shops")
-      .select("*")
-      .eq("sale_id", saleId)
-      .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("โหลดร้านไม่สำเร็จ:", error);
-    return;
-  }
-
-  const tbody = document.getElementById("shopTable");
-  tbody.innerHTML = "";
-
-  if (!shops || shops.length === 0) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="6" style="text-align:center;">
-          ไม่พบร้านค้า
-        </td>
-      </tr>
-    `;
-    return;
-  }
-
-  shops.forEach(shop => {
-
-    const tr = document.createElement("tr");
-
-    tr.innerHTML = `
-      <td>${shop.shop_code || "-"}</td>
-      <td>${shop.shop_name}</td>
-      <td>${shop.province || "-"}</td>
-      <td>${saleData?.display_name || "-"}</td>
-      <td>
-        <span class="badge">
-          ${shop.status || "Active"}
-        </span>
-      </td>
-      <td>
-        <button onclick="deleteShop('${shop.id}')">
-          ลบ
-        </button>
-      </td>
-    `;
-
-    tbody.appendChild(tr);
-  });
-}
-
-// ===============================
-// 4️⃣ ลบร้าน
-// ===============================
-async function deleteShop(shopId) {
-
-  if (!confirm("ยืนยันลบร้านค้านี้?")) return;
-
-  const { error } =
-    await supabaseClient
-      .from("shops")
-      .delete()
-      .eq("id", shopId);
-
-  if (error) {
-    alert("ลบไม่สำเร็จ");
-    console.error(error);
-  } else {
-    loadShops();
-  }
-}
-
-// ===============================
-// 5️⃣ เรียกตอนโหลดหน้า
-// ===============================
-document.addEventListener("DOMContentLoaded", loadShops);
-
-</script>
 </body>
 </html>

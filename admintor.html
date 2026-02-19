@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin | จัดการผู้ใช้และสิทธิ์</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/admin-base.css">
+</head>
+
+<body> <!-- ❗ ต้องมี -->
+
+<header class="topbar">
+  <div class="brand">🌿 EABaseHub | Admin</div>
+  <button onclick="logout()" class="btn">Logout</button>
+</header>
+
+<main class="container">
+
+<div class="admin-container">
+
+  <div class="admin-header">
+    <h2 class="admin-title">
+      <span class="material-symbols-outlined admin-title-icon">admin_panel_settings</span>
+      จัดการผู้ใช้และสิทธิ์
+    </h2>
+    <button class="btn-back" onclick="goHome()">
+      <span class="material-symbols-outlined btn-back-icon">arrow_back</span>
+      กลับหน้าหลัก
+    </button>
+  </div>
+
+  <div class="admin-tabs">
+    <a class="admin-tab active" href="admintor.html">
+      <span class="material-symbols-outlined">people</span>
+      ผู้ใช้งาน
+    </a>
+
+    <a class="admin-tab" href="admin-sales.html">
+      <span class="material-symbols-outlined">badge</span>
+      Sales
+    </a>
+
+    <a class="admin-tab" href="admin-shops.html">
+      <span class="material-symbols-outlined">store</span>
+      สิทธิ์ร้านค้า
+    </a>
+  </div>
+
+  <div id="tabUsers" class="tab-content active">
+
+    <button class="btn-refresh" onclick="loadUsers()">
+      <span class="material-symbols-outlined">refresh</span>
+      รีเฟรช
+    </button>
+
+    <div class="admin-table-card">
+      <div class="admin-table-responsive">
+        <table class="admin-table">
+
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Username</th>
+              <th>ชื่อที่แสดง</th>
+              <th>Role</th>
+              <th>สถานะ</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+
+          <!-- ❗ มี tbody แค่อันเดียว -->
+          <tbody id="userTable"></tbody>
+
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</main>
+
+<script src="/js/core/supabaseClient.js"></script>
+<script src="/js/core/auth.js"></script>
+<script src="js/admintor.js"></script>
+
+</body>
+</html>
