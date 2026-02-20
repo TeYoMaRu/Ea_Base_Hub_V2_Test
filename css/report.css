@@ -27,26 +27,50 @@ body {
   justify-content: space-between;
   align-items: center;
 
-  padding: 14px 20px;
-  background: #ffffff;
+   padding: 16px 24px;
+  background: #f8f9fa;
   border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
+/* โลโก้ + ชื่อระบบ */
 .logo {
-  font-size: 16px;
-  font-weight: 600;
-  
+  display: flex;           /* ทำให้ img กับ h2 อยู่แนวนอน */
+  align-items: center;     /* จัดกึ่งกลางแนวตั้ง */
+  gap: 12px;               /* ระยะห่างระหว่างรูปกับตัวหนังสือ */
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
+.logo:hover {
+  transform: translateY(-2px);
+}
+
+/* Logo image */
 .logo img {
-  width: 56px;
-  margin-bottom: 12px;
-  
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
 }
 
+/* System name */
+.logo h2 {
+  margin: 0; /* เอา margin default ของ h2 ออก */
+  font-size: 22px;
+  font-weight: 600;
+  color: #2563eb;   /* ฟ้า modern */
+   letter-spacing: 0.5px;
+
+}
+
+/* USER NAME */
 .user-name {
-  font-size: 13px;
-  color: #555;
+  font-size: 15px;
+  font-weight: 500;
+  color: #374151;
+  background: #f3f4f6;
+  padding: 6px 14px;
+  border-radius: 20px;
 }
 
 
@@ -241,4 +265,9 @@ th {
 
 .dynamic-attributes .form-group {
   margin-bottom: 10px;
+}
+
+#dynamicAttributes {
+  grid-column: 1 / -1;   /* กินเต็มแถว */
+  margin-top: 10px;
 }
