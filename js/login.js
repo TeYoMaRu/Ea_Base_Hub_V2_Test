@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     loginBtn.disabled = true;
-    loginBtn.textContent = "กำลังเข้าสู่ระบบ...";
+    loginBtn.classList.add("loading");
 
     try {
 
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } finally {
       loginBtn.disabled = false;
-      loginBtn.textContent = "เข้าสู่ระบบ";
+      loginBtn.classList.remove("loading");
     }
 
   });

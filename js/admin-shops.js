@@ -235,7 +235,7 @@ async function deleteShop(id) {
 // โหลดตอนเปิดหน้า
 // ===============================
 window.addEventListener("load", async () => {
-  await protectAdmin();
+  await protectSales();
   await loadSalesForPermissions();
 });
 

@@ -67,13 +67,37 @@ if (registerForm) {
 }
 
 // ===============================
-// PROTECT ADMIN
+// Protect Page by Role
 // ===============================
-async function protectAdmin() {
+async function protectPage(allowedRoles = []) {
+
   const { data: { session } } = await supabaseClient.auth.getSession();
 
   if (!session) {
-    return window.location.href = "login.html";
+    window.location.href = "login.html";
+    return;
+  }
+
+  const { data: profile, error } = await supabaseClient
+    .from("profiles")
+    .select("role, status")
+    .eq("id", session.user.id)
+    .single();
+
+  if (error || !profile) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  if (profile.status !== "Active") {
+    await supabaseClient.auth.signOut();
+    window.location.href = "login.html";
+    return;
+  }
+
+  // ถ้า role ไม่อยู่ใน allowedRoles
+  if (!allowedRoles.includes(profile.role)) {
+    window.location.href = "login.html";
   }
 }
 

@@ -37,7 +37,7 @@ function formatDate(date) {
 ================================================= */
 
 let reports = [];
-let trips   = [];
+let areas   = [];
 let claims  = [];
 
 let currentDate = new Date();
@@ -96,15 +96,15 @@ async function loadData() {
     console.error("โหลด reports ไม่ได้:", reportError);
   }
 
-  // โหลด trips
-  const { data: tripData, error: tripError } =
-    await supabaseClient
-      .from("trips")
-      .select("*");
+  // โหลด areas
+const { data: areaData, error: areaError } =
+  await supabaseClient
+    .from("areas")
+    .select("*");
 
-  if (tripError) {
-    console.error("โหลด trips ไม่ได้:", tripError);
-  }
+if (areaError) {
+  console.error("โหลด areas ไม่ได้:", areaError);
+}
 
   // โหลด claims
   const { data: claimData, error: claimError } =
@@ -117,7 +117,7 @@ async function loadData() {
   }
 
   reports = reportData || [];
-  trips   = tripData || [];
+  areas   = areaData || [];
   claims  = claimData || [];
 }
 
@@ -150,6 +150,47 @@ async function loadUserProfile() {
 }
 
 
+
+/* =================================================
+   🌍 Load User Area
+   - แสดง Area ที่ Sales รับผิดชอบ
+================================================= */
+async function loadUserArea() {
+
+  try {
+
+    // 1️⃣ ดึง user ที่ login อยู่
+    const { data: { user }, error } =
+      await supabaseClient.auth.getUser();
+
+    if (error || !user) return;
+
+    // 2️⃣ ดึงค่า area จาก profiles
+    const { data: profile, error: profileError } =
+      await supabaseClient
+        .from("profiles")
+        .select("area")
+        .eq("id", user.id)
+        .single();
+
+    if (profileError) {
+      console.error("โหลด area ไม่ได้:", profileError);
+      return;
+    }
+
+    // 3️⃣ แสดงค่าใน Card
+    const areaEl = document.getElementById("areaCount");
+
+    if (areaEl) {
+      areaEl.textContent =
+        profile?.area || "ยังไม่ได้กำหนด";
+    }
+
+  } catch (err) {
+    console.error("Error loadUserArea:", err.message);
+  }
+}
+
 /* =================================================
   Load User Data
 ================================================= */
@@ -174,10 +215,10 @@ async function loadUserInfo() {
 ================================================= */
 
 function renderSummary() {
-  const tripCountEl  = document.getElementById("tripCount");
+  
   const claimCountEl = document.getElementById("claimCount");
 
-  if (tripCountEl)  tripCountEl.textContent  = trips.length;
+  
   if (claimCountEl) claimCountEl.textContent = claims.length;
 }
 
@@ -200,13 +241,13 @@ function renderReportList() {
       link: `report.html?id=${r.id}`,
       id: r.id
     })),
-    ...trips.map(t => ({
-      type: "trip",
-      title: `Trip : ${t.place || "-"}`,
-      date: t.trip_date,
-      link: `trip.html?id=${t.id}`,
-      id: t.id
-    }))
+    // ...trips.map(t => ({
+    //   type: "trip",
+    //   title: `Trip : ${t.place || "-"}`,
+    //   date: t.trip_date,
+    //   link: `trip.html?id=${t.id}`,
+    //   id: t.id
+    // }))
   ];
 
   if (!items.length) {
@@ -402,6 +443,9 @@ async function init() {
   await loadUserProfile();
   await loadUserEmail();
   await loadUserRole();
+  await loadUserArea();
+  await loadStoreCount();
+  
   renderSummary();
   renderReportList();
   renderWeeklyProgress();
@@ -435,12 +479,37 @@ console.log("Home loaded (Production Ready) 🚀");
 
 
 
-// Debug Temporary ขั่วคราว
-document.addEventListener("DOMContentLoaded", async () => {
+/* =================================================
+   🏪 Load Store Count (Dashboard Card)
+   - นับจำนวนร้านค้าของ Sales ที่ login อยู่
+================================================= */
+async function loadStoreCount() {
+  try {
 
-  const { data: { user } } =
-    await supabaseClient.auth.getUser();
+    // ดึง user ปัจจุบัน
+    const { data: { user }, error: userError } =
+      await supabaseClient.auth.getUser();
 
-  console.log("User:", user);
+    if (userError) throw userError;
+    if (!user) return;
 
-});
+    // นับจำนวนร้าน (ไม่ดึงข้อมูลจริง ใช้ head:true เพื่อความเร็ว)
+    const { count, error } =
+      await supabaseClient
+        .from("shops")
+        .select("*", { count: "exact", head: true })
+        .eq("sale_id", user.id);
+
+    if (error) throw error;
+
+    // แสดงผลใน card
+    const el = document.getElementById("storeCount");
+    if (el) el.textContent = count ?? 0;
+
+  } catch (err) {
+    console.error("โหลดจำนวนร้านไม่สำเร็จ:", err.message);
+    const el = document.getElementById("storeCount");
+    if (el) el.textContent = 0;
+  }
+}
+

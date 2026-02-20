@@ -1,339 +1,233 @@
 /* ===============================
-   GLOBAL RESET + BASE STYLE
-   =============================== */
+   GLOBAL RESET
+================================ */
 
-/* รีเซ็ตค่าพื้นฐานของทุก element */
 * {
-  margin: 0;                 /* ลบ margin เริ่มต้นของ browser */
-  padding: 0;                /* ลบ padding เริ่มต้นของ browser */
-  box-sizing: border-box;    /* ทำให้ width/height รวม padding + border */
-  font-family: "Kanit", "Segoe UI", sans-serif; /* กำหนดฟอนต์หลัก */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Kanit", "Segoe UI", sans-serif;
 }
 
-/* กำหนดสไตล์ให้ body */
 body {
-  min-height: 100vh;  /* ความสูงขั้นต่ำเต็มหน้าจอ */
-  
-  /* พื้นหลังไล่สีเฉียง 135 องศา */
-  background: linear-gradient(135deg, #dcefe2, #8ec29a);
-  
-  display: flex;               /* ใช้ flex จัดกลาง */
-  justify-content: center;     /* จัดแนวนอนให้อยู่กลาง */
-  align-items: center;         /* จัดแนวตั้งให้อยู่กลาง */
-  
-  padding: 60px;               /* เว้นขอบกันติดจอ */
-}
-
-/* หัวข้อใหญ่ */
-h1 {
-  font-size: 32px;   /* ขนาดตัวอักษร */
-  font-weight: 600;  /* ความหนา */
-}
-
-/* หัวข้อรอง */
-h2 {
-  font-size: 30px;
-  font-weight: 600;
-}
-
-/* ===============================
-   CONTAINER หลัก (กล่องรวมทั้งหมด)
-   =============================== */
-
-.container {
-  width: 100%;          /* กว้างเต็มที่ */
-  max-width: 900px;     /* แต่ไม่เกิน 900px */
-  height: auto;
-  min-height: 520px;    /* ความสูงขั้นต่ำ */
-  
-  display: flex;        /* แบ่งเป็นซ้าย/ขวา */
-  
-  border-radius: 20px;  /* มุมโค้ง */
-  overflow: hidden;     /* ซ่อนส่วนเกิน */
-  
-  background: white;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15); /* เงาลอย */
-}
-
-/* ===============================
-   LEFT SECTION (พื้นเขียว)
-   =============================== */
-
-.left {
-  width: 45%; /* กินพื้นที่ 45% */
-  
-  /* ไล่สีเขียว */
-  background: linear-gradient(135deg, #5db960, #3b8f3f);
-  
-  color: white;          /* ตัวอักษรสีขาว */
-  padding: 40px 30px;    /* เว้นขอบด้านใน */
-  
-  position: relative;    /* ใช้สำหรับวาง pseudo-element */
-  overflow: hidden;
-  
-  display: flex;
-  flex-direction: column; /* เรียงแนวตั้ง */
-}
-
-/* วงกลมโปร่งบน */
-.left::before {
-  content: "";
-  position: absolute;
-  width: 300px;
-  height: 300px;
-  background: rgba(255, 255, 255, 0.1); /* สีขาวโปร่ง */
-  border-radius: 50%; /* ทำให้เป็นวงกลม */
-  top: -100px;
-  right: -100px;
-  z-index: 0; /* อยู่ด้านหลัง */
-}
-
-/* วงกลมโปร่งล่าง */
-.left::after {
-  content: "";
-  position: absolute;
-  width: 250px;
-  height: 250px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 50%;
-  bottom: -80px;
-  left: -80px;
-  z-index: 0;
-}
-
-/* ทำให้ element ภายในอยู่เหนือวงกลม */
-.left > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* กล่องโลโก้ */
-.logo-box {
-  width: 120px;
-  height: 120px;
-  background: white;
-  border-radius: 20px;
-  
+  min-height: 100vh;
+  background: linear-gradient(135deg, #2e7d32, #4CAF50);
   display: flex;
   justify-content: center;
   align-items: center;
-  
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* รูปโลโก้ */
-.logo-box img {
-  width: 110px;
-  height: auto; /* รักษาสัดส่วน */
-}
-
-/* คำอธิบาย */
-.desc {
-  font-size: 14px;
-  line-height: 1.6; /* ระยะห่างบรรทัด */
-  margin-bottom: 25px;
-  opacity: 0.95; /* โปร่งเล็กน้อย */
-}
-
-/* รายการ feature */
-.feature {
-  margin-bottom: 15px;
-  font-size: 14px;
-  
-  display: flex;      /* จัดไอคอนกับข้อความ */
-  align-items: center;
-  gap: 10px;          /* ระยะห่าง */
-  
-  opacity: 0.95;
-}
-
-/* ขนาดไอคอน */
-.feature .material-symbols-outlined {
-  font-size: 30px;
+  padding: 40px;
 }
 
 /* ===============================
-   RIGHT SECTION (ฟอร์ม)
-   =============================== */
+   CARD LAYOUT
+================================ */
 
-.right {
-  width: 55%;          /* กินพื้นที่ 55% */
-  padding: 50px 60px;
-  background: #f9f9f9;
-  
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* จัดกลางแนวตั้ง */
+.login-wrapper {
+  width: 100%;
+  max-width: 420px;
 }
 
-/* ข้อความรอง */
-.sub {
-  font-size: 13px;
-  margin-bottom: 30px;
+.login-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 45px 35px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+  animation: fadeUp 0.6s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===============================
+   LOGO
+================================ */
+
+.logo {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.logo img {
+  width: 75px;
+  margin-bottom: 12px;
+}
+
+.logo h1 {
+  font-size: 22px;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.logo p {
+  font-size: 14px;
   color: #666;
 }
 
-/* label ของ input */
-label {
-  font-size: 14px;
-  font-weight: 500;
-  display: block;
-  margin-bottom: 8px;
-  color: #333;
-}
+/* ===============================
+   FORM
+================================ */
 
-/* กลุ่มฟอร์ม */
 .form-group {
   margin-bottom: 20px;
 }
 
-/* ครอบ input + icon */
-.input-wrapper {
-  position: relative; /* ให้ icon absolute ได้ */
-  display: flex;
-  align-items: center;
-}
-
-/* input */
-.input-wrapper input {
-  width: 100%;
-  padding: 12px 45px; /* เว้นซ้ายขวาเผื่อ icon */
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  outline: none;
-  transition: all 0.3s ease;
+label {
   font-size: 14px;
-  background: white;
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
+  color: #333;
 }
 
-/* เมื่อโฟกัส */
-.input-wrapper input:focus {
+.input-box {
+  position: relative;
+}
+
+.input-box input {
+  width: 100%;
+  padding: 12px 45px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.input-box input:focus {
   border-color: #4CAF50;
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+  outline: none;
 }
 
-/* placeholder */
-.input-wrapper input::placeholder {
-  color: #aaa;
-}
-
-/* ไอคอนซ้าย */
+/* icon ซ้าย */
 .icon-left {
   position: absolute;
-  left: 12px;
+  left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 20px;
   color: #888;
-  pointer-events: none; /* คลิกทะลุได้ */
 }
 
-/* ปุ่มไอคอนขวา (เช่น เปิด/ปิดรหัสผ่าน) */
-.icon-right-btn {
+/* ปุ่มไอคอนขวา */
+.icon-btn {
   position: absolute;
-  right: 8px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  
-  background: none;
   border: none;
-  padding: 4px;
-  
+  background: none;
   cursor: pointer;
-  
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
   color: #888;
-  transition: all 0.2s ease;
-  border-radius: 4px;
+  font-size: 15px;
 }
 
-/* hover */
-.icon-right-btn:hover {
-  color: #2e7d32;
-  background: rgba(76, 175, 80, 0.1);
-}
+/* ===============================
+   FORGOT LINK
+================================ */
 
-/* focus สำหรับ accessibility */
-.icon-right-btn:focus {
-  outline: 2px solid #4CAF50;
-  outline-offset: 2px;
-}
-
-/* ลิงก์ลืมรหัส */
 .forgot {
   text-align: right;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
+  font-size: 13px;
 }
 
-/* ปุ่ม submit */
-button[type="submit"] {
+.forgot a {
+  color: #2e7d32;
+  text-decoration: none;
+}
+
+.forgot a:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   BUTTON + SPINNER
+================================ */
+
+.btn-login {
   width: 100%;
   padding: 14px;
-  
-  background: linear-gradient(135deg, #4CAF50, #388e3c);
   border: none;
-  border-radius: 12px;
-  
+  border-radius: 14px;
+  background: linear-gradient(135deg, #4CAF50, #2e7d32);
   color: white;
   font-size: 15px;
   font-weight: 500;
-  
   cursor: pointer;
   transition: all 0.3s ease;
-  
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 20px rgba(76, 175, 80, 0.35);
 }
 
-/* hover */
-button[type="submit"]:hover:not(:disabled) {
-  background: linear-gradient(135deg, #388e3c, #2e7d32);
-  transform: translateY(-2px); /* ลอยขึ้น */
+.btn-login:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(76, 175, 80, 0.45);
 }
 
-/* disabled */
-button[type="submit"]:disabled {
+.btn-login:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* ===============================
-   RESPONSIVE
-   =============================== */
-
-/* หน้าจอเล็กกว่า 900px */
-@media (max-width: 900px) {
-  .container {
-    flex-direction: column; /* เรียงบน-ล่าง */
-    max-width: 500px;
-  }
-
-  .left,
-  .right {
-    width: 100%;
-  }
+/* spinner */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255,255,255,0.4);
+  border-top: 3px solid #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+  position: absolute;
 }
 
-/* หน้าจอเล็กกว่า 500px (มือถือ) */
-@media (max-width: 500px) {
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* loading state */
+.btn-login.loading .spinner {
+  display: block;
+}
+
+.btn-login.loading .btn-text {
+  visibility: hidden;
+}
+
+/* ===============================
+   REGISTER
+================================ */
+
+.register {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.register a {
+  color: #2e7d32;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.register a:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 480px) {
   body {
-    padding: 10px;
+    padding: 15px;
   }
 
-  .container {
-    border-radius: 15px;
-  }
-
-  .input-wrapper input {
-    padding: 10px 40px;
-    font-size: 13px;
-  }
-
-  button[type="submit"] {
-    padding: 12px;
-    font-size: 14px;
+  .login-card {
+    padding: 30px 25px;
   }
 }

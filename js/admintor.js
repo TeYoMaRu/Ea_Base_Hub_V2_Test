@@ -72,3 +72,11 @@ window.addEventListener("load", async () => {
   }
 
 });
+
+
+// ===============================
+// Protect Admin Page
+// ===============================
+window.addEventListener("load", async () => {
+  await protectPage(["admin"]);
+});

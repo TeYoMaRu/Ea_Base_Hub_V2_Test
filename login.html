@@ -5,133 +5,107 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EABaseHub Login</title>
 
-  <!-- 1️⃣ โหลด Supabase SDK ก่อน -->
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/login.css">
-
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#ffffff">
-
-  <!-- iOS Support -->
-  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="EA Base Hub">
 </head>
 
 <body>
 
-  <div class="container">
+<div class="login-wrapper">
+  <div class="login-card">
 
-    <!-- ================= LEFT ================= -->
-    <div class="left">
-      <div class="logo-box">
-        <img src="assets/icons/icon-192.png" alt="EABaseHub Logo">
-      </div>
-
+    <!-- Logo -->
+    <div class="logo">
+      <img src="assets/icons/icon-192.png" alt="logo">
       <h1>EABaseHub</h1>
-
-      <p class="desc">
-        ระบบจัดการใบงานครบวงจร<br>
-        บันทึกการเรียนลูกค้า ติดตามงาน<br>
-        และวิเคราะห์ผลการดำเนินงาน
-      </p>
-
-      <div class="feature">
-        <span class="material-symbols-outlined" aria-hidden="true">analytics</span>
-        Dashboard แสดงผลแบบ Real-time
-      </div>
-
-      <div class="feature">
-        <span class="material-symbols-outlined" aria-hidden="true">assignment</span>
-        บันทึกงานการเรียนลูกค้า
-      </div>
-
-      <div class="feature">
-        <span class="material-symbols-outlined" aria-hidden="true">show_chart</span>
-        วิเคราะห์ยอดขายและแนวโน้ม
-      </div>
+      <p>ศูนย์รวมข้อมูลและระบบงาน</p>
     </div>
 
-    <!-- ================= RIGHT ================= -->
-    <div class="right">
+    <!-- Form -->
+    <form id="loginForm">
 
-      <h2>เข้าสู่ระบบ</h2>
-      <p class="sub">กรุณากรอกข้อมูลเพื่อเข้าใช้งาน</p>
-
-      <form id="loginForm" novalidate>
-
-        <!-- Email/Username -->
-        <div class="form-group">
-          <label for="email">อีเมล หรือ Username</label>
-          <div class="input-wrapper">
-            <span class="material-symbols-outlined icon-left" aria-hidden="true">person</span>
-            <input 
-              type="text" 
-              id="email"
-              name="email"
-              placeholder="email หรือ username"
-              autocomplete="username"
-              required
-              aria-required="true"
-            >
-          </div>
+      <!-- Email / Username -->
+      <div class="form-group">
+        <label for="email">Email หรือ Username</label>
+        <div class="input-box">
+          <i class="fa-regular fa-user icon-left"></i>
+          <input 
+            type="text"
+            id="email"
+            name="email"
+            placeholder="กรอก Email หรือ Username"
+            autocomplete="username"
+            required
+          >
         </div>
-
-        <!-- Password -->
-        <div class="form-group">
-          <label for="password">รหัสผ่าน</label>
-          <div class="input-wrapper">
-            <span class="material-symbols-outlined icon-left" aria-hidden="true">lock</span>
-            <input 
-              type="password" 
-              id="password"
-              name="password"
-              placeholder="กรอกรหัสผ่าน"
-              autocomplete="current-password"
-              required
-              aria-required="true"
-            >
-            <button
-              type="button"
-              class="icon-right-btn"
-              id="togglePassword"
-              aria-label="แสดง/ซ่อนรหัสผ่าน"
-            >
-              <span class="material-symbols-outlined">visibility</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="forgot">
-          <a href="forgot-password.html">ลืมรหัสผ่าน?</a>
-        </div>
-
-        <button type="submit" id="loginBtn">
-          เข้าสู่ระบบ
-        </button>
-
-      </form>
-
-      <div class="register">
-        ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
       </div>
 
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">รหัสผ่าน</label>
+        <div class="input-box">
+          <i class="fa-solid fa-lock icon-left"></i>
+          <input 
+            type="password"
+            id="password"
+            name="password"
+            placeholder="กรอกรหัสผ่าน"
+            autocomplete="current-password"
+            required
+          >
+          <button type="button" id="togglePassword" class="icon-btn">
+            <i class="fa-regular fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Forgot -->
+      <div class="forgot">
+        <a href="forgot-password.html">ลืมรหัสผ่าน?</a>
+      </div>
+
+      <!-- Login Button -->
+      <button type="submit" id="loginBtn" class="btn-login">
+        <span class="btn-text">เข้าสู่ระบบ</span>
+        <span class="spinner"></span>
+      </button>
+
+    </form>
+
+    <div class="register">
+      ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
     </div>
 
   </div>
+</div>
 
-  <!-- 2️⃣ โหลดไฟล์ JS ของเราไว้ล่างสุดก่อน </body> -->
+<!-- Scripts -->
 <script src="js/core/supabaseClient.js"></script>
 <script src="js/core/auth.js"></script>
 <script src="js/login.js"></script>
+
+<!-- Toggle Password -->
+<script>
+const toggle = document.getElementById("togglePassword");
+const password = document.getElementById("password");
+
+toggle.addEventListener("click", () => {
+  const type = password.type === "password" ? "text" : "password";
+  password.type = type;
+  toggle.innerHTML = type === "password"
+    ? '<i class="fa-regular fa-eye"></i>'
+    : '<i class="fa-regular fa-eye-slash"></i>';
+});
+</script>
 
 </body>
 </html>

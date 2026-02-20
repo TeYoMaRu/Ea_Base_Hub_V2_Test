@@ -7,6 +7,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - EABaseHub</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <!-- =========================
          FONTS - ฟอนต์และไอคอน
@@ -49,7 +51,7 @@
 
         <!-- โลโก้และชื่อแอป -->
         <div class="logo">
-          <img src="icons/icon-512.png" alt="EABaseHub Logo" />
+          <img src="assets/icons/icon-192.png" alt="EABaseHub Logo" />
           <span class="logo-text">EABaseHub</span>
         </div>
 
@@ -92,16 +94,7 @@
         </a>
         </nav>
 
-        <!-- =========================
-             OPEN SHOP CARD - การ์ดเปิดร้านค้า (ถูกคอมเมนต์ไว้)
-             - สามารถเอาออกจากคอมเมนต์ได้ถ้าต้องการใช้งาน
-             ========================= -->
-        <!-- <div class="open-shop-card" onclick="openShopModal()">
-          <div class="open-shop-icon">🏪</div>
-          <h4>เพิ่ม / เปิดร้านค้า</h4>
-          <p>ลงทะเบียนร้านค้าใหม่</p>
-          <span class="open-shop-badge">เปิดฟอร์ม</span>
-        </div> -->
+        
         <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
 
       </aside>
@@ -152,7 +145,7 @@
       <span class="material-symbols-outlined">store</span>
     </div>
     <div class="card-info">
-      <h3 id="storeCount">120</h3>
+      <h3 id="storeCount">กำลังโหลด...</h3>
       <p>ร้านค้าของฉัน</p>
     </div>
   </div>
@@ -162,8 +155,8 @@
       <span class="material-symbols-outlined">directions_car</span>
     </div>
     <div class="card-info">
-      <h3 id="tripCount">15</h3>
-      <p>Trip</p>
+      <h3 id="areaCount">กำลังโหลด...</h3>
+      <p>พื้นที่รับผิดชอบ</p>
     </div>
   </div>
 
@@ -321,28 +314,14 @@
               <div class="open-shop-icon">🏪</div>
               <h4>เพิ่ม / เปิดร้านค้า</h4>
               <p>ลงทะเบียนร้านค้าใหม่</p>
-              <span class="open-shop-badge">เปิดฟอร์ม</span>
+              <span class="open-shop-badge">comming soon</span>
             </div>
 
             <button class="admin-only">จัดการผู้ใช้</button>
 
             </aside>
 
-            <!-- =========================
-                 FORMS HUB - ปุ่มแบบฟอร์มต่างๆ (ถูกคอมเมนต์ไว้)
-                 - สามารถเอาออกจากคอมเมนต์ได้ถ้าต้องการใช้งาน
-                 ========================= -->
-            <!-- <div class="forms-hub">
-              <h4>Forms Hub <span class="muted">Coming Soon</span></h4>
-              <button class="form-btn">
-                แบบฟอร์มแผนการเดินทาง<br />
-                และบันทึกค่าใช้จ่าย 1
-              </button>
-              <button class="form-btn">
-                แบบฟอร์มเดินทางจริง<br />
-                และเคลียร์ค่าใช้จ่าย 2
-              </button>
-            </div> -->
+            
           </div>
         </div>
       </main>
@@ -410,10 +389,10 @@
          ========================= -->
     
     <!-- Supabase Client - สำหรับเชื่อมต่อฐานข้อมูล -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/core/supabaseClient.js"></script>
     
     <!-- Supabase Configuration - ตั้งค่าการเชื่อมต่อ -->
-    <script src="js/supabaseClient.js"></script>
+    <script src="js/core/auth.js"></script>
     
     <!-- Home Page Logic - ตรรกะหน้า Home -->
     <!-- โหลดข้อมูล: รายงาน, ร้านค้า, Trip, Claim -->
@@ -421,3 +400,7 @@
     <script src="js/home.js"></script>
   </body>
 </html>
+
+
+
+
