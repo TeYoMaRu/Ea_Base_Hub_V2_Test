@@ -361,12 +361,13 @@ async function loadReports() {
       row.innerHTML = `
         <td>${formatDate(report.report_date || report.created_at)}</td>
         <td>${shopsMap[report.shop_id] || "-"}</td>
+        <td>${report.status || "-"}</td>
+        <td>${report.note || "-"}</td>
         <td>
           ${productsMap[report.product_id] || "-"}
           ${specText}
         </td>
         <td>${(report.quantity || 0).toLocaleString()}</td>
-        <td>${report.status || "-"}</td>
         <td>
           <button onclick="viewReport('${report.id}')">👁️</button>
           <button onclick="deleteReport('${report.id}')">🗑️</button>

@@ -223,6 +223,35 @@ button {
   color: #fff;
 }
 
+.action-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.action-buttons button {
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.btn-view {
+  background: #e3f2fd;
+}
+
+.btn-edit {
+  background: #fff3cd;
+}
+
+.btn-delete {
+  background: #f8d7da;
+}
+
+.action-buttons button:hover {
+  transform: scale(1.05);
+} 
 
 /* ===================================================== */
 /* TABLE                                                  */
@@ -243,6 +272,14 @@ td {
 
 th {
   background: #f7f7f7;
+}
+
+
+.detail-text {
+  max-width: 150px;   /* ปรับตามความกว้างตาราง */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 

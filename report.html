@@ -98,7 +98,7 @@
 
       <!-- หมวดสินค้า -->
       <div class="form-group">
-        <label>หมวดสินค้า</label>
+        <label>สินค้าที่ขายกับร้านนี้</label>
         <select id="categorySelect">
           <option value="">-- เลือกหมวด --</option>
         </select>
@@ -128,14 +128,14 @@
       <div class="form-group">
         <label>สถานะ</label>
         <select id="status">
-          <option>เยี่ยมแล้ว</option>
-          <option>รอติดตาม</option>
+          <option>เข้าพบลูกค้า</option>
+          <option>รอเข้าพบรอบต่อไป</option>
         </select>
       </div>
 
       <!-- ยอดสั่งซื้อ -->
       <div class="form-group">
-        <label>ยอดสั่งซื้อ (บาท)</label>
+        <label>ยอดสั่งซื้อ</label>
         <input type="number" id="amount">
       </div>
 
@@ -147,8 +147,8 @@
 
       <!-- หมายเหตุ -->
       <div class="form-group full">
-        <label>หมายเหตุ</label>
-        <textarea id="note" rows="3"></textarea>
+        <label>รายละเอียด</label>
+        <textarea id="note" rows="5"></textarea>
       </div>
 
     </div>
@@ -171,17 +171,17 @@
 
     <table>
 
-      <!-- หัวตาราง -->
-      <!-- <thead>
+      <!-- หัวตาราง -->    
+      <thead>
         <tr>
           <th>วันที่</th>
           <th>ร้านค้า</th>
-          <th>สินค้า</th>
-          <th>ยอด</th>
           <th>สถานะ</th>
-          <th>จัดการ</th>
+          <th>รายละเอียด</th>
+          <th>สินค้า</th>
+          <th>จัดการายงานของฉัน</th>
         </tr>
-      </thead> -->
+      </thead>
       <thead id="reportHead"></thead>
 
       <!-- เนื้อหาตาราง (JS จะเติมข้อมูลให้) -->
@@ -233,7 +233,7 @@
 <script src="js/core/auth.js"></script>
 
 <!-- Page Script -->
-<script src="js/report.js"></script>
 
+<script src="js/report.js"></script>
 </body>
 </html>
