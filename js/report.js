@@ -1,13 +1,18 @@
 // =====================================================
-// report.js (Debug Version - แก้ปัญหา dropdown ไม่แสดง)
-// หน้ารายงานเยี่ยมร้านค้า
+// report.js
+// ระบบรายงานเยี่ยมร้านค้า (Production Version)
 // =====================================================
 
+
+
+// =====================================================
+// 🚀 INITIALIZE PAGE
+// =====================================================
 document.addEventListener("DOMContentLoaded", async () => {
 
   console.log("🚀 Page loaded");
 
-  // 🔐 ป้องกันหน้า
+  // 🔐 ตรวจสอบสิทธิ์ก่อนเข้าใช้งานหน้า
   try {
     await protectPage(["admin", "sales", "manager", "user"]);
     console.log("✅ Auth check passed");
@@ -15,70 +20,57 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("❌ Auth error:", error);
   }
 
-  await loadUserInfo();
-  await loadReports();
-  await loadShops();
-  await loadCategories();
+  // โหลดข้อมูลหลักของหน้า
+  await loadUserInfo();     // โหลดชื่อผู้ใช้
+  await loadReports();      // โหลดตารางรายงาน
+  await loadShops();        // โหลดร้านค้า
+  await loadCategories();   // โหลดหมวดสินค้า
 
   // ตั้งค่าวันที่เริ่มต้นเป็นวันนี้
   const dateInput = document.getElementById("reportDate");
-  if (dateInput) {
-    dateInput.valueAsDate = new Date();
-  }
+  if (dateInput) dateInput.valueAsDate = new Date();
 
-  // เมื่อเปลี่ยนหมวด → โหลดสินค้า
+  // เมื่อเปลี่ยนหมวดสินค้า → โหลดสินค้าใหม่
   const categorySelect = document.getElementById("categorySelect");
   if (categorySelect) {
     categorySelect.addEventListener("change", (e) => {
-      console.log("📦 Category changed:", e.target.value);
       loadProducts(e.target.value);
-      clearDynamicAttributes();
+      clearDynamicAttributes(); // ล้าง spec เดิม
     });
-  } else {
-    console.error("❌ categorySelect not found");
   }
 
-  // เมื่อเปลี่ยนสินค้า → โหลด Dynamic Attribute
+  // เมื่อเปลี่ยนสินค้า → โหลด Dynamic Spec
   const productSelect = document.getElementById("productSelect");
   if (productSelect) {
     productSelect.addEventListener("change", handleProductChange);
-  } else {
-    console.error("❌ productSelect not found");
   }
 
 });
 
 
+
 // =====================================================
-// โหลดชื่อผู้ใช้
+// 👤 LOAD USER INFO
 // =====================================================
 async function loadUserInfo() {
 
-  console.log("👤 Loading user info...");
-
   try {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    
-    if (!session) {
-      console.warn("⚠️ No session found");
-      return;
-    }
 
-    const { data: profile, error } = await supabaseClient
+    // ดึง session ปัจจุบัน
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) return;
+
+    // ดึงชื่อจาก profiles table
+    const { data: profile } = await supabaseClient
       .from("profiles")
       .select("display_name")
       .eq("id", session.user.id)
       .single();
 
-    if (error) {
-      console.error("❌ Profile error:", error);
-    }
-
     const userNameElement = document.querySelector(".user-name");
-
     if (userNameElement) {
-      userNameElement.textContent = profile?.display_name || session.user.email;
-      console.log("✅ User loaded:", userNameElement.textContent);
+      userNameElement.textContent =
+        profile?.display_name || session.user.email;
     }
 
   } catch (error) {
@@ -87,50 +79,33 @@ async function loadUserInfo() {
 }
 
 
+
 // =====================================================
-// โหลดร้านค้า
+// 🏪 LOAD SHOPS
 // =====================================================
 async function loadShops() {
 
-  console.log("🏪 Loading shops...");
-
   const shopSelect = document.getElementById("shopSelect");
-
-  if (!shopSelect) {
-    console.error("❌ shopSelect element not found!");
-    return;
-  }
+  if (!shopSelect) return;
 
   try {
+
     const { data, error } = await supabaseClient
       .from("shops")
       .select("id, shop_name")
       .eq("status", "Active")
       .order("shop_name");
 
-    if (error) {
-      console.error("❌ Shops query error:", error);
-      shopSelect.innerHTML = `<option value="">เกิดข้อผิดพลาด</option>`;
-      return;
-    }
-
-    console.log("📊 Shops data:", data);
+    if (error) throw error;
 
     shopSelect.innerHTML = `<option value="">-- เลือกร้านค้า --</option>`;
 
-    if (!data || data.length === 0) {
-      console.warn("⚠️ No shops found");
-      return;
-    }
-
-    data.forEach(shop => {
+    data?.forEach(shop => {
       const option = document.createElement("option");
       option.value = shop.id;
       option.textContent = shop.shop_name;
       shopSelect.appendChild(option);
     });
-
-    console.log(`✅ Loaded ${data.length} shops`);
 
   } catch (error) {
     console.error("❌ loadShops error:", error);
@@ -138,49 +113,32 @@ async function loadShops() {
 }
 
 
+
 // =====================================================
-// โหลดหมวดสินค้า
+// 📂 LOAD CATEGORIES
 // =====================================================
 async function loadCategories() {
 
-  console.log("📂 Loading categories...");
-
   const categorySelect = document.getElementById("categorySelect");
-
-  if (!categorySelect) {
-    console.error("❌ categorySelect element not found!");
-    return;
-  }
+  if (!categorySelect) return;
 
   try {
+
     const { data, error } = await supabaseClient
       .from("categories")
       .select("id, name")
       .order("name");
 
-    if (error) {
-      console.error("❌ Categories query error:", error);
-      categorySelect.innerHTML = `<option value="">เกิดข้อผิดพลาด</option>`;
-      return;
-    }
-
-    console.log("📊 Categories data:", data);
+    if (error) throw error;
 
     categorySelect.innerHTML = `<option value="">-- เลือกหมวด --</option>`;
 
-    if (!data || data.length === 0) {
-      console.warn("⚠️ No categories found");
-      return;
-    }
-
-    data.forEach(cat => {
+    data?.forEach(cat => {
       const option = document.createElement("option");
       option.value = cat.id;
       option.textContent = cat.name;
       categorySelect.appendChild(option);
     });
-
-    console.log(`✅ Loaded ${data.length} categories`);
 
   } catch (error) {
     console.error("❌ loadCategories error:", error);
@@ -188,56 +146,34 @@ async function loadCategories() {
 }
 
 
+
 // =====================================================
-// โหลดสินค้าตามหมวด
+// 🛍️ LOAD PRODUCTS BY CATEGORY
 // =====================================================
 async function loadProducts(categoryId) {
 
-  console.log("🛍️ Loading products for category:", categoryId);
-
   const productSelect = document.getElementById("productSelect");
-
-  if (!productSelect) {
-    console.error("❌ productSelect element not found!");
-    return;
-  }
+  if (!productSelect) return;
 
   productSelect.innerHTML = `<option value="">-- เลือกสินค้า --</option>`;
-
-  if (!categoryId) {
-    console.log("ℹ️ No category selected");
-    return;
-  }
+  if (!categoryId) return;
 
   try {
+
     const { data, error } = await supabaseClient
       .from("products")
       .select("id, name")
       .eq("category_id", categoryId)
       .order("name");
 
-    if (error) {
-      console.error("❌ Products query error:", error);
-      productSelect.innerHTML = `<option value="">เกิดข้อผิดพลาด</option>`;
-      return;
-    }
+    if (error) throw error;
 
-    console.log("📊 Products data:", data);
-
-    if (!data || data.length === 0) {
-      console.warn("⚠️ No products found for this category");
-      productSelect.innerHTML = `<option value="">-- ไม่มีสินค้าในหมวดนี้ --</option>`;
-      return;
-    }
-
-    data.forEach(product => {
+    data?.forEach(product => {
       const option = document.createElement("option");
       option.value = product.id;
       option.textContent = product.name;
       productSelect.appendChild(option);
     });
-
-    console.log(`✅ Loaded ${data.length} products`);
 
   } catch (error) {
     console.error("❌ loadProducts error:", error);
@@ -245,70 +181,41 @@ async function loadProducts(categoryId) {
 }
 
 
+
 // =====================================================
-// Dynamic Attribute System
+// 🧩 HANDLE DYNAMIC ATTRIBUTE FORM
 // =====================================================
 async function handleProductChange() {
 
   const productId = this.value;
-  console.log("🔧 Product changed:", productId);
-
   const container = document.getElementById("dynamicAttributes");
-  
-  if (!container) {
-    console.error("❌ dynamicAttributes container not found!");
-    return;
-  }
+  if (!container) return;
 
   container.innerHTML = "";
-
-  if (!productId) {
-    console.log("ℹ️ No product selected");
-    return;
-  }
+  if (!productId) return;
 
   try {
-    // 1️⃣ ดึง category_id
-    const { data: product, error: productError } = await supabaseClient
+
+    // 1️⃣ หา category ของสินค้า
+    const { data: product } = await supabaseClient
       .from("products")
       .select("category_id")
       .eq("id", productId)
       .single();
 
-    if (productError) {
-      console.error("❌ Product query error:", productError);
-      return;
-    }
+    if (!product) return;
 
-    if (!product) {
-      console.warn("⚠️ Product not found");
-      return;
-    }
-
-    console.log("📦 Product category_id:", product.category_id);
-
-    // 2️⃣ โหลด attributes
-    const { data: attributes, error: attrError } = await supabaseClient
+    // 2️⃣ โหลด attributes ตาม category
+    const { data: attributes } = await supabaseClient
       .from("attributes")
       .select("*")
       .eq("category_id", product.category_id)
-      .order("name");
+      .order("order_no", { ascending: true });
 
-    if (attrError) {
-      console.error("❌ Attributes query error:", attrError);
-      return;
-    }
+    if (!attributes) return;
 
-    console.log("📊 Attributes data:", attributes);
-
-    if (!attributes || attributes.length === 0) {
-      console.log("ℹ️ No attributes for this category");
-      return;
-    }
-
+    // 3️⃣ สร้าง input ตามประเภท
     for (let attr of attributes) {
-
-      console.log("➕ Adding attribute:", attr.name);
 
       const wrapper = document.createElement("div");
       wrapper.classList.add("form-group");
@@ -323,15 +230,11 @@ async function handleProductChange() {
         select.dataset.attributeId = attr.id;
         select.classList.add("dynamic-field");
 
-        const { data: options, error: optError } = await supabaseClient
+        const { data: options } = await supabaseClient
           .from("attribute_options")
           .select("value")
           .eq("attribute_id", attr.id)
           .order("value");
-
-        if (optError) {
-          console.error("❌ Options query error:", optError);
-        }
 
         const defaultOption = document.createElement("option");
         defaultOption.value = "";
@@ -359,124 +262,119 @@ async function handleProductChange() {
       container.appendChild(wrapper);
     }
 
-    console.log(`✅ Added ${attributes.length} dynamic attributes`);
-
   } catch (error) {
     console.error("❌ handleProductChange error:", error);
   }
 }
 
 
+
 // =====================================================
-// เก็บค่า Dynamic Attributes
+// 📋 COLLECT DYNAMIC ATTRIBUTE VALUES
 // =====================================================
 function collectDynamicAttributes() {
+
   const fields = document.querySelectorAll(".dynamic-field");
   const attributes = {};
 
   fields.forEach(field => {
-    const attrId = field.dataset.attributeId;
-    const value = field.value;
-    if (value) {
-      attributes[attrId] = value;
+    if (field.value) {
+      attributes[field.dataset.attributeId] = field.value;
     }
   });
 
-  console.log("📋 Collected attributes:", attributes);
   return attributes;
 }
 
 
+
 // =====================================================
-// โหลดรายงาน (Manual Join - ไม่ใช้ FK)
+// 📊 LOAD REPORT TABLE (Spec รวมในคอลัมน์สินค้า)
 // =====================================================
 async function loadReports() {
 
-  console.log("📋 Loading reports...");
-
   const tbody = document.getElementById("reportBody");
-  
-  if (!tbody) {
-    console.error("❌ reportBody element not found!");
-    return;
-  }
+  if (!tbody) return;
 
   tbody.innerHTML = "<tr><td colspan='6'>กำลังโหลด...</td></tr>";
 
   try {
-    // 1️⃣ ดึงข้อมูล reports
-    const { data: reports, error: reportError } = await supabaseClient
+
+    const { data: reports } = await supabaseClient
       .from("reports")
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (reportError) {
-      console.error("❌ Reports query error:", reportError);
-      tbody.innerHTML = `<tr><td colspan="6">เกิดข้อผิดพลาด: ${reportError.message}</td></tr>`;
-      return;
-    }
-
-    console.log("📊 Reports data:", reports);
-
     if (!reports || reports.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6">ยังไม่มีข้อมูล</td></tr>`;
+      tbody.innerHTML = "<tr><td colspan='6'>ยังไม่มีข้อมูล</td></tr>";
       return;
     }
 
-    // 2️⃣ ดึงข้อมูลร้านค้าและสินค้าทั้งหมด
+    // โหลด shop และ product ล่วงหน้า
     const shopIds = [...new Set(reports.map(r => r.shop_id).filter(Boolean))];
     const productIds = [...new Set(reports.map(r => r.product_id).filter(Boolean))];
 
-    let shopsMap = {};
-    let productsMap = {};
+    const { data: shops } = await supabaseClient
+      .from("shops")
+      .select("id, shop_name")
+      .in("id", shopIds);
 
-    if (shopIds.length > 0) {
-      const { data: shops } = await supabaseClient
-        .from("shops")
-        .select("id, shop_name")
-        .in("id", shopIds);
-      
-      shopsMap = Object.fromEntries((shops || []).map(s => [s.id, s.shop_name]));
-      console.log("🏪 Shops map:", shopsMap);
-    }
+    const { data: products } = await supabaseClient
+      .from("products")
+      .select("id, name")
+      .in("id", productIds);
 
-    if (productIds.length > 0) {
-      const { data: products } = await supabaseClient
-        .from("products")
-        .select("id, name")
-        .in("id", productIds);
-      
-      productsMap = Object.fromEntries((products || []).map(p => [p.id, p.name]));
-      console.log("🛍️ Products map:", productsMap);
-    }
+    const shopsMap = Object.fromEntries((shops || []).map(s => [s.id, s.shop_name]));
+    const productsMap = Object.fromEntries((products || []).map(p => [p.id, p.name]));
 
-    // 3️⃣ แสดงผลในตาราง
     tbody.innerHTML = "";
 
-    reports.forEach(report => {
+    // สร้างแต่ละแถว
+    for (const report of reports) {
+
+      let specText = "";
+
+      if (report.attributes && Object.keys(report.attributes).length > 0) {
+
+        const attributeIds = Object.keys(report.attributes);
+
+        const { data: attrData } = await supabaseClient
+          .from("attributes")
+          .select("id, name")
+          .in("id", attributeIds);
+
+        const attrMap = Object.fromEntries(
+          (attrData || []).map(a => [a.id, a.name])
+        );
+
+        const specArray = [];
+
+        for (let [attrId, value] of Object.entries(report.attributes)) {
+          specArray.push(`${attrMap[attrId] || attrId}: ${value}`);
+        }
+
+        specText = `<br><small style="color:#666;">${specArray.join(" | ")}</small>`;
+      }
 
       const row = document.createElement("tr");
 
       row.innerHTML = `
         <td>${formatDate(report.report_date || report.created_at)}</td>
         <td>${shopsMap[report.shop_id] || "-"}</td>
-        <td>${productsMap[report.product_id] || "-"}</td>
+        <td>
+          ${productsMap[report.product_id] || "-"}
+          ${specText}
+        </td>
         <td>${(report.quantity || 0).toLocaleString()}</td>
         <td>${report.status || "-"}</td>
         <td>
-          <button onclick="viewReport('${report.id}')" class="btn-view">
-            👁️ ดู
-          </button>
-          <button onclick="deleteReport('${report.id}')" class="btn-delete">
-            🗑️ ลบ
-          </button>
+          <button onclick="viewReport('${report.id}')">👁️</button>
+          <button onclick="deleteReport('${report.id}')">🗑️</button>
         </td>
       `;
 
       tbody.appendChild(row);
-    });
-
-    console.log(`✅ Displayed ${reports.length} reports`);
+    }
 
   } catch (error) {
     console.error("❌ loadReports error:", error);
@@ -484,224 +382,60 @@ async function loadReports() {
 }
 
 
+
 // =====================================================
-// บันทึกข้อมูล
+// 💾 SAVE REPORT
 // =====================================================
 async function saveReport() {
 
-  console.log("💾 Saving report...");
-
-  // 1️⃣ ดึงค่าจากฟอร์ม
-  const reportDate = document.getElementById("reportDate")?.value;
-  const shopId = document.getElementById("shopSelect")?.value;
-  const productId = document.getElementById("productSelect")?.value;
-  const source = document.getElementById("source")?.value;
-  const status = document.getElementById("status")?.value;
-  const amount = document.getElementById("amount")?.value;
-  const followupDate = document.getElementById("followupDate")?.value;
-  const note = document.getElementById("note")?.value;
-
-  console.log("📝 Form data:", {
-    reportDate, shopId, productId, source, status, amount, followupDate, note
-  });
-
-  // 2️⃣ Validate
-  if (!reportDate) {
-    alert("⚠️ กรุณาเลือกวันที่");
-    return;
-  }
-
-  if (!shopId) {
-    alert("⚠️ กรุณาเลือกร้านค้า");
-    return;
-  }
-
-  if (!productId) {
-    alert("⚠️ กรุณาเลือกสินค้า");
-    return;
-  }
-
-  // 3️⃣ ดึง user
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  if (!user) {
-    alert("❌ กรุณาเข้าสู่ระบบ");
-    return;
-  }
-
-  // 4️⃣ เก็บ dynamic attributes
-  const dynamicAttrs = collectDynamicAttributes();
-
-  // 5️⃣ บันทึกลง Supabase
   const reportData = {
-    report_date: reportDate,
-    shop_id: shopId,
-    product_id: productId,
-    source: source,
-    status: status,
-    quantity: amount ? parseFloat(amount) : 0,
-    followup_date: followupDate || null,
-    note: note,
-    sale_id: user.id,
-    attributes: dynamicAttrs
+    report_date: document.getElementById("reportDate")?.value,
+    shop_id: document.getElementById("shopSelect")?.value,
+    product_id: document.getElementById("productSelect")?.value,
+    source: document.getElementById("source")?.value,
+    status: document.getElementById("status")?.value,
+    quantity: parseFloat(document.getElementById("amount")?.value || 0),
+    followup_date: document.getElementById("followupDate")?.value || null,
+    note: document.getElementById("note")?.value,
+    sale_id: (await supabaseClient.auth.getUser()).data.user.id,
+    attributes: collectDynamicAttributes()
   };
 
-  console.log("📤 Saving data:", reportData);
-
-  const { data, error } = await supabaseClient
+  const { error } = await supabaseClient
     .from("reports")
-    .insert([reportData])
-    .select();
+    .insert([reportData]);
 
   if (error) {
-    console.error("❌ Save error:", error);
-    alert("❌ บันทึกไม่สำเร็จ: " + error.message);
+    alert("❌ บันทึกไม่สำเร็จ");
     return;
   }
 
-  console.log("✅ Saved successfully:", data);
   alert("✅ บันทึกสำเร็จ");
   clearForm();
   loadReports();
 }
 
 
-// =====================================================
-// ดูรายละเอียดรายงาน (Manual Join)
-// =====================================================
-async function viewReport(id) {
-  
-  console.log("👁️ Viewing report:", id);
-
-  // ดึงข้อมูล report
-  const { data: report, error } = await supabaseClient
-    .from("reports")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if (error) {
-    console.error("❌ View error:", error);
-    alert("เกิดข้อผิดพลาด: " + error.message);
-    return;
-  }
-
-  // ดึงข้อมูลร้านค้า
-  let shopName = "-";
-  if (report.shop_id) {
-    const { data: shop } = await supabaseClient
-      .from("shops")
-      .select("shop_name")
-      .eq("id", report.shop_id)
-      .single();
-    shopName = shop?.shop_name || "-";
-  }
-
-  // ดึงข้อมูลสินค้า
-  let productName = "-";
-  if (report.product_id) {
-    const { data: product } = await supabaseClient
-      .from("products")
-      .select("name")
-      .eq("id", report.product_id)
-      .single();
-    productName = product?.name || "-";
-  }
-
-  // ดึงข้อมูลผู้บันทึก
-  let userName = "-";
-  if (report.sale_id) {
-    const { data: profile } = await supabaseClient
-      .from("profiles")
-      .select("display_name")
-      .eq("id", report.sale_id)
-      .single();
-    userName = profile?.display_name || "-";
-  }
-
-  // แสดงข้อมูล
-  let details = `
-📋 รายละเอียดรายงาน
-
-วันที่: ${formatDate(report.report_date)}
-ร้านค้า: ${shopName}
-สินค้า: ${productName}
-ยอดสั่งซื้อ: ${(report.quantity || 0).toLocaleString()} บาท
-แหล่งที่มา: ${report.source || "-"}
-สถานะ: ${report.status || "-"}
-วันที่ติดตาม: ${report.followup_date ? formatDate(report.followup_date) : "-"}
-ผู้บันทึก: ${userName}
-หมายเหตุ: ${report.note || "-"}
-  `;
-
-  if (report.attributes && Object.keys(report.attributes).length > 0) {
-    details += "\n\nข้อมูลเพิ่มเติม:\n";
-    for (let [key, value] of Object.entries(report.attributes)) {
-      details += `- ${key}: ${value}\n`;
-    }
-  }
-
-  alert(details);
-}
-
 
 // =====================================================
-// ลบข้อมูล
+// 🧹 CLEAR FORM
 // =====================================================
-async function deleteReport(id) {
-
-  if (!confirm("⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบรายงานนี้?")) return;
-
-  console.log("🗑️ Deleting report:", id);
-
-  const { error } = await supabaseClient
-    .from("reports")
-    .delete()
-    .eq("id", id);
-
-  if (error) {
-    console.error("❌ Delete error:", error);
-    alert("❌ ลบไม่สำเร็จ: " + error.message);
-    return;
-  }
-
-  console.log("✅ Deleted successfully");
-  alert("✅ ลบสำเร็จ");
-  loadReports();
-}
-
-
-// =====================================================
-// Utilities
-// =====================================================
-function formatDate(dateString) {
-  if (!dateString) return "-";
-  return new Date(dateString).toLocaleDateString("th-TH", {
-    year: "numeric",
-    month: "short",
-    day: "numeric"
-  });
-}
-
 function clearForm() {
-  const dateInput = document.getElementById("reportDate");
-  if (dateInput) dateInput.valueAsDate = new Date();
-  
+  document.getElementById("reportDate").valueAsDate = new Date();
   document.getElementById("shopSelect").value = "";
   document.getElementById("categorySelect").value = "";
   document.getElementById("productSelect").value = "";
-  document.getElementById("source").value = "Walk-in";
-  document.getElementById("status").value = "เยี่ยมแล้ว";
   document.getElementById("amount").value = "";
-  document.getElementById("followupDate").value = "";
   document.getElementById("note").value = "";
   clearDynamicAttributes();
-  
-  console.log("🧹 Form cleared");
 }
 
-function clearDynamicAttributes() {
-  const container = document.getElementById("dynamicAttributes");
-  if (container) {
-    container.innerHTML = "";
-  }
+
+
+// =====================================================
+// 🗓 FORMAT DATE
+// =====================================================
+function formatDate(dateString) {
+  if (!dateString) return "-";
+  return new Date(dateString).toLocaleDateString("th-TH");
 }

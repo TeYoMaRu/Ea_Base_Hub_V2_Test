@@ -58,7 +58,8 @@ body {
   margin: 0; /* เอา margin default ของ h2 ออก */
   font-size: 22px;
   font-weight: 600;
-  color: #2563eb;   /* ฟ้า modern */
+  /*color: #2563eb;   /* ฟ้า modern */
+   color: #15803d;   /* เขียว premium */
    letter-spacing: 0.5px;
 
 }
@@ -104,7 +105,7 @@ body {
 }
 
 .app-nav a.active {
-  background: #1976d2;
+  background: #15803d;
   color: #fff;
 }
 
