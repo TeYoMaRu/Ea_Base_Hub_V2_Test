@@ -282,7 +282,50 @@ th {
   text-overflow: ellipsis;
 }
 
+/* ===== Modal ===== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
 
+.modal-content {
+  background: white;
+  width: 450px;
+  max-width: 90%;
+  border-radius: 12px;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.close-btn {
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modal-footer {
+  text-align: right;
+  margin-top: 15px;
+}
+
+#saveEditBtn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
 /* ===================================================== */
 /* FOOTER                                                 */
 /* ===================================================== */
