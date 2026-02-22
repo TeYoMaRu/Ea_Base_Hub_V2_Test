@@ -362,7 +362,9 @@ async function loadReports() {
         <td>${formatDate(report.report_date || report.created_at)}</td>
         <td>${shopsMap[report.shop_id] || "-"}</td>
         <td>${report.status || "-"}</td>
-        <td>${report.note || "-"}</td>
+        <td class="detail-text" title="${report.note || "-"}">
+  ${report.note || "-"}
+</td>
         <td>
           ${productsMap[report.product_id] || "-"}
           ${specText}
