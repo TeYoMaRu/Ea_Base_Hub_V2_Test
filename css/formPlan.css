@@ -249,6 +249,10 @@ input[type="number"]:hover {
 }
 
 input[readonly] {
+  /* width: 200px; */
+  padding: 8px;
+  border-radius: 5px;
+  border: #f1f5f9;
   background: #f1f5f9;
   color: #64748b;
   cursor: not-allowed;
