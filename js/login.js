@@ -1,9 +1,46 @@
 // ===============================
 // Redirect if already logged in
 // ===============================
+// async function redirectIfLoggedIn() {
+//   try {
+//     const { data: { session } } = await supabaseClient.auth.getSession();
+//     if (!session) return;
+
+//     const { data: profile } = await supabaseClient
+//       .from("profiles")
+//       .select("role, status")
+//       .eq("id", session.user.id)
+//       .single();
+
+//     if (!profile) return;
+
+//     if (profile.status !== "Active") {
+//       await supabaseClient.auth.signOut();
+//       return;
+//     }
+
+//     if (profile.role === "admin") {
+//       window.location.href = "admintor.html";
+//     }
+//     else if (profile.role === "sales") {
+//       window.location.href = "index.html";
+//     }
+
+//   } catch (error) {
+//     console.error("Error checking session:", error);
+//   }
+// }
+
+// redirectIfLoggedIn();
+
+// ===============================
+// Redirect if already logged in
+// ===============================
 async function redirectIfLoggedIn() {
   try {
-    const { data: { session } } = await supabaseClient.auth.getSession();
+    const {
+      data: { session },
+    } = await supabaseClient.auth.getSession();
     if (!session) return;
 
     const { data: profile } = await supabaseClient
@@ -19,13 +56,16 @@ async function redirectIfLoggedIn() {
       return;
     }
 
+    // 🔥 Redirect ตาม Role
     if (profile.role === "admin") {
       window.location.href = "admintor.html";
-    } 
-    else if (profile.role === "sales") {
-      window.location.href = "index.html";
+    } else if (profile.role === "sales") {
+      window.location.href = "sales-dashboard.html";
+    } else if (profile.role === "manager") {
+      window.location.href = "manager-dashboard.html";
+    } else if (profile.role === "executive") {
+      window.location.href = "executive-dashboard.html";
     }
-
   } catch (error) {
     console.error("Error checking session:", error);
   }
@@ -33,12 +73,10 @@ async function redirectIfLoggedIn() {
 
 redirectIfLoggedIn();
 
-
 // ===============================
 // DOM Ready
 // ===============================
 document.addEventListener("DOMContentLoaded", () => {
-
   const loginForm = document.getElementById("loginForm");
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
@@ -61,12 +99,10 @@ document.addEventListener("DOMContentLoaded", () => {
     loginBtn.classList.add("loading");
 
     try {
-
       let emailToUse = identifier;
 
       // ถ้าไม่มี @ → แปลว่าเป็น username
       if (!identifier.includes("@")) {
-
         const { data: userData, error } = await supabaseClient
           .from("profiles")
           .select("email")
@@ -83,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const { data: authData, error: loginError } =
         await supabaseClient.auth.signInWithPassword({
           email: emailToUse,
-          password: password
+          password: password,
         });
 
       if (loginError) throw loginError;
@@ -106,19 +142,20 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error("บัญชีของคุณถูกระงับ");
       }
 
+      // 🔥 Redirect ตาม Role
       if (profile.role === "admin") {
         window.location.href = "admintor.html";
-      } 
-      else if (profile.role === "sales") {
-        window.location.href = "index.html";
-      } 
-      else {
+      } else if (profile.role === "sales") {
+        window.location.href = "sales-dashboard.html";
+      } else if (profile.role === "manager") {
+        window.location.href = "manager-dashboard.html";
+      } else if (profile.role === "executive") {
+        window.location.href = "executive-dashboard.html";
+      } else {
         await supabaseClient.auth.signOut();
         throw new Error("คุณไม่มีสิทธิ์เข้าใช้งานระบบนี้");
       }
-
     } catch (err) {
-
       let errorMessage = err.message;
 
       if (err.message.includes("Invalid login credentials")) {
@@ -126,12 +163,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       alert("เข้าสู่ระบบไม่สำเร็จ: " + errorMessage);
-
     } finally {
       loginBtn.disabled = false;
       loginBtn.classList.remove("loading");
     }
-
   });
-
 });

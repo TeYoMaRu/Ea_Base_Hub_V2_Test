@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corporate Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/dashboard-modern.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">EA Dashboard</div>
+    <nav>
+      <a class="active">Dashboard</a>
+      <a>Reports</a>
+      <a>Claims</a>
+      <a>Sales</a>
+      <a>Settings</a>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="title">Executive Overview</div>
+      <div class="user-box">
+        <span>Ton Teuy</span>
+        <img src="https://i.pravatar.cc/40" />
+      </div>
+    </div>
+
+    <!-- KPI Section -->
+    <div class="kpi-grid">
+      <div class="card">
+        <h4>Total Sales</h4>
+        <p>฿3,250,000</p>
+      </div>
+      <div class="card">
+        <h4>Visits This Month</h4>
+        <p>1,245</p>
+      </div>
+      <div class="card">
+        <h4>Active Claims</h4>
+        <p>42</p>
+      </div>
+      <div class="card">
+        <h4>Growth</h4>
+        <p class="positive">+12.4%</p>
+      </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="card large">
+      <h3>Sales Performance</h3>
+      <canvas id="salesChart"></canvas>
+    </div>
+
+    <!-- Table Section -->
+    <div class="card large">
+      <h3>Latest Reports</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Sales</th>
+            <th>Shop</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>24 Feb</td>
+            <td>Somchai</td>
+            <td>ABC Shop</td>
+            <td><span class="badge success">Completed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+new Chart(document.getElementById('salesChart'), {
+  type: 'line',
+  data: {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+    datasets: [{
+      label: 'Sales',
+      data: [500000, 800000, 650000, 900000],
+      borderWidth: 2,
+      tension: 0.4
+    }]
+  }
+});
+</script>
+
+</body>
+</html>

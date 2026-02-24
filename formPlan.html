@@ -22,63 +22,104 @@
 <!-- ===================================================== -->
 <!-- APP HEADER (แถบบนสุดของระบบ)                         -->
 <!-- ===================================================== -->
-<header class="app-header">
+<!-- <header class="app-header">
   <div class="logo">
     <img src="assets/icons/icon-192.png" alt="logo">
     <h2>EABaseHub</h2>
   </div>
   <div class="user-name">ผู้ใช้งาน</div>
-</header>
+</header> -->
 
 <body>
 
 <!-- =====================================================
      NAVIGATION (ติดบน)
      ===================================================== -->
-<nav class="app-nav">
-  <a href="index.html">หน้าแรก</a>
-  <a href="report.html">รายงานเยี่ยมร้านค้า</a>
-  <a href="formPlan.html" class="active">ฟอร์ม ๑</a>
-  <a href="formActual.html">ฟอร์ม ๒</a>
-</nav>
+<div class="layout">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="assets/icons/icon-192.png" alt="logo">
+      <h2>EABaseHub</h2>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="index.html">
+        <span class="material-symbols-outlined">home</span>
+        หน้าแรก
+      </a>
+
+      <a href="report.html">
+        <span class="material-symbols-outlined">assignment</span>
+        รายงานเยี่ยมร้านค้า
+      </a>
+
+      <a href="formPlan.html" class="active">
+        <span class="material-symbols-outlined">map</span>
+        ฟอร์ม ๑ (Trip)
+      </a>
+
+      <a href="formActual.html">
+        <span class="material-symbols-outlined">check_circle</span>
+        ฟอร์ม ๒
+      </a>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="user-name">ผู้ใช้งาน</div>
+    </div>
+  </aside>
 
 
 <!-- =====================================================
      MAIN PAGE
      ===================================================== -->
-<div class="page">
+<!-- ===== Main Content ===== -->
+  <main class="main-content">
 
-  <!-- ================= TITLE ================= -->
-  <h1>ฟอร์มแผนการเดินทางและเบิกจ่าย ๑ (Trip)</h1>
+    <div class="page">
 
-  <!-- ================= SECTION: ข้อมูลหลัก ================= -->
-  <div class="section">
-    <h3>ข้อมูลพนักงาน / ช่วงเวลา</h3>
+      <!-- TITLE -->
+      <h1>ฟอร์มแผนการเดินทางและเบิกจ่าย ๑ (Trip)</h1>
 
-    <div>
-      <label for="empName">พนักงานขาย</label>
-      <input id="empName" readonly>
+      <!-- SECTION: ข้อมูลหลัก -->
+      <div class="section">
+        <h3>ข้อมูลพนักงาน / ช่วงเวลา</h3>
 
-      <label for="zone">เขตการขาย</label>
-      <input id="zone" readonly>
-    </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="empName">พนักงานขาย</label>
+            <input id="empName" readonly>
+          </div>
 
-    <div>
-      <label for="startDate">ระหว่างวันที่</label>
-      <input type="date" id="startDate">
+          <div class="form-group">
+            <label for="zone">เขตการขาย</label>
+            <input id="zone" readonly>
+          </div>
+        </div>
 
-      <label for="endDate">ถึงวันที่</label>
-      <input type="date" id="endDate">
-    </div>
-  </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="startDate">ระหว่างวันที่</label>
+            <input type="date" id="startDate">
+          </div>
 
-  <!-- ================= SECTION: ข้อมูลทริป ================= -->
-  <div class="section">
-    <h3>รายละเอียดทริป</h3>
+          <div class="form-group">
+            <label for="endDate">ถึงวันที่</label>
+            <input type="date" id="endDate">
+          </div>
+        </div>
+      </div>
 
-    <div>
-      ร้านที่ดูแลทั้งหมด: <span id="shopCount">0</span> ร้าน
-    </div>
+      <!-- SECTION: รายละเอียดทริป -->
+      <div class="section">
+        <h3>รายละเอียดทริป</h3>
+
+        <div class="badge">
+          ร้านในความรับผิดชอบ
+          <span id="shopCount">0</span> ร้าน
+        </div>
 
     <!-- แถว 1: วันที่ | เดินทางจาก | ไปจังหวัด -->
     <div class="form-row">
@@ -126,12 +167,7 @@
         <select id="shop3">
           <option value="">-- เลือกร้านค้า (ถ้ามี) --</option>
         </select>
-      </div>
-
-      <div class="form-group">
-        <label for="cost">ค่าใช้จ่าย</label>
-        <input type="number" id="cost" placeholder="บาท">
-      </div>
+      </div>      
     </div>
 
     <div class="actions">

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Sales Dashboard</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+<h1>📊 Manager Dashboard</h1>
+
+<div class="kpi-grid">
+  <div class="card">
+    <h3>ร้านเข้าเยี่ยมทีม</h3>
+    <p id="teamVisits"></p>
+  </div>
+  <div class="card">
+    <h3>ยอดขายทีม</h3>
+    <p id="teamSales"></p>
+  </div>
+  <div class="card">
+    <h3>เคลมทั้งหมด</h3>
+    <p id="teamClaims"></p>
+  </div>
+</div>
+
+<h2>Performance เปรียบเทียบเซลล์</h2>
+<canvas id="salesChart"></canvas>
+
+<h2>รายงานล่าสุดทีม</h2>
+<table id="teamReports"></table>
+
+<h2>Looker - Team View</h2>
+<iframe id="teamLooker"
+  width="100%"
+  height="600"
+  frameborder="0">
+</iframe>
+
+<script src="js/manager-dashboard.js"></script>
+</body>
+</html>

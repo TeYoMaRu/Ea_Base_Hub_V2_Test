@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Sales Dashboard</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<h1>📊 Dashboard ของฉัน</h1>
+
+<div class="kpi-grid">
+  <div class="card">
+    <h3>ร้านเข้าเดือนนี้</h3>
+    <p id="kpiVisits">0</p>
+  </div>
+  <div class="card">
+    <h3>ยอดขายเดือนนี้</h3>
+    <p id="kpiSales">0</p>
+  </div>
+  <div class="card">
+    <h3>เคลมที่เปิดอยู่</h3>
+    <p id="kpiClaims">0</p>
+  </div>
+</div>
+
+<h2>ร้านที่ดูแล</h2>
+<table id="myShops"></table>
+
+<h2>แจ้งเคลมของฉัน</h2>
+<table id="myClaims"></table>
+
+<h2>📈 ยอดขายของฉัน</h2>
+<iframe id="lookerFrame"
+  width="100%"
+  height="600"
+  frameborder="0">
+</iframe>
+
+<script src="js/sales-dashboard.js"></script>
+</body>
+</html>

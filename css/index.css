@@ -1,10 +1,49 @@
+/* ==========================================================
+   BRAND SYSTEM - EABaseHub
+   เขียว = Primary
+   ฟ้า = Secondary
+   ========================================================== */
+
+:root {
+
+  /* ===== Primary (Green) ===== */
+  --primary-900: #14532d;
+  --primary-700: #15803d;
+  --primary-500: #22c55e;
+  --primary-300: #86efac;
+  --primary-100: #dcfce7;
+
+  /* ===== Secondary (Blue) ===== */
+  --secondary-900: #0c4a6e;
+  --secondary-700: #0369a1;
+  --secondary-500: #0ea5e9;
+  --secondary-300: #7dd3fc;
+  --secondary-100: #e0f2fe;
+
+  /* ===== Neutral ===== */
+  --gray-900: #1f2937;
+  --gray-700: #374151;
+  --gray-500: #6b7280;
+  --gray-200: #e5e7eb;
+  --gray-100: #f3f4f6;
+  --white: #ffffff;
+
+  /* ===== UI ===== */
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --shadow-soft: 0 6px 20px rgba(0,0,0,0.06);
+  --shadow-hover: 0 14px 40px rgba(0,0,0,0.12);
+}
+
 /* =========================
    RESET พื้นฐาน
    - กำหนด box-sizing เป็น border-box ให้กับทุกองค์ประกอบ
    - padding และ border จะรวมอยู่ในความกว้างและความสูงที่กำหนด
    ========================= */
-* {
-  box-sizing: border-box;
+*,
+*::before,
+*::after {
+  box-sizing: border-box; /* ครอบคลุม pseudo-elements ด้วย */
 }
 
 /* =========================
@@ -17,6 +56,7 @@ body {
   margin: 0;
   font-family: 'Kanit', sans-serif;
   overflow-x: hidden;
+  background: #eef2f1; /* เพิ่มพื้นหลังอ่อนให้ดูนุ่มขึ้น */
 }
 
 /* =========================
@@ -27,8 +67,7 @@ body {
    ========================= */
 .layout {
   display: flex;
-  /* height: 100vh; */
-  overflow: hidden;
+  min-height: 100vh; /* เสถียรกว่า height */
 }
 
 /* =========================
@@ -41,15 +80,15 @@ body {
    ========================= */
 .sidebar {
   width: 180px;
-  background: #dff3e3;
+  background: var(--primary-100);
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px 10px;
   margin: 16px;
-  border-radius: 0 40px 40px 0; /* ชิดซ้าย */
-  height: calc(100vh - 64px); /* ลบ margin บนล่าง */
-  /* flex-shrink: 0; ป้องกันไม่ให้ถูกย่อ */
+  border-radius: 0 40px 40px 0;
+  min-height: calc(100vh - 32px); /* แก้ overflow issue */
+  flex-shrink: 0; /* ป้องกันถูกบีบ */
 }
 
 /* =========================
@@ -65,16 +104,16 @@ body {
   gap: 8px;
   font-size: 16px;
   font-weight: bold;
-  color: #1b7a3c; /* สีเขียวเข้ม */
+  color: #1b7a3c;
   margin-bottom: 24px;
   text-align: center;
 }
 
 /* ภาพโลโก้ */
 .logo img {
-  width: 152px;
-  height: 152px;
-  object-fit: contain; /* รักษาสัดส่วนภาพ */
+  width: 140px; /* ลดลงเล็กน้อยเพื่อบาลานซ์ */
+  height: 140px;
+  object-fit: contain;
 }
 
 /* =========================
@@ -86,6 +125,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%; /* ทำให้ menu เต็ม sidebar */
 }
 
 /* =========================
@@ -99,16 +139,22 @@ body {
   text-decoration: none;
   padding: 10px 12px;
   border-radius: 10px;
-  color: #1b7a3c;
+  color: var(--primary-900);
   font-weight: 500;
   font-size: 14px;
   text-align: center;
+  transition: 0.2s ease;
+}
+
+/* Hover ปกติ */
+.menu-item:hover {
+  background: rgba(76, 175, 80, 0.1);
 }
 
 /* เมนูที่กำลังใช้งาน - พื้นหลังสีเขียว ข้อความสีขาว */
 .menu-item.active {
-  background: #4caf50;
-  color: white;
+  background: var(--primary-500);
+  color: var(--white);
 }
 
 /* เมนูที่ถูกปิดใช้งาน - โปร่งแสง 50% และไม่สามารถคลิกได้ */
@@ -141,11 +187,10 @@ body {
   flex: 1;
   padding: 24px 20px;
   border-radius: 16px;
-  overflow-y: auto; /* เลื่อนแนวตั้งได้ */
-  overflow-x: hidden; /* ไม่ให้เลื่อนแนวนอน */
+  overflow-y: auto;
+  overflow-x: hidden;
   background: #f5f5f5;
-  height: calc(100vh - 32px); /* ลบ margin บนล่าง */
-  /* flex-shrink: 0;ป้องกันไม่ให้ถูกย่อ */
+  margin: 16px 16px 16px 0; /* เว้นช่องขวาให้บาลานซ์ */
 }
 
 /* =========================
@@ -161,7 +206,7 @@ body {
 /* เนื้อหาหลัก - ใช้พื้นที่ที่เหลือ */
 .main-content {
   flex: 1;
-  min-width: 0; /* แก้ปัญหา overflow ใน flex */
+  min-width: 0;
 }
 
 /* =========================
@@ -175,8 +220,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 300px;
-  min-width: 300px;
 }
 
 /* พื้นหลังสีเขียวอ่อนสำหรับ panel ด้านขวา */
@@ -186,8 +229,6 @@ body {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 64px); /* ลบ margin บนล่าง */
-  /* flex-shrink: 0; ป้องกันไม่ให้ถูกย่อ */
 }
 
 
@@ -202,16 +243,16 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  background: white;
+  background: #ffffff;
   padding: 16px 20px;
   border-radius: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* เพิ่มความนุ่มของเงา */
 }
 
 /* ข้อความด้านซ้าย - ชื่อผู้ใช้ */
 .header-left h2 {
   margin: 0;
-  color: #1b7a3c;
+  color: var(--primary-700);
   font-size: 20px;
 }
 
@@ -222,6 +263,7 @@ body {
   font-size: 13px;
 }
 
+
 /* =========================
    USER BADGE - ป้ายแสดงอีเมลผู้ใช้
    - พื้นหลังสีเขียว
@@ -229,12 +271,14 @@ body {
    - มุมโค้งมน
    ========================= */
 .user-badge {
-  background: #4caf50;
-  color: white;
+  background: var(--primary-500);
+  color: var(--white);
   padding: 8px 12px;
   border-radius: 20px;
   font-size: 14px;
+  font-weight: 500; /* เพิ่มน้ำหนักให้อ่านชัดขึ้น */
 }
+
 
 /* =========================
    SUMMARY CARDS - การ์ดสรุปข้อมูล
@@ -244,11 +288,12 @@ body {
    ========================= */
 .cards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 คอลัมน์เท่ากัน */
-  align-items: center;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: stretch; /* ให้สูงเท่ากัน */
   gap: 16px;
   margin-bottom: 20px;
 }
+
 
 /* =========================
    CARD - การ์ดแต่ละใบ
@@ -258,13 +303,19 @@ body {
    - จัดข้อความกึ่งกลาง
    ========================= */
 .card {
-  background: white;
-  border: 2px solid #e0e0e0;
+  background: #ffffff;
+  border: 2px solid var(--gray-200);
   border-radius: 16px;
   padding: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  text-align: center;        
-  min-width: 5px;
+  text-align: center;
+  transition: 0.3s ease; /* เพิ่ม transition */
+  box-shadow: var(--shadow-soft);
+}
+
+/* Hover effect เพิ่มความ interactive */
+.card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-4px);
 }
 
 /* ตัวเลขใหญ่ในการ์ด */
@@ -281,43 +332,37 @@ body {
   color: #666;
 }
 
+
 /* =========================
    CARD THEMES - ธีมสีของการ์ดแต่ละประเภท
    ========================= */
 
-/* การ์ดร้านค้า - กรอบสีเขียว */
+/* ร้านค้า - เขียว */
 .card-shop {
-  background: white;
-  border-color: #4caf50;
+  border-color: var(--primary-500);
 }
-
 .card-shop h3 {
-  color: #1e8f5a;
+  color: var(--primary-700);
 }
 
-/* การ์ด Trip - กรอบสีเหลือง */
+/* Trip - ฟ้า */
 .card-trip {
-  background: white;
-  border-color: #ffc107;
+  border-color: var(--secondary-500);
 }
-
 .card-trip h3 {
-  color: #f57c00;
+  color: var(--secondary-700);
 }
 
-/* การ์ด Claim - กรอบสีม่วง */
+/* Claim - ผสม */
 .card-claim {
-  background: white;
-  border-color: #8e63f8;
+  border-color: var(--secondary-300);
 }
-
 .card-claim h3 {
-  color: #6b3fe0;
+  color: var(--secondary-900);
 }
 
 /* การ์ดที่ยังไม่เปิดใช้งาน - สีเทา */
 .card-soon {
-  background: white;
   border-color: #ddd;
 }
 
@@ -328,42 +373,42 @@ body {
 /* การ์ดที่ถูกปิดใช้งาน */
 .card.disabled {
   opacity: 0.5;
+  pointer-events: none;
 }
 
+
+/* =========================
+   SHOP MINI CARDS
+   ========================= */
 .shop-cards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 คอลัมน์เท่ากัน */
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  flex-wrap: 100%;
 }
 
+/* mini-card ถูกประกาศซ้ำในไฟล์เดิม → รวมไว้ที่เดียว */
 .mini-card {
-  display: flex;  
+  display: flex;
   align-items: center;
   gap: 15px;
   padding: 15px 20px;
   border-radius: 40px;
   min-width: 200px;
   border: 1px solid;
-  background: white;  
+  background: #ffffff;
   margin-bottom: 20px;
-}
-
-/* ทำให้สูงเท่ากัน */
-.mini-card {
-  min-height: auto;
 }
 
 /* ไอคอน */
 .icon-box {
   width: 50px;
   height: 50px;
-  border-radius: 30px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  color: white;
+  color: #ffffff;
 }
 
 /* ข้อมูลตัวเลข */
@@ -379,12 +424,16 @@ body {
   opacity: 0.8;
 }
 
-/* สีแต่ละแบบ */
+
+/* =========================
+   MINI CARD THEMES
+   ========================= */
 
 .shop {
   background: #e8f5e9;
   border-color: #4caf50;
 }
+
 .shop .icon-box {
   background: #4caf50;
 }
@@ -393,6 +442,7 @@ body {
   background: #fff8e1;
   border-color: #ffb300;
 }
+
 .trip .icon-box {
   background: #ffb300;
 }
@@ -401,10 +451,13 @@ body {
   background: #fdecea;
   border-color: #ef5350;
 }
+
 .claim .icon-box {
   background: #ef5350;
 }
 
+
+/* Material Icons */
 .material-symbols-outlined {
   font-size: 30px;
 }
@@ -431,33 +484,33 @@ body {
    ========================= */
 .action-card {
   background: #e9f7ef;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
   padding: 20px;
   text-decoration: none;
   color: inherit;
   cursor: pointer;
-  transition: transform 0.5s, box-shadow 0.5s;
-  min-height: 300px;
+  min-height: 220px; /* ลดจาก 300px ให้สมดุล */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
+  transition: 0.3s ease;
 }
 
-/* เมื่อเมาส์ชี้ - ยกขึ้นและเพิ่มเงา */
 .action-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-6px);
 }
 
-/* ไอคอน Material Icons */
+/* ไอคอน */
 .action-card .material-symbols-outlined {
   font-size: 36px;
   margin-bottom: 8px;
 }
 
-/* หัวข้อการ์ด */
+/* หัวข้อ */
 .action-card h3 {
   margin: 0 0 4px;
   font-size: 16px;
@@ -470,21 +523,45 @@ body {
   opacity: 0.8;
 }
 
-/* =========================
-   ACTION CARD THEMES - ธีมสีต่างๆ
-   ========================= */
+/* ==========================================================
+   1️⃣ ACTION CARD THEMES
+   ใช้สำหรับกำหนดธีมสีให้ action-card
+   หลักการ:
+   - คุมเฉพาะ background + color
+   - ไม่ไปแตะ padding / layout
+   ========================================================== */
 
-/* ธีมสีเขียวเข้ม - เขียนรายงาน */
+/* ---------- เขียว (Primary Action) ---------- */
 .theme-green {
-  background: #2e7d32;
-  color: #fff;
+   background: var(--primary-700);
+  color: var(--white);
 }
 
 .theme-green:hover {
-  background: #256628;
+  background: var(--primary-900); /* เข้มขึ้นเล็กน้อย */
 }
 
-/* ธีมสีเหลือง - Forms Hub */
+/* Primary Action */
+.theme-green {
+  background: var(--primary-700);
+  color: var(--white);
+}
+
+.theme-green:hover {
+  background: var(--primary-900);
+}
+
+/* Secondary Action */
+.theme-blue {
+  background: var(--secondary-700);
+  color: var(--white);
+}
+
+.theme-blue:hover {
+  background: var(--secondary-900);
+}
+
+/* ---------- เหลือง (Secondary / Forms Hub) ---------- */
 .theme-yellow {
   background: #fde7a3;
   color: #6b4b00;
@@ -494,7 +571,8 @@ body {
   background: #f9dc85;
 }
 
-/* ธีมสีชมพู - แจ้งเคลม */
+
+/* ---------- ชมพู/ส้ม (Warning / Claim) ---------- */
 .theme-pink {
   background: #f7b7a3;
   color: #6b1f1f;
@@ -504,54 +582,61 @@ body {
   background: #f2a48e;
 }
 
-/* ป้ายเล็กๆ ในการ์ด */
+
+/* ---------- Badge ภายในการ์ด ---------- */
+/* ใช้สำหรับ label เล็ก ๆ เช่น Coming Soon */
 .badge {
   margin-top: 6px;
   font-size: 12px;
   font-weight: 500;
-  opacity: .7;
+  opacity: 0.7; /* ให้เบากว่าหัวข้อหลัก */
 }
 
 
 
-/* =========================
-   MY REPORT - ส่วนรายงานของฉัน
-   - แสดงรายการรายงานที่เขียน
-   - พื้นหลังสีขาว
-   ========================= */
+/* ==========================================================
+   2️⃣ MY REPORT SECTION
+   กล่องแสดงรายการรายงานของผู้ใช้
+   ========================================================== */
+
 .my-report {
-  background: white;
+  background: #ffffff;
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
 }
 
-/* =========================
-   RIGHT PANEL COMPONENTS
-   - การ์ดโปรไฟล์และปฏิทิน
-   ========================= */
 
-/* การ์ดโปรไฟล์และปฏิทิน */
+
+/* ==========================================================
+   3️⃣ RIGHT PANEL COMPONENTS
+   รวมการ์ดฝั่งขวาไว้หมวดเดียว
+   ========================================================== */
+
+/* ---------- การ์ดโปรไฟล์ + ปฏิทิน ---------- */
 .profile-card,
 .calendar-card {
-  background: white;
+  background: #ffffff;
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 16px;
   text-align: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-/* =========================
-   AVATAR - รูปโปรไฟล์
-   - วงกลมสีเขียวแสดงอักษรย่อ
-   ========================= */
+
+
+/* ==========================================================
+   4️⃣ PROFILE CARD
+   ========================================================== */
+
+/* วงกลม avatar */
 .avatar {
   width: 56px;
   height: 56px;
-  border-radius: 50%; /* ทำให้เป็นวงกลม */
+  border-radius: 50%;
   background: #4caf50;
-  color: white;
+  color: #ffffff;
   font-weight: bold;
   font-size: 20px;
   display: flex;
@@ -560,32 +645,32 @@ body {
   margin: 0 auto 8px;
 }
 
-/* ชื่อผู้ใช้ในโปรไฟล์ */
 .profile-card h4 {
   margin: 0 0 4px;
   font-size: 15px;
   color: #333;
 }
 
-/* ตำแหน่งงาน */
 .profile-card p {
   margin: 0;
   font-size: 13px;
   color: #666;
 }
 
-/* =========================
-   CALENDAR CARD - การ์ดปฏิทิน
-   ========================= */
+
+
+/* ==========================================================
+   5️⃣ CALENDAR CARD
+   ========================================================== */
+
+/* Container หลัก */
 .calendar-card {
   padding: 12px;
-  flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
 }
 
-/* ส่วนหัวปฏิทิน - แสดงชื่อเดือนและปุ่มเปลี่ยนเดือน */
+/* ส่วนหัว (เดือน + ปุ่มเลื่อน) */
 .calendar-header {
   display: flex;
   justify-content: space-between;
@@ -599,7 +684,7 @@ body {
   font-weight: 600;
 }
 
-/* ปุ่มนำทางปฏิทิน (ก่อนหน้า/ถัดไป) */
+/* ปุ่มเลื่อนเดือน */
 .calendar-nav {
   display: flex;
   gap: 4px;
@@ -609,17 +694,19 @@ body {
   width: 24px;
   height: 24px;
   border: 1px solid #e0e0e0;
-  background: white;
+  background: #ffffff;
   color: #4caf50;
   border-radius: 6px;
   cursor: pointer;
   font-size: 12px;
 }
 
-/* =========================
-   CALENDAR GRID - ตารางปฏิทิน
-   - แสดง 7 คอลัมน์ (จ-อา)
-   ========================= */
+
+
+/* ==========================================================
+   6️⃣ CALENDAR GRID
+   ========================================================== */
+
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -627,7 +714,7 @@ body {
   text-align: center;
 }
 
-/* หัวตาราง - ชื่อวัน (จ อ พ พฤ ศ ส อา) */
+/* หัววัน */
 .calendar-day-header {
   font-size: 10px;
   color: #999;
@@ -635,11 +722,11 @@ body {
   font-weight: 500;
 }
 
-/* =========================
-   CALENDAR DAY - ช่องวันที่
-   - แสดงเลขวันที่
-   - มี state ต่างๆ (today, has-report, other-month)
-   ========================= */
+
+/* ==========================================================
+   7️⃣ CALENDAR DAY STATES
+   ========================================================== */
+
 .calendar-day {
   width: 28px;
   height: 28px;
@@ -653,32 +740,32 @@ body {
   margin: 0 auto;
 }
 
-/* เมื่อเมาส์ชี้ */
-.calendar-day:hover { 
-  background: #e8f5e9; 
+/* Hover */
+.calendar-day:hover {
+  background: #e8f5e9;
 }
 
-/* วันปัจจุบัน - พื้นหลังสีเขียว */
-.calendar-day.today { 
-  background: #4caf50; 
-  color: white; 
-  font-weight: 600; 
+/* วันนี้ */
+.calendar-day.today {
+  background: #4caf50;
+  color: #ffffff;
+  font-weight: 600;
 }
 
-/* วันที่มีรายงาน - พื้นหลังสีเขียวอ่อน มีจุดเล็กๆ */
-.calendar-day.has-report { 
+/* มีรายงาน */
+.calendar-day.has-report {
   position: relative;
   background: #c8e6c9;
   color: #2e7d32;
   font-weight: 500;
 }
 
-/* วันที่อยู่นอกเดือน - สีจางลง */
-.calendar-day.other-month { 
-  color: #ccc; 
+/* วันนอกเดือน */
+.calendar-day.other-month {
+  color: #ccc;
 }
 
-/* จุดเล็กๆ สำหรับวันที่มีรายงาน */
+/* จุดเล็กสำหรับวันที่มีรายงาน */
 .calendar-day.has-report::after {
   content: "";
   width: 6px;
@@ -691,10 +778,12 @@ body {
   transform: translateX(-50%);
 }
 
-/* =========================
-   FORMS HUB - ส่วนแบบฟอร์มต่างๆ
-   - แสดงปุ่มเข้าถึงแบบฟอร์ม
-   ========================= */
+
+
+/* ==========================================================
+   8️⃣ FORMS HUB SECTION
+   ========================================================== */
+
 .forms-hub {
   background: #e8f5e9;
   border-radius: 12px;
@@ -708,18 +797,19 @@ body {
   font-weight: 600;
 }
 
-/* ข้อความเสริม - Coming Soon */
+/* ข้อความรอง */
 .forms-hub .muted {
   font-size: 11px;
   color: #9e9e9e;
   margin-left: 4px;
 }
 
-/* =========================
-   FORM BUTTON - ปุ่มแบบฟอร์ม
-   - พื้นหลังสีเหลืองอ่อน
-   - กรอบสีเหลือง
-   ========================= */
+
+
+/* ==========================================================
+   9️⃣ FORM BUTTON
+   ========================================================== */
+
 .form-btn {
   width: 100%;
   background: #fff9c4;
@@ -743,17 +833,17 @@ body {
   background: #fff59d;
 }
 
-/* =========================
-   PROGRESS CARD - การ์ดแสดงความคืบหน้า
-   - แสดงจำนวนวันที่เขียนรายงาน
-   - มี progress bar
-   ========================= */
+/* ==========================================================
+   1️⃣ PROGRESS CARD
+   การ์ดแสดงความคืบหน้า + progress bar
+   ========================================================== */
+
 .progress-card {
   background: #ffffff;
   border-radius: 12px;
   padding: 16px;
   margin: 16px 0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05); /* เพิ่ม depth เล็กน้อย */
 }
 
 .progress-title {
@@ -763,24 +853,21 @@ body {
   margin-bottom: 10px;
 }
 
-/* =========================
-   PROGRESS BAR - แถบแสดงความคืบหน้า
-   - สีเทาเป็นพื้นหลัง
-   - สีเขียวเป็นแถบความคืบหน้า
-   ========================= */
+/* --- Progress Bar Container --- */
 .progress-bar {
   width: 100%;
   height: 18px;
   background: #e0e0e0;
-  border-radius: 999px;
-  overflow: hidden;
+  border-radius: 999px; /* pill shape */
+  overflow: hidden;     /* ซ่อนส่วนที่เกินจาก fill */
 }
 
+/* --- Progress Fill --- */
 .progress-fill {
   height: 100%;
+  width: 0%; /* ควบคุมด้วย JS */
   background: #4caf50;
-  width: 0%;
-  transition: width 0.3s ease; /* แอนิเมชั่นเมื่อเปลี่ยนค่า */
+  transition: width 0.3s ease;
 }
 
 .progress-note {
@@ -789,26 +876,27 @@ body {
   margin-top: 8px;
 }
 
-/* =========================
-   REPORT ITEMS - รายการรายงาน
-   - แสดงชื่อรายงานและปุ่มจัดการ
-   ========================= */
+
+
+/* ==========================================================
+   2️⃣ REPORT LIST (รายการรายงาน)
+   ========================================================== */
+
 .report-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px 14px;
-  border-bottom: 1px dashed #c8e6c9; /* เส้นประแนวนอน */
+  border-bottom: 1px dashed #c8e6c9;
 }
 
-/* ด้านซ้าย - ไอคอนและชื่อรายงาน */
+/* ซ้าย: ไอคอน + ชื่อ */
 .report-left {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* ลิงก์ชื่อรายงาน */
 .report-left a {
   text-decoration: none;
   color: #2e7d32;
@@ -819,11 +907,7 @@ body {
   text-decoration: underline;
 }
 
-/* =========================
-   REPORT ACTIONS - ปุ่มจัดการรายงาน
-   - ปุ่มแก้ไข (สีส้ม)
-   - ปุ่มลบ (สีแดง)
-   ========================= */
+/* ขวา: ปุ่มแก้ไข / ลบ */
 .report-actions {
   display: flex;
   gap: 10px;
@@ -837,19 +921,19 @@ body {
 }
 
 .report-actions .edit {
-  color: #ff9800; /* สีส้ม */
+  color: #ff9800;
 }
 
 .report-actions .delete {
-  color: #f44336; /* สีแดง */
+  color: #f44336;
 }
 
-/* =========================
-   OPEN SHOP CARD - การ์ดเปิดร้านค้า
-   - แสดงปุ่มเพิ่มร้านค้าใหม่
-   - พื้นหลังสีเหลืองอ่อน
-   - อยู่ล่างสุดของ sidebar
-   ========================= */
+
+
+/* ==========================================================
+   3️⃣ OPEN SHOP CARD (อยู่ใน Sidebar)
+   ========================================================== */
+
 .open-shop-card {
   background: #fff9c4;
   border: 2px solid #fdd835;
@@ -858,7 +942,7 @@ body {
   text-align: center;
   cursor: pointer;
   transition: transform .2s, box-shadow .2s;
-  margin-top: auto; /* ผลักไปอยู่ล่างสุด */
+  margin-top: auto; /* ดันไปล่างสุดของ sidebar */
 }
 
 .open-shop-card:hover {
@@ -866,7 +950,6 @@ body {
   box-shadow: 0 3px 8px rgba(0,0,0,.1);
 }
 
-/* ไอคอนร้านค้า */
 .open-shop-icon {
   font-size: 28px;
   margin-bottom: 4px;
@@ -885,7 +968,6 @@ body {
   color: #666;
 }
 
-/* ป้ายเปิดฟอร์ม */
 .open-shop-badge {
   display: inline-block;
   margin-top: 6px;
@@ -897,11 +979,12 @@ body {
   color: #f57c00;
 }
 
-/* =========================
-   LOGOUT BUTTON - ปุ่มออกจากระบบ
-   - พื้นหลังสีแดง
-   - ข้อความสีขาว
-   ========================= */
+
+
+/* ==========================================================
+   4️⃣ LOGOUT BUTTON
+   ========================================================== */
+
 .logout-btn {
   background: #f44336;
   color: #fff;
@@ -915,45 +998,32 @@ body {
 }
 
 .logout-btn:hover {
-  background: #d32f2f; /* สีแดงเข้มขึ้น */
+  background: #d32f2f;
 }
 
 .logout-btn:active {
-  transform: scale(0.95); /* ย่อเล็กลงเมื่อคลิก */
-}
-/* ===== SIDEBAR COLLAPSE ===== */
-
-.sidebar {
-  width: 240px;
-  transition: 0.3s ease;
+  transform: scale(0.95);
 }
 
-/* .sidebar:hover {
-  width: 80px;
-} */
 
-.sidebar:hover .menu-text,
-.sidebar:hover .logo-text {
-  display: inline;
-}
 
-.menu-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
+/* ==========================================================
+   5️⃣ SIDEBAR COLLAPSE SYSTEM
+   (รวมไว้หมวดเดียว ไม่ประกาศ .sidebar ซ้ำ)
+   ========================================================== */
 
+/* เมื่อ sidebar ถูกย่อ */
 .sidebar.collapsed {
   width: 80px;
 }
 
-/* ซ่อนข้อความตอนย่อ */
+/* ซ่อนข้อความ */
 .sidebar.collapsed .menu-text,
 .sidebar.collapsed .logo-text {
   display: none;
 }
 
-/* จัดเมนูตอนย่อให้อยู่กลาง */
+/* จัดไอคอนให้อยู่กลาง */
 .sidebar.collapsed .menu-item {
   justify-content: center;
 }
@@ -961,7 +1031,7 @@ body {
 /* ปุ่ม toggle */
 .toggle-btn {
   margin-top: auto;
-  width: 50%;
+  width: 60%;
   padding: 10px;
   border: none;
   background: #4caf50;
@@ -970,394 +1040,167 @@ body {
   border-radius: 8px;
 }
 
+
+
+/* ==========================================================
+   6️⃣ ROLE-BASED VISIBILITY
+   ========================================================== */
+
+/* ซ่อน element สำหรับ admin เท่านั้น */
 .admin-only {
   display: none;
 }
 
+/* ถ้า body มี class is-admin → แสดง */
 body.is-admin .admin-only {
   display: inline-block;
 }
 
 
-/* =========================
-   RESPONSIVE DESIGN - การปรับตัวตามขนาดหน้าจอ
-   ========================= */
 
-/* =========================
-   NOTEBOOK (≤1200px)
-   - ยังคง 3 คอลัมน์
-   - ลดขนาดบางส่วน
-   ========================= */
+/* ==========================================================
+   7️⃣ CARD & ACTION ENHANCEMENT
+   (ควรอยู่ใกล้หมวด Card หลักในไฟล์จริง)
+   ========================================================== */
+
+/* เพิ่ม hover ให้ KPI */
+.cards .card {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  transition: 0.25s;
+}
+
+.cards .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* เพิ่ม hover ให้ action-card */
+.action-card {
+  box-shadow: 0 8px 28px rgba(0,0,0,0.06);
+  transition: 0.3s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.15);
+}
+
+
+
+/* ==========================================================
+   8️⃣ RIGHT PANEL OVERRIDE
+   (ย้ายมารวมตรงนี้ ไม่ประกาศกระจาย)
+   ========================================================== */
+
+.right-panel {
+  background: #f3f7f5;
+}
+
+
+
+/* ==========================================================
+   RESPONSIVE DESIGN
+   แนวคิด:
+   - ใช้หลัก Desktop First (เริ่มจากจอใหญ่ → ค่อยลดลง)
+   - ตัด breakpoint ที่ทับซ้อนกันออก
+   - ลดการ override ซ้ำโดยไม่จำเป็น
+   ========================================================== */
+
+
+/* ==========================================================
+   1️⃣ NOTEBOOK / SMALL DESKTOP (≤1200px)
+   - ยังเป็น 3 คอลัมน์
+   - ลด spacing และขนาด element ลงเล็กน้อย
+   ========================================================== */
 @media (max-width: 1200px) {
-  /* ยังคง 3 คอลัมน์ */
-  .cards {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-  }
 
+  /* ลดช่องไฟ grid */
+  .cards,
   .actions {
-    grid-template-columns: repeat(3, 1fr);
     gap: 14px;
   }
 
+  /* ลด sidebar เล็กน้อย */
   .sidebar {
-    width: 170px;
+    width: 190px; /* ไม่เล็กเกินจนเมนูเบียด */
     padding: 14px;
     margin: 12px;
   }
 
-  .logo {
-    font-size: 15px;
-    margin-bottom: 16px;
-  }
-
-  /* โลโก้ขนาดเล็กลง */
+  /* ลดขนาดโลโก้ */
   .logo img {
     width: 96px;
     height: 96px;
   }
 
-  .menu-item {
-    padding: 9px 10px;
-    font-size: 13px;
-  }
-
-   .menu-item .material-symbols-outlined {
-    font-size: 24px;
-    align-content: center;
-   }
-
+  /* ลด padding ภายใน content */
   .content {
-    padding: 18px 14px;
+    padding: 18px 16px;
   }
 
-  .right-column {
-    flex: 0 0 280px;
-    min-width: 280px;
-    max-width: 280px;
-  }
-
-  .card {
-    padding: 14px;
-  }
-
+  /* ลดขนาดตัวเลข KPI */
   .card h3 {
     font-size: 28px;
   }
 
+  /* ลดความสูง action-card */
   .action-card {
-    padding: 16px;
-    min-height: 110px;
+    min-height: 130px;
   }
 
-  .action-card h3 {
-    font-size: 15px;
-  }
-}
-
-/* =========================
-   TABLET แนวนอน (682px - 1024px)
-   - ลดขนาดทุกอย่างให้พอดีกับหน้าจอ
-   - ยังคง 3 คอลัมน์
-   ========================= */
-@media (min-width: 682px) and (max-width: 1024px) and (orientation: landscape) {
-  
-  .layout {
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  .sidebar {
-    width: 200px;
-    padding: 10px;
-    margin: 10px;
-    height: calc(100vh - 10px);
-  }
-
-  .logo {
-    font-size: 13px;
-    margin-bottom: 10px;
-    flex-direction: column;
-    text-align: center;
-    gap: 4px;
-  }
-
-  .logo img {
-    width: 64px;
-    height: 64px;
-  }
-
-  .menu {
-    gap: 4px;
-  }
-
-  .menu-item {
-    padding: 7px 6px;
-    font-size: 11px;
-    border-radius: 8px;
-  }
-
-  
-
-  .content {
-    padding: 12px;
-    overflow-y: auto;
-  }
-
-  .content-layout {
-    gap: 10px;
-  }
-
-  .header {
-    margin-bottom: 12px;
-    padding: 12px 14px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .header-left h2 {
-    font-size: 16px;
-  }
-
-  .subtext {
-    font-size: 11px;
-  }
-
-  .user-badge {
-    font-size: 10px;
-    padding: 4px 8px;
-  }
-
-  .logout-btn {
-    font-size: 10px;
-    padding: 4px 8px;
-  }
-
-  /* *** สำคัญ: ให้แสดง 3 คอลัมน์ *** */
-  .cards {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-
-  .card {
-    padding: 10px;
-  }
-
-  .card h3 {
-    font-size: 24px;
-    margin: 4px 0 2px;
-  }
-
-  .card p {
-    font-size: 11px;
-    margin: 0;
-  }
-
-  /* *** สำคัญ: ให้แสดง 3 คอลัมน์ *** */
-  .actions {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-
-  .action-card {
-    padding: 12px;
-    min-height: 85px;
-  }
-
-  .action-card .material-icons {
-    font-size: 24px;
-  }
-
-  .action-card h3 {
-    font-size: 13px;
-    margin: 4px 0 2px;
-  }
-
-  .action-card p {
-    font-size: 11px;
-    margin: 0;
-  }
-
-  .progress-card {
-    padding: 10px 12px;
-    margin: 12px 0;
-  }
-
-  .progress-title {
-    font-size: 12px;
-  }
-
-  .progress-note {
-    font-size: 10px;
-    margin-top: 4px;
-  }
-
-  .my-report {
-    padding: 12px;
-  }
-
-  .my-report h3 {
-    font-size: 14px;
-    margin: 0 0 8px;
-  }
-
-  .report-item {
-    padding: 8px 10px;
-    font-size: 11px;
-  }
-
+  /* ลด right column ลงเล็กน้อย */
   .right-column {
-    flex: 0 0 240px;
-    min-width: 240px;
-    max-width: 240px;
-    gap: 10px;
-  }
-
-  .right-panel {
-    padding: 10px;
-  }
-
-  .profile-card {
-    padding: 10px;
-    margin-bottom: 8px;
-    min-width: 500px;
-  }
-
-  .avatar {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-    margin-bottom: 6px;
-  }
-
-  .profile-card h4 {
-    font-size: 13px;
-  }
-
-  .profile-card p {
-    font-size: 11px;
-    margin: 0;
-  }
-
-  .calendar-card {
-    padding: 8px;
-  }
-
-  .calendar-header h4 {
-    font-size: 11px;
-  }
-
-  .calendar-nav button {
-    width: 18px;
-    height: 18px;
-    font-size: 9px;
-  }
-
-  .calendar-day-header {
-    font-size: 8px;
-    padding: 2px 0;
-  }
-
-  .calendar-day {
-    width: 20px;
-    height: 20px;
-    font-size: 9px;
-  }
-
-  .open-shop-card {
-    padding: 8px;
-    margin-top: px;
-  }
-
-  .open-shop-icon {
-    font-size: 20px;
-    margin-bottom: 4px;
-  }
-
-  .open-shop-card h4 {
-    font-size: 11px;
-    margin: 4px 0 2px;
-  }
-
-  .open-shop-card p {
-    font-size: 9px;
-  }
-
-  .open-shop-badge {
-    margin-top: 4px;
-    padding: 5px 8px;
-    font-size: 9px;
-  }
-
-  .forms-hub {
-    padding: 10px;
-  }
-
-  .forms-hub h4 {
-    font-size: 12px;
-    margin-bottom: 8px;
-  }
-
-  .forms-hub .muted {
-    font-size: 9px;
-  }
-
-  .form-btn {
-    padding: 7px;
-    font-size: 10px;
-    margin-bottom: 6px;
-    border-radius: 8px;
+    flex: 0 0 260px;
   }
 }
 
-/* =========================
-   TABLET ทั่วไป (≤900px) แนวตั้ง
-   - เปลี่ยนเป็น 2 คอลัมน์
-   - ย้าย right-column ไปด้านล่าง
-   ========================= */
-@media (max-width: 900px) and (orientation: portrait) {
-  /* เปลี่ยนเป็น 2 คอลัมน์ */
-  .cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
+
+/* ==========================================================
+   2️⃣ TABLET (≤992px)
+   - เปลี่ยน grid จาก 3 → 2 คอลัมน์
+   - Stack content-layout เป็นแนวตั้ง
+   ========================================================== */
+@media (max-width: 992px) {
+
+  /* KPI และ Action เหลือ 2 คอลัมน์ */
+  .cards,
   .actions {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* ย้าย right-column ไปด้านล่าง */
+  /* ย้าย right-column ลงล่าง */
   .content-layout {
     flex-direction: column;
   }
 
   .right-column {
+    width: 100%;
     max-width: 100%;
-    flex: 1;
   }
 }
 
-/* =========================
-   MOBILE (≤767px)
-   - เปลี่ยนเป็น 1 คอลัมน์
-   - sidebar อยู่ด้านบน
-   - ซ่อน right-column
-   - แสดงปุ่ม hamburger
-   ========================= */
+
+/* ==========================================================
+   3️⃣ MOBILE (≤767px)
+   - ทุกอย่างเป็น 1 คอลัมน์
+   - Sidebar อยู่ด้านบน
+   - ซ่อน right column เพื่อประหยัดพื้นที่
+   ========================================================== */
 @media (max-width: 767px) {
-  /* เปลี่ยน layout เป็นคอลัมน์ */
+
+  /* เปลี่ยน layout เป็นแนวตั้ง */
   .layout {
     flex-direction: column;
-    height: auto;
   }
 
+  /* Sidebar เต็มความกว้าง */
   .sidebar {
     width: calc(100% - 32px);
-    height: auto;
+    margin: 16px;
+    border-radius: 20px;
   }
 
-  /* แสดงปุ่ม hamburger */
+  /* แสดง hamburger */
   .hamburger {
     display: block;
   }
@@ -1368,41 +1211,33 @@ body.is-admin .admin-only {
     flex-direction: column;
   }
 
-  /* แสดงเมนูเมื่อคลิก hamburger */
+  /* แสดงเมื่อมี class .show */
   .menu.show {
     display: flex;
   }
 
-  .content {
-    padding: 16px;
-  }
-
-  .content-layout {
-    flex-direction: column;
-  }
-
-  /* เปลี่ยนเป็น 1 คอลัมน์ */
+  /* KPI และ Action เป็น 1 คอลัมน์ */
   .cards,
   .actions {
     grid-template-columns: 1fr;
   }
 
-  /* ซ่อน right-column ในมือถือ */
+  /* ลด padding content */
+  .content {
+    padding: 16px;
+  }
+
+  /* ซ่อน right column */
   .right-column {
     display: none;
   }
 }
 
 
-
-
-
-@media (max-width: 992px) {
-  .shop-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
+/* ==========================================================
+   4️⃣ SMALL MOBILE (≤600px)
+   - ปรับเฉพาะ shop-cards
+   ========================================================== */
 @media (max-width: 600px) {
   .shop-cards {
     grid-template-columns: 1fr;
