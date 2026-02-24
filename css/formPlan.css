@@ -7,27 +7,30 @@
 /* ==========================================================
    1️⃣ DESIGN TOKENS (Brand Colors)
    ========================================================== */
-:root {
+  :root {
+  /* ===== PRIMARY ===== */
+  --primary-100: #6FB1E4;
+  --primary-500: #4A90E2;
+  --primary-700: #3A7BD5;
 
-  --color-primary: #15803d;
-  --color-primary-dark: #166534;
-  --color-primary-light: #22c55e;
+  /* ===== ACCENT ===== */
+  --success: #52C41A;
+  --income: #7B61FF;
+  --works: #FF6EC7;
+  --message: #FFA940;
 
-  --color-accent: #0284c7;
-  --color-accent-dark: #0369a1;
-  --color-accent-light: #38bdf8;
+  /* ===== NEUTRAL ===== */
+  --bg: #F5F7FA;
+  --card: #FFFFFF;
+  --border: #E6EAF0;
+  --text-primary: #1F2937;
+  --text-secondary: #6B7280;
 
-  --color-bg: #f4f6f9;
-  --color-card: #ffffff;
-  --color-border: #e5e7eb;
-  --color-text: #1e293b;
-  --color-muted: #64748b;
-
-  --color-danger: #dc2626;
-
-  --shadow-sm: 0 2px 6px rgba(0,0,0,0.05);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  /* ===== SHADOW ===== */
+  --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
 }
+  
+  
 
 
 /* ==========================================================
