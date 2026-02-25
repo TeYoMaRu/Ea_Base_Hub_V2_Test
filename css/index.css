@@ -53,10 +53,28 @@
    - ป้องกันการเลื่อนหน้าจอในแนวนอน
    ========================= */
 body {
-  margin: 0;
+  margin:10px;
   font-family: 'Kanit', sans-serif;
   overflow-x: hidden;
-  background: #eef2f1; /* เพิ่มพื้นหลังอ่อนให้ดูนุ่มขึ้น */
+   /* Gradient ใหญ่พื้นหลัง */
+  background:#ffffff;
+  height: 100vh; 
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    circle at top left,
+    rgba(255,255,255,0.15),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+.app {
+  display: flex;
+  height: 100vh;
 }
 
 /* =========================
@@ -67,7 +85,7 @@ body {
    ========================= */
 .layout {
   display: flex;
-  min-height: 100vh; /* เสถียรกว่า height */
+  min-height: 90vh; /* เสถียรกว่า height */
 }
 
 /* =========================
@@ -79,16 +97,22 @@ body {
    - จัดเรียงเนื้อหาเป็นคอลัมน์ด้วย flexbox
    ========================= */
 .sidebar {
-  width: 180px;
-  background: var(--primary-100);
+  width: 300px;
+ background: linear-gradient(
+    180deg,
+    #dcfce7 0%,
+    #86efac 100%
+  );
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 10px;
-  margin: 16px;
-  border-radius: 0 40px 40px 0;
-  min-height: calc(100vh - 32px); /* แก้ overflow issue */
+  padding: 24px;
+  margin: 20px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  min-height: calc(100vh - 64px); /* แก้ overflow issue */
   flex-shrink: 0; /* ป้องกันถูกบีบ */
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
 /* =========================
@@ -111,8 +135,8 @@ body {
 
 /* ภาพโลโก้ */
 .logo img {
-  width: 140px; /* ลดลงเล็กน้อยเพื่อบาลานซ์ */
-  height: 140px;
+  width: 120px; /* ลดลงเล็กน้อยเพื่อบาลานซ์ */
+  height: 120px;
   object-fit: contain;
 }
 
@@ -125,7 +149,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 100%; /* ทำให้ menu เต็ม sidebar */
+  width: 80%; /* ทำให้ menu เต็ม sidebar */
 }
 
 /* =========================
@@ -153,8 +177,8 @@ body {
 
 /* เมนูที่กำลังใช้งาน - พื้นหลังสีเขียว ข้อความสีขาว */
 .menu-item.active {
-  background: var(--primary-500);
-  color: var(--white);
+  background: var(--white);
+  color: var(--primary-500);
 }
 
 /* เมนูที่ถูกปิดใช้งาน - โปร่งแสง 50% และไม่สามารถคลิกได้ */
@@ -189,7 +213,8 @@ body {
   border-radius: 16px;
   overflow-y: auto;
   overflow-x: hidden;
-  background: #f5f5f5;
+  background: #ffffff;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
   margin: 16px 16px 16px 0; /* เว้นช่องขวาให้บาลานซ์ */
 }
 
@@ -207,6 +232,7 @@ body {
 .main-content {
   flex: 1;
   min-width: 0;
+  background: #ffffff;
 }
 
 /* =========================
@@ -224,11 +250,12 @@ body {
 
 /* พื้นหลังสีเขียวอ่อนสำหรับ panel ด้านขวา */
 .right-panel {
-  background: #dff3e3;
+  /* background: #ffffff; */
   border-radius: 16px;
   padding: 16px;
   display: flex;
   flex-direction: column;
+  /* box-shadow: 0 20px 40px rgba(0,0,0,0.15); */
 }
 
 
@@ -288,6 +315,7 @@ body {
    ========================= */
 .cards {
   display: grid;
+  
   grid-template-columns: repeat(3, 1fr);
   align-items: stretch; /* ให้สูงเท่ากัน */
   gap: 16px;
@@ -432,15 +460,18 @@ body {
 .shop {
   background: #e8f5e9;
   border-color: #4caf50;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
 .shop .icon-box {
   background: #4caf50;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
 .trip {
   background: #fff8e1;
   border-color: #ffb300;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
 .trip .icon-box {
@@ -450,10 +481,12 @@ body {
 .claim {
   background: #fdecea;
   border-color: #ef5350;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15)
 }
 
 .claim .icon-box {
   background: #ef5350;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
 
@@ -545,6 +578,7 @@ body {
 .theme-green {
   background: var(--primary-700);
   color: var(--white);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
 .theme-green:hover {
@@ -565,6 +599,7 @@ body {
 .theme-yellow {
   background: #fde7a3;
   color: #6b4b00;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
 .theme-yellow:hover {
@@ -576,6 +611,7 @@ body {
 .theme-pink {
   background: #f7b7a3;
   color: #6b1f1f;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
 .theme-pink:hover {
@@ -1092,8 +1128,8 @@ body.is-admin .admin-only {
    (ย้ายมารวมตรงนี้ ไม่ประกาศกระจาย)
    ========================================================== */
 
-.right-panel {
-  background: #f3f7f5;
+/* .right-panel { */
+  /* background: #f3f7f5; */
 }
 
 
