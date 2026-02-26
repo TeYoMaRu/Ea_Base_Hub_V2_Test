@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trip</title>
-
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- ===================================================== -->
@@ -41,7 +41,7 @@
   <aside class="sidebar">
     <div class="sidebar-header">
       <img src="assets/icons/icon-192.png" alt="logo">
-      <h2>EABaseHub</h2>
+      <span class="sidebar-header"> EABaseHub </span>
     </div>
 
     <nav class="sidebar-menu">
@@ -57,7 +57,7 @@
 
       <a href="formPlan.html" class="active">
         <span class="material-symbols-outlined">map</span>
-        ฟอร์ม ๑ (Trip)
+        ฟอร์ม ๑
       </a>
 
       <a href="formActual.html">
@@ -66,9 +66,17 @@
       </a>
     </nav>
 
-    <div class="sidebar-user">
-      <div class="user-name">ผู้ใช้งาน</div>
-    </div>
+    <div class="sidebar-logout">
+      <!-- ป้ายอีเมลและปุ่ม Logout -->
+              <div style="display: flex; align-items: center; gap: 10px">
+                
+                <button class="logout-btn" onclick="logout()">
+                  ออกจากระบบ
+                </button>
+              </div>
+  
+    
+              
   </aside>
 
 

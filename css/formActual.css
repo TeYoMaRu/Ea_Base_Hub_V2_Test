@@ -1,0 +1,261 @@
+/* ===== Sidebar ===== */
+.sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, #4facfe, #005bea);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 15px;
+  transition: all 0.3s ease;
+  /* box-shadow: 4px 0 20px rgba(0,0,0,0.1); */
+  /* top: 0;
+  left: 0; */
+  height: 100vh;
+  position:fixed;
+  /* overflow-y: auto; */
+}
+
+.sidebar-brand,
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  font-size: 20px;
+  font-weight: 600;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.sidebar-header img {
+  width: 60px;
+  margin-top: 30px;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+
+
+.sidebar-menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color:white;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.sidebar-menu a:hover {
+  background: rgba(255,255,255,0.15);
+  color: rgb(1, 1, 118);
+}
+
+.sidebar-menu a.active {
+  background: white;
+  color: rgb(1, 1, 118);
+  font-weight: 600;
+
+    /* ยื่นออกไปทางขวา */
+  /* margin-right: -80px;
+  padding-right: 50px;
+  z-index: 15; */
+  /* box-shadow: 10px 0 20px rgba(0,0,0,0.05); */
+}
+
+.sidebar-logout {
+  align-content: center;
+  margin-top: auto;
+  padding-top: 30px;
+  font-size: 15px;
+  border-top: 3px solid rgba(255,255,255,0.2);
+}
+
+.logout-btn {
+  align-items: center;
+  margin-bottom: 10px;
+  margin-left: 50px;
+}
+/* ===== Main ===== */
+.main-content,
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+}
+
+.page {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 24px 40px;
+}
+
+
+/* ==========================================================
+   4️⃣ PAGE TITLE
+   ========================================================== */
+
+
+    /* =====================================================
+       BASE
+       ===================================================== */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Kanit', sans-serif;
+      background: #f4f6f8;
+      color: #333;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    h1 {
+      font-family: 'kanit',Arial, Helvetica, sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: white;
+      }
+    /* =====================================================
+       STICKY HEADER
+       ===================================================== */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo { font-weight: 600; }
+
+    /* =====================================================
+       STICKY NAV
+       ===================================================== */
+    .app-nav {
+      position: sticky;
+      top: 52px;
+      z-index: 999;
+      background: #f0f0f0;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 20px;
+      display: flex;
+      gap: 10px;
+    }
+    .app-nav a {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .app-nav a.active {
+      background: #1976d2;
+      color: #fff;
+    }
+
+    /* =====================================================
+       PAGE
+       ===================================================== */
+    .page {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+    .paper {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.1);
+    }
+    h2 {
+      text-align: center;
+      color: #1565c0;
+      margin-bottom: 25px;
+    }
+
+    /* =====================================================
+       FORM
+       ===================================================== */
+    label {
+      display: block;
+      margin-top: 14px;
+      font-weight: 500;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: inherit;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #1565c0;
+    }
+
+    /* =====================================================
+       TABLE
+       ===================================================== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background: #e3f2fd;
+      font-weight: 500;
+    }
+    td input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      text-align: center;
+    }
+
+    /* =====================================================
+       BUTTON
+       ===================================================== */
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-add { background: #10b981; color: #fff; }
+    .btn-delete { background: #ef4444; color: #fff; }
+    .btn-save { background: #1565c0; color: #fff; }
+    .btn-export { background: #FF9800; color: #fff; }
+
+    /* =====================================================
+       SUMMARY
+       ===================================================== */
+    .summary-box {
+      background: #e3f2fd;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
+      font-size: 16px;
+    }
+ 

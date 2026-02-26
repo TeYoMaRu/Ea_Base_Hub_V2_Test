@@ -8,204 +8,105 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ใบเดินทางจริงและเคลียร์ค่าใช้จ่าย</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <!-- FONT -->
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
-  <style>
-    /* =====================================================
-       BASE
-       ===================================================== */
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Kanit', sans-serif;
-      background: #f4f6f8;
-      color: #333;
-    }
-    a { text-decoration: none; color: inherit; }
+  <link rel="stylesheet" href="css/formActual.css">
 
-    /* =====================================================
-       STICKY HEADER
-       ===================================================== */
-    .app-header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: #fff;
-      border-bottom: 1px solid #ddd;
-      padding: 14px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo { font-weight: 600; }
-
-    /* =====================================================
-       STICKY NAV
-       ===================================================== */
-    .app-nav {
-      position: sticky;
-      top: 52px;
-      z-index: 999;
-      background: #f0f0f0;
-      border-bottom: 1px solid #ddd;
-      padding: 10px 20px;
-      display: flex;
-      gap: 10px;
-    }
-    .app-nav a {
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 13px;
-    }
-    .app-nav a.active {
-      background: #1976d2;
-      color: #fff;
-    }
-
-    /* =====================================================
-       PAGE
-       ===================================================== */
-    .page {
-      max-width: 1000px;
-      margin: auto;
-      padding: 20px;
-    }
-    .paper {
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 14px rgba(0,0,0,.1);
-    }
-    h2 {
-      text-align: center;
-      color: #1565c0;
-      margin-bottom: 25px;
-    }
-
-    /* =====================================================
-       FORM
-       ===================================================== */
-    label {
-      display: block;
-      margin-top: 14px;
-      font-weight: 500;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-family: inherit;
-    }
-    input:focus, select:focus {
-      outline: none;
-      border-color: #1565c0;
-    }
-
-    /* =====================================================
-       TABLE
-       ===================================================== */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      font-size: 13px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
-    }
-    th {
-      background: #e3f2fd;
-      font-weight: 500;
-    }
-    td input {
-      width: 100%;
-      border: none;
-      background: transparent;
-      text-align: center;
-    }
-
-    /* =====================================================
-       BUTTON
-       ===================================================== */
-    .btn-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-      flex-wrap: wrap;
-    }
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    .btn-add { background: #10b981; color: #fff; }
-    .btn-delete { background: #ef4444; color: #fff; }
-    .btn-save { background: #1565c0; color: #fff; }
-    .btn-export { background: #FF9800; color: #fff; }
-
-    /* =====================================================
-       SUMMARY
-       ===================================================== */
-    .summary-box {
-      background: #e3f2fd;
-      padding: 15px;
-      border-radius: 8px;
-      margin-top: 20px;
-      text-align: center;
-      font-size: 16px;
-    }
-  </style>
+  
 </head>
 
 <body>
 
-<!-- ================= HEADER ================= -->
+  <!-- =====================================================
+     NAVIGATION (ติดบน)
+     ===================================================== -->
+<div class="layout">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="assets/icons/icon-192.png" alt="logo">
+      <span class="sidebar-header"> EABaseHub </span>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="index.html">
+        <span class="material-symbols-outlined">home</span>
+        หน้าแรก
+      </a>
+
+      <a href="report.html">
+        <span class="material-symbols-outlined">assignment</span>
+        รายงานเยี่ยมร้านค้า
+      </a>
+
+      <a href="formPlan.html">
+        <span class="material-symbols-outlined">map</span>
+        ฟอร์ม ๑
+      </a>
+
+      <a href="formActual.html" class="active">
+        <span class="material-symbols-outlined">check_circle</span>
+        ฟอร์ม ๒
+      </a>
+    </nav>
+
+    <div class="sidebar-logout">
+      <!-- ป้ายอีเมลและปุ่ม Logout -->
+              <div style="display: flex; align-items: center; gap: 10px">
+                
+                <button class="logout-btn" onclick="logout()">
+                  ออกจากระบบ
+                </button>
+              </div>
+  
+    
+              
+  </aside>
+
+
+
+<!-- ================= HEADER =================
 <header class="app-header">
   <div class="logo">🌳 EABaseHub</div>
   <div>ผู้ใช้งาน</div>
 </header>
 
 <!-- ================= NAV ================= -->
-<nav class="app-nav">
+<!-- <nav class="app-nav">
   <a href="index.html">หน้าแรก</a>
   <a href="report.html">รายงานเยี่ยมร้านค้า</a>
   <a href="formPlan.html">ฟอร์ม ๑</a>
   <a href="formActual.html" class="active">ฟอร์ม ๒</a>
-</nav>
+</nav> -->
 
 <!-- ================= PAGE ================= -->
 <div class="page">
   <div class="paper">
 
-    <h2>💰 ใบเดินทางจริงและเคลียร์ค่าใช้จ่าย</h2>
+    <h2>ใบเดินทางจริงและเคลียร์ค่าใช้จ่าย ๒</h2>
 
     <!-- ===== FORM ===== -->
-    <div id="formSection">
+  <!-- SECTION: ข้อมูลหลัก -->
+      <div class="section">
+        <h3>ข้อมูลพนักงาน / ช่วงเวลา</h3>
 
-      <label>วันที่เริ่มต้น</label>
-      <input type="date" id="start">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="empName">พนักงานขาย</label>
+            <input id="empName" readonly>
+          </div>
 
-      <label>วันที่สิ้นสุด</label>
-      <input type="date" id="end">
-
-      <label>ชื่อพนักงานขาย</label>
-      <input id="emp" placeholder="ชื่อพนักงานขาย">
-
-      <label>ภาค</label>
-      <select id="zone">
-        <option value="">-- เลือก --</option>
-        <option>โซนภาคเหนือ</option>
-        <option>โซนภาคกลาง</option>
-        <option>โซนภาคอีสาน</option>
-        <option>โซนภาคใต้</option>
-      </select>
+          <div class="form-group">
+            <label for="zone">เขตการขาย</label>
+            <input id="zone" readonly>
+          </div>
+        </div>
+      
 
       <table>
         <thead>
@@ -242,6 +143,8 @@
   </div>
 </div>
 
-<script src="formActual.js"></script>
+<script src="js/core/supabaseClient.js"></script>
+<script src="js/core/auth.js"></script>
+<script src="js/formPlan.js"></script>
 </body>
 </html>

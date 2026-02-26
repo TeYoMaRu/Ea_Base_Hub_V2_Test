@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (profile.role === "admin") {
         window.location.href = "admintor.html";
       } else if (profile.role === "sales") {
-        window.location.href = "sales-dashboard.html";
+        window.location.href = "index.html";
       } else if (profile.role === "manager") {
         window.location.href = "manager-dashboard.html";
       } else if (profile.role === "executive") {

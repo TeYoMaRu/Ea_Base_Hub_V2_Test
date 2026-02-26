@@ -4,34 +4,6 @@
    ========================================================== */
 
 
-/* ==========================================================
-   1️⃣ DESIGN TOKENS (Brand Colors)
-   ========================================================== */
-  :root {
-  /* ===== PRIMARY ===== */
-  --primary-100: #6FB1E4;
-  --primary-500: #4A90E2;
-  --primary-700: #3A7BD5;
-
-  /* ===== ACCENT ===== */
-  --success: #52C41A;
-  --income: #7B61FF;
-  --works: #FF6EC7;
-  --message: #FFA940;
-
-  /* ===== NEUTRAL ===== */
-  --bg: #F5F7FA;
-  --card: #FFFFFF;
-  --border: #E6EAF0;
-  --text-primary: #1F2937;
-  --text-secondary: #6B7280;
-
-  /* ===== SHADOW ===== */
-  --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
-}
-  
-  
-
 
 /* ==========================================================
    2️⃣ GLOBAL RESET
@@ -40,13 +12,13 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  
 }
 
 body {
-  background: --bg;
-  font-family: 'Kanit', sans-serif;
-  background: var(-bg);
-  color: var(--color-text);
+  background:white;
+  font-family: 'Kanit', sans-serif;  
+  color: black;
   min-height: 100vh;
 }
 
@@ -56,23 +28,24 @@ body {
    ========================================================== */
 .layout {
   display: flex;
-  min-height: 100vh;
+  min-height: 10vh;
 }
 
 /* ===== Sidebar ===== */
 .sidebar {
-  width: 250px;
-    background: linear-gradient(
-    135deg,
-    #6FB1E4 0%,
-    #4A90E2 50%,
-    #3A7BD5 100%
-  );
-  color: --primary;
+  width: 260px;
+  background: linear-gradient(180deg, #4facfe, #005bea);
+  color: white;
   display: flex;
   flex-direction: column;
-  padding: 20px 16px;
-  border-radius: 0 50px;
+  padding: 20px 15px;
+  transition: all 0.3s ease;
+  /* box-shadow: 4px 0 20px rgba(0,0,0,0.1); */
+  /* top: 0;
+  left: 0; */
+  height: 100vh;
+  position:fixed;
+  /* overflow-y: auto; */
 }
 
 .sidebar-brand,
@@ -81,10 +54,15 @@ body {
   align-items: center;
   gap: 10px;
   margin-bottom: 30px;
+  font-size: 20px;
+  font-weight: 600;
+  flex-direction: column;
+  margin-bottom: 10px;
 }
 
 .sidebar-header img {
-  width: 42px;
+  width: 60px;
+  margin-top: 30px;
 }
 
 .sidebar-menu {
@@ -93,42 +71,56 @@ body {
   gap: 8px;
 }
 
+
+
 .sidebar-menu a {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
   border-radius: 8px;
-  color:--primary-700;
+  color:white;
   text-decoration: none;
   transition: 0.2s;
 }
 
 .sidebar-menu a:hover {
   background: rgba(255,255,255,0.15);
-  color: white;
+  color: rgb(1, 1, 118);
 }
 
 .sidebar-menu a.active {
   background: white;
-  color: var(--text-primary);
+  color: rgb(1, 1, 118);
   font-weight: 600;
+
+    /* ยื่นออกไปทางขวา */
+  margin-right: -80px;
+  padding-right: 50px;
+  z-index: 15;
+  /* box-shadow: 10px 0 20px rgba(0,0,0,0.05); */
 }
 
-.sidebar-user {
+.sidebar-logout {
+  align-content: center;
   margin-top: auto;
-  padding-top: 20px;
-  font-size: 13px;
-  border-top: 1px solid rgba(255,255,255,0.2);
+  padding-top: 30px;
+  font-size: 15px;
+  border-top: 3px solid rgba(255,255,255,0.2);
 }
 
-
+.logout-btn {
+  align-items: center;
+  margin-bottom: 10px;
+  margin-left: 50px;
+}
 /* ===== Main ===== */
 .main-content,
 .main {
   flex: 1;
   display: flex;
   flex-direction: column;
+  margin-top: 30px;
 }
 
 .page {
@@ -156,7 +148,7 @@ h1 {
   background: var(--color-card);
   padding: 24px;
   border-radius: 14px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-sm);.sidebar-brand, .sidebar-header
   margin-bottom: 24px;
 }
 
