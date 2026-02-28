@@ -214,8 +214,7 @@ body::before {
   padding: 20px;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
-  flex-wrap: wrap;
-  gap: 12px;
+  gap: 16px;
 }
 
 .header-left h2 {
@@ -230,6 +229,13 @@ body::before {
   font-size: 14px;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
 .user-badge {
   background: var(--primary-500);
   color: var(--white);
@@ -237,6 +243,7 @@ body::before {
   border-radius: 24px;
   font-size: 14px;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 /* =========================
@@ -294,7 +301,7 @@ body::before {
    ========================= */
 .shop-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin-bottom: 24px;
 }
@@ -302,13 +309,15 @@ body::before {
 .mini-card {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 16px;
-  padding: 16px 20px;
-  border-radius: 16px;
+  padding: 20px;
+  border-radius: 20px;
   border: 2px solid;
   background: #ffffff;
   box-shadow: var(--shadow-soft);
   transition: all 0.3s ease;
+  min-height: 100px;
 }
 
 .mini-card:hover {
@@ -328,16 +337,23 @@ body::before {
   flex-shrink: 0;
 }
 
+.card-info {
+  flex: 1;
+  text-align: center;
+}
+
 .card-info h3 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .card-info p {
   margin: 4px 0 0;
-  font-size: 13px;
-  opacity: 0.8;
+  font-size: 14px;
+  opacity: 0.85;
+  font-weight: 500;
 }
 
 /* Mini Card Themes */
@@ -935,8 +951,7 @@ body.is-admin .admin-only {
   /* Header */
   .header {
     padding: 14px 16px;
-    flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
   }
   
   .header-left h2 {
@@ -947,9 +962,18 @@ body.is-admin .admin-only {
     font-size: 12px;
   }
   
+  .header-right {
+    gap: 10px;
+  }
+  
   .user-badge {
     font-size: 13px;
-    padding: 8px 12px;
+    padding: 8px 14px;
+  }
+  
+  .logout-btn {
+    padding: 8px 14px;
+    font-size: 13px;
   }
   
   /* ⭐⭐⭐ สำคัญที่สุด - Layout เป็นแนวตั้ง ⭐⭐⭐ */
@@ -992,28 +1016,35 @@ body.is-admin .admin-only {
     font-size: 28px;
   }
   
-  /* Shop cards เป็น 2 คอลัมน์ */
+  /* Shop cards ยัง 3 คอลัมน์ในจอ tablet */
   .shop-cards {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(3, 1fr) !important;
     gap: 12px;
   }
   
   .mini-card {
-    padding: 12px 14px;
+    padding: 16px;
+    flex-direction: column;
+    text-align: center;
+    min-height: 140px;
   }
   
   .icon-box {
-    width: 44px;
-    height: 44px;
-    font-size: 22px;
+    width: 52px;
+    height: 52px;
+    font-size: 26px;
+  }
+  
+  .card-info {
+    width: 100%;
   }
   
   .card-info h3 {
-    font-size: 20px;
+    font-size: 28px;
   }
   
   .card-info p {
-    font-size: 12px;
+    font-size: 13px;
   }
   
   /* Actions เป็น 2 คอลัมน์ */
@@ -1133,11 +1164,42 @@ body.is-admin .admin-only {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+    padding: 16px;
+  }
+  
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .user-badge {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .logout-btn {
+    flex-shrink: 0;
+  }
+  
+  /* Mini Cards เป็น 1 คอลัมน์ */
+  .shop-cards {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .mini-card {
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+    padding: 16px;
+    min-height: auto;
+  }
+  
+  .card-info {
+    text-align: left;
   }
   
   /* Cards เป็น 1 คอลัมน์ */
   .cards,
-  .shop-cards,
   .actions {
     grid-template-columns: 1fr;
   }
@@ -1153,6 +1215,7 @@ body.is-admin .admin-only {
   
   .right-panel {
     width: 100%;
+    flex: none;
   }
 }
 
