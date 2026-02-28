@@ -5,18 +5,16 @@
          BASIC META - การตั้งค่าพื้นฐาน
          ========================= -->
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home - EABaseHub</title>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#4caf50" />
+    <meta name="description" content="EABaseHub - ระบบจัดการรายงานและร้านค้า" />
+    <title>EABaseHub</title>
 
     <!-- =========================
          FONTS - ฟอนต์และไอคอน
-         - Material Icons: ไอคอน Google
-         - Kanit: ฟอนต์ภาษาไทยสวยงาม
          ========================= -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600"
       rel="stylesheet"
     />
     <link
@@ -25,34 +23,35 @@
     />
 
     <!-- =========================
-         PWA CONFIG - ตั้งค่า Progressive Web App
-         - manifest.json: ไฟล์กำหนดค่า PWA
-         - theme-color: สีของ address bar บนมือถือ
+         PWA CONFIG
          ========================= -->
     <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png" />
     
-
     <!-- =========================
-         CSS STYLES - เชื่อมโยงไฟล์ CSS ภายนอก
+         CSS STYLES - ใช้ไฟล์ใหม่ที่ปรับปรุงแล้ว
          ========================= -->
     <link rel="stylesheet" href="css/index.css" />
+
+    <!-- =========================
+         SUPABASE - โหลดก่อน script อื่นๆ
+         ========================= -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
 
   <body>
     <!-- =========================
-         LAYOUT CONTAINER - โครงสร้างหลักของหน้าเว็บ
-         - ประกอบด้วย sidebar และ content
+         LAYOUT CONTAINER
          ========================= -->
     <div class="layout">
       <!-- =========================
            SIDEBAR - แถบเมนูด้านซ้าย
-           - โลโก้แอป
-           - เมนูนำทาง
-           - ปุ่มเปิดร้านค้า (ซ่อนไว้ในโค้ด)
            ========================= -->
       <aside class="sidebar" id="sidebar">
-        <!-- ปุ่ม Hamburger สำหรับมือถือ - เปิด/ปิดเมนู -->
-        <!-- <button class="hamburger" onclick="toggleMenu()">☰</button> -->
+        <!-- Hamburger Button สำหรับมือถือ -->
+        <button class="hamburger" id="hamburgerBtn" onclick="toggleMenu()" aria-label="เปิด/ปิดเมนู">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
 
         <!-- โลโก้และชื่อแอป -->
         <div class="logo">
@@ -62,22 +61,15 @@
 
         <!-- =========================
              MENU - รายการเมนูนำทาง
-             - หน้าแรก (active)
-             - เขียนรายงาน
-             - ร้านค้าของฉัน
-             - แจ้งเคลมสินค้า
-             - แบบฟอร์มต่างๆ
              ========================= -->
-        <nav class="menu">
-          <a class="menu-item active" href="#">
+        <nav class="menu" id="sidebarMenu">
+          <a class="menu-item active" href="index.html">
             <span class="material-symbols-outlined menu-icon">home</span>
             <span class="menu-text">หน้าแรก</span>
           </a>
 
           <a class="menu-item" href="report.html">
-            <span class="material-symbols-outlined menu-icon"
-              >edit_document</span
-            >
+            <span class="material-symbols-outlined menu-icon">edit_document</span>
             <span class="menu-text">เขียนรายงาน</span>
           </a>
 
@@ -87,9 +79,7 @@
           </a>
 
           <a class="menu-item" href="formClaim.html">
-            <span class="material-symbols-outlined menu-icon"
-              >assignment_late</span
-            >
+            <span class="material-symbols-outlined menu-icon">assignment_late</span>
             <span class="menu-text">แจ้งเคลมสินค้า</span>
           </a>
 
@@ -99,24 +89,23 @@
           </a>
         </nav>
 
-        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+        <!-- ปุ่ม Toggle Sidebar (สำหรับ Desktop) -->
+        <button class="toggle-btn" onclick="toggleSidebar()" aria-label="ย่อ/ขยายเมนู">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
       </aside>
 
       <!-- =========================
-           MAIN CONTENT - เนื้อหาหลัก
-           - แบ่งเป็น 2 คอลัมน์: main-content และ right-column
+           MAIN CONTENT
            ========================= -->
       <main class="content">
         <div class="content-layout">
           <!-- =========================
-               MAIN CONTENT COLUMN - คอลัมน์เนื้อหาหลัก
+               MAIN CONTENT COLUMN
                ========================= -->
           <div class="main-content">
             <!-- =========================
                  HEADER - ส่วนหัว
-                 - แสดงชื่อผู้ใช้
-                 - แสดงอีเมล
-                 - ปุ่มออกจากระบบ
                  ========================= -->
             <header class="header">
               <div class="header-left">
@@ -124,30 +113,25 @@
                 <p class="subtext">ยินดีต้อนรับเข้าสู่ระบบ</p>
               </div>
 
-              <!-- ป้ายอีเมลและปุ่ม Logout -->
-              <div style="display: flex; align-items: center; gap: 10px">
+              <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
                 <div class="user-badge" id="userEmail">กำลังโหลด...</div>
                 <button class="logout-btn" onclick="logout()">
+                  <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: middle;">logout</span>
                   ออกจากระบบ
                 </button>
               </div>
             </header>
 
             <!-- =========================
-                 SUMMARY CARDS - การ์ดสรุปข้อมูล
-                 - ร้านค้าของฉัน
-                 - Trip (การเดินทาง)
-                 - Claim (การเคลม)
-                 - ข้อมูลจะถูกดึงจาก JavaScript (home.js)
+                 MINI CARDS - การ์ดสรุปข้อมูลแบบย่อ
                  ========================= -->
-
             <div class="shop-cards">
               <div class="mini-card shop">
                 <div class="icon-box">
                   <span class="material-symbols-outlined">store</span>
                 </div>
                 <div class="card-info">
-                  <h3 id="storeCount">กำลังโหลด...</h3>
+                  <h3 id="storeCount">0</h3>
                   <p>ร้านค้าของฉัน</p>
                 </div>
               </div>
@@ -157,7 +141,7 @@
                   <span class="material-symbols-outlined">directions_car</span>
                 </div>
                 <div class="card-info">
-                  <h3 id="areaCount">กำลังโหลด...</h3>
+                  <h3 id="areaCount">0</h3>
                   <p>พื้นที่รับผิดชอบ</p>
                 </div>
               </div>
@@ -167,60 +151,33 @@
                   <span class="material-symbols-outlined">assignment_late</span>
                 </div>
                 <div class="card-info">
-                  <h3 id="claimCount">5</h3>
+                  <h3 id="claimCount">0</h3>
                   <p>Claim</p>
                 </div>
               </div>
             </div>
 
-            <!-- <div class="cards"> -->
-            <!-- การ์ดร้านค้า - จำนวนร้านค้าที่มี -->
-            <!-- <div class="card card-shop"> 
-                <div class="card-top">
-                <span class="material-symbols-outlined icon-card">store</span>
-                <h3 id="storeCount">0</h3>
-                </div>
-                <p>ร้านค้าของฉัน</p>
-              </div> -->
-
-            <!-- การ์ด Trip - จำนวน Trip -->
-            <!-- <div class="card card-trip">
-                <span class="me"
-                <h3 id="tripCount">0</h3>
-                <p>Trip</p>
-              </div> -->
-
-            <!-- การ์ด Claim - จำนวน Claim -->
-            <!-- <div class="card card-claim">
-                <h3 id="claimCount">0</h3>
-                <p>Claim</p>
-              </div>
-            </div> -->
-
             <!-- =========================
                  ACTION CARDS - การ์ดปุ่มกระทำหลัก
-                 - เขียนรายงาน (สีเขียวเข้ม)
-                 - Forms Hub (สีเหลือง)
-                 - แจ้งเคลมสินค้า (สีชมพู)
                  ========================= -->
             <div class="actions">
-              <!-- ปุ่มเขียนรายงาน - ไปยังหน้า report.html -->
+              <!-- เขียนรายงาน -->
               <a href="report.html" class="action-card theme-green">
-                <i class="material-symbols-outlined">edit_document</i>
+                <span class="material-symbols-outlined">edit_document</span>
                 <h3>เขียนรายงาน</h3>
                 <p>บันทึกการเยี่ยมร้านลูกค้า</p>
               </a>
 
-              <!-- ปุ่ม Forms Hub - ไปยังหน้า formHub.html -->
+              <!-- Forms Hub -->
               <a href="formHub.html" class="action-card theme-yellow">
-                <i class="material-symbols-outlined">assignment_add</i>
-                <h3>ฟอร์ม Forms Hub</h3>
+                <span class="material-symbols-outlined">description</span>
+                <h3>Forms Hub</h3>
                 <p>แบบฟอร์มเบิกค่าใช้จ่าย</p>
               </a>
 
-              <!-- ปุ่มแจ้งเคลม - ไปยังหน้า formClaim.html -->
+              <!-- แจ้งเคลมสินค้า -->
               <a href="formClaim.html" class="action-card theme-pink">
-                <i class="material-symbols-outlined">error</i>
+                <span class="material-symbols-outlined">assignment_late</span>
                 <h3>แจ้งเคลมสินค้า</h3>
                 <p>แจ้งเคลมสินค้ามีปัญหา</p>
               </a>
@@ -228,93 +185,100 @@
 
             <!-- =========================
                  PROGRESS CARD - การ์ดแสดงความคืบหน้า
-                 - แสดงจำนวนวันที่เขียนรายงาน
-                 - แถบ progress bar
-                 - ข้อมูลจะถูกดึงจาก JavaScript
                  ========================= -->
             <div class="progress-card">
-              <!-- หัวข้อ - แสดงจำนวนวัน (จะถูกอัพเดทจาก JS) -->
               <div class="progress-title">
-                ✍️ เขียนรายงานแล้ว <strong id="reportDays">0</strong> วัน
+                <span class="material-symbols-outlined" style="font-size: 20px; vertical-align: middle; color: var(--primary-500);">edit_note</span>
+                เขียนรายงานแล้ว <strong id="reportDays">0</strong> วัน
               </div>
 
-              <!-- แถบความคืบหน้า - width จะถูกอัพเดทจาก JS -->
               <div class="progress-bar">
-                <div class="progress-fill" style="width: 0%"></div>
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
               </div>
 
-              <!-- ข้อความเสริม -->
-              <div class="progress-note">ส่งรายงานสัปดาห์ละ 1 ครั้ง</div>
+              <div class="progress-note">
+                <span class="material-symbols-outlined" style="font-size: 14px; vertical-align: middle;">info</span>
+                ส่งรายงานสัปดาห์ละ 1 ครั้ง
+              </div>
             </div>
 
             <!-- =========================
                  MY REPORTS - รายงานของฉัน
-                 - แสดงรายการรายงานที่เขียนไว้
-                 - ข้อมูลจะถูกโหลดจาก Supabase ผ่าน JavaScript
                  ========================= -->
             <div class="my-report">
-              <h3>รายงานของฉัน</h3>
-              <!-- รายการรายงานจะถูกเพิ่มที่นี่ผ่าน JavaScript -->
-              <div id="myReportList"></div>
+              <h3 style="color: var(--primary-700); margin-bottom: 16px;">
+                <span class="material-symbols-outlined" style="font-size: 24px; vertical-align: middle;">folder_open</span>
+                รายงานของฉัน
+              </h3>
+              <div id="myReportList">
+                <!-- รายการรายงานจะถูกเพิ่มที่นี่ผ่าน JavaScript -->
+                <p style="text-align: center; color: #999; padding: 20px;">กำลังโหลดข้อมูล...</p>
+              </div>
             </div>
           </div>
 
           <!-- =========================
                RIGHT COLUMN - คอลัมน์ด้านขวา
-               - การ์ดโปรไฟล์
-               - ปฏิทิน
-               - การ์ดเปิดร้านค้า
-               - Forms Hub (ถูกคอมเมนต์ไว้)
                ========================= -->
           <div class="right-column">
             <aside class="right-panel">
               <!-- =========================
-                   PROFILE CARD - การ์ดโปรไฟล์
-                   - แสดง Avatar (อักษรย่อ)
-                   - แสดงตำแหน่งงาน
+                   PROFILE CARD
                    ========================= -->
               <div class="profile-card">
-                <!-- Avatar - แสดงอักษรย่อ NM -->
-                <div class="avatar">NM</div>
-                <!-- ตำแหน่งงาน -->
-                <p>Sales Executive</p>
+                <div class="avatar" id="avatarInitials">NM</div>
+                <h4 id="profileName">Loading...</h4>
+                <p id="profileRole">Sales Executive</p>
               </div>
 
               <!-- =========================
-                   CALENDAR CARD - การ์ดปฏิทิน
-                   - แสดงปฏิทินรายเดือน
-                   - ปุ่มเปลี่ยนเดือน (ก่อนหน้า/ถัดไป)
-                   - ไฮไลท์วันที่มีรายงาน
-                   - ข้อมูลจะถูกสร้างจาก JavaScript
+                   CALENDAR CARD
                    ========================= -->
               <div class="calendar-card">
-                <!-- ส่วนหัวปฏิทิน - ชื่อเดือนและปุ่มนำทาง -->
                 <div class="calendar-header">
-                  <h4 id="calendarTitle">ปฏิทิน</h4>
+                  <h4 id="calendarTitle">กำลังโหลด...</h4>
                   <div class="calendar-nav">
-                    <!-- ปุ่มเดือนก่อนหน้า -->
-                    <button onclick="prevMonth()">◀</button>
-                    <!-- ปุ่มเดือนถัดไป -->
-                    <button onclick="nextMonth()">▶</button>
+                    <button onclick="prevMonth()" aria-label="เดือนก่อนหน้า">
+                      <span class="material-symbols-outlined" style="font-size: 16px;">chevron_left</span>
+                    </button>
+                    <button onclick="nextMonth()" aria-label="เดือนถัดไป">
+                      <span class="material-symbols-outlined" style="font-size: 16px;">chevron_right</span>
+                    </button>
                   </div>
                 </div>
-                <!-- ตารางปฏิทิน - จะถูกสร้างจาก JavaScript -->
-                <div class="calendar-grid" id="calendarGrid"></div>
+                <div class="calendar-grid" id="calendarGrid">
+                  <!-- ปฏิทินจะถูกสร้างจาก JavaScript -->
+                </div>
               </div>
 
               <!-- =========================
-                 OPEN SHOP CARD - การ์ดเปิดร้านค้า
-                 - อยู่ล่างสุดของคอลัมน์ขวา
-                 - คลิกเพื่อเปิดฟอร์มลงทะเบียนร้านค้า
-                 ========================= -->
+                   OPEN SHOP CARD
+                   ========================= -->
               <div class="open-shop-card" onclick="openShopModal()">
-                <div class="open-shop-icon">🏪</div>
+                <div class="open-shop-icon">
+                  <span class="material-symbols-outlined" style="font-size: 40px;">add_business</span>
+                </div>
                 <h4>เพิ่ม / เปิดร้านค้า</h4>
                 <p>ลงทะเบียนร้านค้าใหม่</p>
-                <span class="open-shop-badge">comming soon</span>
+                <span class="open-shop-badge">Coming Soon</span>
               </div>
 
-              <button class="admin-only">จัดการผู้ใช้</button>
+              <!-- ปุ่มสำหรับ Admin เท่านั้น -->
+              <button class="admin-only" onclick="goToAdmin()" style="
+                width: 100%;
+                padding: 12px;
+                background: var(--secondary-700);
+                color: white;
+                border: none;
+                border-radius: var(--radius-md);
+                font-family: 'Kanit', sans-serif;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s;
+              ">
+                <span class="material-symbols-outlined" style="font-size: 18px; vertical-align: middle;">admin_panel_settings</span>
+                จัดการผู้ใช้
+              </button>
             </aside>
           </div>
         </div>
@@ -322,75 +286,211 @@
     </div>
 
     <!-- =========================
-         JAVASCRIPT - ไฟล์ JavaScript
+         LOADING OVERLAY (Optional)
          ========================= -->
+    <div id="loadingOverlay" style="
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,0.9);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    ">
+      <div style="text-align: center;">
+        <div style="
+          border: 4px solid #f3f3f3;
+          border-top: 4px solid var(--primary-500);
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          animation: spin 1s linear infinite;
+          margin: 0 auto 16px;
+        "></div>
+        <p style="color: var(--primary-700); font-weight: 500;">กำลังโหลด...</p>
+      </div>
+    </div>
 
-    <!-- Service Worker สำหรับ PWA -->
+    <style>
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+
+    <!-- =========================
+         JAVASCRIPT
+         ========================= -->
     <script>
-      // ลงทะเบียน Service Worker ถ้า browser รองรับ
+      // ===========================
+      // SERVICE WORKER REGISTRATION
+      // ===========================
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker
-          .register("js/sw.js")
-          .then(() => console.log("Service Worker registered"))
-          .catch((err) => console.error("SW registration failed:", err));
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("js/sw.js")
+            .then((registration) => {
+              console.log("✅ Service Worker registered:", registration.scope);
+            })
+            .catch((error) => {
+              console.error("❌ SW registration failed:", error);
+            });
+        });
       }
 
-      /* =========================
-         TOGGLE MENU - เปิด/ปิดเมนูในมือถือ
-         - ใช้กับปุ่ม hamburger
-         ========================= */
+      // ===========================
+      // TOGGLE MENU (Mobile)
+      // ===========================
       function toggleMenu() {
-        const menu = document.querySelector(".menu");
-        menu.classList.toggle("show");
-      }
-
-      /* =========================
-         OPEN SHOP MODAL - เปิดฟอร์มร้านค้า
-         - ยังเป็น alert ธรรมดา
-         - สามารถพัฒนาเป็น modal จริงได้
-         ========================= */
-      function openShopModal() {
-        alert("เปิดฟอร์มเพิ่มร้านค้า");
-      }
-
-      /* =========================
-         LOGOUT - ออกจากระบบ
-         - แสดง confirm dialog
-         - redirect ไปหน้า login.html
-         ========================= */
-      function logout() {
-        if (confirm("ต้องการออกจากระบบ?")) {
-          window.location.href = "login.html";
+        const menu = document.getElementById("sidebarMenu");
+        const hamburger = document.getElementById("hamburgerBtn");
+        
+        if (menu.classList.contains("show")) {
+          menu.classList.remove("show");
+          hamburger.setAttribute("aria-expanded", "false");
+        } else {
+          menu.classList.add("show");
+          hamburger.setAttribute("aria-expanded", "true");
         }
       }
 
-      /* =========================
-         CALENDAR NAVIGATION - นำทางปฏิทิน
-         - ยังเป็นฟังก์ชันพื้นฐาน
-         - ฟังก์ชันจริงอยู่ใน home.js
-         ========================= */
+      // ปิดเมนูเมื่อคลิกข้างนอก (Mobile)
+      document.addEventListener("click", (e) => {
+        const sidebar = document.getElementById("sidebar");
+        const menu = document.getElementById("sidebarMenu");
+        const hamburger = document.getElementById("hamburgerBtn");
+        
+        if (window.innerWidth <= 767 && menu.classList.contains("show")) {
+          if (!sidebar.contains(e.target)) {
+            menu.classList.remove("show");
+            hamburger.setAttribute("aria-expanded", "false");
+          }
+        }
+      });
+
+      // ===========================
+      // TOGGLE SIDEBAR (Desktop)
+      // ===========================
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("collapsed");
+        
+        // บันทึกสถานะ
+        const isCollapsed = sidebar.classList.contains("collapsed");
+        localStorage.setItem("sidebarCollapsed", isCollapsed);
+      }
+
+      // โหลดสถานะ sidebar จาก localStorage
+      window.addEventListener("load", () => {
+        const isCollapsed = localStorage.getItem("sidebarCollapsed") === "true";
+        if (isCollapsed) {
+          document.getElementById("sidebar").classList.add("collapsed");
+        }
+      });
+
+      // ===========================
+      // OPEN SHOP MODAL
+      // ===========================
+      function openShopModal() {
+        // TODO: เปลี่ยนเป็น modal จริง
+        alert("🏪 ฟีเจอร์เปิดร้านค้าใหม่กำลังพัฒนา");
+      }
+
+      // ===========================
+      // LOGOUT
+      // ===========================
+      async function logout() {
+        if (confirm("ต้องการออกจากระบบหรือไม่?")) {
+          try {
+            // ลบ session
+            if (typeof supabaseClient !== 'undefined') {
+              await supabaseClient.auth.signOut();
+            }
+            
+            // ลบข้อมูล localStorage
+            localStorage.clear();
+            
+            // Redirect
+            window.location.href = "login.html";
+          } catch (error) {
+            console.error("Logout error:", error);
+            // Redirect anyway
+            window.location.href = "login.html";
+          }
+        }
+      }
+
+      // ===========================
+      // CALENDAR NAVIGATION
+      // ===========================
+      let currentCalendarMonth = new Date().getMonth();
+      let currentCalendarYear = new Date().getFullYear();
+
       function prevMonth() {
-        console.log("Previous month");
+        currentCalendarMonth--;
+        if (currentCalendarMonth < 0) {
+          currentCalendarMonth = 11;
+          currentCalendarYear--;
+        }
+        renderCalendar();
       }
 
       function nextMonth() {
-        console.log("Next month");
+        currentCalendarMonth++;
+        if (currentCalendarMonth > 11) {
+          currentCalendarMonth = 0;
+          currentCalendarYear++;
+        }
+        renderCalendar();
       }
+
+      function renderCalendar() {
+        // ฟังก์ชันนี้จะถูก override โดย home.js
+        console.log("Rendering calendar for:", currentCalendarMonth, currentCalendarYear);
+      }
+
+      // ===========================
+      // GO TO ADMIN (Admin Only)
+      // ===========================
+      function goToAdmin() {
+        window.location.href = "admin.html";
+      }
+
+      // ===========================
+      // LOADING OVERLAY HELPER
+      // ===========================
+      function showLoading() {
+        const overlay = document.getElementById("loadingOverlay");
+        if (overlay) overlay.style.display = "flex";
+      }
+
+      function hideLoading() {
+        const overlay = document.getElementById("loadingOverlay");
+        if (overlay) overlay.style.display = "none";
+      }
+
+      // ===========================
+      // ERROR HANDLING
+      // ===========================
+      window.addEventListener("error", (e) => {
+        console.error("Global error:", e.error);
+        hideLoading();
+      });
+
+      window.addEventListener("unhandledrejection", (e) => {
+        console.error("Unhandled promise rejection:", e.reason);
+        hideLoading();
+      });
     </script>
 
     <!-- =========================
-         EXTERNAL LIBRARIES - ไลบรารีภายนอก
+         EXTERNAL SCRIPTS - โหลดตามลำดับ
          ========================= -->
-
-    <!-- Supabase Client - สำหรับเชื่อมต่อฐานข้อมูล -->
     <script src="js/core/supabaseClient.js"></script>
-
-    <!-- Supabase Configuration - ตั้งค่าการเชื่อมต่อ -->
     <script src="js/core/auth.js"></script>
-
-    <!-- Home Page Logic - ตรรกะหน้า Home -->
-    <!-- โหลดข้อมูล: รายงาน, ร้านค้า, Trip, Claim -->
-    <!-- สร้างปฏิทิน และอัพเดท UI -->
     <script src="js/home.js"></script>
   </body>
 </html>
