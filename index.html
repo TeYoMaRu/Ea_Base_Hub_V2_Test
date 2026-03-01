@@ -225,11 +225,21 @@
               <!-- =========================
                    PROFILE CARD
                    ========================= -->
-              <div class="profile-card">
-                <div class="avatar" id="avatarInitials">NM</div>
-                <h4 id="profileName">Loading...</h4>
-                <p id="profileRole">Sales Executive</p>
-              </div>
+              
+<div class="user-card">
+  <div class="avatar-wrapper">
+    <img id="profileImage"src="assets/img/default-avatar.jpg" alt="Profile">
+    <input type="file" id="uploadAvatar" hidden accept="image/*">
+  </div>
+
+  <div class="user-info">
+    <h4 id="displayName">Loading...</h4>
+    <p id="userEmail">email@example.com</p>
+    <span id="userRole">Sales Executive</span>
+  </div>
+</div>
+
+              
 
               <!-- =========================
                    CALENDAR CARD

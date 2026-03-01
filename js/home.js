@@ -96,15 +96,7 @@ async function loadData() {
     console.error("โหลด reports ไม่ได้:", reportError);
   }
 
-  // โหลด areas
-const { data: areaData, error: areaError } =
-  await supabaseClient
-    .from("areas")
-    .select("*");
 
-if (areaError) {
-  console.error("โหลด areas ไม่ได้:", areaError);
-}
 
   // โหลด claims
   const { data: claimData, error: claimError } =
@@ -117,7 +109,7 @@ if (areaError) {
   }
 
   reports = reportData || [];
-  areas   = areaData || [];
+  
   claims  = claimData || [];
 }
 
@@ -128,11 +120,10 @@ async function loadUserProfile() {
 
   if (!user) return;
 
-  // 🔎 ดึง display_name จาก profiles
   const { data: profile, error } =
     await supabaseClient
       .from("profiles")
-      .select("display_name, username")
+      .select("display_name, username, role")
       .eq("id", user.id)
       .single();
 
@@ -141,12 +132,22 @@ async function loadUserProfile() {
     return;
   }
 
-  const nameToShow =
-    profile.display_name ||
-    profile.username ||
+  // ✅ ใช้ตัวแปรเดียวให้ถูกต้อง
+  const fullName =
+    profile?.display_name ||
+    profile?.username ||
     user.email;
 
-  document.getElementById("userName").textContent = nameToShow;
+  // ใส่ค่าลง element (เช็คก่อนกันพัง)
+  const userNameEl  = document.getElementById("userName");
+  const displayEl   = document.getElementById("displayName");
+  const emailEl     = document.getElementById("userEmail");
+  const roleEl      = document.getElementById("userRole");
+
+  if (userNameEl) userNameEl.textContent = fullName;
+  if (displayEl)  displayEl.textContent  = fullName;
+  if (emailEl)    emailEl.textContent    = user.email;
+  if (roleEl)     roleEl.textContent     = profile?.role || "Sales Executive";
 }
 
 
@@ -446,6 +447,7 @@ async function init() {
   await loadUserArea();
   await loadStoreCount();
   
+  initAvatarUpload();
   renderSummary();
   renderReportList();
   renderWeeklyProgress();
@@ -470,6 +472,36 @@ async function loadUserRole() {
   if (profile?.role === "admin") {
     document.body.classList.add("is-admin");
   }
+}
+
+
+/* =================================================
+   📷 Avatar Upload
+================================================= */
+
+function initAvatarUpload() {
+
+  const uploadInput = document.getElementById("uploadAvatar");
+  const profileImage = document.getElementById("profileImage");
+  const avatarWrapper = document.querySelector(".avatar-wrapper");
+
+  if (!uploadInput || !profileImage || !avatarWrapper) return;
+
+  avatarWrapper.addEventListener("click", () => {
+    uploadInput.click();
+  });
+
+  uploadInput.addEventListener("change", function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      profileImage.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
 }
 
 

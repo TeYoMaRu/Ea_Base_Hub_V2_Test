@@ -235,6 +235,90 @@ body::before {
   gap: 12px;
   flex-shrink: 0;
 }
+/* profile card */
+.user-widget {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #43a047, #66bb6a);
+  color: white;
+  font-weight: 600;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.user-detail h4 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.user-detail span {
+  font-size: 13px;
+  color: #777;
+}
+
+.user-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  transition: 0.3s ease;
+}
+
+.user-card:hover {
+  transform: translateY(-3px);
+}
+
+.avatar-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.avatar-wrapper img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #43a047;
+}
+
+.user-info h4 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.user-info p {
+  margin: 3px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.user-info span {
+  font-size: 12px;
+  background: #e8f5e9;
+  padding: 4px 10px;
+  border-radius: 50px;
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+/* ------------------------ */
 
 .user-badge {
   background: var(--primary-500);
