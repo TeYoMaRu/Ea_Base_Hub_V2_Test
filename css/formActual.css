@@ -1,3 +1,14 @@
+.layout {
+  display: flex;
+}
+
+/* เพราะ sidebar fixed */
+.main-content,
+.main {
+  margin-left: 260px; /* เท่ากับ width sidebar */
+  min-height: 100vh;
+}
+
 /* ===== Sidebar ===== */
 .sidebar {
   width: 260px;
@@ -7,7 +18,7 @@
   flex-direction: column;
   padding: 20px 15px;
   transition: all 0.3s ease;
-  /* box-shadow: 4px 0 20px rgba(0,0,0,0.1); */
+  box-shadow: 4px 0 20px rgba(0,0,0,0.8);
   /* top: 0;
   left: 0; */
   height: 100vh;
@@ -90,11 +101,6 @@
   margin-top: 30px;
 }
 
-.page {
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 0 24px 40px;
-}
 
 
 /* ==========================================================
@@ -164,8 +170,8 @@
        PAGE
        ===================================================== */
     .page {
-      max-width: 1000px;
-      margin: auto;
+      max-width: 11000px;
+      margin: 410px auto;
       padding: 20px;
     }
     .paper {
