@@ -13,8 +13,7 @@
 /** @type {Array<Object>} รายการทริปทั้งหมดในแผนปัจจุบัน */
 let trips = [];
 
-/** @type {number|null} index ของทริปที่กำลังแก้ไขอยู่ (null = ไม่ได้แก้ไข) */
-let currentEditIndex = null;
+
 
 /** @type {string|null} ID ของแผนการเดินทางในฐานข้อมูล */
 let currentPlanId = null;
@@ -45,6 +44,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   setDefaultDates();
   setupEventListeners();
+
+  setupSummaryCalculation();
 });
 
 
@@ -124,7 +125,12 @@ async function loadUserInfoBasic() {
 // 🏪 SHOP MANAGEMENT
 // โหลดร้านค้า → สร้าง dropdown จังหวัดและร้านค้า
 // =====================================================
-
+function updateShopCount() {
+  const shopCountEl = document.getElementById("shopCount");
+  if (shopCountEl) {
+    shopCountEl.textContent = myShops.length;
+  }
+}
 /**
  * โหลดร้านค้าตาม role:
  * - admin   → ทุกร้าน
@@ -184,9 +190,8 @@ async function loadMyShops() {
 
   myShops = data || [];
 
-  const shopCountEl = document.getElementById("shopCount");
-  if (shopCountEl) shopCountEl.textContent = myShops.length;
-
+  
+  updateShopCount();
   // สร้าง dropdown จังหวัดทั้งสองฝั่ง (ต้นทาง/ปลายทาง)
   renderProvinceDropdowns();
 
@@ -307,9 +312,9 @@ function setupEventListeners() {
   document.getElementById("startDate")?.addEventListener("change", updateEndDate);
 
   // กด Enter ในช่อง cost → เพิ่มทริป
-  document.getElementById("cost")?.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") addTrip();
-  });
+  // document.getElementById("cost")?.addEventListener("keypress", (e) => {
+  //   if (e.key === "Enter") addTrip();
+  // });
 
   setupExpenseCalculation();
 }
@@ -382,60 +387,6 @@ async function loadExistingTrips() {
  * - shop1/2/3     → ชื่อร้านค้า (string, สำหรับแสดงในตาราง/export)
  * - shop1Id/2Id/3Id → id ร้านค้า (string, สำหรับ restore dropdown ตอน editTrip)
  */
-function addTrip() {
-  const tripDate       = document.getElementById("tripDate")?.value;
-  const from           = document.getElementById("fromProvince")?.value;
-  const to             = document.getElementById("toProvince")?.value;
-  const shop1Id        = document.getElementById("shop1")?.value;
-  const shop2Id        = document.getElementById("shop2")?.value;
-  const shop3Id        = document.getElementById("shop3")?.value;
-  const cost           = parseFloat(document.getElementById("cost")?.value || 0);
-
-  // ── Validate ──
-  if (!tripDate) { alert("❌ กรุณาเลือกวันที่");                  return; }
-  if (!from)     { alert("❌ กรุณาเลือกจังหวัดต้นทาง");           return; }
-  if (!to)       { alert("❌ กรุณาเลือกจังหวัดปลายทาง");          return; }
-  if (!shop1Id)  { alert("❌ กรุณาเลือกร้านค้าอย่างน้อย 1 ร้าน"); return; }
-
-  // ── ดึง User Info ──
-  const userId   = typeof getUserData === "function" ? getUserData("id")        : null;
-  const userName = typeof getUserData === "function" ? getUserData("full_name") : null;
-  const userZone = typeof getUserData === "function" ? getUserData("zone")      : null;
-
-  // ── สร้าง trip object ──
-  const tripData = {
-    date:            tripDate,
-    from:            from,
-    to:              to,
-    shop1Id:         shop1Id,              // เก็บ id ไว้ restore ตอน edit
-    shop2Id:         shop2Id || null,
-    shop3Id:         shop3Id || null,
-    shop1:           getShopName(shop1Id), // ชื่อร้านสำหรับแสดงผล/export
-    shop2:           getShopName(shop2Id),
-    shop3:           getShopName(shop3Id),
-    cost:            cost,
-    created_by:      userId,
-    created_by_name: userName,
-    zone:            userZone,
-    timestamp:       new Date().toISOString(),
-  };
-
-  if (currentEditIndex !== null) {
-    trips[currentEditIndex] = tripData;
-    currentEditIndex = null;
-    console.log("✅ Trip updated");
-  } else {
-    trips.push(tripData);
-    console.log("✅ Trip added");
-  }
-
-  renderTripsTable();
-  clearTripForm();
-  savePlanToDatabase();
-
-  alert("✅ เพิ่มทริปสำเร็จ");
-}
-
 
 // =====================================================
 // ✏️ EDIT TRIP
@@ -447,37 +398,7 @@ function addTrip() {
  * 1. set จังหวัดต้นทาง
  * 2. set จังหวัดปลายทาง → renderShopDropdowns()
  * 3. setTimeout เพื่อรอ render เสร็จ → set ร้านค้า 1, 2, 3
- * @param {number} index
- */
-function editTrip(index) {
-  const trip = trips[index];
-  if (!trip) return;
-
-  currentEditIndex = index;
-
-  document.getElementById("tripDate").value   = trip.date;
-  document.getElementById("fromProvince").value = trip.from;
-
-  const toSelect = document.getElementById("toProvince");
-  if (toSelect) {
-    toSelect.value = trip.to;
-    renderShopDropdowns(trip.to); // render dropdown ร้านค้าก่อน
-
-    // หลัง render DOM เสร็จ → set ค่าร้านค้า
-    setTimeout(() => {
-      document.getElementById("shop1").value = trip.shop1Id || "";
-      document.getElementById("shop2").value = trip.shop2Id || "";
-      document.getElementById("shop3").value = trip.shop3Id || "";
-    }, 0);
-  }
-
-  document.getElementById("cost").value = trip.cost;
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  console.log(`✏️ Editing trip at index ${index}`);
-}
-
-
+ 
 // =====================================================
 // 🗑️ DELETE TRIP
 // =====================================================
@@ -504,59 +425,11 @@ function deleteTrip(index) {
  * - reset dropdown ร้านค้า (ผ่าน renderShopDropdowns(""))
  * - ล้างช่องค่าใช้จ่าย
  */
-function clearTripForm() {
-  document.getElementById("tripDate").valueAsDate  = new Date();
-  document.getElementById("fromProvince").value    = "";
-  document.getElementById("toProvince").value      = "";
-  document.getElementById("cost").value            = "";
-
-  renderShopDropdowns(""); // reset shop dropdowns กลับเป็น placeholder
-
-  currentEditIndex = null;
-  console.log("✅ Trip form cleared");
-}
 
 
 // =====================================================
 // 🎨 RENDER TRIPS TABLE
 // =====================================================
-
-function renderTripsTable() {
-  const tbody = document.getElementById("formPlanBody");
-  if (!tbody) return;
-
-  tbody.innerHTML = "";
-
-  if (trips.length === 0) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="9" style="text-align:center; color:#888;">ยังไม่มีข้อมูลทริป</td>
-      </tr>`;
-    updateSummary();
-    return;
-  }
-
-  trips.forEach((trip, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${index + 1}</td>
-      <td>${formatDate(trip.date)}</td>
-      <td>${escapeHtml(trip.from)}</td>
-      <td>${escapeHtml(trip.to)}</td>
-      <td>${escapeHtml(trip.shop1)}</td>
-      <td>${escapeHtml(trip.shop2)}</td>
-      <td>${escapeHtml(trip.shop3)}</td>
-      <td>${formatNumber(trip.cost)} ฿</td>
-      <td class="action-buttons">
-        <button onclick="editTrip(${index})"   title="แก้ไข">✏️</button>
-        <button onclick="deleteTrip(${index})" title="ลบ">🗑️</button>
-      </td>`;
-    tbody.appendChild(row);
-  });
-
-  updateSummary();
-  console.log(`✅ Rendered ${trips.length} trips`);
-}
 
 
 // =====================================================
@@ -782,3 +655,255 @@ function escapeCsv(text) {
 }
 
 console.log("✅ formPlan.js loaded successfully");
+
+
+
+function addRow() {
+  const tbody = document.getElementById("tripTableBody");
+
+  const row = document.createElement("tr");
+
+  row.innerHTML = `
+    <td><input type="date" class="trip-date"></td>
+    <td>
+      <select class="from-province">
+        ${generateProvinceOptions()}
+      </select>
+    </td>
+    <td>
+      <select class="to-province" onchange="handleProvinceChange(this)">
+        ${generateProvinceOptions()}
+      </select>
+    </td>
+    <td><select class="shop1"></select></td>
+    <td><select class="shop2"></select></td>
+    <td><select class="shop3"></select></td>
+    <td><input type="text" class="note" placeholder="หมายเหตุ"></td>
+  `;
+
+  tbody.appendChild(row);
+}
+
+
+function removeRow() {
+  const tbody = document.getElementById("tripTableBody");
+  if (tbody.rows.length > 0) {
+    tbody.deleteRow(-1);
+  }
+}
+
+
+
+function generateProvinceOptions() {
+  const provinces = [...new Set(myShops.map(s => s.province))].sort();
+
+  let html = `<option value="">จังหวัด</option>`;
+  provinces.forEach(p => {
+    html += `<option value="${p}">${p}</option>`;
+  });
+
+  return html;
+}
+
+
+function handleProvinceChange(selectElement) {
+  const province = selectElement.value;
+  const row = selectElement.closest("tr");
+
+  const shops = myShops.filter(s => s.province === province);
+
+  const options = shops.map(s =>
+    `<option value="${s.id}">${s.shop_name}</option>`
+  ).join("");
+
+  row.querySelector(".shop1").innerHTML = `<option value="">ชื่อร้าน</option>` + options;
+  row.querySelector(".shop2").innerHTML = `<option value="">ชื่อร้าน</option>` + options;
+  row.querySelector(".shop3").innerHTML = `<option value="">ชื่อร้าน</option>` + options;
+}
+
+function saveTableData() {
+  const rows = document.querySelectorAll("#tripTableBody tr");
+
+  trips = [];
+
+  rows.forEach(row => {
+    const trip = {
+      date: row.querySelector(".trip-date").value,
+      from: row.querySelector(".from-province").value,
+      to: row.querySelector(".to-province").value,
+      cost: 0
+    };
+
+    trips.push(trip);
+  });
+
+  updateSummary();
+  console.log("📦 ข้อมูลที่บันทึก:", trips);
+  alert("✅ บันทึกข้อมูลเรียบร้อย");
+}
+
+
+function openPreview() {
+
+  const rows = document.querySelectorAll("#tripTableBody tr");
+
+  let tableRows = "";
+
+  rows.forEach(row => {
+
+    const cells = row.querySelectorAll("input, select");
+
+    const date  = cells[0]?.value || "-";
+    const from  = cells[1]?.value || "-";
+    const to    = cells[2]?.value || "-";
+    const shop1 = cells[3]?.selectedOptions?.[0]?.text || "-";
+    const shop2 = cells[4]?.selectedOptions?.[0]?.text || "-";
+    const shop3 = cells[5]?.selectedOptions?.[0]?.text || "-";
+    const note  = cells[6]?.value || "-";
+
+    tableRows += `
+      <tr>
+        <td>${date}</td>
+        <td>${from}</td>
+        <td>${to}</td>
+        <td>${shop1}</td>
+        <td>${shop2}</td>
+        <td>${shop3}</td>
+        <td>${note}</td>
+      </tr>
+    `;
+  });
+
+  // ===== สรุปยอด =====
+  const allowanceRate  = parseFloat(document.getElementById("allowanceRate").value) || 0;
+  const allowanceDays  = parseFloat(document.getElementById("allowanceDays").value) || 0;
+  const hotelRate      = parseFloat(document.getElementById("hotelRate").value) || 0;
+  const hotelNights    = parseFloat(document.getElementById("hotelNights").value) || 0;
+  const otherCost      = parseFloat(document.getElementById("otherCost").value) || 0;
+  const grandTotal     = document.getElementById("grandTotal").value || 0;
+
+  document.getElementById("previewContent").innerHTML = `
+    <h2 style="text-align:center;">สรุปแผนการเดินทาง</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ว/ด/ป</th>
+          <th>จากจังหวัด</th>
+          <th>ไปจังหวัด</th>
+          <th>ร้านค้า 1</th>
+          <th>ร้านค้า 2</th>
+          <th>ร้านค้า 3</th>
+          <th>หมายเหตุ</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${tableRows}
+      </tbody>
+    </table>
+
+    <br><br>
+
+    <h3>สรุปค่าใช้จ่าย</h3>
+
+    <table>
+      <tr>
+        <td>เบี้ยเลี้ยง</td>
+        <td>${allowanceRate} × ${allowanceDays}</td>
+        <td>${(allowanceRate * allowanceDays).toLocaleString()} บาท</td>
+      </tr>
+      <tr>
+        <td>ค่าที่พัก</td>
+        <td>${hotelRate} × ${hotelNights}</td>
+        <td>${(hotelRate * hotelNights).toLocaleString()} บาท</td>
+      </tr>
+      <tr>
+        <td>ค่าใช้จ่ายอื่นๆ</td>
+        <td>-</td>
+        <td>${otherCost.toLocaleString()} บาท</td>
+      </tr>
+      <tr>
+        <th colspan="2" style="text-align:right;">รวมเบิกทั้งหมด</th>
+        <th>${parseFloat(grandTotal || 0).toLocaleString()} บาท</th>
+      </tr>
+    </table>
+  `;
+
+  document.getElementById("previewModal").style.display = "flex";
+}
+
+function closePreview() {
+  document.getElementById("previewModal").style.display = "none";
+}
+
+function printPreview() {
+  window.print();
+}
+
+function exportPDF() {
+  window.print(); // ใช้ print เป็น Save PDF ได้เลย
+}
+
+function saveData() {
+  alert("บันทึกเรียบร้อย");
+}
+
+
+function calculateSummary() {
+
+  const allowanceRate = parseFloat(document.getElementById("allowanceRate")?.value) || 0;
+  const allowanceDays = parseFloat(document.getElementById("allowanceDays")?.value) || 0;
+
+  const hotelRate = parseFloat(document.getElementById("hotelRate")?.value) || 0;
+  const hotelNights = parseFloat(document.getElementById("hotelNights")?.value) || 0;
+
+  const otherCost = parseFloat(document.getElementById("otherCost")?.value) || 0;
+
+  const totalAllowance = allowanceRate * allowanceDays;
+  const totalHotel = hotelRate * hotelNights;
+
+  const grandTotal = totalAllowance + totalHotel + otherCost;
+
+  document.getElementById("grandTotal").value = grandTotal.toLocaleString();
+}
+
+
+
+function setupSummaryCalculation() {
+
+  const inputs = [
+    "allowanceRate",
+    "allowanceDays",
+    "hotelRate",
+    "hotelNights",
+    "otherCost"
+  ];
+
+  inputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", calculateSummary);
+    }
+  });
+
+}
+
+
+
+function calculateSummary() {
+
+  const allowanceRate = parseFloat(document.getElementById("allowanceRate")?.value) || 0;
+  const allowanceDays = parseFloat(document.getElementById("allowanceDays")?.value) || 0;
+
+  const hotelRate = parseFloat(document.getElementById("hotelRate")?.value) || 0;
+  const hotelNights = parseFloat(document.getElementById("hotelNights")?.value) || 0;
+
+  const otherCost = parseFloat(document.getElementById("otherCost")?.value) || 0;
+
+  const totalAllowance = allowanceRate * allowanceDays;
+  const totalHotel = hotelRate * hotelNights;
+
+  const grandTotal = totalAllowance + totalHotel + otherCost;
+
+  document.getElementById("grandTotal").value = grandTotal.toLocaleString();
+}

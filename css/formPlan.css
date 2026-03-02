@@ -118,7 +118,7 @@ body {
 .main-content,
 .main {
   flex: 1;
-  display: flex;
+  
   flex-direction: column;
   margin-top: 30px;
 }
@@ -144,13 +144,6 @@ h1 {
 /* ==========================================================
    5️⃣ CARD (Section)
    ========================================================== */
-.section {
-  background: var(--color-card);
-  padding: 24px;
-  border-radius: 14px;
-  box-shadow: var(--shadow-sm);.sidebar-brand, .sidebar-header
-  margin-bottom: 24px;
-}
 
 .section h3 {
   font-size: 16px;
@@ -165,6 +158,7 @@ h1 {
    ========================================================== */
 .form-row {
   display: grid;
+  
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
   margin-bottom: 16px;
@@ -207,6 +201,42 @@ input[readonly] {
 }
 
 
+.section .form-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 20px;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 260px;
+  padding: 30px;
+}
+
+
+.trip-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.trip-table th {
+  background: #d8e3dc;
+  padding: 10px;
+  text-align: center;
+}
+
+.trip-table td {
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+.trip-table input,
+.trip-table select {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
 /* ==========================================================
    7️⃣ BADGE
    ========================================================== */
@@ -271,6 +301,223 @@ button.primary:hover {
 }
 
 
+
+
+/* ==========================================================
+   🎨 UI Upgrade – Modern Clean Card Style
+   (วางต่อท้ายไฟล์เดิม)
+   ========================================================== */
+
+/* ===== Page Card ===== */
+/* .page {
+  background: #f5f7fb;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+} */
+
+/* ===== Title ===== */
+h1 {
+  text-align: center;
+  font-size: 26px;
+  color: #1e40af;
+  margin-bottom: 30px;
+}
+
+/* ===== Section Card ===== */
+.section {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  margin-bottom: 25px;
+}
+
+/* ===== Table Modern Look ===== */
+.trip-table {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.trip-table th {
+  background: #cfd8df;
+  font-weight: 600;
+  text-align: center;
+  font-size: 14px;
+}
+
+.trip-table td {
+  text-align: center;
+  font-size: 14px;
+}
+
+.trip-table tbody tr:nth-child(even) {
+  background: #f9fbfd;
+}
+
+.trip-table tbody tr:hover {
+  background: #eaf2ff;
+  transition: 0.2s;
+}
+
+/* ===== Buttons Modern ===== */
+.actions button {
+  min-width: 120px;
+}
+
+.actions button:first-child {
+  background: #22c55e;
+  color: white;
+}
+
+.actions button:first-child:hover {
+  background: #16a34a;
+}
+
+.actions button:nth-child(2) {
+  background: #ef4444;
+  color: white;
+}
+
+.actions button:nth-child(2):hover {
+  background: #dc2626;
+}
+
+.actions button:last-child {
+  background: #2563eb;
+  color: white;
+}
+
+.actions button:last-child:hover {
+  background: #1d4ed8;
+}
+
+/* ===== Summary Box ===== */
+.summary-section  {
+  background: #eaf2ff;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.summary-section  h3 {
+  color: #1e40af;
+}
+
+#empName,
+#zone {
+  color: #0d6efd;   /* สีตัวหนังสือ */
+  font-weight: 600; /* ทำให้เด่นขึ้น */
+}
+
+/* ================= SUMMARY CLEAN ================= */
+
+.summary-section {
+  background: #fff;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  row-gap: 12px;
+  margin-bottom: 20px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;   /* 👈 ชิดซ้าย */
+  gap: 4px;
+}
+
+.summary-item label {
+  min-width: 90px;
+  font-weight: 600;
+}
+
+.summary-item input {
+  width: 100%;
+  max-width: 300px;          /* หรือขนาดที่ต้องการ */
+}
+
+.summary-item.total input {
+  background: #dbeafe;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+
+
+/* ================================
+   SUMMARY SECTION BALANCED SPACING
+   ================================ */
+
+.section-summary {
+  padding: 22px 24px;   /* เดิมน่าจะ 30+ */
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  column-gap: 20px;
+  row-gap: 14px;        /* กระชับขึ้น */
+  margin-top: 14px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;             /* label กับ input ชิดขึ้น */
+}
+
+.summary-item label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+.section-summary .btn-export {
+  margin-top: 16px;     /* ไม่ลอยเกินไป */
+}
+/* ===== Input Polish ===== */
+input, select {
+  background: #f8fafc;
+}
+
+input:focus, select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+}
+
+/* ===== Badge Modern ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+/* ===== Sidebar polish ===== */
+.sidebar-menu a.active {
+  background: white;
+  color: #1e40af;
+  font-weight: 700;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+
+
+
+
+
 /* ==========================================================
    9️⃣ TABLE
    ========================================================== */
@@ -321,6 +568,100 @@ tbody tr:hover {
   font-weight: 700;
 }
 
+
+
+/* =========================
+   PREVIEW MODAL
+========================= */
+
+.preview-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.preview-wrapper {
+  width: 90%;
+  height: 95%;
+  background: #f4f6f9;
+  padding: 20px;
+  overflow: auto;
+}
+
+/* =========================
+   A4 PAGE
+========================= */
+
+.a4-page {
+  width: 210mm;
+  min-height: 297mm;
+  background: white;
+  margin: auto;
+  padding: 20mm;
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+  font-size: 14px;
+}
+
+/* TABLE STYLE */
+
+.a4-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.a4-page th,
+.a4-page td {
+  border: 1px solid #333;
+  padding: 6px;
+  text-align: center;
+}
+
+.a4-page th {
+  background: #f1f1f1;
+}
+
+/* PRINT MODE */
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #previewContent, #previewContent * {
+    visibility: visible;
+  }
+  #previewContent {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
+
+
+
+
+/* ==========================================================
+   SUMMARY FINAL LAYOUT (Stable Version)
+   ========================================================== */
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+
+  .section:last-of-type > div {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .section:last-of-type input {
+    width: 100%;
+  }
+}
 
 /* ==========================================================
    📱 RESPONSIVE

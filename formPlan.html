@@ -6,7 +6,7 @@
        ===================================================== -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trip</title>
+  <title>แผนการเดินทางและเบิกทดลองจ่าย ๑</title>
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -19,16 +19,6 @@
   <link rel="stylesheet" href="css/formPlan.css">
 </head>
 
-<!-- ===================================================== -->
-<!-- APP HEADER (แถบบนสุดของระบบ)                         -->
-<!-- ===================================================== -->
-<!-- <header class="app-header">
-  <div class="logo">
-    <img src="assets/icons/icon-192.png" alt="logo">
-    <h2>EABaseHub</h2>
-  </div>
-  <div class="user-name">ผู้ใช้งาน</div>
-</header> -->
 
 <body>
 
@@ -92,7 +82,7 @@
       <h1>ฟอร์มแผนการเดินทางและเบิกจ่าย ๑ (Trip)</h1>
 
       <!-- SECTION: ข้อมูลหลัก -->
-      <div class="section">
+      <div class="section summary-section">
         <h3>ข้อมูลพนักงาน / ช่วงเวลา</h3>
 
         <div class="form-row">
@@ -120,122 +110,119 @@
         </div>
       </div>
 
-      <!-- SECTION: รายละเอียดทริป -->
-      <div class="section">
-        <h3>รายละเอียดทริป</h3>
+     
 
-        <div class="badge">
-          ร้านในความรับผิดชอบ
-          <span id="shopCount">0</span> ร้าน
-        </div>
+  <!-- ================= ตารางกรอกข้อมูล ================= -->
+<div class="section summary-section">
+  <h3>แผนการเดินทาง</h3>
 
-    <!-- แถว 1: วันที่ | เดินทางจาก | ไปจังหวัด -->
-    <div class="form-row">
-      <div class="form-group">
-        <label for="tripDate">วันที่</label>
-        <input type="date" id="tripDate">
-      </div>
-
-      <div class="form-group">
-        <label for="fromProvince">เดินทางจาก</label>
-        <!-- ① dropdown จังหวัดต้นทาง (populate จาก myShops) -->
-        <select id="fromProvince">
-          <option value="">-- จังหวัดต้นทาง --</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="toProvince">ไปจังหวัด</label>
-        <!-- ① dropdown จังหวัดปลายทาง → เมื่อเลือกแล้วจะ filter ร้านค้า -->
-        <select id="toProvince">
-          <option value="">-- จังหวัดปลายทาง --</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- แถว 2: ร้านค้า 1, 2, 3 | ค่าใช้จ่าย -->
-    <div class="form-row">
-      <div class="form-group">
-        <label for="shop1">ร้านค้า 1</label>
-        <!-- ② dropdown ร้านค้า filter จากจังหวัดปลายทาง -->
-        <select id="shop1">
-          <option value="">-- เลือกร้านค้า --</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="shop2">ร้านค้า 2</label>
-        <select id="shop2">
-          <option value="">-- เลือกร้านค้า (ถ้ามี) --</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="shop3">ร้านค้า 3</label>
-        <select id="shop3">
-          <option value="">-- เลือกร้านค้า (ถ้ามี) --</option>
-        </select>
-      </div>      
-    </div>
-
-    <div class="actions">
-      <button onclick="addTrip()">➕ เพิ่มทริป</button>
-    </div>
+  <div class="badge">
+    ร้านในความรับผิดชอบ
+    <span id="shopCount"> 0 </span> ร้าน
   </div>
 
-  <!-- ================= SECTION: ตารางแสดงผล ================= -->
-  <div class="section">
-    <h3>รายการทริป</h3>
+  <table id="tripTable" class="trip-table">
+    <thead>
+      <tr>
+        <th>ว/ด/ป</th>
+        <th>จากจังหวัด</th>
+        <th>ไปจังหวัด</th>
+        <th>ร้านค้า 1</th>
+        <th>ร้านค้า 2</th>
+        <th>ร้านค้า 3</th>
+        <th>หมายเหตุ</th>
+      </tr>
+    </thead>
+    <tbody id="tripTableBody">
+      <!-- JS จะเพิ่มแถวให้ -->
+    </tbody>
+  </table>
 
-    <table>
-      <thead>
-        <tr>
-          <th>ลำดับ</th>
-          <th>วันที่</th>
-          <th>เดินทางจาก</th>
-          <th>ไปจังหวัด</th>
-          <th>ร้านค้า 1</th>
-          <th>ร้านค้า 2</th>
-          <th>ร้านค้า 3</th>
-          <th>ค่าใช้จ่าย</th>
-          <th>จัดการ</th>
-        </tr>
-      </thead>
-      <tbody id="formPlanBody"></tbody>
-    </table>
+  <div class="actions">
+    <button class="btn-save" onclick="saveDraft()">💾 Save Draft</button>
+    <button type="button" onclick="addRow()">➕ เพิ่มแถว</button>
+    <button type="button" onclick="removeRow()">➖ ลบแถว</button>
   </div>
+
+ 
+</div>
 
   <!-- ================= SECTION: สรุปค่าใช้จ่าย ================= -->
-  <div class="section">
-    <h3>สรุปแผนการเดินทางและเบิกจ่าย</h3>
+  <div class="section summary-section">
+  <h3>สรุปแผนการเดินทางและเบิกจ่าย</h3>
 
-    <div>
-      <label>ค่าใช้จ่าย</label>
-      <input type="number"> <span>ต่อวัน</span>
+  <div class="summary-grid">
 
-      <label>จำนวน</label>
-      <input type="number"> <span>วัน</span>
+    <div class="summary-item">
+      <label>เบี้ยเลี้ยง</label>
+      <input type="number" id="allowanceRate" placeholder="บาท/วัน">
+      <!-- <span>ต่อวัน</span> -->
+    </div>
+    
+    <div class="summary-item">
+      <label>ค่าที่พัก(ราคา)</label>
+      <input type="number" id="hotelRate" placeholder="บาท/คืน">
+      <!-- <span>ต่อวัน</span> -->
     </div>
 
-    <div>
-      <label>ค่าที่พัก</label>
-      <input type="number"> <span>ต่อวัน</span>
-
+     <div class="summary-item">
       <label>ค่าใช้จ่ายอื่นๆ</label>
-      <input type="number"> <span>บาท</span>
+      <input type="number" id="otherCost" placeholder="บาท">
+      <!-- <span>บาท</span> -->
+    </div>
+     
+    
+    <div class="summary-item">
+      <label>จำนวน(วัน)</label>
+      <input type="number" id="allowanceDays" placeholder="จำนวน(วัน)">
+      <!-- <span>วัน</span> -->
     </div>
 
-    <div>
-      <label>รวมเบิก</label>
-      <input type="number"> <span>บาท</span>
+   <div class="summary-item">
+      <label>รวมพัก(คืน)</label>
+      <input type="number" id="hotelNights" placeholder="จำนวน(คืน)">
+      <!-- <span>วัน</span> -->
     </div>
 
-    <div class="actions">
-      <button onclick="exportTrips()">📤 Export CSV</button>
+    <div class="summary-item total">
+      <label>รวมเบิกทั้งหมด</label>
+      <input type="number" id="grandTotal" placeholder="บาท" readonly>
+     <!-- <span>บาท</span> -->
     </div>
+
   </div>
 
+   <div class="actions">
+    <button onclick="openPreview()">💾 บันทึกและดูตัวอย่าง</button>
+  </div>
+
+  <!-- <div class="actions">
+    <button onclick="exportTrips()">📤 Export CSV</button>
+  </div> -->
 </div>
+
+
+<!-- ===============================
+     PREVIEW MODAL
+================================= -->
+<div id="previewModal" class="preview-modal">
+  <div class="preview-wrapper">
+    
+    <div class="preview-actions">
+      <button onclick="saveData()">💾 Save</button>
+      <button onclick="printPreview()">🖨 Print</button>
+      <button onclick="exportPDF()">📤 Export PDF</button>
+      <button onclick="closePreview()">✖ ปิด</button>
+    </div>
+
+    <!-- A4 AREA -->
+    <div id="previewContent" class="a4-page">
+      <!-- JS จะ generate ตารางตรงนี้ -->
+    </div>
+
+  </div>
+</div>
+
 
 <!-- =====================================================
      SCRIPT

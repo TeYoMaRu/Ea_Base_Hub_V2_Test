@@ -6,7 +6,8 @@ const STORAGE_KEY = 'formActualDrafts';
 /* =====================================================
    INIT
    ===================================================== */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadUserInfo();
   setDefaultDates();
   addRow();
 });
@@ -164,4 +165,45 @@ function download(content, filename) {
   a.href = URL.createObjectURL(blob);
   a.download = filename;
   a.click();
+}
+
+
+async function loadUserInfo() {
+  try {
+    const { data: { session } } =
+      await supabaseClient.auth.getSession();
+
+    if (!session) {
+      alert("กรุณา Login ก่อนใช้งาน");
+      return;
+    }
+
+    const { data: profile } =
+      await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
+
+    // แสดงชื่อ
+    const empInput = document.getElementById("empName");
+    if (empInput) {
+      empInput.value =
+        profile?.full_name ||
+        profile?.display_name ||
+        session.user.email;
+
+      empInput.readOnly = true;
+    }
+
+    // แสดงโซน
+    const zoneInput = document.getElementById("zone");
+    if (zoneInput && profile?.area) {
+      zoneInput.value = profile.area;
+    }
+
+    console.log("✅ User loaded (formActual)");
+  } catch (err) {
+    console.error("❌ loadUserInfo error:", err);
+  }
 }
