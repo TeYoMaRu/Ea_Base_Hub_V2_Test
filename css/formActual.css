@@ -5,13 +5,17 @@
 /* เพราะ sidebar fixed */
 .main-content,
 .main {
-  margin-left: 260px; /* เท่ากับ width sidebar */
+  margin-left: 260px;
+  flex: 1;
   min-height: 100vh;
+  background: #f4f6f8;
+  padding: 40px 60px;
 }
 
 /* ===== Sidebar ===== */
 .sidebar {
   width: 260px;
+  height: 100vh;
   background: linear-gradient(180deg, #4facfe, #005bea);
   color: white;
   display: flex;
@@ -19,11 +23,11 @@
   padding: 20px 15px;
   transition: all 0.3s ease;
   box-shadow: 4px 0 20px rgba(0,0,0,0.8);
-  /* top: 0;
-  left: 0; */
-  height: 100vh;
+  top: 0;
+  left: 0;
   position:fixed;
   /* overflow-y: auto; */
+  z-index: 1000;
 }
 
 .sidebar-brand,
@@ -77,6 +81,9 @@
   padding-right: 50px;
   z-index: 15; */
   /* box-shadow: 10px 0 20px rgba(0,0,0,0.05); */
+  /* border-radius: 10px 0 0 10px;
+  margin-right: -15px;
+  padding-right: 25px; */
 }
 
 .sidebar-logout {
@@ -170,15 +177,16 @@
        PAGE
        ===================================================== */
     .page {
-      max-width: 11000px;
-      margin: 410px auto;
-      padding: 20px;
+      width: 100%;
+      /* margin: 40px auto; */
+      padding: 40px 60px;
     }
     .paper {
+      width: 100%;
       background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 14px rgba(0,0,0,.1);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);
     }
     h2 {
       text-align: center;
