@@ -9,7 +9,7 @@
   flex: 1;
   min-height: 100vh;
   background: #f4f6f8;
-  padding: 40px 60px;
+  padding: 20px 30px;
 }
 
 /* ===== Sidebar ===== */
@@ -181,7 +181,7 @@
       max-width: 1600px;
       margin: 0 auto;
       /* margin: 40px auto; */
-      padding: 40px 60px;
+      /* padding: 40px 60px; */
     }
     .paper {
       width: 100%;
@@ -277,3 +277,17 @@
       font-size: 16px;
     }
  
+
+    @media (max-width: 1024px) {
+  .main-content {
+    padding: 15px;
+  }
+
+  .page {
+    max-width: 100%;
+  }
+
+  .paper {
+    padding: 25px;
+  }
+}
