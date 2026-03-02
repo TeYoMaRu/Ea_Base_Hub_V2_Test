@@ -82,7 +82,11 @@ async function initUserInfo() {
   if (typeof initUserService === "function") {
     await initUserService();
     if (typeof autoFillUserData === "function") {
-      autoFillUserData({ full_name: "empName", zone: "zone", readonly: ["empName"] });
+      autoFillUserData({
+         full_name: "empName",
+          area: "zone",
+           readonly: ["empName"]
+           });
     }
   } else {
     await loadUserInfoBasic();
@@ -98,7 +102,7 @@ async function loadUserInfoBasic() {
       .from("profiles")
       .select("*")
       .eq("id", session.user.id)
-      .single();
+      .maybeSingle();
 
     const userNameEl = document.querySelector(".user-name");
     if (userNameEl) {
@@ -111,8 +115,10 @@ async function loadUserInfoBasic() {
       empNameInput.readOnly = true;
     }
 
-    const zoneInput = document.getElementById("zone");
-    if (zoneInput && profile?.area) zoneInput.value = profile.area;
+    const zoneInput = document.getElementById("area");
+if (zoneInput) {
+  zoneInput.value = profile?.area || "";
+}
 
     console.log("✅ User info loaded");
   } catch (error) {
@@ -158,7 +164,7 @@ async function loadMyShops() {
     .from("profiles")
     .select("role, area")
     .eq("id", session.user.id)
-    .single();
+    .maybeSingle();
 
   if (profileError) {
     console.error("❌ loadMyShops: โหลด profile ไม่สำเร็จ", profileError);
@@ -361,7 +367,7 @@ async function loadExistingTrips() {
     if (plan.end_date)   document.getElementById("endDate").value   = plan.end_date;
 
     const zoneInput = document.getElementById("zone");
-    if (zoneInput && plan.zone) zoneInput.value = plan.zone;
+    if (zoneInput && plan.area) zoneInput.value = plan.area;
 
     if (Array.isArray(plan.trips)) {
       trips = plan.trips;
@@ -436,7 +442,7 @@ function deleteTrip(index) {
 // 💾 SAVE PLAN TO DATABASE
 // =====================================================
 
-async function savePlanToDatabase() {
+async function savePlanToDatabase(status = "draft") {
   try {
     const { userId, userName, userZone } = await getCurrentUserInfo();
     if (!userId) { console.error("❌ No user ID"); return; }
@@ -446,9 +452,9 @@ async function savePlanToDatabase() {
       user_name:  userName,
       start_date: document.getElementById("startDate")?.value,
       end_date:   document.getElementById("endDate")?.value,
-      zone:       document.getElementById("zone")?.value || userZone,
+      area:       document.getElementById("zone")?.value || userZone,
       trips:      trips,
-      status:     "draft",
+      status:    status,
       updated_at: new Date().toISOString(),
     };
 
@@ -541,7 +547,7 @@ function exportTrips() {
 
   if (typeof getUserData === "function") {
     userName = getUserData("full_name") || userName;
-    userZone = getUserData("zone") || userZone;
+    userZone = getUserData("area") || userZone;
   }
 
   // Header
@@ -608,16 +614,19 @@ async function getCurrentUserInfo() {
     return {
       userId:   getUserData("id"),
       userName: getUserData("full_name"),
-      userZone: getUserData("zone"),
+      userZone: getUserData("area"),
     };
   }
   const { data: { user } } = await supabaseClient.auth.getUser();
   const { data: profile }  = await supabaseClient
-    .from("profiles").select("full_name, zone").eq("id", user.id).single();
+    .from("profiles")
+    .select("full_name, area")
+    .eq("id", user.id)
+    .maybeSingle();
   return {
     userId:   user.id,
     userName: profile?.full_name || user.email,
-    userZone: profile?.zone || null,
+    userZone: profile?.area || null,
   };
 }
 
@@ -780,7 +789,8 @@ function openPreview() {
   const hotelRate      = parseFloat(document.getElementById("hotelRate").value) || 0;
   const hotelNights    = parseFloat(document.getElementById("hotelNights").value) || 0;
   const otherCost      = parseFloat(document.getElementById("otherCost").value) || 0;
-  const grandTotal     = document.getElementById("grandTotal").value || 0;
+  let grandTotal = document.getElementById("grandTotal").value || "0";
+  grandTotal = parseFloat(grandTotal.replace(/,/g, "")) || 0;
 
   document.getElementById("previewContent").innerHTML = `
     <h2 style="text-align:center;">สรุปแผนการเดินทาง</h2>
@@ -824,7 +834,7 @@ function openPreview() {
       </tr>
       <tr>
         <th colspan="2" style="text-align:right;">รวมเบิกทั้งหมด</th>
-        <th>${parseFloat(grandTotal || 0).toLocaleString()} บาท</th>
+        <th>${grandTotal.toLocaleString()} บาท</th>
       </tr>
     </table>
   `;

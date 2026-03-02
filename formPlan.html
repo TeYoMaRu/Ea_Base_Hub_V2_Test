@@ -92,8 +92,8 @@
           </div>
 
           <div class="form-group">
-            <label for="zone">เขตการขาย</label>
-            <input id="zone" readonly>
+            <label for="area">เขตการขาย</label>
+            <input id="area" readonly>
           </div>
         </div>
 
@@ -139,7 +139,7 @@
   </table>
 
   <div class="actions">
-    <button class="btn-save" onclick="saveDraft()">💾 Save Draft</button>
+    <button class="btn-save" onclick="savePlanToDatabase('draft')">💾 Save Draft</button>
     <button type="button" onclick="addRow()">➕ เพิ่มแถว</button>
     <button type="button" onclick="removeRow()">➖ ลบแถว</button>
   </div>
@@ -186,7 +186,7 @@
 
     <div class="summary-item total">
       <label>รวมเบิกทั้งหมด</label>
-      <input type="number" id="grandTotal" placeholder="บาท" readonly>
+      <input type="text" id="grandTotal" placeholder="บาท" readonly>
      <!-- <span>บาท</span> -->
     </div>
 
@@ -209,7 +209,7 @@
   <div class="preview-wrapper">
     
     <div class="preview-actions">
-      <button onclick="saveData()">💾 Save</button>
+      <button onclick="savePlanToDatabase('completed')">💾 Save</button>
       <button onclick="printPreview()">🖨 Print</button>
       <button onclick="exportPDF()">📤 Export PDF</button>
       <button onclick="closePreview()">✖ ปิด</button>
