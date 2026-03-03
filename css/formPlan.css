@@ -16,7 +16,8 @@
 }
 
 body {
-  background:white;
+  background:#f5f9fc;
+  /* background:#f8fdfb; */
   font-family: 'Kanit', sans-serif;  
   color: black;
   min-height: 100vh;
@@ -181,7 +182,7 @@ select {
   padding: 10px 12px;
   border-radius: 8px;
   border: 1px solid var(--color-border);
-  font-size: 14px;
+  font-size: 18px;
   background: #f8fafc;
   transition: 0.2s;
 }
@@ -575,72 +576,133 @@ tbody tr:hover {
 /* =========================
    PREVIEW MODAL
 ========================= */
-
 .preview-modal {
+  display: none;
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
-  display: none;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 999;
 }
 
 .preview-wrapper {
-  width: 90%;
-  height: 95%;
-  background: #f4f6f9;
+  background: #f0f2f5;
   padding: 20px;
+  max-height: 95vh;
   overflow: auto;
+  border-radius: 8px;
 }
 
 /* =========================
    A4 PAGE
 ========================= */
-
 .a4-page {
   width: 210mm;
   min-height: 297mm;
-  background: white;
+  padding: 18mm 22mm;
   margin: auto;
-  padding: 20mm;
-  box-shadow: 0 0 10px rgba(0,0,0,0.15);
-  font-size: 14px;
+  background: #fff;
+  font-family: 'Kanit', sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
 }
 
-/* TABLE STYLE */
+/* ================= HEADER ================= */
+.doc-header {
+  text-align: center;
+  margin-bottom: 10px;
+}
 
-.a4-page table {
+.doc-header h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.doc-header h3 {
+  font-size: 15px;
+  margin: 4px 0 10px;
+}
+
+/* ข้อมูลซ้ายขวา */
+.doc-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+/* ================= TABLE ================= */
+.doc-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
+  margin-top: 5px;
 }
 
-.a4-page th,
-.a4-page td {
-  border: 1px solid #333;
-  padding: 6px;
+.doc-table th {
+  background: #f2f2f2;
+  font-weight: 600;
+}
+
+.doc-table th,
+.doc-table td {
+  border: 1px solid #000;
+  padding: 5px;
   text-align: center;
+  vertical-align: middle;
 }
 
-.a4-page th {
-  background: #f1f1f1;
+/* ตารางสรุป */
+.cost-table {
+  width: 70%;
+  margin-left: auto;
+  margin-top: 10px;
 }
 
-/* PRINT MODE */
+.cost-table td,
+.cost-table th {
+  text-align: right;
+}
 
+/* ================= SIGNATURE ================= */
+.signature-section {
+  margin-top: 80px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.signature-section div {
+  border-top: 1px dotted #000;
+  padding-top: 6px;
+}
+/* =========================
+   PRINT MODE
+========================= */
 @media print {
+
   body * {
     visibility: hidden;
   }
-  #previewContent, #previewContent * {
+
+  #previewContent,
+  #previewContent * {
     visibility: visible;
   }
+
   #previewContent {
     position: absolute;
     left: 0;
     top: 0;
   }
+
+  .a4-page {
+    box-shadow: none;
+  }
+
 }
 
 

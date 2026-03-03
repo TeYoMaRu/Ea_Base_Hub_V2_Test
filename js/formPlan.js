@@ -13,14 +13,11 @@
 /** @type {Array<Object>} รายการทริปทั้งหมดในแผนปัจจุบัน */
 let trips = [];
 
-
-
 /** @type {string|null} ID ของแผนการเดินทางในฐานข้อมูล */
 let currentPlanId = null;
 
 /** @type {Array<Object>} รายการร้านค้าทั้งหมดที่ User มีสิทธิ์ดู */
 let myShops = [];
-
 
 // =====================================================
 // 🚀 INITIALIZE PAGE
@@ -48,7 +45,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupSummaryCalculation();
 });
 
-
 // =====================================================
 // 🔐 AUTHORIZATION
 // =====================================================
@@ -58,7 +54,9 @@ async function checkAuthorization() {
     if (typeof protectPage === "function") {
       await protectPage(["admin", "sales", "manager", "user"]);
     } else {
-      const { data: { session } } = await supabaseClient.auth.getSession();
+      const {
+        data: { session },
+      } = await supabaseClient.auth.getSession();
       if (!session) {
         alert("❌ กรุณา Login ก่อนใช้งาน");
         window.location.href = "/login.html";
@@ -73,7 +71,6 @@ async function checkAuthorization() {
   }
 }
 
-
 // =====================================================
 // 👤 USER INFO
 // =====================================================
@@ -83,10 +80,10 @@ async function initUserInfo() {
     await initUserService();
     if (typeof autoFillUserData === "function") {
       autoFillUserData({
-         full_name: "empName",
-          area: "zone",
-           readonly: ["empName"]
-           });
+        full_name: "empName",
+        area: "zone",
+        readonly: ["empName"],
+      });
     }
   } else {
     await loadUserInfoBasic();
@@ -95,7 +92,9 @@ async function initUserInfo() {
 
 async function loadUserInfoBasic() {
   try {
-    const { data: { session } } = await supabaseClient.auth.getSession();
+    const {
+      data: { session },
+    } = await supabaseClient.auth.getSession();
     if (!session) return;
 
     const { data: profile } = await supabaseClient
@@ -106,26 +105,27 @@ async function loadUserInfoBasic() {
 
     const userNameEl = document.querySelector(".user-name");
     if (userNameEl) {
-      userNameEl.textContent = profile?.display_name || profile?.full_name || session.user.email;
+      userNameEl.textContent =
+        profile?.display_name || profile?.full_name || session.user.email;
     }
 
     const empNameInput = document.getElementById("empName");
     if (empNameInput) {
-      empNameInput.value = profile?.full_name || profile?.display_name || session.user.email;
+      empNameInput.value =
+        profile?.full_name || profile?.display_name || session.user.email;
       empNameInput.readOnly = true;
     }
 
     const zoneInput = document.getElementById("area");
-if (zoneInput) {
-  zoneInput.value = profile?.area || "";
-}
+    if (zoneInput) {
+      zoneInput.value = profile?.area || "";
+    }
 
     console.log("✅ User info loaded");
   } catch (error) {
     console.error("❌ loadUserInfoBasic error:", error);
   }
 }
-
 
 // =====================================================
 // 🏪 SHOP MANAGEMENT
@@ -147,7 +147,10 @@ async function loadMyShops() {
   console.log("🔍 loadMyShops: เริ่มต้น...");
 
   // ── ตรวจสอบ session ──
-  const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+  const {
+    data: { session },
+    error: sessionError,
+  } = await supabaseClient.auth.getSession();
 
   if (sessionError) {
     console.error("❌ loadMyShops: getSession error", sessionError);
@@ -196,7 +199,6 @@ async function loadMyShops() {
 
   myShops = data || [];
 
-  
   updateShopCount();
   // สร้าง dropdown จังหวัดทั้งสองฝั่ง (ต้นทาง/ปลายทาง)
   renderProvinceDropdowns();
@@ -215,15 +217,17 @@ function renderProvinceDropdowns() {
   const uniqueProvinces = [...new Set(myShops.map((s) => s.province))].sort();
 
   const fromSelect = document.getElementById("fromProvince");
-  const toSelect   = document.getElementById("toProvince");
+  const toSelect = document.getElementById("toProvince");
   if (!fromSelect || !toSelect) return;
 
   const optionsHtml = uniqueProvinces
     .map((p) => `<option value="${p}">${p}</option>`)
     .join("");
 
-  fromSelect.innerHTML = `<option value="">-- จังหวัดต้นทาง --</option>` + optionsHtml;
-  toSelect.innerHTML   = `<option value="">-- จังหวัดปลายทาง --</option>` + optionsHtml;
+  fromSelect.innerHTML =
+    `<option value="">-- จังหวัดต้นทาง --</option>` + optionsHtml;
+  toSelect.innerHTML =
+    `<option value="">-- จังหวัดปลายทาง --</option>` + optionsHtml;
 
   // เมื่อเลือกจังหวัดปลายทาง → filter ร้านค้าทั้ง 3 ช่อง
   toSelect.addEventListener("change", (e) => {
@@ -238,7 +242,7 @@ function renderProvinceDropdowns() {
  * @param {string} province - จังหวัดที่เลือก (ว่าง = reset)
  */
 function renderShopDropdowns(province) {
-  const shopIds    = ["shop1", "shop2", "shop3"];
+  const shopIds = ["shop1", "shop2", "shop3"];
   const placeholders = [
     "-- เลือกร้านค้า --",
     "-- เลือกร้านค้า (ถ้ามี) --",
@@ -256,7 +260,8 @@ function renderShopDropdowns(province) {
   shopIds.forEach((id, i) => {
     const select = document.getElementById(id);
     if (!select) return;
-    select.innerHTML = `<option value="">${placeholders[i]}</option>` + optionsHtml;
+    select.innerHTML =
+      `<option value="">${placeholders[i]}</option>` + optionsHtml;
   });
 }
 
@@ -270,7 +275,6 @@ function getShopName(shopId) {
   const shop = myShops.find((s) => s.id === shopId);
   return shop ? shop.shop_name : "-";
 }
-
 
 // =====================================================
 // 📦 PAGE DATA INITIALIZATION
@@ -308,14 +312,15 @@ function setDefaultDates() {
   if (tripDateInput) tripDateInput.valueAsDate = today;
 }
 
-
 // =====================================================
 // 🎯 EVENT LISTENERS
 // =====================================================
 
 function setupEventListeners() {
   // เปลี่ยน startDate → อัปเดต endDate อัตโนมัติ
-  document.getElementById("startDate")?.addEventListener("change", updateEndDate);
+  document
+    .getElementById("startDate")
+    ?.addEventListener("change", updateEndDate);
 
   // กด Enter ในช่อง cost → เพิ่มทริป
   // document.getElementById("cost")?.addEventListener("keypress", (e) => {
@@ -327,14 +332,13 @@ function setupEventListeners() {
 
 function updateEndDate() {
   const startDateValue = document.getElementById("startDate")?.value;
-  const endDateInput   = document.getElementById("endDate");
+  const endDateInput = document.getElementById("endDate");
   if (startDateValue && endDateInput) {
     const start = new Date(startDateValue);
     start.setDate(start.getDate() + 7);
     endDateInput.valueAsDate = start;
   }
 }
-
 
 // =====================================================
 // 📥 LOAD EXISTING TRIPS
@@ -347,7 +351,10 @@ function updateEndDate() {
 async function loadExistingTrips() {
   try {
     const userId = await getCurrentUserId();
-    if (!userId) { console.error("❌ No user ID"); return; }
+    if (!userId) {
+      console.error("❌ No user ID");
+      return;
+    }
 
     const { data, error } = await supabaseClient
       .from("trips")
@@ -358,13 +365,17 @@ async function loadExistingTrips() {
       .limit(1);
 
     if (error) throw error;
-    if (!data || data.length === 0) { console.log("ℹ️ No draft plan found"); return; }
+    if (!data || data.length === 0) {
+      console.log("ℹ️ No draft plan found");
+      return;
+    }
 
     const plan = data[0];
     currentPlanId = plan.id;
 
-    if (plan.start_date) document.getElementById("startDate").value = plan.start_date;
-    if (plan.end_date)   document.getElementById("endDate").value   = plan.end_date;
+    if (plan.start_date)
+      document.getElementById("startDate").value = plan.start_date;
+    if (plan.end_date) document.getElementById("endDate").value = plan.end_date;
 
     const zoneInput = document.getElementById("zone");
     if (zoneInput && plan.area) zoneInput.value = plan.area;
@@ -379,7 +390,6 @@ async function loadExistingTrips() {
     console.error("❌ loadExistingTrips error:", error);
   }
 }
-
 
 // =====================================================
 // ➕ ADD / EDIT TRIP
@@ -432,11 +442,9 @@ function deleteTrip(index) {
  * - ล้างช่องค่าใช้จ่าย
  */
 
-
 // =====================================================
 // 🎨 RENDER TRIPS TABLE
 // =====================================================
-
 
 // =====================================================
 // 💾 SAVE PLAN TO DATABASE
@@ -445,16 +453,19 @@ function deleteTrip(index) {
 async function savePlanToDatabase(status = "draft") {
   try {
     const { userId, userName, userZone } = await getCurrentUserInfo();
-    if (!userId) { console.error("❌ No user ID"); return; }
+    if (!userId) {
+      console.error("❌ No user ID");
+      return;
+    }
 
     const planData = {
-      user_id:    userId,
-      user_name:  userName,
+      user_id: userId,
+      user_name: userName,
       start_date: document.getElementById("startDate")?.value,
-      end_date:   document.getElementById("endDate")?.value,
-      area:       document.getElementById("zone")?.value || userZone,
-      trips:      trips,
-      status:    status,
+      end_date: document.getElementById("endDate")?.value,
+      area: document.getElementById("zone")?.value || userZone,
+      trips: trips,
+      status: status,
       updated_at: new Date().toISOString(),
     };
 
@@ -482,7 +493,6 @@ async function savePlanToDatabase(status = "draft") {
   }
 }
 
-
 // =====================================================
 // 📊 EXPENSE SUMMARY
 // =====================================================
@@ -501,7 +511,7 @@ function updateSummary() {
   const totalTripCost = trips.reduce((sum, trip) => sum + (trip.cost || 0), 0);
 
   const startDate = document.getElementById("startDate")?.value;
-  const endDate   = document.getElementById("endDate")?.value;
+  const endDate = document.getElementById("endDate")?.value;
   let numberOfDays = 1;
 
   if (startDate && endDate) {
@@ -509,13 +519,17 @@ function updateSummary() {
     numberOfDays = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)) + 1);
   }
 
-  const summaryInputs = document.querySelectorAll(".section:last-child input[type='number']");
+  const summaryInputs = document.querySelectorAll(
+    ".section:last-child input[type='number']",
+  );
   if (summaryInputs.length < 5) return;
 
-  const avgCostPerDay       = numberOfDays > 0 ? Math.round(totalTripCost / numberOfDays) : 0;
+  const avgCostPerDay =
+    numberOfDays > 0 ? Math.round(totalTripCost / numberOfDays) : 0;
   const accommodationPerDay = parseFloat(summaryInputs[2].value || 0);
-  const otherExpenses       = parseFloat(summaryInputs[3].value || 0);
-  const totalExpenses       = totalTripCost + accommodationPerDay * numberOfDays + otherExpenses;
+  const otherExpenses = parseFloat(summaryInputs[3].value || 0);
+  const totalExpenses =
+    totalTripCost + accommodationPerDay * numberOfDays + otherExpenses;
 
   summaryInputs[0].value = avgCostPerDay;
   summaryInputs[1].value = numberOfDays;
@@ -524,13 +538,14 @@ function updateSummary() {
 
 /** ผูก listener ให้ช่องที่ user กรอกเอง → คำนวณ total อัตโนมัติ */
 function setupExpenseCalculation() {
-  const summaryInputs = document.querySelectorAll(".section:last-child input[type='number']");
+  const summaryInputs = document.querySelectorAll(
+    ".section:last-child input[type='number']",
+  );
   if (summaryInputs.length >= 5) {
     summaryInputs[2].addEventListener("input", updateSummary); // ค่าที่พัก
     summaryInputs[3].addEventListener("input", updateSummary); // ค่าอื่นๆ
   }
 }
-
 
 // =====================================================
 // 📤 EXPORT TO CSV
@@ -551,25 +566,29 @@ function exportTrips() {
   }
 
   // Header
-  let csvContent = "ลำดับ,วันที่,เดินทางจาก,ไปจังหวัด,ร้านค้า 1,ร้านค้า 2,ร้านค้า 3,ค่าใช้จ่าย\n";
+  let csvContent =
+    "ลำดับ,วันที่,เดินทางจาก,ไปจังหวัด,ร้านค้า 1,ร้านค้า 2,ร้านค้า 3,ค่าใช้จ่าย\n";
 
   // Data rows
   trips.forEach((trip, index) => {
-    csvContent += [
-      index + 1,
-      formatDate(trip.date),
-      escapeCsv(trip.from),
-      escapeCsv(trip.to),
-      escapeCsv(trip.shop1),
-      escapeCsv(trip.shop2),
-      escapeCsv(trip.shop3),
-      trip.cost,
-    ].join(",") + "\n";
+    csvContent +=
+      [
+        index + 1,
+        formatDate(trip.date),
+        escapeCsv(trip.from),
+        escapeCsv(trip.to),
+        escapeCsv(trip.shop1),
+        escapeCsv(trip.shop2),
+        escapeCsv(trip.shop3),
+        trip.cost,
+      ].join(",") + "\n";
   });
 
   // Summary
   csvContent += "\nสรุปค่าใช้จ่าย\n";
-  const summaryInputs = document.querySelectorAll(".section:last-child input[type='number']");
+  const summaryInputs = document.querySelectorAll(
+    ".section:last-child input[type='number']",
+  );
   if (summaryInputs.length >= 5) {
     csvContent += `ค่าใช้จ่ายเดินทางเฉลี่ยต่อวัน,${summaryInputs[0].value} ฿\n`;
     csvContent += `จำนวนวัน,${summaryInputs[1].value} วัน\n`;
@@ -579,11 +598,13 @@ function exportTrips() {
   }
 
   // Download — BOM (\uFEFF) ให้ Excel อ่านภาษาไทยได้
-  const blob      = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
-  const url       = URL.createObjectURL(blob);
-  const link      = document.createElement("a");
+  const blob = new Blob(["\uFEFF" + csvContent], {
+    type: "text/csv;charset=utf-8;",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
   const startDate = document.getElementById("startDate")?.value || "";
-  const fileName  = `Trip_Plan_${userName}_${userZone}_${startDate}.csv`;
+  const fileName = `Trip_Plan_${userName}_${userZone}_${startDate}.csv`;
 
   link.setAttribute("href", url);
   link.setAttribute("download", fileName);
@@ -596,7 +617,6 @@ function exportTrips() {
   console.log("✅ CSV exported:", fileName);
 }
 
-
 // =====================================================
 // 🛠️ UTILITY FUNCTIONS
 // =====================================================
@@ -604,7 +624,9 @@ function exportTrips() {
 /** ดึง User ID จาก getUserData() หรือ Supabase auth */
 async function getCurrentUserId() {
   if (typeof getUserData === "function") return getUserData("id");
-  const { data: { user } } = await supabaseClient.auth.getUser();
+  const {
+    data: { user },
+  } = await supabaseClient.auth.getUser();
   return user?.id || null;
 }
 
@@ -612,19 +634,21 @@ async function getCurrentUserId() {
 async function getCurrentUserInfo() {
   if (typeof getUserData === "function") {
     return {
-      userId:   getUserData("id"),
+      userId: getUserData("id"),
       userName: getUserData("full_name"),
       userZone: getUserData("area"),
     };
   }
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  const { data: profile }  = await supabaseClient
+  const {
+    data: { user },
+  } = await supabaseClient.auth.getUser();
+  const { data: profile } = await supabaseClient
     .from("profiles")
     .select("full_name, area")
     .eq("id", user.id)
     .maybeSingle();
   return {
-    userId:   user.id,
+    userId: user.id,
     userName: profile?.full_name || user.email,
     userZone: profile?.area || null,
   };
@@ -635,15 +659,22 @@ function formatDate(dateString) {
   if (!dateString) return "-";
   try {
     return new Date(dateString).toLocaleDateString("th-TH", {
-      year: "numeric", month: "short", day: "numeric",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
-  } catch { return dateString; }
+  } catch {
+    return dateString;
+  }
 }
 
 /** Format ตัวเลขมี comma เช่น "1,234.50" */
 function formatNumber(num) {
   if (num == null) return "0";
-  return num.toLocaleString("th-TH", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  return num.toLocaleString("th-TH", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
 }
 
 /** Escape HTML ป้องกัน XSS เมื่อใส่ข้อความใน innerHTML */
@@ -664,8 +695,6 @@ function escapeCsv(text) {
 }
 
 console.log("✅ formPlan.js loaded successfully");
-
-
 
 function addRow() {
   const tbody = document.getElementById("tripTableBody");
@@ -693,7 +722,6 @@ function addRow() {
   tbody.appendChild(row);
 }
 
-
 function removeRow() {
   const tbody = document.getElementById("tripTableBody");
   if (tbody.rows.length > 0) {
@@ -701,33 +729,33 @@ function removeRow() {
   }
 }
 
-
-
 function generateProvinceOptions() {
-  const provinces = [...new Set(myShops.map(s => s.province))].sort();
+  const provinces = [...new Set(myShops.map((s) => s.province))].sort();
 
   let html = `<option value="">จังหวัด</option>`;
-  provinces.forEach(p => {
+  provinces.forEach((p) => {
     html += `<option value="${p}">${p}</option>`;
   });
 
   return html;
 }
 
-
 function handleProvinceChange(selectElement) {
   const province = selectElement.value;
   const row = selectElement.closest("tr");
 
-  const shops = myShops.filter(s => s.province === province);
+  const shops = myShops.filter((s) => s.province === province);
 
-  const options = shops.map(s =>
-    `<option value="${s.id}">${s.shop_name}</option>`
-  ).join("");
+  const options = shops
+    .map((s) => `<option value="${s.id}">${s.shop_name}</option>`)
+    .join("");
 
-  row.querySelector(".shop1").innerHTML = `<option value="">ชื่อร้าน</option>` + options;
-  row.querySelector(".shop2").innerHTML = `<option value="">ชื่อร้าน</option>` + options;
-  row.querySelector(".shop3").innerHTML = `<option value="">ชื่อร้าน</option>` + options;
+  row.querySelector(".shop1").innerHTML =
+    `<option value="">ชื่อร้าน</option>` + options;
+  row.querySelector(".shop2").innerHTML =
+    `<option value="">ชื่อร้าน</option>` + options;
+  row.querySelector(".shop3").innerHTML =
+    `<option value="">ชื่อร้าน</option>` + options;
 }
 
 function saveTableData() {
@@ -735,12 +763,12 @@ function saveTableData() {
 
   trips = [];
 
-  rows.forEach(row => {
+  rows.forEach((row) => {
     const trip = {
       date: row.querySelector(".trip-date").value,
       from: row.querySelector(".from-province").value,
       to: row.querySelector(".to-province").value,
-      cost: 0
+      cost: 0,
     };
 
     trips.push(trip);
@@ -751,24 +779,21 @@ function saveTableData() {
   alert("✅ บันทึกข้อมูลเรียบร้อย");
 }
 
-
 function openPreview() {
-
   const rows = document.querySelectorAll("#tripTableBody tr");
 
   let tableRows = "";
 
-  rows.forEach(row => {
-
+  rows.forEach((row) => {
     const cells = row.querySelectorAll("input, select");
 
-    const date  = cells[0]?.value || "-";
-    const from  = cells[1]?.value || "-";
-    const to    = cells[2]?.value || "-";
+    const date = cells[0]?.value || "-";
+    const from = cells[1]?.value || "-";
+    const to = cells[2]?.value || "-";
     const shop1 = cells[3]?.selectedOptions?.[0]?.text || "-";
     const shop2 = cells[4]?.selectedOptions?.[0]?.text || "-";
     const shop3 = cells[5]?.selectedOptions?.[0]?.text || "-";
-    const note  = cells[6]?.value || "-";
+    const note = cells[6]?.value || "-";
 
     tableRows += `
       <tr>
@@ -784,18 +809,40 @@ function openPreview() {
   });
 
   // ===== สรุปยอด =====
-  const allowanceRate  = parseFloat(document.getElementById("allowanceRate").value) || 0;
-  const allowanceDays  = parseFloat(document.getElementById("allowanceDays").value) || 0;
-  const hotelRate      = parseFloat(document.getElementById("hotelRate").value) || 0;
-  const hotelNights    = parseFloat(document.getElementById("hotelNights").value) || 0;
-  const otherCost      = parseFloat(document.getElementById("otherCost").value) || 0;
+  const allowanceRate =
+    parseFloat(document.getElementById("allowanceRate").value) || 0;
+  const allowanceDays =
+    parseFloat(document.getElementById("allowanceDays").value) || 0;
+  const hotelRate = parseFloat(document.getElementById("hotelRate").value) || 0;
+  const hotelNights =
+    parseFloat(document.getElementById("hotelNights").value) || 0;
+  const otherCost = parseFloat(document.getElementById("otherCost").value) || 0;
   let grandTotal = document.getElementById("grandTotal").value || "0";
   grandTotal = parseFloat(grandTotal.replace(/,/g, "")) || 0;
 
-  document.getElementById("previewContent").innerHTML = `
-    <h2 style="text-align:center;">สรุปแผนการเดินทาง</h2>
+ const empName  = document.getElementById("empName").value || "-";
+const area     = document.getElementById("area").value || "-";
+const start    = document.getElementById("startDate").value || "-";
+const end      = document.getElementById("endDate").value || "-";
 
-    <table>
+document.getElementById("previewContent").innerHTML = `
+  <div class="doc-header">
+    <h2>บริษัท เอิร์นนี่ แอดวานซ์</h2>
+    <h3>แผนการเดินทางและเบิกทดลองจ่าย ๑</h3>
+  </div>
+
+    <div class="doc-info">
+    <div>
+      <div>พนักงานขาย: ${empName}</div>
+      <div>เขตการขาย: ${area}</div>
+    </div>
+    <div>
+      <div>ระหว่างวันที่: ${start}</div>
+      <div>ถึงวันที่: ${end}</div>
+    </div>
+  </div>
+
+    <table class="doc-table">
       <thead>
         <tr>
           <th>ว/ด/ป</th>
@@ -812,11 +859,11 @@ function openPreview() {
       </tbody>
     </table>
 
-    <br><br>
+    <br>
 
     <h3>สรุปค่าใช้จ่าย</h3>
 
-    <table>
+    <table class="doc-table cost-table">
       <tr>
         <td>เบี้ยเลี้ยง</td>
         <td>${allowanceRate} × ${allowanceDays}</td>
@@ -837,7 +884,26 @@ function openPreview() {
         <th>${grandTotal.toLocaleString()} บาท</th>
       </tr>
     </table>
-  `;
+
+    <div class="signature-section">
+  <div>
+    ( ${empName} )<br>
+    พนักงานขาย
+  </div>
+  <div>
+    (...............................................)<br>
+    ผู้จัดการฝ่ายขาย
+  </div>
+  <div>
+     (...............................................)<br>
+    ฝ่ายบัญชี
+  </div>
+  <div>
+     (...............................................)<br>
+    ผู้อนุมัติ
+  </div>
+</div>
+`;
 
   document.getElementById("previewModal").style.display = "flex";
 }
@@ -858,16 +924,19 @@ function saveData() {
   alert("บันทึกเรียบร้อย");
 }
 
-
 function calculateSummary() {
+  const allowanceRate =
+    parseFloat(document.getElementById("allowanceRate")?.value) || 0;
+  const allowanceDays =
+    parseFloat(document.getElementById("allowanceDays")?.value) || 0;
 
-  const allowanceRate = parseFloat(document.getElementById("allowanceRate")?.value) || 0;
-  const allowanceDays = parseFloat(document.getElementById("allowanceDays")?.value) || 0;
+  const hotelRate =
+    parseFloat(document.getElementById("hotelRate")?.value) || 0;
+  const hotelNights =
+    parseFloat(document.getElementById("hotelNights")?.value) || 0;
 
-  const hotelRate = parseFloat(document.getElementById("hotelRate")?.value) || 0;
-  const hotelNights = parseFloat(document.getElementById("hotelNights")?.value) || 0;
-
-  const otherCost = parseFloat(document.getElementById("otherCost")?.value) || 0;
+  const otherCost =
+    parseFloat(document.getElementById("otherCost")?.value) || 0;
 
   const totalAllowance = allowanceRate * allowanceDays;
   const totalHotel = hotelRate * hotelNights;
@@ -877,38 +946,36 @@ function calculateSummary() {
   document.getElementById("grandTotal").value = grandTotal.toLocaleString();
 }
 
-
-
 function setupSummaryCalculation() {
-
   const inputs = [
     "allowanceRate",
     "allowanceDays",
     "hotelRate",
     "hotelNights",
-    "otherCost"
+    "otherCost",
   ];
 
-  inputs.forEach(id => {
+  inputs.forEach((id) => {
     const el = document.getElementById(id);
     if (el) {
       el.addEventListener("input", calculateSummary);
     }
   });
-
 }
 
-
-
 function calculateSummary() {
+  const allowanceRate =
+    parseFloat(document.getElementById("allowanceRate")?.value) || 0;
+  const allowanceDays =
+    parseFloat(document.getElementById("allowanceDays")?.value) || 0;
 
-  const allowanceRate = parseFloat(document.getElementById("allowanceRate")?.value) || 0;
-  const allowanceDays = parseFloat(document.getElementById("allowanceDays")?.value) || 0;
+  const hotelRate =
+    parseFloat(document.getElementById("hotelRate")?.value) || 0;
+  const hotelNights =
+    parseFloat(document.getElementById("hotelNights")?.value) || 0;
 
-  const hotelRate = parseFloat(document.getElementById("hotelRate")?.value) || 0;
-  const hotelNights = parseFloat(document.getElementById("hotelNights")?.value) || 0;
-
-  const otherCost = parseFloat(document.getElementById("otherCost")?.value) || 0;
+  const otherCost =
+    parseFloat(document.getElementById("otherCost")?.value) || 0;
 
   const totalAllowance = allowanceRate * allowanceDays;
   const totalHotel = hotelRate * hotelNights;

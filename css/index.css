@@ -12,6 +12,14 @@
   --secondary-700: #0288d1;
   --secondary-900: #01579b;
   
+  /* --blue: #5e89ed; */
+  --blue: #bcdbeb;
+  --green1: #03624c;
+  --green2: #030f0f;
+  --green3: #00df82;
+  --green4: #03A791;
+  --text: #01579b;
+  
   --gray-200: #e0e0e0;
   --white: #ffffff;
   
@@ -24,8 +32,14 @@
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
-}
 
+  /* พื้นหลัง */
+  --bg-A: #f5f9fc;
+  --bg-B: #edffed;
+  --bg-C: #eff4fe;
+  --bg-D: #f7f9fd;
+  --bg-AB: linear-gradient(180deg, #9ed1a2, #7bcb81);
+  --bg-AC: linear-gradient(180deg, #4de6ce, #03A791);
 /* =========================
    RESET พื้นฐาน
    ========================= */
@@ -43,8 +57,9 @@ body {
   padding: 0;
   font-family: 'Kanit', sans-serif;
   overflow-x: hidden;
-  background: #ffffff;
+  background:var(--bg-D);
   min-height: 100vh;
+  color: var(--text);
 }
 
 body::before {
@@ -73,15 +88,17 @@ body::before {
    SIDEBAR
    ========================= */
 .sidebar {
-  width: 280px;
-  background: linear-gradient(180deg, #dcfce7 0%, #86efac 100%);
+  width: 260px;  
+  height: 100%;
+  background: #03A791;
+  color: var(--text);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24px 16px;
-  margin: 16px;
+  padding: 20px 15px;
+  margin: 10px;
   border-radius: var(--radius-xl);
-  backdrop-filter: blur(8px);
+  
   flex-shrink: 0;
   box-shadow: 0 8px 32px rgba(0,0,0,0.1);
   transition: width 0.3s ease;
@@ -95,7 +112,7 @@ body::before {
   gap: 8px;
   font-size: 16px;
   font-weight: bold;
-  color: #1b7a3c;
+  color: #fff;
   margin-bottom: 24px;
   text-align: center;
 }
@@ -104,7 +121,10 @@ body::before {
   width: 100px;
   height: 100px;
   object-fit: contain;
+  position: relative;
 }
+
+
 
 /* Menu */
 .menu {
@@ -118,14 +138,14 @@ body::before {
   text-decoration: none;
   padding: 12px 16px;
   border-radius: var(--radius-md);
-  color: #2e7d32;
-  font-weight: 500;
-  font-size: 14px;
+  color: #fff;
+  font-weight: 200;
+  font-size: 16px;
   text-align: center;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
   gap: 8px;
 }
 
@@ -136,7 +156,7 @@ body::before {
 
 .menu-item.active {
   background: var(--white);
-  color: var(--primary-700);
+  color: var(--secondary-700);
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
@@ -153,7 +173,7 @@ body::before {
   border: none;
   font-size: 28px;
   cursor: pointer;
-  color: #2e7d32;
+  color: #fff;
   padding: 8px;
   margin-bottom: 16px;
 }
@@ -220,7 +240,7 @@ body::before {
 
 .header-left h2 {
   margin: 0;
-  color: var(--primary-700);
+  color: var(--secondary-900);
   font-size: 24px;
 }
 
@@ -263,6 +283,7 @@ body::before {
 .user-detail h4 {
   margin: 0;
   font-size: 18px;
+  color: var(--secondary-900);
 }
 
 .user-detail span {
@@ -305,6 +326,7 @@ body::before {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
+  color: var(--secondary-900);
 }
 
 .user-info p {
@@ -554,11 +576,11 @@ body::before {
 
 /* Action Card Themes */
 .theme-green {
-  background: var(--primary-700);
-  color: var(--white);
+  background: var(--blue);
+  color: var(--text);
 }
 .theme-green:hover {
-  background: var(--primary-900);
+  background: var(--secondary-500);
 }
 
 .theme-blue {
@@ -630,7 +652,7 @@ body::before {
 .profile-card p {
   margin: 0;
   font-size: 13px;
-  color: #666;
+  color: var(--secondary-300);
 }
 
 /* Calendar */
@@ -643,7 +665,7 @@ body::before {
 
 .calendar-header h4 {
   font-size: 14px;
-  color: #333;
+  color: var(--text);
   font-weight: 600;
   margin: 0;
 }
@@ -658,7 +680,7 @@ body::before {
   height: 28px;
   border: 1px solid #e0e0e0;
   background: #ffffff;
-  color: var(--primary-500);
+  color: var(--secondary-500);
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
@@ -702,7 +724,7 @@ body::before {
 }
 
 .calendar-day.today {
-  background: var(--primary-500);
+  background: var(--secondary-500);
   color: #ffffff;
   font-weight: 600;
 }
@@ -710,7 +732,7 @@ body::before {
 .calendar-day.has-report {
   position: relative;
   background: #c8e6c9;
-  color: #2e7d32;
+  color: var(--secondary-500);
   font-weight: 500;
 }
 
@@ -722,7 +744,7 @@ body::before {
   content: "";
   width: 6px;
   height: 6px;
-  background: #2e7d32;
+  background: var(--secondary-500);
   border-radius: 50%;
   position: absolute;
   bottom: 3px;
@@ -732,7 +754,7 @@ body::before {
 .progress-title {
   font-size: 15px;
   font-weight: 600;
-  color: #1b7a3c;
+  color: var(--text);
   margin-bottom: 12px;
 }
 
@@ -933,19 +955,22 @@ body::before {
 .toggle-btn {
   margin-top: auto;
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   border: none;
-  background: var(--primary-500);
+  background: var(--secondary-300);
   color: white;
   cursor: pointer;
   border-radius: var(--radius-md);
   font-family: 'Kanit', sans-serif;
   font-weight: 500;
   transition: all 0.2s;
+  margin-top: 280px;
+  border-top: 3px solid rgba(255,255,255,0.2);
 }
 
 .toggle-btn:hover {
-  background: var(--primary-700);
+  background: var(--secondary-300);
+  border-top: 3px solid rgba(255,255,255,0.2);
 }
 
 /* Role-based */
@@ -1003,7 +1028,7 @@ body.is-admin .admin-only {
 @media (min-width: 1024px) and (max-width: 1199px) {
   .sidebar {
     width: 240px;
-    padding: 20px 14px;
+    padding: 30px 20px;
   }
   
   .logo img {
