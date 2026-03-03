@@ -43,7 +43,7 @@ body {
   /* box-shadow: 4px 0 20px rgba(0,0,0,0.1); */
   /* top: 0;
   left: 0; */
-  height: 100vh;
+  height: 100%;
   position:fixed;
   /* overflow-y: auto; */
 }
@@ -219,11 +219,7 @@ input[readonly] {
   border-collapse: collapse;
 }
 
-.trip-table th {
-  background: #d8e3dc;
-  padding: 10px;
-  text-align: center;
-}
+
 
 .trip-table td {
   padding: 8px;
@@ -335,17 +331,21 @@ h1 {
 
 /* ===== Table Modern Look ===== */
 .trip-table {
-  border-radius: 12px;
+  border-radius: 1px;
   overflow: hidden;
   margin-top: 15px;
 }
 
 .trip-table th {
-  background: #cfd8df;
+  border: 1px solid #ddd;
+  background: #e3f2fd;
   font-weight: 600;
   text-align: center;
   font-size: 14px;
+  padding: 10px;
 }
+
+
 
 .trip-table td {
   text-align: center;
@@ -405,7 +405,7 @@ h1 {
 }
 
 #empName,
-#zone {
+#area {
   color: #0d6efd;   /* สีตัวหนังสือ */
   font-weight: 600; /* ทำให้เด่นขึ้น */
 }
@@ -438,13 +438,15 @@ h1 {
 
 .summary-item input {
   width: 100%;
-  max-width: 300px;          /* หรือขนาดที่ต้องการ */
+  max-width: 300px;
+  /* หรือขนาดที่ต้องการ */
 }
 
 .summary-item.total input {
   background: #dbeafe;
   font-weight: 700;
-  font-size: 15px;
+  font-size: 20px;
+  height: 50px;
 }
 
 
