@@ -10,8 +10,8 @@
 // 🌐 GLOBAL STATE
 // =====================================================
 
-/** @type {Array<Object>} รายการทริปทั้งหมดในแผนปัจจุบัน */
-let trips = [];
+// /** @type {Array<Object>} รายการทริปทั้งหมดในแผนปัจจุบัน */
+// let trips = [];
 
 /** @type {string|null} ID ของแผนการเดินทางในฐานข้อมูล */
 let currentPlanId = null;
@@ -106,13 +106,14 @@ async function loadUserInfoBasic() {
     const userNameEl = document.querySelector(".user-name");
     if (userNameEl) {
       userNameEl.textContent =
-        profile?.display_name || profile?.full_name || session.user.email;
+       profile?.["display_name"] || session.user.email;
     }
 
     const empNameInput = document.getElementById("empName");
     if (empNameInput) {
       empNameInput.value =
-        profile?.full_name || profile?.display_name || session.user.email;
+        empNameInput.value =
+  profile?.["display_name"] || session.user.email;
       empNameInput.readOnly = true;
     }
 
@@ -327,7 +328,7 @@ function setupEventListeners() {
   //   if (e.key === "Enter") addTrip();
   // });
 
-  setupExpenseCalculation();
+  
 }
 
 function updateEndDate() {
@@ -380,10 +381,10 @@ async function loadExistingTrips() {
     const zoneInput = document.getElementById("zone");
     if (zoneInput && plan.area) zoneInput.value = plan.area;
 
-    if (Array.isArray(plan.trips)) {
-      trips = plan.trips;
-      renderTripsTable();
-    }
+    // if (Array.isArray(plan.trips)) {
+    //   trips = plan.trips;
+    //   renderTripsTable();
+    // }
 
     console.log("✅ Loaded existing plan:", currentPlanId);
   } catch (error) {
@@ -507,45 +508,36 @@ async function savePlanToDatabase(status = "draft") {
  *   [3] ค่าใช้จ่ายอื่นๆ          → user กรอก
  *   [4] รวมทั้งหมด              → auto คำนวณ
  */
-function updateSummary() {
-  const totalTripCost = trips.reduce((sum, trip) => sum + (trip.cost || 0), 0);
+// function updateSummary() {
+//   // const totalTripCost = trips.reduce((sum, trip) => sum + (trip.cost || 0), 0);
 
-  const startDate = document.getElementById("startDate")?.value;
-  const endDate = document.getElementById("endDate")?.value;
-  let numberOfDays = 1;
+//   const startDate = document.getElementById("startDate")?.value;
+//   const endDate = document.getElementById("endDate")?.value;
+//   let numberOfDays = 1;
 
-  if (startDate && endDate) {
-    const diffMs = new Date(endDate) - new Date(startDate);
-    numberOfDays = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)) + 1);
-  }
+//   if (startDate && endDate) {
+//     const diffMs = new Date(endDate) - new Date(startDate);
+//     numberOfDays = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)) + 1);
+//   }
 
-  const summaryInputs = document.querySelectorAll(
-    ".section:last-child input[type='number']",
-  );
-  if (summaryInputs.length < 5) return;
+//   const summaryInputs = document.querySelectorAll(
+//     ".section:last-child input[type='number']",
+//   );
+//   if (summaryInputs.length < 5) return;
 
-  const avgCostPerDay =
-    numberOfDays > 0 ? Math.round(totalTripCost / numberOfDays) : 0;
-  const accommodationPerDay = parseFloat(summaryInputs[2].value || 0);
-  const otherExpenses = parseFloat(summaryInputs[3].value || 0);
-  const totalExpenses =
-    totalTripCost + accommodationPerDay * numberOfDays + otherExpenses;
+//   const avgCostPerDay =
+//     numberOfDays > 0 ? Math.round(totalTripCost / numberOfDays) : 0;
+//   const accommodationPerDay = parseFloat(summaryInputs[2].value || 0);
+//   const otherExpenses = parseFloat(summaryInputs[3].value || 0);
+//   const totalExpenses =
+//     totalTripCost + accommodationPerDay * numberOfDays + otherExpenses;
 
-  summaryInputs[0].value = avgCostPerDay;
-  summaryInputs[1].value = numberOfDays;
-  summaryInputs[4].value = Math.round(totalExpenses);
-}
+//   summaryInputs[0].value = avgCostPerDay;
+//   summaryInputs[1].value = numberOfDays;
+//   summaryInputs[4].value = Math.round(totalExpenses);
+// }
 
-/** ผูก listener ให้ช่องที่ user กรอกเอง → คำนวณ total อัตโนมัติ */
-function setupExpenseCalculation() {
-  const summaryInputs = document.querySelectorAll(
-    ".section:last-child input[type='number']",
-  );
-  if (summaryInputs.length >= 5) {
-    summaryInputs[2].addEventListener("input", updateSummary); // ค่าที่พัก
-    summaryInputs[3].addEventListener("input", updateSummary); // ค่าอื่นๆ
-  }
-}
+
 
 // =====================================================
 // 📤 EXPORT TO CSV
@@ -644,12 +636,12 @@ async function getCurrentUserInfo() {
   } = await supabaseClient.auth.getUser();
   const { data: profile } = await supabaseClient
     .from("profiles")
-    .select("full_name, area")
+    .select('"display_name", area')
     .eq("id", user.id)
     .maybeSingle();
   return {
     userId: user.id,
-    userName: profile?.full_name || user.email,
+    userName: profile?.["display_name"] || user.email,
     userZone: profile?.area || null,
   };
 }

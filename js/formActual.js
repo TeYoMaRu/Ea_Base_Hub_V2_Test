@@ -8,18 +8,18 @@ const STORAGE_KEY = 'formActualDrafts';
    ===================================================== */
 document.addEventListener('DOMContentLoaded', async () => {
   await loadUserInfo();
-  setDefaultDates();
+  // setDefaultDates();
   addRow();
 });
 
 /* =====================================================
    DATE
    ===================================================== */
-function setDefaultDates() {
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('start').value = today;
-  document.getElementById('end').value = today;
-}
+// function setDefaultDates() {
+//   const today = new Date().toISOString().split('T')[0];
+//   document.getElementById('start').value = today;
+//   document.getElementById('end').value = today;
+// }
 
 /* =====================================================
    TABLE
@@ -27,8 +27,11 @@ function setDefaultDates() {
 function addRow() {
   const tbody = document.getElementById('tableBody');
   const tr = document.createElement('tr');
+
+  const today = new Date().toISOString().split('T')[0];
+  
   tr.innerHTML = `
-    <td><input type="date"></td>
+    <td><input type="date" value="${today}"></td>
     <td><input placeholder="เส้นทาง"></td>
     <td><input type="number" value="0" min="0" oninput="calcTotal()"></td>
     <td><input type="number" value="0" min="0" oninput="calcTotal()"></td>
@@ -84,21 +87,28 @@ function saveDraft() {
    COLLECT DATA
    ===================================================== */
 function collectFormData() {
-  const start = document.getElementById('start').value;
-  const end = document.getElementById('end').value;
-  const emp = document.getElementById('emp').value;
-  const zone = document.getElementById('zone').value;
+  // ✅ ไม่มี input start/end ใน HTML ปัจจุบัน ให้ใช้ข้อมูลจากแถวแรก/สุดท้าย
+  const emp = document.getElementById('empName')?.value || '';
+  const zone = document.getElementById('zone')?.value || '';
 
-  if (!start || !end || !emp || !zone) {
+  if (!emp || !zone) {
     alert('กรุณากรอกข้อมูลให้ครบ');
     return null;
   }
 
   const rows = [];
-  document.querySelectorAll('#tableBody tr').forEach(tr => {
+  let firstDate = '';
+  let lastDate = '';
+  
+  document.querySelectorAll('#tableBody tr').forEach((tr, index) => {
     const i = tr.querySelectorAll('input');
+    const date = i[0].value;
+    
+    if (index === 0) firstDate = date;
+    lastDate = date;
+    
     rows.push({
-      date: i[0].value,
+      date: date,
       route: i[1].value,
       allowance: Number(i[2].value || 0),
       hotel: Number(i[3].value || 0),
@@ -110,8 +120,8 @@ function collectFormData() {
 
   return {
     id: Date.now(),
-    start,
-    end,
+    start: firstDate,
+    end: lastDate,
     emp,
     zone,
     rows
@@ -168,38 +178,36 @@ function download(content, filename) {
 }
 
 
+/* =====================================================
+   LOAD USER INFO
+   ===================================================== */
 async function loadUserInfo() {
   try {
-    const { data: { session } } =
-      await supabaseClient.auth.getSession();
+    const { data: { session } } = await supabaseClient.auth.getSession();
 
     if (!session) {
       alert("กรุณา Login ก่อนใช้งาน");
       return;
     }
 
-    const { data: profile } =
-      await supabaseClient
-        .from("profiles")
-        .select("*")
-        .eq("id", session.user.id)
-        .single();
+    // ✅ ดึงเฉพาะคอลัมน์ที่มีจริง: display_name, area
+    const { data: profile } = await supabaseClient
+      .from("profiles")
+      .select("display_name, area")
+      .eq("id", session.user.id)
+      .single();
 
-    // แสดงชื่อ
+    // ✅ แสดงชื่อพนักงาน (display_name)
     const empInput = document.getElementById("empName");
     if (empInput) {
-      empInput.value =
-        profile?.full_name ||
-        profile?.display_name ||
-        session.user.email;
-
+      empInput.value = profile?.display_name || session.user.email;
       empInput.readOnly = true;
     }
 
-    // แสดงโซน
+    // ✅ แสดงเขตการขาย (area)
     const zoneInput = document.getElementById("zone");
-    if (zoneInput && profile?.area) {
-      zoneInput.value = profile.area;
+    if (zoneInput) {
+      zoneInput.value = profile?.area || '';
     }
 
     console.log("✅ User loaded (formActual)");
