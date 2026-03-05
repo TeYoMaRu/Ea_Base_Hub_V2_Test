@@ -1,0 +1,190 @@
+/* =====================================================
+   📋 FORMS HUB - STYLESHEET
+   ไฟล์ CSS สำหรับหน้า Forms Hub
+   ===================================================== */
+
+/* ================= BASE STYLES (โครงสร้างพื้นฐาน) ================= */
+
+/* รีเซ็ต box-sizing ให้ทุก element ใช้ border-box 
+   ทำให้การคำนวณขนาดรวม padding และ border ไว้ด้วย */ 
+* { 
+  box-sizing: border-box; 
+}
+
+/* สไตล์หลักของ body */
+body {
+  margin: 0;                           /* ลบ margin เริ่มต้นของเบราว์เซอร์ */
+  font-family: 'kanit', sans-serif;  /* ใช้ฟอนต์ระบบมาตรฐาน */
+  background: #f4f6f8;                 /* สีพื้นหลังเทาอ่อน */
+}
+
+/* ลบขีดเส้นใต้และให้สีเหมือนกับ text ปกติ */
+a { 
+  text-decoration: none; 
+  color: inherit; 
+}
+
+
+/* ================= STICKY HEADER (แถบหัวเรื่องแบบติดด้านบน) ================= */
+
+.app-header {
+  position: sticky;                    /* ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
+  top: 0;                              /* ติดที่ตำแหน่ง top = 0 */
+  z-index: 1000;                       /* ให้อยู่เหนือ element อื่นๆ */
+  background: #ffffff;                 /* พื้นหลังสีขาว */
+  border-bottom: 1px solid #ddd;       /* เส้นขอบล่างสีเทา */
+  padding: 14px 20px;                  /* ช่องว่างด้านในบนล่าง 14px ซ้ายขวา 20px */
+  display: flex;                       /* ใช้ flexbox layout */
+  justify-content: space-between;      /* กระจายพื้นที่ระหว่าง logo และชื่อผู้ใช้ */
+  align-items: center;                 /* จัดแนวให้อยู่กึ่งกลางแนวตั้ง */
+}
+
+/* สไตล์สำหรับส่วนโลโก้ */
+.app-header .logo {
+  display: flex;                       /* ใช้ flexbox เพื่อจัดเรียงโลโก้และข้อความ */
+  align-items: center;                 /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+  gap: 10px;                           /* ระยะห่างระหว่างรูปกับข้อความ */
+  font-weight: 600;                    /* ความหนาของตัวอักษร (semi-bold) */
+  font-size: 16px;                     /* ขนาดตัวอักษร */
+}
+
+/* ปรับขนาดรูปโลโก้ */
+.app-header .logo img {
+  width: 60px;                         /* ความกว้างของโลโก้ (สามารถปรับได้) */
+  height: 60px;                        /* ความสูงของโลโก้ (สามารถปรับได้) */
+  object-fit: contain;                 /* รักษาสัดส่วนของรูป */
+}
+
+/* ปรับขนาดข้อความ h2 ในโลโก้ */
+.app-header .logo h2 {
+  margin: 0;                           /* ลบ margin เริ่มต้น */
+  font-size: 18px;                     /* ขนาดตัวอักษรชื่อระบบ (สามารถปรับได้) */
+}
+
+
+/* ================= STICKY NAV (แถบเมนูแบบติดด้านบน) ================= */
+
+.app-nav {
+  position: sticky;                    /* ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
+  top: 52px;                           /* ติดใต้ header (52px = ความสูงของ header) */
+  z-index: 999;                        /* ให้อยู่เหนือ content แต่ต่ำกว่า header */
+  background: #f0f0f0;                 /* พื้นหลังสีเทาอ่อน */
+  border-bottom: 1px solid #ddd;       /* เส้นขอบล่างสีเทา */
+  padding: 10px 20px;                  /* ช่องว่างด้านใน */
+  display: flex;                       /* ใช้ flexbox layout */
+  gap: 10px;                           /* ระยะห่างระหว่างปุ่มเมนู */
+}
+
+/* สไตล์สำหรับลิงก์เมนู */
+.app-nav a {
+  padding: 6px 12px;                   /* ช่องว่างด้านในของปุ่ม */
+  border-radius: 6px;                  /* มุมโค้งมน */
+  font-size: 13px;                     /* ขนาดตัวอักษร */
+}
+
+/* เมื่อ hover เมนู */
+.app-nav a:hover {
+  background: #e0e0e0;                 /* เปลี่ยนพื้นหลังเป็นสีเทาเข้มขึ้น */
+}
+
+/* เมนูที่กำลัง active */
+.app-nav a.active {
+  background: #1976d2;                 /* พื้นหลังสีน้ำเงิน */
+  color: #fff;                         /* ตัวอักษรสีขาว */
+}
+
+
+/* ================= CONTAINER (กล่องบรรจุเนื้อหา) ================= */
+
+.container {
+  max-width: 900px;                    /* ความกว้างสูงสุด 900px */
+  margin: auto;                        /* จัดกึ่งกลางหน้าจอ */
+  padding: 24px 16px;                  /* ช่องว่างด้านใน */
+}
+
+
+/* ================= PAGE TITLE (หัวเรื่องหน้า) ================= */
+
+.page-title {
+  text-align: center;                  /* จัดข้อความกึ่งกลาง */
+  margin-bottom: 24px;                 /* ระยะห่างด้านล่าง */
+}
+
+/* หัวเรื่อง h1 */
+.page-title h1 {
+  font-size: 22px;                     /* ขนาดตัวอักษร */
+  margin-bottom: 6px;                  /* ระยะห่างด้านล่าง */
+}
+
+/* ข้อความคำอธิบาย */
+.page-title p {
+  font-size: 13px;                     /* ขนาดตัวอักษร */
+  color: #666;                         /* สีเทา */
+}
+
+
+/* ================= GRID (ระบบกริดสำหรับการ์ด) ================= */
+
+.forms-grid {
+  display: grid;                                    /* ใช้ CSS Grid Layout */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+  /* สร้างคอลัมน์อัตโนมัติ ขั้นต่ำ 240px ต่อการ์ด */
+  gap: 16px;                                        /* ระยะห่างระหว่างการ์ด */
+}
+
+
+/* ================= CARD (การ์ดแบบฟอร์ม) ================= */
+
+.form-card {
+  background: #fff;                    /* พื้นหลังสีขาว */
+  border-radius: 14px;                 /* มุมโค้งมน */
+  padding: 20px;                       /* ช่องว่างด้านใน */
+  text-align: center;                  /* จัดข้อความกึ่งกลาง */
+  cursor: pointer;                     /* แสดง cursor แบบมือชี้เมื่อ hover */
+  transition: 0.2s;                    /* เอฟเฟกต์การเปลี่ยนแปลงแบบนุ่มนวล 0.2 วินาที */
+  box-shadow: 0 6px 16px rgba(0,0,0,.08); /* เงาใต้การ์ด */
+}
+
+/* เมื่อ hover การ์ด */
+.form-card:hover {
+  transform: translateY(-4px);         /* เลื่อนการ์ดขึ้นด้านบน 4px */
+}
+
+
+/* ================= ICON (ไอคอนในการ์ด) ================= */
+
+.form-icon {
+  width: 62px;                         /* ความกว้าง */
+  height: 62px;                        /* ความสูง */
+  border-radius: 50%;                  /* ทำให้เป็นวงกลม */
+  display: flex;                       /* ใช้ flexbox */
+  align-items: center;                 /* จัดกึ่งกลางแนวตั้ง */
+  justify-content: center;             /* จัดกึ่งกลางแนวนอน */
+  margin: auto;                        /* จัดกึ่งกลางในการ์ด */
+  color: #fff;                         /* สีไอคอนเป็นสีขาว */
+}
+
+/* คลาสสีน้ำเงิน */
+.blue { 
+  background: #1976d2; 
+}
+
+/* คลาสสีเขียว */
+.green { 
+  background: #2e7d32; 
+}
+
+
+/* ================= CARD TEXT (ข้อความในการ์ด) ================= */
+
+/* หัวเรื่องการ์ด */
+.form-card h3 {
+  font-size: 16px;                     /* ขนาดตัวอักษร */
+  margin: 12px 0 6px;                  /* ระยะห่าง บน 12px ซ้าย-ขวา 0 ล่าง 6px */
+}
+
+/* คำอธิบายการ์ด */
+.form-card p {
+  font-size: 12px;                     /* ขนาดตัวอักษร */
+  color: #777;                         /* สีเทา */
+}

@@ -1,0 +1,399 @@
+/* =====================================================
+   ⚠️ FORM CLAIM - STYLESHEET
+   ไฟล์ CSS สำหรับหน้าแจ้งเคลมสินค้า
+   ===================================================== */
+
+/* ================= BASE STYLES (โครงสร้างพื้นฐาน) ================= */
+
+/* รีเซ็ต box-sizing ให้ทุก element ใช้ border-box 
+   ทำให้การคำนวณขนาดรวม padding และ border ไว้ด้วย */
+* { 
+  box-sizing: border-box; 
+}
+
+/* สไตล์หลักของ body */
+body {
+  margin: 0;                           /* ลบ margin เริ่มต้นของเบราว์เซอร์ */
+  font-family: 'Kanit', sans-serif;    /* ใช้ฟอนต์ Kanit (ฟอนต์ไทย) */
+  background: #efe6de;
+  /* background: #f4f6f8;                 สีพื้นหลังเทาอ่อน */
+  color: #333;                         /* สีตัวอักษรเทาเข้ม */
+}
+
+/* ลบขีดเส้นใต้และให้สีเหมือนกับ text ปกติ */
+a { 
+  text-decoration: none; 
+  color: inherit; 
+}
+
+
+/* ================= STICKY HEADER (แถบหัวเรื่องแบบติดด้านบน) ================= */
+
+.app-header {
+  position: sticky;                    /* ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
+  top: 0;                              /* ติดที่ตำแหน่ง top = 0 */
+  z-index: 1000;                       /* ให้อยู่เหนือ element อื่นๆ */
+  background: #fff;                    /* พื้นหลังสีขาว */
+  border-bottom: 1px solid #ddd;       /* เส้นขอบล่างสีเทา */
+  padding: 14px 20px;                  /* ช่องว่างด้านในบนล่าง 14px ซ้ายขวา 20px */
+  display: flex;                       /* ใช้ flexbox layout */
+  justify-content: space-between;      /* กระจายพื้นที่ระหว่าง logo และชื่อผู้ใช้ */
+  align-items: center;                 /* จัดแนวให้อยู่กึ่งกลางแนวตั้ง */
+}
+
+/* สไตล์สำหรับส่วนโลโก้ */
+.app-header .logo {
+  display: flex;                       /* ใช้ flexbox เพื่อจัดเรียงโลโก้และข้อความ */
+  align-items: center;                 /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+  gap: 10px;                           /* ระยะห่างระหว่างรูปกับข้อความ */
+  font-weight: 600;                    /* ความหนาของตัวอักษร (semi-bold) */
+  font-size: 16px;                     /* ขนาดตัวอักษร */
+}
+
+/* ปรับขนาดรูปโลโก้ */
+.app-header .logo img {
+  width: 60px;                         /* ความกว้างของโลโก้ (สามารถปรับได้) */
+  height: 60px;                        /* ความสูงของโลโก้ (สามารถปรับได้) */
+  object-fit: contain;                 /* รักษาสัดส่วนของรูป */
+}
+
+/* ปรับขนาดข้อความ h2 ในโลโก้ */
+.app-header .logo h2 {
+  margin: 0;                           /* ลบ margin เริ่มต้น */
+  font-size: 18px;                     /* ขนาดตัวอักษรชื่อระบบ (สามารถปรับได้) */
+}
+
+
+/* ================= STICKY NAV (แถบเมนูแบบติดด้านบน) ================= */
+
+.app-nav {
+  position: sticky;                    /* ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
+  top: 52px;                           /* ติดใต้ header (52px = ความสูงของ header) */
+  z-index: 999;                        /* ให้อยู่เหนือ content แต่ต่ำกว่า header */
+  background: #f0f0f0;                 /* พื้นหลังสีเทาอ่อน */
+  border-bottom: 1px solid #ddd;       /* เส้นขอบล่างสีเทา */
+  padding: 10px 20px;                  /* ช่องว่างด้านใน */
+  display: flex;                       /* ใช้ flexbox layout */
+  gap: 10px;                           /* ระยะห่างระหว่างปุ่มเมนู */
+}
+
+/* สไตล์สำหรับลิงก์เมนู */
+.app-nav a {
+  padding: 6px 12px;                   /* ช่องว่างด้านในของปุ่ม */
+  border-radius: 6px;                  /* มุมโค้งมน */
+  font-size: 13px;                     /* ขนาดตัวอักษร */
+}
+
+/* เมนูที่กำลัง active (หน้าปัจจุบัน) */
+.app-nav a.active {
+  background: #2e7d32;                 /* พื้นหลังสีเขียว */
+  color: #fff;                         /* ตัวอักษรสีขาว */
+}
+
+
+/* ================= PAGE CONTAINER (กล่องบรรจุเนื้อหา) ================= */
+
+.page {
+  max-width: 900px;                    /* ความกว้างสูงสุด 900px */
+  margin: auto;                        /* จัดกึ่งกลางหน้าจอ */
+  padding: 20px;                       /* ช่องว่างด้านใน */
+}
+
+
+/* ================= CARD (การ์ดแสดงเนื้อหา) ================= */
+
+.card {
+  background: #fff;                    /* พื้นหลังสีขาว */
+  border-radius: 12px;                 /* มุมโค้งมน */
+  padding: 20px;                       /* ช่องว่างด้านใน */
+  margin-bottom: 16px;                 /* ระยะห่างด้านล่าง */
+  box-shadow: 0 4px 12px rgba(0,0,0,.08); /* เงาใต้การ์ด */
+}
+
+
+/* ================= HEADINGS (หัวเรื่อง) ================= */
+
+/* หัวเรื่อง h2 ในแต่ละการ์ด */
+h2 {
+  margin: 0 0 12px;                    /* ระยะห่างล่าง 12px */
+  font-size: 18px;                     /* ขนาดตัวอักษร */
+  color: #2e7d32;                      /* สีเขียว */
+}
+
+h3 {
+    font-size: 16px;
+    color: #ff692e;
+}
+
+/* ================= FORM ELEMENTS (ส่วนประกอบฟอร์ม) ================= */
+
+/* Label สำหรับ input fields */
+label {
+  display: block;                      /* แสดงเป็น block (แยกบรรทัด) */
+  margin-top: 12px;                    /* ระยะห่างด้านบน */
+  font-size: 13px;                     /* ขนาดตัวอักษร */
+  font-weight: 500;                    /* ความหนาตัวอักษรปานกลาง */
+}
+
+/* สไตล์สำหรับ input, select และ textarea */
+input, select, textarea {
+  width: 100%;                         /* ความกว้างเต็ม 100% */
+  margin-top: 6px;                     /* ระยะห่างด้านบน */
+  padding: 10px;                       /* ช่องว่างด้านใน */
+  border-radius: 6px;                  /* มุมโค้งมน */
+  border: 1px solid #ddd;              /* กรอบสีเทา */
+  font-family: inherit;                /* ใช้ฟอนต์เดียวกับ parent */
+}
+
+/* ให้ textarea สามารถปรับขนาดได้เฉพาะแนวตั้ง */
+textarea { 
+  resize: vertical; 
+}
+/* FORM GRID */
+
+
+
+/* ================= CLAIM TYPE GRID (ตารางเลือกประเภทปัญหา) ================= */
+.form-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:14px;
+margin-top:10px;
+}
+
+.form-group.full{
+grid-column:1/-1;
+}
+
+.claim-grid {
+  display: grid;                                    /* ใช้ CSS Grid Layout */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+  /* สร้างคอลัมน์อัตโนมัติ ขั้นต่ำ 140px ต่อช่อง */
+  gap: 10px;                                        /* ระยะห่างระหว่างช่อง */
+  margin-top: 10px;                                 /* ระยะห่างด้านบน */
+}
+
+/* ช่องเลือกแต่ละประเภท */
+.claim-item {
+  border: 1px solid #ddd;              /* กรอบสีเทา */
+  border-radius: 10px;                 /* มุมโค้งมน */
+  padding: 14px 10px;                  /* ช่องว่างด้านใน */
+  text-align: center;                  /* จัดข้อความกึ่งกลาง */
+  cursor: pointer;                     /* แสดง cursor แบบมือชี้ */
+  font-size: 13px;                     /* ขนาดตัวอักษร */
+  background: #fafafa;                 /* พื้นหลังสีเทาอ่อนมาก */
+  transition: all 0.2s;                /* เอฟเฟกต์การเปลี่ยนแปลงแบบนุ่มนวล */
+}
+
+/* เมื่อ hover ช่องเลือก */
+.claim-item:hover {
+  background: #f0f0f0;                 /* พื้นหลังเข้มขึ้น */
+}
+
+/* เมื่อเลือกช่องนี้ (มี class active) */
+.claim-item.active {
+  background: #e8f5e9;                 /* พื้นหลังสีเขียวอ่อน */
+  border-color: #2e7d32;               /* กรอบสีเขียว */
+  color: #2e7d32;                      /* ตัวอักษรสีเขียว */
+  font-weight: 500;                    /* ตัวอักษรหนาขึ้น */
+}
+
+
+
+
+/* ================= ACTION BUTTONS (ปุ่มต่างๆ) ================= */
+
+/* Container สำหรับปุ่ม */
+.actions {
+  display: flex;                       /* ใช้ flexbox layout */
+  gap: 10px;                           /* ระยะห่างระหว่างปุ่ม */
+  margin-top: 16px;                    /* ระยะห่างด้านบน */
+  flex-wrap: wrap;                     /* ให้ปุ่มขึ้นบรรทัดใหม่ถ้าหน้าจอแคบ */
+}
+
+/* สไตล์พื้นฐานของปุ่ม */
+button {
+  padding: 12px;                       /* ช่องว่างด้านใน */
+  border-radius: 8px;                  /* มุมโค้งมน */
+  border: none;                        /* ไม่มีกรอบ */
+  cursor: pointer;                     /* แสดง cursor แบบมือชี้ */
+  font-family: inherit;                /* ใช้ฟอนต์เดียวกับ parent */
+  font-size: 14px;                     /* ขนาดตัวอักษร */
+  flex: 1;                             /* ให้ปุ่มแบ่งพื้นที่เท่าๆ กัน */
+  transition: opacity 0.2s;            /* เอฟเฟกต์การเปลี่ยนแปลง */
+}
+
+/* เมื่อ hover ปุ่ม */
+button:hover {
+  opacity: 0.9;                        /* ลดความทึบลง */
+}
+
+/* ปุ่ม Save Draft (สีเหลือง) */
+.btn-draft { 
+  background: #fbc02d;                 /* พื้นหลังสีเหลือง */
+  color: #333;                         /* ตัวอักษรสีเทาเข้ม */
+}
+
+/* ปุ่ม Submit (สีเขียว) */
+.btn-submit { 
+  background: #2e7d32;                 /* พื้นหลังสีเขียว */
+  color: #fff;                         /* ตัวอักษรสีขาว */
+}
+
+/* ปุ่ม Back (สีเทา) */
+.btn-back { 
+  background: #9e9e9e;                 /* พื้นหลังสีเทา */
+  color: #fff;                         /* ตัวอักษรสีขาว */
+}
+
+
+/* ================= TABLE (ตารางแสดง Draft) ================= */
+
+/* สไตล์ตาราง */
+table {
+  width: 100%;                         /* ความกว้างเต็ม 100% */
+  border-collapse: collapse;           /* รวมขอบเซลล์ */
+  font-size: 13px;                     /* ขนาดตัวอักษร */
+  margin-top: 10px;                    /* ระยะห่างด้านบน */
+}
+
+/* สไตล์สำหรับ th (header) และ td (cell) */
+th, td {
+  border-bottom: 1px solid #eee;       /* เส้นขอบล่างสีเทาอ่อน */
+  padding: 8px;                        /* ช่องว่างด้านใน */
+  text-align: left;                    /* จัดข้อความชิดซ้าย */
+}
+
+/* header ของตาราง */
+th { 
+  background: #f7f7f7;                 /* พื้นหลังสีเทาอ่อน */
+  font-weight: 600;                    /* ตัวอักษรหนา */
+}
+
+
+/* ================= SMALL BUTTONS (ปุ่มเล็กในตาราง) ================= */
+
+/* ปุ่มขนาดเล็ก (สำหรับ Edit, Delete) */
+.btn-small {
+  padding: 4px 8px;                    /* ช่องว่างด้านในเล็ก */
+  font-size: 12px;                     /* ขนาดตัวอักษรเล็ก */
+  border-radius: 4px;                  /* มุมโค้งมน */
+  cursor: pointer;                     /* แสดง cursor แบบมือชี้ */
+  border: none;                        /* ไม่มีกรอบ */
+  margin-right: 4px;                   /* ระยะห่างด้านขวา */
+  transition: opacity 0.2s;            /* เอฟเฟกต์การเปลี่ยนแปลง */
+}
+
+/* เมื่อ hover ปุ่มเล็ก */
+.btn-small:hover {
+  opacity: 0.8;                        /* ลดความทึบลง */
+}
+
+/* ปุ่ม Edit (สีน้ำเงิน) */
+.btn-edit { 
+  background: #1976d2;                 /* พื้นหลังสีน้ำเงิน */
+  color: #fff;                         /* ตัวอักษรสีขาว */
+}
+
+/* ปุ่ม Delete (สีแดง) */
+.btn-delete { 
+  background: #d32f2f;                 /* พื้นหลังสีแดง */
+  color: #fff;                         /* ตัวอักษรสีขาว */
+}
+
+/* ================= UPLOAD ================= */
+
+#mediaPreview{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:10px;
+}
+
+.media-item{
+  width:120px;
+  height:120px;
+  border-radius:10px;
+  overflow:hidden;
+  border:1px solid #ddd;
+  background:#f5f5f5;
+}
+
+.media-item img,
+.media-item video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.upload-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:10px;
+}
+
+.upload-box{
+  height:90px;
+  border:2px dashed #ccc;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  color:#888;
+  cursor:pointer;
+}
+
+.preview-box{
+  position:relative;
+  height:90px;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.preview-box img,
+.preview-box video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.remove-btn{
+  position:absolute;
+  top:3px;
+  right:3px;
+  width:20px;
+  height:20px;
+  border:none;
+  border-radius:50%;
+  background:red;
+  color:white;
+  font-size:12px;
+  cursor:pointer;
+}
+
+/* ================= RESPONSIVE (ปรับแต่งสำหรับหน้าจอเล็ก) ================= */
+
+/* สำหรับหน้าจอเล็กกว่า 600px */
+@media (max-width: 600px) {
+  
+  /* ลดขนาด padding ของ page */
+  .page {
+    padding: 12px;
+  }
+  
+  /* ปรับปุ่มให้เต็มความกว้าง */
+  .actions {
+    flex-direction: column;            /* เรียงปุ่มในแนวตั้ง */
+  }
+  
+  button {
+    width: 100%;                       /* ความกว้างเต็ม */
+  }
+  
+  /* ปรับกริดให้แสดง 2 คอลัมน์ */
+  .claim-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
