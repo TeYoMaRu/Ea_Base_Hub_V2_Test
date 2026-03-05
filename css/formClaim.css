@@ -35,7 +35,7 @@ a {
   z-index: 1000;                       /* ให้อยู่เหนือ element อื่นๆ */
   background: #fff;                    /* พื้นหลังสีขาว */
   border-bottom: 1px solid #ddd;       /* เส้นขอบล่างสีเทา */
-  padding: 14px 20px;                  /* ช่องว่างด้านในบนล่าง 14px ซ้ายขวา 20px */
+  padding: 16px 24px;                  /* ช่องว่างด้านในบนล่าง 14px ซ้ายขวา 20px */
   display: flex;                       /* ใช้ flexbox layout */
   justify-content: space-between;      /* กระจายพื้นที่ระหว่าง logo และชื่อผู้ใช้ */
   align-items: center;                 /* จัดแนวให้อยู่กึ่งกลางแนวตั้ง */
@@ -45,22 +45,36 @@ a {
 .app-header .logo {
   display: flex;                       /* ใช้ flexbox เพื่อจัดเรียงโลโก้และข้อความ */
   align-items: center;                 /* จัดให้อยู่กึ่งกลางแนวตั้ง */
-  gap: 10px;                           /* ระยะห่างระหว่างรูปกับข้อความ */
+  gap: 12px;                           /* ระยะห่างระหว่างรูปกับข้อความ */
   font-weight: 600;                    /* ความหนาของตัวอักษร (semi-bold) */
   font-size: 16px;                     /* ขนาดตัวอักษร */
 }
 
 /* ปรับขนาดรูปโลโก้ */
 .app-header .logo img {
-  width: 60px;                         /* ความกว้างของโลโก้ (สามารถปรับได้) */
-  height: 60px;                        /* ความสูงของโลโก้ (สามารถปรับได้) */
+  width: 48px;                         /* ความกว้างของโลโก้ (สามารถปรับได้) */
+  height: 48px;                        /* ความสูงของโลโก้ (สามารถปรับได้) */
   object-fit: contain;                 /* รักษาสัดส่วนของรูป */
 }
 
 /* ปรับขนาดข้อความ h2 ในโลโก้ */
 .app-header .logo h2 {
   margin: 0;                           /* ลบ margin เริ่มต้น */
-  font-size: 18px;                     /* ขนาดตัวอักษรชื่อระบบ (สามารถปรับได้) */
+  font-size: 22px;
+  font-weight: 600;
+  /*color: #2563eb;   /* ฟ้า modern */
+   color: #15803d;   /* เขียว premium */
+   letter-spacing: 0.5px;                     /* ขนาดตัวอักษรชื่อระบบ (สามารถปรับได้) */
+}
+
+/* USER NAME */
+.user-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #374151;
+  background: #f3f4f6;
+  padding: 6px 14px;
+  border-radius: 20px;
 }
 
 
@@ -68,13 +82,14 @@ a {
 
 .app-nav {
   position: sticky;                    /* ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
-  top: 52px;                           /* ติดใต้ header (52px = ความสูงของ header) */
+  top: 56px;                           /* ติดใต้ header (52px = ความสูงของ header) */
   z-index: 999;                        /* ให้อยู่เหนือ content แต่ต่ำกว่า header */
   background: #f0f0f0;                 /* พื้นหลังสีเทาอ่อน */
   border-bottom: 1px solid #ddd;       /* เส้นขอบล่างสีเทา */
   padding: 10px 20px;                  /* ช่องว่างด้านใน */
   display: flex;                       /* ใช้ flexbox layout */
-  gap: 10px;                           /* ระยะห่างระหว่างปุ่มเมนู */
+  gap: 12px;                           /* ระยะห่างระหว่างปุ่มเมนู */
+  
 }
 
 /* สไตล์สำหรับลิงก์เมนู */
@@ -94,7 +109,7 @@ a {
 /* ================= PAGE CONTAINER (กล่องบรรจุเนื้อหา) ================= */
 
 .page {
-  max-width: 900px;                    /* ความกว้างสูงสุด 900px */
+  max-width: 1200px;                    /* ความกว้างสูงสุด 900px */
   margin: auto;                        /* จัดกึ่งกลางหน้าจอ */
   padding: 20px;                       /* ช่องว่างด้านใน */
 }
@@ -103,6 +118,7 @@ a {
 /* ================= CARD (การ์ดแสดงเนื้อหา) ================= */
 
 .card {
+  
   background: #fff;                    /* พื้นหลังสีขาว */
   border-radius: 12px;                 /* มุมโค้งมน */
   padding: 20px;                       /* ช่องว่างด้านใน */
@@ -154,17 +170,68 @@ textarea {
 
 
 /* ================= CLAIM TYPE GRID (ตารางเลือกประเภทปัญหา) ================= */
+/* ================= FORM LAYOUT PRO ================= */
+
 .form-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:14px;
-margin-top:10px;
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:18px;
+  margin-top:14px;
 }
 
-.form-group.full{
-grid-column:1/-1;
+/* กลุ่ม input */
+.form-group{
+  display:flex;
+  flex-direction:column;
 }
 
+/* ขนาดช่อง */
+
+.col-3{ grid-column:span 3; }
+.col-4{ grid-column:span 4; }
+.col-6{ grid-column:span 6; }
+.col-8{ grid-column:span 8; }
+.col-12{ grid-column:span 12; }
+
+/* label */
+label{
+  font-size:13px;
+  font-weight:600;
+  color:#444;
+  margin-bottom:4px;
+}
+
+/* input style ปรับให้ดู modern */
+
+input,
+select,
+textarea{
+  height:38px;
+  border-radius:8px;
+  border:1px solid #dcdcdc;
+  padding:8px 10px;
+  font-size:14px;
+  background:#fafafa;
+  transition:all .2s;
+}
+
+/* focus effect */
+
+input:focus,
+select:focus,
+textarea:focus{
+  outline:none;
+  border-color:#2e7d32;
+  background:#fff;
+  box-shadow:0 0 0 2px rgba(46,125,50,0.08);
+}
+
+/* textarea */
+
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
 .claim-grid {
   display: grid;                                    /* ใช้ CSS Grid Layout */
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 

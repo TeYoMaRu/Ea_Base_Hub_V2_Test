@@ -31,34 +31,39 @@ a {
   position: sticky;                    /* ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
   top: 0;                              /* ติดที่ตำแหน่ง top = 0 */
   z-index: 1000;                       /* ให้อยู่เหนือ element อื่นๆ */
-  background: #ffffff;                 /* พื้นหลังสีขาว */
-  border-bottom: 1px solid #ddd;       /* เส้นขอบล่างสีเทา */
-  padding: 14px 20px;                  /* ช่องว่างด้านในบนล่าง 14px ซ้ายขวา 20px */
   display: flex;                       /* ใช้ flexbox layout */
   justify-content: space-between;      /* กระจายพื้นที่ระหว่าง logo และชื่อผู้ใช้ */
   align-items: center;                 /* จัดแนวให้อยู่กึ่งกลางแนวตั้ง */
+  padding: 16px 24px;                  /* ช่องว่างด้านในบนล่าง 14px ซ้ายขวา 20px */
+  background: #ffffff;                 /* พื้นหลังสีขาว */
+  border-bottom: 1px solid #ddd;       /* เส้นขอบล่างสีเทา */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 /* สไตล์สำหรับส่วนโลโก้ */
 .app-header .logo {
   display: flex;                       /* ใช้ flexbox เพื่อจัดเรียงโลโก้และข้อความ */
   align-items: center;                 /* จัดให้อยู่กึ่งกลางแนวตั้ง */
-  gap: 10px;                           /* ระยะห่างระหว่างรูปกับข้อความ */
+  gap: 12px;                           /* ระยะห่างระหว่างรูปกับข้อความ */
   font-weight: 600;                    /* ความหนาของตัวอักษร (semi-bold) */
   font-size: 16px;                     /* ขนาดตัวอักษร */
 }
 
 /* ปรับขนาดรูปโลโก้ */
 .app-header .logo img {
-  width: 60px;                         /* ความกว้างของโลโก้ (สามารถปรับได้) */
-  height: 60px;                        /* ความสูงของโลโก้ (สามารถปรับได้) */
+  width: 48px;                         /* ความกว้างของโลโก้ (สามารถปรับได้) */
+  height: 48px;                        /* ความสูงของโลโก้ (สามารถปรับได้) */
   object-fit: contain;                 /* รักษาสัดส่วนของรูป */
 }
 
 /* ปรับขนาดข้อความ h2 ในโลโก้ */
 .app-header .logo h2 {
   margin: 0;                           /* ลบ margin เริ่มต้น */
-  font-size: 18px;                     /* ขนาดตัวอักษรชื่อระบบ (สามารถปรับได้) */
+  font-size: 22px;                     /* ขนาดตัวอักษรชื่อระบบ (สามารถปรับได้) */
+  font-weight: 600;
+  /*color: #2563eb;   /* ฟ้า modern */
+   color: #15803d;   /* เขียว premium */
+   letter-spacing: 0.5px;
 }
 
 

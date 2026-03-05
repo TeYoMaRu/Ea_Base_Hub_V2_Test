@@ -88,86 +88,92 @@
     <h4>กรอกข้อมูลเบื้องต้นเกี่ยวกับสินค้าที่ต้องการเคลม</h4>
 
     <!-- Grid สำหรับจัดเรียงช่องกรอก -->
-    <div class="form-grid">
+<div class="form-grid">
 
-      <!-- วันที่ -->
-      <div class="form-group">
-        <label>วันที่แจ้งเคลม</label>
-        <input type="date" id="reportDate">
-      </div>
+  <!-- วันที่ -->
+  <div class="form-group col-3">
+    <label>วันที่แจ้งเคลม</label>
+    <input type="date" id="reportDate">
+  </div>
 
-      <!-- ร้านค้า -->
-      <div class="form-group">
-        <label>ร้านค้า</label>
-        <select id="shopSelect">
-          <option value="">-- เลือกร้านค้า --</option>
-        </select>
-      </div>
+  <!-- ร้านค้า -->
+  <div class="form-group col-3">
+    <label>ร้านค้า</label>
+    <select id="shopSelect">
+      <option value="">-- เลือกร้านค้า --</option>
+    </select>
+  </div>
 
-      <!-- หมวดสินค้า -->
-      <div class="form-group">
-        <label>สินค้าที่ขายกับร้านนี้</label>
-        <select id="categorySelect">
-          <option value="">-- เลือกหมวด --</option>
-        </select>
-      </div>
+  <!-- หมวด -->
+  <div class="form-group col-3">
+    <label>สินค้าที่ขายกับร้านนี้</label>
+    <select id="categorySelect">
+      <option value="">-- เลือกหมวด --</option>
+    </select>
+  </div>
 
-      <!-- สินค้า -->
-      <div class="form-group">
-        <label>สินค้า</label>
-        <select id="productSelect">      
-          <option value="">-- เลือกสินค้า --</option>
-        </select>
-      </div>
+  <!-- สินค้า -->
+  <div class="form-group col-3">
+    <label>สินค้า</label>
+    <select id="productSelect">
+      <option value="">-- เลือกสินค้า --</option>
+    </select>
+  </div>
 
-      <div id="dynamicAttributes"></div>
-      
-      
-      <!-- สถานะ -->
-      <div class="form-group">
-        <label>สถานะเคลม</label>
-        <select id="status">
-          <option>รอผล</option>
-          <option>อนุมัติเคลม</option>
-        </select>
-      </div>
-      
-      <!-- ยอดสั่งซื้อ -->
-      <div class="form-group">
-<label>จำนวนเคลม</label>
-<input type="number" id="amount">
+  <div id="dynamicAttributes" class="col-12"></div>
+
+  <!-- สถานะ -->
+  <div class="form-group col-4">
+    <label>สถานะเคลม</label>
+    <select id="status">
+      <option>รอผล</option>
+      <option>อนุมัติเคลม</option>
+    </select>
+  </div>
+
+  <!-- จำนวน -->
+  <div class="form-group col-4">
+    <label>จำนวนเคลม</label>
+    <input type="number" id="amount">
+  </div>
+
+  <!-- วันที่ติดตาม -->
+  <div class="form-group col-4">
+    <label>วันที่ติดตาม</label>
+    <input type="date" id="followupDate">
+  </div>
+
+  <!-- ชื่อสินค้า -->
+  <div class="form-group col-8">
+    <label>สินค้า</label>
+    <input type="text" id="product" placeholder="ระบุชื่อสินค้า">
+  </div>
+
+  <!-- วันที่แจ้งเคลม -->
+  <div class="form-group col-4">
+    <label>วันที่แจ้งเคลม</label>
+    <input type="date" id="claimDate">
+  </div>
+
+  <!-- จำนวน / รุ่น -->
+  <div class="form-group col-8">
+    <label>จำนวน / รุ่น</label>
+    <input type="text" id="qty" placeholder="เช่น 2 ชิ้น, รุ่น ABC-123">
+  </div>
+
+  <!-- วันที่ซื้อ -->
+  <div class="form-group col-4">
+    <label>วันที่ซื้อสินค้า</label>
+    <input type="date" id="buyDate">
+  </div>
+
+  <!-- รายละเอียด -->
+  <div class="form-group col-12">
+    <label>รายละเอียด</label>
+    <textarea id="note" rows="4"></textarea>
+  </div>
+
 </div>
-      
-      <!-- วันที่ติดตาม -->
-      <div class="form-group">
-        <label>วันที่ติดตาม</label>
-        <input type="date" id="followupDate">
-      </div>
-      
-      
-      <!-- ชื่อสินค้า -->
-      <label>สินค้า</label>
-      <input type="text" id="product" placeholder="ระบุชื่อสินค้า">
-      
-      <!-- วันที่แจ้งเคลม -->
-      <label>วันที่แจ้งเคลม</label>
-      <input type="date" id="claimDate">
-      
-      <!-- จำนวน / รุ่นสินค้า -->
-      <label>จำนวน / รุ่น</label>
-      <input type="text" id="qty" placeholder="เช่น 2 ชิ้น, รุ่น ABC-123">
-      
-      <!-- วันที่ซื้อสินค้า -->
-      <label>วันที่ซื้อสินค้า</label>
-      <input type="date" id="buyDate">
-    </div>
-    
-    <!-- หมายเหตุ -->
-    <div class="form-group full">
-      <label>รายละเอียด</label>
-      <textarea id="note" rows="5"></textarea>
-    </div>
-    
     <!-- อัพโหลด -->
     <div class="form-group">
   <label>แนบรูปภาพ / วิดีโอ</label>
@@ -186,6 +192,8 @@
     </label>
 
   </div>
+
+  
 
 </div>
   
