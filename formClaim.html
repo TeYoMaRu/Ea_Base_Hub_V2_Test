@@ -37,7 +37,7 @@
     </div>
        
     <!-- แสดงชื่อผู้ใช้งาน (JavaScript สามารถเปลี่ยนค่านี้ได้ภายหลัง) -->
-    <div class="user-name">ผู้ใช้งาน</div>
+    <div class="user-name">Logout</div>
 
   </header>
 
@@ -72,145 +72,155 @@
          ===================================================== -->
     <div class="card">
       <!-- หัวเรื่อง -->
-      <h3>⚠️ แจ้งเคลมสินค้า</h3>
+      <h1>⚠️ แจ้งเคลมสินค้า</h1>      
+<!-- =====================================================
+     MAIN PAGE
+     ===================================================== -->
+      
+      <!-- TITLE -->     
+        <div class="section-divider"></div>     <!--เส้นขั้นหัวข้อ-->
+       
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="empName">พนักงานขาย</label>
+            <input id="empName" readonly>
+          </div>
+               
+          <div class="form-group">
+            <label for="area">เขตการขาย</label>
+            <input id="area" readonly>
+          </div>
+        </div>
 
-      <!-- ===================================================== -->
-<!-- MAIN CONTENT CONTAINER                                 -->
+      <div class="form-grid">
+        <div class="form-group">
+        <label>วันที่แจ้งเคลม</label>
+        <input type="date">
+      </div>  
+
+        <div class="form-group">
+        <label>ลูกค้า / ร้านค้า *</label>
+        <select>
+        <option>-- เลือกร้านค้า --</option>
+        </select>
+      </div>    
+    </div>
+    
+    </div>   
+        
+<!-- <main class="container"> -->
+
+
 <!-- ===================================================== -->
-<main class="container">
-
-
-  <!-- ===================================================== -->
-  <!-- SECTION A : FORM INPUT                                -->
-  <!-- ===================================================== -->
-  <div class="section">
-
-    <h4>กรอกข้อมูลเบื้องต้นเกี่ยวกับสินค้าที่ต้องการเคลม</h4>
-
-    <!-- Grid สำหรับจัดเรียงช่องกรอก -->
-<div class="form-grid">
-
-  <!-- วันที่ -->
-  <div class="form-group col-3">
-    <label>วันที่แจ้งเคลม</label>
-    <input type="date" id="reportDate">
-  </div>
-
-  <!-- ร้านค้า -->
-  <div class="form-group col-3">
-    <label>ร้านค้า</label>
-    <select id="shopSelect">
-      <option value="">-- เลือกร้านค้า --</option>
-    </select>
-  </div>
-
-  <!-- หมวด -->
-  <div class="form-group col-3">
-    <label>สินค้าที่ขายกับร้านนี้</label>
-    <select id="categorySelect">
-      <option value="">-- เลือกหมวด --</option>
-    </select>
-  </div>
-
-  <!-- สินค้า -->
-  <div class="form-group col-3">
-    <label>สินค้า</label>
-    <select id="productSelect">
-      <option value="">-- เลือกสินค้า --</option>
-    </select>
-  </div>
-
-  <div id="dynamicAttributes" class="col-12"></div>
-
-  <!-- สถานะ -->
-  <div class="form-group col-4">
-    <label>สถานะเคลม</label>
-    <select id="status">
-      <option>รอผล</option>
-      <option>อนุมัติเคลม</option>
-    </select>
-  </div>
-
-  <!-- จำนวน -->
-  <div class="form-group col-4">
-    <label>จำนวนเคลม</label>
-    <input type="number" id="amount">
-  </div>
-
-  <!-- วันที่ติดตาม -->
-  <div class="form-group col-4">
-    <label>วันที่ติดตาม</label>
-    <input type="date" id="followupDate">
-  </div>
-
-  <!-- ชื่อสินค้า -->
-  <div class="form-group col-8">
-    <label>สินค้า</label>
-    <input type="text" id="product" placeholder="ระบุชื่อสินค้า">
-  </div>
-
-  <!-- วันที่แจ้งเคลม -->
-  <div class="form-group col-4">
-    <label>วันที่แจ้งเคลม</label>
-    <input type="date" id="claimDate">
-  </div>
-
-  <!-- จำนวน / รุ่น -->
-  <div class="form-group col-8">
-    <label>จำนวน / รุ่น</label>
-    <input type="text" id="qty" placeholder="เช่น 2 ชิ้น, รุ่น ABC-123">
-  </div>
-
-  <!-- วันที่ซื้อ -->
-  <div class="form-group col-4">
-    <label>วันที่ซื้อสินค้า</label>
-    <input type="date" id="buyDate">
-  </div>
-
-  <!-- รายละเอียด -->
-  <div class="form-group col-12">
-    <label>รายละเอียด</label>
-    <textarea id="note" rows="4"></textarea>
-  </div>
-
-</div>
-    <!-- อัพโหลด -->
+<!-- SECTION A : FORM INPUT                                -->
+<!-- ===================================================== -->
+<div class="section-card">
+  <h4>กรอกข้อมูลเบื้องต้นเกี่ยวกับสินค้าที่ต้องการเคลม</h4>  
+  <div class="section-divider"></div>     <!--เส้นขั้นหัวข้อ-->
+  <!-- Grid สำหรับจัดเรียงช่องกรอก -->
+    
+    <div class="section-title">
+      ℹ️ ข้อมูลทั่วไป
+    </div>
+    
+    
+    <div class="form-grid">
+      
+      <div class="form-group">
+        <label>วันที่เปิดบิล</label>
+        <input type="date">
+      </div>    
+    
     <div class="form-group">
-  <label>แนบรูปภาพ / วิดีโอ</label>
-
-  <div class="upload-grid" id="uploadGrid">
-
-    <label class="upload-box">
-      +
-      <input 
-        type="file"
-        id="claimMedia"
-        accept="image/*,video/*"
-        multiple
-        hidden
-      >
-    </label>
-
+      <label>วันที่ผลิตสินค้า (ถ้าทราบ)</label>
+      <input type="date" id="reportDate">
+    </div>
   </div>
 
-  
+  <div class="section-divider"></div>
 
-</div>
-  
-  
-  <!-- ปุ่มบันทึก -->
-  <div class="actions">
-    <button class="btn-draft">💾 Save Draft</button>
-    <button class="btn-save" onclick="saveReport()">✅ บันทึก</button>
+<div class="section-title">
+📦 รายการสินค้าที่เคลม
   </div>
 
-</div>
 
-    <!-- =====================================================
+    <div class="product-grid">
+
+      <div class="product-item">
+      <div class="product-icon">🔲</div>
+      ท่อพีอี
+      </div>
+
+      <div class="product-item">
+      <div class="product-icon">🏠</div>
+      ตาข่ายกรองแสง
+      </div>
+
+      <div class="product-item">
+      <div class="product-icon">🌊</div>
+      ถุงเพาะชำ
+      </div>
+
+      <div class="product-item">
+      <div class="product-icon">🌱</div>
+      เทปน้ำพุ่ง
+      </div>
+
+      <div class="product-item">
+      <div class="product-icon">🔲</div>
+      ถุงขยะ
+      </div>
+
+      <div class="product-item">
+      <div class="product-icon">🏠</div>
+      พลาสติกโรงเรือน
+      </div>
+
+      <div class="product-item">
+      <div class="product-icon">🌊</div>
+      พลาสติกปูบ่อ
+      </div>
+
+      <div class="product-item">
+      <div class="product-icon">🌱</div>
+      พลาสติกคลุมดิน
+      </div>
+
+      <div class="product-item">
+      <div class="product-icon">🌊</div>
+      พลาสติกปูบ่อ
+      </div>
+
+      <div class="product-item">
+      <div class="product-icon">🌱</div>
+      สินค้าอื่นๆ
+      </div>
+
+    </div>
+
+
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Display(Auto)</label>
+      <input type="text" placeholder="LPPE 20 mm. 200 m. เขียว ต้นไม้">
+    </div>   
+
+  
+    <div class="form-group">
+      <label>จำนวน (ระบุหน่วย)</label>
+      <input type="text" placeholder="เช่น 10 ม้วน, 5 ถุง">
+    </div>
+    </div>
+
+    
+  </div>
+
+  <!-- =====================================================
          SECTION 2: เลือกประเภทปัญหา
          คลิกเลือกประเภทปัญหาที่พบ (สามารถเลือกได้หลายข้อ)
          ===================================================== -->
-    <div class="card">
+    <div class="card-cause">
       <!-- หัวเรื่อง -->
       <h3>📦 ประเภทปัญหา</h3>
       
@@ -244,8 +254,78 @@
       ></textarea>
     </div>
 
+    <!-- ===================================================== -->
+<!--  การ์ดรายการสินค้า                                        -->
+<!-- ===================================================== -->
+
+<div class="product-crad">
+   <!-- อัพโหลด -->
+  <div class="form-group">
+  <label>แนบรูปภาพ / วิดีโอ</label>
+
+  <div class="upload-grid" id="uploadGrid">
+
+    <label class="upload-box">
+      +
+      <input 
+        type="file"
+        id="claimMedia"
+        accept="image/*,video/*"
+        multiple
+        hidden
+      >
+    </label>
+
+  </div>
+</div>
+  
+  
+  <!-- ปุ่มบันทึก -->
+  <div class="actions">
+    <button class="btn-draft">💾 Save Draft</button>
+    <button class="btn-save" onclick="saveReport()">✅ บันทึก</button>
+  </div>
+
+</div>
+
+  
+
+
+ 
+
+   
+
+    
+
+    
 
     <!-- =====================================================
+         SECTION 5: รายการ Draft
+         แสดงรายการเคลมที่บันทึกไว้แบบร่าง
+         ===================================================== -->
+    <div class="card">
+      <!-- หัวเรื่อง -->
+      <h2>ตรวจสอบความถูกต้อง</h2>
+      
+      <!-- ตารางแสดงข้อมูล -->
+      <table>
+        <!-- หัวตาราง -->
+        <thead>
+          <tr>
+            <th>วันที่</th>
+            <th>สินค้า</th>
+            <th>สถานะ</th>
+            <th>จัดการ</th>
+          </tr>
+        </thead>
+        
+        <!-- เนื้อหาตาราง (จะถูกเพิ่มด้วย JavaScript) -->
+        <tbody id="draftBody">
+          <!-- JavaScript จะเพิ่ม <tr> เข้ามาที่นี่ -->
+        </tbody>
+      </table>
+
+      <!-- =====================================================
          SECTION 4: ปุ่มดำเนินการ
          บันทึกแบบร่าง, ส่งเคลม หรือกลับหน้าก่อนหน้า
          ===================================================== -->
@@ -266,45 +346,38 @@
       </button>
     </div>
 
-
-    <!-- =====================================================
-         SECTION 5: รายการ Draft
-         แสดงรายการเคลมที่บันทึกไว้แบบร่าง
-         ===================================================== -->
-    <div class="card">
-      <!-- หัวเรื่อง -->
-      <h2>📋 รายการ Draft</h2>
-      
-      <!-- ตารางแสดงข้อมูล -->
-      <table>
-        <!-- หัวตาราง -->
-        <thead>
-          <tr>
-            <th>วันที่</th>
-            <th>สินค้า</th>
-            <th>สถานะ</th>
-            <th>จัดการ</th>
-          </tr>
-        </thead>
-        
-        <!-- เนื้อหาตาราง (จะถูกเพิ่มด้วย JavaScript) -->
-        <tbody id="draftBody">
-          <!-- JavaScript จะเพิ่ม <tr> เข้ามาที่นี่ -->
-        </tbody>
-      </table>
-    </div>
-
   </div>
+
+
+
+
+
+
+
+
+
+
+    
+    
+    
+  </div>
+  
+  
+  <!-- <div id="dynamicAttributes" class="col-12"></div>   -->
+  
+</div>
+
+
+</div>
+
+  
   <!-- สิ้นสุด page -->
 
 
   <!-- =====================================================
        เชื่อมโยงไฟล์ JavaScript
        ===================================================== -->
-   <!-- =====================================================
-       📦 SCRIPTS - เรียงลำดับตามความสำคัญ
-       ===================================================== -->
-  
+     
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <!-- Supabase Client Config (ต้องมาก่อน formClaim.js) -->
