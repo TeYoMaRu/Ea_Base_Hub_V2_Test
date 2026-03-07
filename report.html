@@ -1,55 +1,64 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <!-- ===================================================== -->
-  <!-- BASIC META SETTINGS                                   -->
-  <!-- ===================================================== -->
+  <!-- กำหนด character encoding เป็น UTF-8 เพื่อรองรับภาษาไทย -->
   <meta charset="UTF-8">
+  
+  <!-- กำหนดให้หน้าเว็บแสดงผลได้ดีบนมือถือ (responsive) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EABaseHub - Report Management</title>
+  
+  <!-- ชื่อหน้าเว็บที่แสดงบน tab เบราว์เซอร์ -->
+  <title>Forms Report</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- ===================================================== -->
-  <!-- GOOGLE FONT                                           -->
-  <!-- ===================================================== -->
+  <!-- นำเข้า Google Material Icons สำหรับใช้ไอคอนต่างๆ -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
-  <!-- ===================================================== -->
-  <!-- EXTERNAL CSS FILE                                     -->
-  <!-- ===================================================== -->
+
+  <!-- เชื่อมโยงไฟล์ CSS ภายนอก -->
   <link rel="stylesheet" href="css/report.css">
 </head>
 
 <body>
 
-<!-- ===================================================== -->
-<!-- APP HEADER (แถบบนสุดของระบบ)                         -->
-<!-- ===================================================== -->
-<header class="app-header">
+  <!-- =====================================================
+       HEADER SECTION (ส่วนหัวเว็บไซต์)
+       แสดงโลโก้และชื่อผู้ใช้งาน
+       ===================================================== -->
+  <header class="app-header">
 
-  <!-- โลโก้ / ชื่อระบบ -->
- 
-  <div class="logo"><img src="assets/icons/icon-192.png" alt="logo"><h2>EABaseHub</h2></div>
-     
-  <!-- แสดงชื่อผู้ใช้งาน (JS จะใส่ชื่อให้ภายหลัง) -->
-  <div class="user-name">ผู้ใช้งาน</div>
+    <!-- ส่วนโลโก้และชื่อระบบ -->
+    <div class="logo">
+      <!-- รูปโลโก้ (ถ้ามี) -->
+      <img src="assets/icons/icon-192.png" alt="logo">
+      <!-- ชื่อระบบ -->
+      <h2>EABaseHub</h2>
+    </div>
+       
+    <!-- แสดงชื่อผู้ใช้งาน (JavaScript สามารถเปลี่ยนค่านี้ได้ภายหลัง) -->
+    <div class="user-name">ผู้ใช้งาน</div>
 
-</header>
+  </header>
 
 
-<!-- ===================================================== -->
-<!-- NAVIGATION MENU (เมนูหลักของระบบ)                    -->
-<!-- ===================================================== -->
-<nav class="app-nav">
-
-  <!-- ปุ่มเมนูแต่ละหน้า -->
-  <a href="index.html">หน้าแรก</a>
-  <a href="report.html" class="active">รายงานเยี่ยมร้านค้า</a>
-  <a href="formHub.html">FormsHub</a>
-  <a href="formClaim.html">แจ้งเคลมสินค้า</a>
-
-</nav>
+  <!-- =====================================================
+       NAVIGATION SECTION (ส่วนเมนูนำทาง)
+       แสดงลิงก์ไปยังหน้าต่างๆ ในระบบ  (หน้าปัจจุบัน - ใช้ class="active") 
+       ===================================================== -->
+  <nav class="app-nav">
+    <!-- เมนูหน้าแรก -->
+    <a href="index.html">หน้าแรก</a>
+    
+    <!-- เมนูรายงานเยี่ยมร้านค้า -->
+    <a href="report.html" class="active">รายงานเยี่ยมร้านค้า</a>
+    
+    <!-- เมนู FormsHub-->
+    <a href="formsHub.html">FormsHub</a>
+    
+    <!-- เมนูแจ้งเคลมสินค้า -->
+    <a href="formClaim.html">แจ้งเคลมสินค้า</a>
+  </nav>
 
 
 <!-- ===================================================== -->

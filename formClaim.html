@@ -8,25 +8,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- ชื่อหน้าเว็บที่แสดงบน tab เบราว์เซอร์ -->
-  <title>แจ้งเคลมสินค้า</title>
+  <title>Forms Claim</title>
 
-  <!-- นำเข้าฟอนต์ Kanit จาก Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  
-
+  <!-- นำเข้า Google Material Icons สำหรับใช้ไอคอนต่างๆ -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
 
   <!-- เชื่อมโยงไฟล์ CSS ภายนอก -->
-  <link rel="stylesheet" href="css/formClaim.css">
+  <link rel="stylesheet" href="css/formClaim1.css">
 </head>
 
 <body>
 
   <!-- =====================================================
        HEADER SECTION (ส่วนหัวเว็บไซต์)
-       แสดงชื่อระบบและชื่อผู้ใช้งาน
+       แสดงโลโก้และชื่อผู้ใช้งาน
        ===================================================== -->
- <header class="app-header">
+  <header class="app-header">
 
     <!-- ส่วนโลโก้และชื่อระบบ -->
     <div class="logo">
@@ -37,14 +37,14 @@
     </div>
        
     <!-- แสดงชื่อผู้ใช้งาน (JavaScript สามารถเปลี่ยนค่านี้ได้ภายหลัง) -->
-    <div class="user-name">Logout</div>
+    <div class="user-name">ผู้ใช้งาน</div>
 
   </header>
 
 
   <!-- =====================================================
        NAVIGATION SECTION (ส่วนเมนูนำทาง)
-       แสดงลิงก์ไปยังหน้าต่างๆ ในระบบ
+       แสดงลิงก์ไปยังหน้าต่างๆ ในระบบ (หน้าปัจจุบัน - ใช้ class="active") 
        ===================================================== -->
   <nav class="app-nav">
     <!-- เมนูหน้าแรก -->
@@ -54,199 +54,149 @@
     <a href="report.html">รายงานเยี่ยมร้านค้า</a>
     
     <!-- เมนู FormsHub -->
-    <a href="formHub.html">FormsHub</a>
+    <a href="formsHub.html">FormsHub</a>
     
-    <!-- เมนูแจ้งเคลมสินค้า (หน้าปัจจุบัน - ใช้ class="active") -->
+    <!-- เมนูแจ้งเคลมสินค้า -->
     <a href="formClaim.html" class="active">แจ้งเคลมสินค้า</a>
   </nav>
 
+  
 
-  <!-- =====================================================
-       MAIN CONTENT (เนื้อหาหลักของหน้า)
-       ===================================================== -->
+  
+
+  <!-- MAIN CONTENT -->
   <div class="page">
 
-    <!-- =====================================================
-         SECTION 1: ฟอร์มข้อมูลสินค้า
-         กรอกข้อมูลเบื้องต้นเกี่ยวกับสินค้าที่ต้องการเคลม
-         ===================================================== -->
+    <!-- ===== SECTION 1: ข้อมูลพนักงานและลูกค้า ===== -->
     <div class="card">
-      <!-- หัวเรื่อง -->
-      <h1>⚠️ แจ้งเคลมสินค้า</h1>      
-<!-- =====================================================
-     MAIN PAGE
-     ===================================================== -->
+      <h1>⚠️ แจ้งเคลมสินค้า</h1>
       
-      <!-- TITLE -->     
-        <div class="section-divider"></div>     <!--เส้นขั้นหัวข้อ-->
-       
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="empName">พนักงานขาย</label>
-            <input id="empName" readonly>
-          </div>
-               
-          <div class="form-group">
-            <label for="area">เขตการขาย</label>
-            <input id="area" readonly>
-          </div>
+      <div class="section-divider"></div>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="empName">พนักงานขาย</label>
+          <input id="empName" readonly>
         </div>
+        
+        <div class="form-group">
+          <label for="area">เขตการขาย</label>
+          <input id="area" readonly>
+        </div>
+      </div>
 
       <div class="form-grid">
         <div class="form-group">
-        <label>วันที่แจ้งเคลม</label>
-        <input type="date">
-      </div>  
+          <label for="claimDate">วันที่แจ้งเคลม *</label>
+          <input type="date" id="claimDate">
+        </div>
 
         <div class="form-group">
-        <label>ลูกค้า / ร้านค้า *</label>
-        <select>
-        <option>-- เลือกร้านค้า --</option>
-        </select>
-      </div>    
+          <label for="customer">ลูกค้า / ร้านค้า *</label>
+          <select id="customer">
+            <option>-- เลือกร้านค้า --</option>
+          </select>
+        </div>
+      </div>
     </div>
-    
-    </div>   
+
+    <!-- ===== SECTION 2: ข้อมูลทั่วไป ===== -->
+    <div class="section-card">
+      <h4>กรอกข้อมูลเบื้องต้นเกี่ยวกับสินค้าที่ต้องการเคลม</h4>
+      <div class="section-divider"></div>
+      
+      <div class="section-title">
+        ℹ️ ข้อมูลทั่วไป
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="buyDate">วันที่เปิดบิล</label>
+          <input type="date" id="buyDate">
+        </div>
         
-<!-- <main class="container"> -->
-
-
-<!-- ===================================================== -->
-<!-- SECTION A : FORM INPUT                                -->
-<!-- ===================================================== -->
-<div class="section-card">
-  <h4>กรอกข้อมูลเบื้องต้นเกี่ยวกับสินค้าที่ต้องการเคลม</h4>  
-  <div class="section-divider"></div>     <!--เส้นขั้นหัวข้อ-->
-  <!-- Grid สำหรับจัดเรียงช่องกรอก -->
-    
-    <div class="section-title">
-      ℹ️ ข้อมูลทั่วไป
-    </div>
-    
-    
-    <div class="form-grid">
-      
-      <div class="form-group">
-        <label>วันที่เปิดบิล</label>
-        <input type="date">
-      </div>    
-    
-    <div class="form-group">
-      <label>วันที่ผลิตสินค้า (ถ้าทราบ)</label>
-      <input type="date" id="reportDate">
-    </div>
-  </div>
-
-  <div class="section-divider"></div>
-
-<div class="section-title">
-📦 รายการสินค้าที่เคลม
-  </div>
-
-
-    <div class="product-grid">
-
-      <div class="product-item">
-      <div class="product-icon">🔲</div>
-      ท่อพีอี
+        <div class="form-group">
+          <label for="mfgDate">วันที่ผลิตสินค้า (ถ้าทราบ)</label>
+          <input type="date" id="mfgDate">
+        </div>
       </div>
 
-      <div class="product-item">
-      <div class="product-icon">🏠</div>
-      ตาข่ายกรองแสง
+      <div class="section-divider"></div>
+
+      <div class="section-title">
+        📦 รายการสินค้าที่เคลม
       </div>
 
-      <div class="product-item">
-      <div class="product-icon">🌊</div>
-      ถุงเพาะชำ
+      <div class="product-grid">
+        <div class="product-item">
+          <div class="product-icon">🔲</div>
+          ท่อพีอี
+        </div>
+        <div class="product-item">
+          <div class="product-icon">🏠</div>
+          ตาข่ายกรองแสง
+        </div>
+        <div class="product-item">
+          <div class="product-icon">🌊</div>
+          ถุงเพาะชำ
+        </div>
+        <div class="product-item">
+          <div class="product-icon">🌱</div>
+          เทปน้ำพุ่ง
+        </div>
+        <div class="product-item">
+          <div class="product-icon">🔲</div>
+          ถุงขยะ
+        </div>
+        <div class="product-item">
+          <div class="product-icon">🏠</div>
+          พลาสติกโรงเรือน
+        </div>
+        <div class="product-item">
+          <div class="product-icon">🌊</div>
+          พลาสติกปูบ่อ
+        </div>
+        <div class="product-item">
+          <div class="product-icon">🌱</div>
+          พลาสติกคลุมดิน
+        </div>
+        <div class="product-item">
+          <div class="product-icon">🌊</div>
+          ฟิล์มพิมพ์
+        </div>
+        <div class="product-item">
+          <div class="product-icon">🌱</div>
+          สินค้าอื่นๆ
+        </div>
       </div>
 
-      <div class="product-item">
-      <div class="product-icon">🌱</div>
-      เทปน้ำพุ่ง
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="product">ชื่อสินค้า *</label>
+          <input type="text" id="product" placeholder="LPPE 20 mm. 200 m. เขียว ต้นไม้">
+        </div>
+        
+        <div class="form-group">
+          <label for="qty">จำนวน (ระบุหน่วย) *</label>
+          <input type="text" id="qty" placeholder="เช่น 10 ม้วน, 5 ถุง">
+        </div>
       </div>
-
-      <div class="product-item">
-      <div class="product-icon">🔲</div>
-      ถุงขยะ
-      </div>
-
-      <div class="product-item">
-      <div class="product-icon">🏠</div>
-      พลาสติกโรงเรือน
-      </div>
-
-      <div class="product-item">
-      <div class="product-icon">🌊</div>
-      พลาสติกปูบ่อ
-      </div>
-
-      <div class="product-item">
-      <div class="product-icon">🌱</div>
-      พลาสติกคลุมดิน
-      </div>
-
-      <div class="product-item">
-      <div class="product-icon">🌊</div>
-      พลาสติกปูบ่อ
-      </div>
-
-      <div class="product-item">
-      <div class="product-icon">🌱</div>
-      สินค้าอื่นๆ
-      </div>
-
     </div>
 
-
-
-  <div class="form-grid">
-    <div class="form-group">
-      <label>Display(Auto)</label>
-      <input type="text" placeholder="LPPE 20 mm. 200 m. เขียว ต้นไม้">
-    </div>   
-
-  
-    <div class="form-group">
-      <label>จำนวน (ระบุหน่วย)</label>
-      <input type="text" placeholder="เช่น 10 ม้วน, 5 ถุง">
-    </div>
-    </div>
-
-    
-  </div>
-
-  <!-- =====================================================
-         SECTION 2: เลือกประเภทปัญหา
-         คลิกเลือกประเภทปัญหาที่พบ (สามารถเลือกได้หลายข้อ)
-         ===================================================== -->
+    <!-- ===== SECTION 3: ประเภทปัญหา ===== -->
     <div class="card-cause">
-      <!-- หัวเรื่อง -->
-      <h3>📦 ประเภทปัญหา</h3>
+      <h3>📦 ประเภทปัญหา *</h3>
       
-      <!-- กริดแสดงตัวเลือกประเภทปัญหา -->
       <div class="claim-grid" id="claimTypes">
-        <!-- แต่ละช่องจะมี class "claim-item" -->
-        <!-- เมื่อคลิกจะเพิ่ม class "active" (จัดการด้วย JavaScript) -->
         <div class="claim-item">ชำรุดจากขนส่ง</div>
         <div class="claim-item">พลาสติกแตกร้าว</div>
-        <div class="claim-item">หลอดไม่ติด</div>
+        <div class="claim-item">ซีลไม่ติด</div>
         <div class="claim-item">อุปกรณ์ไม่ครบ</div>
         <div class="claim-item">สภาพสินค้า</div>
         <div class="claim-item">อื่นๆ</div>
       </div>
-    </div>
 
-
-    <!-- =====================================================
-         SECTION 3: รายละเอียดเพิ่มเติม
-         กรอกรายละเอียดเพิ่มเติมหรือคำอธิบายปัญหา
-         ===================================================== -->
-    <div class="card">
-      <!-- หัวเรื่อง -->
       <h3>📝 รายละเอียดเพิ่มเติม</h3>
-      
-      <!-- ช่องกรอกข้อความแบบหลายบรรทัด -->
       <textarea 
         rows="4" 
         id="detail" 
@@ -254,62 +204,56 @@
       ></textarea>
     </div>
 
-    <!-- ===================================================== -->
-<!--  การ์ดรายการสินค้า                                        -->
-<!-- ===================================================== -->
-
-<div class="product-crad">
-   <!-- อัพโหลด -->
-  <div class="form-group">
-  <label>แนบรูปภาพ / วิดีโอ</label>
-
-  <div class="upload-grid" id="uploadGrid">
-
-    <label class="upload-box">
-      +
-      <input 
-        type="file"
-        id="claimMedia"
-        accept="image/*,video/*"
-        multiple
-        hidden
-      >
-    </label>
-
-  </div>
-</div>
-  
-  
-  <!-- ปุ่มบันทึก -->
-  <div class="actions">
-    <button class="btn-draft">💾 Save Draft</button>
-    <button class="btn-save" onclick="saveReport()">✅ บันทึก</button>
-  </div>
-
-</div>
-
-  
-
-
- 
-
-   
-
-    
-
-    
-
-    <!-- =====================================================
-         SECTION 5: รายการ Draft
-         แสดงรายการเคลมที่บันทึกไว้แบบร่าง
-         ===================================================== -->
+    <!-- ===== SECTION 4: แนบไฟล์ ===== -->
     <div class="card">
-      <!-- หัวเรื่อง -->
-      <h2>ตรวจสอบความถูกต้อง</h2>
+      <h2>📷 แนบรูปภาพ/วิดีโอ *</h2>
       
-      <!-- ตารางแสดงข้อมูล -->
+      <!-- IMAGE UPLOAD -->
+      <div class="form-group">
+        <label>แนบรูปภาพ</label>
+        <div class="upload-grid" id="imageGrid">
+          <label class="upload-box">
+            📷
+            <input 
+              type="file"
+              id="imageInput"
+              accept="image/*"
+              multiple
+              hidden
+            >
+          </label>
+        </div>
+      </div>
+
+      <!-- VIDEO UPLOAD -->
+      <div class="form-group">
+        <label>แนบวิดีโอ</label>
+        <div class="upload-grid" id="videoGrid">
+          <label class="upload-box">
+            🎥
+            <input 
+              type="file"
+              id="videoInput"
+              accept="video/*"
+              multiple
+              hidden
+            >
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 5: ปุ่มบันทึก ===== -->
+    <div class="actions">
+      <button class="btn-draft" onclick="saveDraft()">💾 Save Draft</button>
+      <button class="btn-edit" onclick="submitEdit()">แก้ไข</button>
+    </div>
+
+    <!-- ===== SECTION 6: ตารางแสดง Draft ===== -->
+    <div class="card">
+      <h2>📋 รายการ Draft</h2>
+      
       <table>
-        <!-- หัวตาราง -->
         <thead>
           <tr>
             <th>วันที่</th>
@@ -318,74 +262,24 @@
             <th>จัดการ</th>
           </tr>
         </thead>
-        
-        <!-- เนื้อหาตาราง (จะถูกเพิ่มด้วย JavaScript) -->
         <tbody id="draftBody">
-          <!-- JavaScript จะเพิ่ม <tr> เข้ามาที่นี่ -->
+          <!-- JavaScript จะเพิ่ม rows ที่นี่ -->
         </tbody>
       </table>
-
-      <!-- =====================================================
-         SECTION 4: ปุ่มดำเนินการ
-         บันทึกแบบร่าง, ส่งเคลม หรือกลับหน้าก่อนหน้า
-         ===================================================== -->
-    <div class="actions">
-      <!-- ปุ่มบันทึกแบบร่าง (Draft) -->
-      <button class="btn-draft" onclick="saveDraft()">
-        💾 Save Draft
-      </button>
-      
-      <!-- ปุ่มส่งเคลม (Submit) -->
-      <button class="btn-submit" onclick="submitClaim()">
-        ▶️ ส่งเคลม
-      </button>
-      
-      <!-- ปุ่มกลับหน้าก่อนหน้า -->
-      <button class="btn-back" onclick="history.back()">
-        ↩️ กลับ
-      </button>
     </div>
 
-  </div>
-
-
-
-
-
-
-
-
-
-
-    
-    
-    
-  </div>
-  
-  
-  <!-- <div id="dynamicAttributes" class="col-12"></div>   -->
-  
-</div>
-
-
-</div>
-
-  
-  <!-- สิ้นสุด page -->
-
-
-  <!-- =====================================================
-       เชื่อมโยงไฟล์ JavaScript
-       ===================================================== -->
+    <!-- ===== SECTION 7: ปุ่มส่งเคลม ===== -->
+    <div class="actions">
      
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-  <!-- Supabase Client Config (ต้องมาก่อน formClaim.js) -->
-  <script src="js/core/supabaseClient.js"></script>
+      <button class="btn-submit" onclick="submitClaim()">✅ ส่งเคลม</button>
+    </div>
 
+  </div>     <!--ปิด-->
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/core/supabaseClient.js"></script>
   <script src="js/core/auth.js"></script>
-  
-  <!--  Form Claim Script (ใช้ supabaseClient จาก file ก่อนหน้า) -->
   <script src="js/formClaim.js"></script>
 
 </body>

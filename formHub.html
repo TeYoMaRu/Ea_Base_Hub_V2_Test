@@ -1,121 +1,133 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
-<head>
-  <!-- กำหนด character encoding เป็น UTF-8 เพื่อรองรับภาษาไทย -->
-  <meta charset="UTF-8">
-  
-  <!-- กำหนดให้หน้าเว็บแสดงผลได้ดีบนมือถือ (responsive) -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- ชื่อหน้าเว็บที่แสดงบน tab เบราว์เซอร์ -->
-  <title>Forms Hub</title>
+  <head>
+    <!-- กำหนด character encoding เป็น UTF-8 เพื่อรองรับภาษาไทย -->
+    <meta charset="UTF-8" />
 
-  <!-- นำเข้า Google Material Icons สำหรับใช้ไอคอนต่างๆ -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- กำหนดให้หน้าเว็บแสดงผลได้ดีบนมือถือ (responsive) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- เชื่อมโยงไฟล์ CSS ภายนอก -->
-  <link rel="stylesheet" href="css/formHub.css">
-</head>
+    <!-- ชื่อหน้าเว็บที่แสดงบน tab เบราว์เซอร์ -->
+    <title>Forms Hub</title>
 
-<body>
+    <!-- นำเข้า Google Material Icons สำหรับใช้ไอคอนต่างๆ -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- =====================================================
+    <!-- เชื่อมโยงไฟล์ CSS ภายนอก -->
+    <link rel="stylesheet" href="css/formHub.css" />
+  </head>
+
+  <body>
+    <!-- =====================================================
        HEADER SECTION (ส่วนหัวเว็บไซต์)
        แสดงโลโก้และชื่อผู้ใช้งาน
        ===================================================== -->
-  <header class="app-header">
+    <header class="app-header">
+      <!-- ส่วนโลโก้และชื่อระบบ -->
+      <div class="logo">
+        <!-- รูปโลโก้ (ถ้ามี) -->
+        <img src="assets/icons/icon-192.png" alt="logo" />
+        <!-- ชื่อระบบ -->
+        <h2>EABaseHub</h2>
+      </div>
 
-    <!-- ส่วนโลโก้และชื่อระบบ -->
-    <div class="logo">
-      <!-- รูปโลโก้ (ถ้ามี) -->
-      <img src="assets/icons/icon-192.png" alt="logo">
-      <!-- ชื่อระบบ -->
-      <h2>EABaseHub</h2>
-    </div>
-       
-    <!-- แสดงชื่อผู้ใช้งาน (JavaScript สามารถเปลี่ยนค่านี้ได้ภายหลัง) -->
-    <div class="user-name">ผู้ใช้งาน</div>
+      <!-- แสดงชื่อผู้ใช้งาน (JavaScript สามารถเปลี่ยนค่านี้ได้ภายหลัง) -->
+      <div class="user-box">
+        <div class="user-avatar" id="userAvatar">👤</div>
 
-  </header>
+        <div class="user-info">
+          <div class="user-name" id="userName">กำลังโหลด...</div>
+          <div class="user-role" id="userRole"></div>
+        </div>
 
+        <button id="logoutBtn" class="logout-btn">Logout</button>
+      </div>
+    </header>
 
-  <!-- =====================================================
+    <!-- =====================================================
        NAVIGATION SECTION (ส่วนเมนูนำทาง)
        แสดงลิงก์ไปยังหน้าต่างๆ ในระบบ
        ===================================================== -->
-  <nav class="app-nav">
-    <!-- เมนูหน้าแรก -->
-    <a href="index.html">หน้าแรก</a>
-    
-    <!-- เมนูรายงานเยี่ยมร้านค้า -->
-    <a href="report.html">รายงานเยี่ยมร้านค้า</a>
-    
-    <!-- เมนู FormsHub (หน้าปัจจุบัน - ใช้ class="active") -->
-    <a href="formsHub.html" class="active">FormsHub</a>
-    
-    <!-- เมนูแจ้งเคลมสินค้า -->
-    <a href="formClaim.html">แจ้งเคลมสินค้า</a>
-  </nav>
+    <nav class="app-nav">
+      <!-- เมนูหน้าแรก -->
+      <a href="index.html">หน้าแรก</a>
 
+      <!-- เมนูรายงานเยี่ยมร้านค้า -->
+      <a href="report.html">รายงานเยี่ยมร้านค้า</a>
 
-  <!-- =====================================================
+      <!-- เมนู FormsHub (หน้าปัจจุบัน - ใช้ class="active") -->
+      <a href="formsHub.html" class="active">FormsHub</a>
+
+      <!-- เมนูแจ้งเคลมสินค้า -->
+      <a href="formClaim.html">แจ้งเคลมสินค้า</a>
+    </nav>
+
+    <!-- =====================================================
        MAIN CONTENT (เนื้อหาหลักของหน้า)
        ===================================================== -->
-  <div class="container">
+    <div class="container">
+      <!-- ส่วนหัวเรื่องของหน้า -->
+      <div class="page-title">
+        <!-- หัวเรื่องหลัก -->
+        <h1>📋 Forms Hub</h1>
 
-    <!-- ส่วนหัวเรื่องของหน้า -->
-    <div class="page-title">
-      <!-- หัวเรื่องหลัก -->
-      <h1>📋 Forms Hub</h1>
-      
-      <!-- คำอธิบายหัวเรื่อง -->
-      <p>เลือกแบบฟอร์มที่ต้องการใช้งาน</p>
-    </div>
+        <!-- คำอธิบายหัวเรื่อง -->
+        <p>เลือกแบบฟอร์มที่ต้องการใช้งาน</p>
+      </div>
 
-    <!-- กริดแสดงการ์ดแบบฟอร์มต่างๆ -->
-    <div class="forms-grid">
-
-      <!-- =====================================================
+      <!-- กริดแสดงการ์ดแบบฟอร์มต่างๆ -->
+      <div class="forms-grid">
+        <!-- =====================================================
            การ์ดที่ 1: แผนการเดินทาง (Trip Plan)
            คลิกแล้วจะไปหน้า formPlan.html
            ===================================================== -->
-      <div class="form-card" onclick="location.href='formPlan.html'">
-        <!-- ไอคอนรูปวงกลมสีน้ำเงิน -->
-        <div class="form-icon blue">
-          <!-- Material Icon รูป assignment (เอกสาร/แบบฟอร์ม) -->
-          <span class="material-icons">assignment</span>
-        </div>
-        
-        <!-- ชื่อแบบฟอร์ม -->
-        <h3>แผนการเดินทาง</h3>
-        
-        <!-- คำอธิบายเพิ่มเติม -->
-        <p>และเบิกทดลองจ่าย</p>
-      </div>
+        <div class="form-card" onclick="location.href = 'formPlan.html'">
+          <!-- ไอคอนรูปวงกลมสีน้ำเงิน -->
+          <div class="form-icon blue">
+            <!-- Material Icon รูป assignment (เอกสาร/แบบฟอร์ม) -->
+            <span class="material-icons">assignment</span>
+          </div>
 
-      <!-- =====================================================
+          <!-- ชื่อแบบฟอร์ม -->
+          <h3>แผนการเดินทาง</h3>
+
+          <!-- คำอธิบายเพิ่มเติม -->
+          <p>และเบิกทดลองจ่าย</p>
+        </div>
+
+        <!-- =====================================================
            การ์ดที่ 2: ใบเดินทางจริง (Actual Trip)
            คลิกแล้วจะไปหน้า formActual.html
            ===================================================== -->
-      <div class="form-card" onclick="location.href='formActual.html'">
-        <!-- ไอคอนรูปวงกลมสีเขียว -->
-        <div class="form-icon green">
-          <!-- Material Icon รูป receipt_long (ใบเสร็จ) -->
-          <span class="material-icons">receipt_long</span>
+        <div class="form-card" onclick="location.href = 'formActual.html'">
+          <!-- ไอคอนรูปวงกลมสีเขียว -->
+          <div class="form-icon green">
+            <!-- Material Icon รูป receipt_long (ใบเสร็จ) -->
+            <span class="material-icons">receipt_long</span>
+          </div>
+
+          <!-- ชื่อแบบฟอร์ม -->
+          <h3>ใบเดินทางจริง</h3>
+
+          <!-- คำอธิบายเพิ่มเติม -->
+          <p>และเคลียร์ค่าใช้จ่าย</p>
         </div>
-        
-        <!-- ชื่อแบบฟอร์ม -->
-        <h3>ใบเดินทางจริง</h3>
-        
-        <!-- คำอธิบายเพิ่มเติม -->
-        <p>และเคลียร์ค่าใช้จ่าย</p>
       </div>
-
+      <!-- สิ้นสุด forms-grid -->
     </div>
-    <!-- สิ้นสุด forms-grid -->
+    <!-- สิ้นสุด container -->
 
-  </div>
-  <!-- สิ้นสุด container -->
-
-</body>
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/core/supabaseClient.js"></script>
+    <script src="js/core/auth.js"></script>
+    <script src="js/formHub.js"></script>
+  </body>
 </html>

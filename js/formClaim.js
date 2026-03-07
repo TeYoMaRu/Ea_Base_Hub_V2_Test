@@ -1,8 +1,77 @@
 /* =====================================================
-   ⚠️ FORM CLAIM - JAVASCRIPT (แก้ไขแล้ว)
+   ⚠️ FORM CLAIM - JAVASCRIPT (แก้ไขแล้ว - เวอร์ชันสมบูรณ์)
    ไฟล์ JavaScript สำหรับจัดการฟอร์มแจ้งเคลมสินค้า
    ===================================================== */
 
+/* =====================================================
+   GLOBAL VARIABLES (ตัวแปร Global)
+   ===================================================== */
+
+let filesArray = [];              // เก็บไฟล์ที่อัปโหลด
+const MAX_FILES = 10;              // จำนวนไฟล์สูงสุด
+let editingIndex = null;           // ตำแหน่ง draft ที่กำลังแก้ไข
+let drafts = [];                   // เก็บรายการ drafts
+// ⚠️ ลบบรรทัดนี้ออก - ไม่ต้องประกาศซ้ำ
+// let supabaseClient = null;      // จะใช้จาก window.supabaseClient แทน
+
+/* =====================================================
+   INITIALIZATION (เริ่มต้นระบบ)
+   ===================================================== */
+
+/**
+ * รอให้ Supabase Client พร้อมใช้งาน
+ */
+async function waitForSupabase() {
+  let attempts = 0;
+  const maxAttempts = 50;
+  
+  while (!window.supabaseClient && attempts < maxAttempts) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    attempts++;
+  }
+  
+  if (window.supabaseClient) {
+    console.log('✅ Supabase Client พร้อมใช้งาน');
+    return true;
+  } else {
+    console.error('❌ ไม่สามารถโหลด Supabase Client');
+    return false;
+  }
+}
+
+/**
+ * ฟังก์ชันเริ่มต้นเมื่อโหลดหน้าเว็บเสร็จ
+ */
+async function initializePage() {
+  console.log('🔄 เริ่มต้นระบบ...');
+  
+  // รอ Supabase Client
+  await waitForSupabase();
+  
+  // ตั้งค่าวันที่เริ่มต้น
+  setDefaultDate();
+  
+  // ตั้งค่าตัวเลือกประเภทปัญหา
+  setupClaimTypeSelector();
+  
+  // ตั้งค่าการอัปโหลดไฟล์
+  setupMediaUpload();
+  
+  // โหลด drafts จาก localStorage
+  loadDrafts();
+  
+  // แสดงรายการ drafts
+  displayDrafts();
+  
+  console.log('✅ ระบบพร้อมใช้งาน');
+}
+
+// เรียกใช้เมื่อโหลดหน้าเว็บเสร็จ
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializePage);
+} else {
+  initializePage();
+}
 
 
 /* =====================================================
@@ -13,22 +82,15 @@
  * ตั้งค่าวันที่แจ้งเคลมเป็นวันที่ปัจจุบัน
  */
 function setDefaultDate() {
-  // ดึง element ของ input date
   const claimDateInput = document.getElementById('claimDate');
   
-  // 🔧 ตรวจสอบว่า element มีอยู่จริง
   if (!claimDateInput) {
     console.warn('⚠️ ไม่พบ element #claimDate');
     return;
   }
   
-  // สร้างวันที่ปัจจุบัน
   const today = new Date();
-  
-  // แปลงเป็นรูปแบบ YYYY-MM-DD (รูปแบบที่ input date ใช้)
   const dateString = today.toISOString().split('T')[0];
-  
-  // ตั้งค่าให้ input
   claimDateInput.value = dateString;
 }
 
@@ -41,22 +103,17 @@ function setDefaultDate() {
  * ตั้งค่าให้คลิกเลือกประเภทปัญหาได้
  */
 function setupClaimTypeSelector() {
-  // ดึง container ของประเภทปัญหา
   const claimTypesContainer = document.getElementById('claimTypes');
   
-  // 🔧 ตรวจสอบว่า element มีอยู่จริง
   if (!claimTypesContainer) {
     console.warn('⚠️ ไม่พบ element #claimTypes');
     return;
   }
   
-  // ดึงช่องเลือกทั้งหมด
   const claimItems = claimTypesContainer.querySelectorAll('.claim-item');
   
-  // เพิ่ม event listener ให้แต่ละช่อง
   claimItems.forEach(function(item) {
     item.addEventListener('click', function() {
-      // สลับ class 'active' (ถ้ามีอยู่แล้วจะลบออก, ถ้าไม่มีจะเพิ่ม)
       this.classList.toggle('active');
     });
   });
@@ -67,11 +124,9 @@ function setupClaimTypeSelector() {
  * @returns {Array} - Array ของข้อความประเภทปัญหาที่เลือก
  */
 function getSelectedClaimTypes() {
-  // ดึงช่องที่มี class 'active'
   const selectedItems = document.querySelectorAll('.claim-item.active');
-  
-  // แปลงเป็น array ของข้อความ
   const types = [];
+  
   selectedItems.forEach(function(item) {
     types.push(item.textContent.trim());
   });
@@ -94,10 +149,8 @@ function clearClaimTypeSelection() {
  * @param {Array} types - Array ของข้อความประเภทปัญหา
  */
 function setClaimTypeSelection(types) {
-  // ล้างการเลือกเดิมก่อน
   clearClaimTypeSelection();
   
-  // เลือกประเภทที่ระบุ
   const claimItems = document.querySelectorAll('.claim-item');
   claimItems.forEach(function(item) {
     if (types.includes(item.textContent.trim())) {
@@ -108,26 +161,23 @@ function setClaimTypeSelection(types) {
 
 
 /* =====================================================
-   🔧 MEDIA UPLOAD SETUP (ตั้งค่าการอัปโหลดไฟล์)
+   MEDIA UPLOAD SETUP (ตั้งค่าการอัปโหลดไฟล์)
    ===================================================== */
 
 /**
  * ตั้งค่า event listener สำหรับการอัปโหลดรูปภาพ/วิดีโอ
  */
 function setupMediaUpload() {
+  const imageInput = document.getElementById('imageInput');
+  const videoInput = document.getElementById('videoInput');
   
-  // ดึง elements
-  const input = document.getElementById('claimMedia');
-  const grid = document.getElementById('uploadGrid');
-  
-  // 🔧 ตรวจสอบว่า elements มีอยู่จริง
-  if (!input || !grid) {
-    console.warn('⚠️ ไม่พบ element #claimMedia หรือ #uploadGrid');
+  if (!imageInput || !videoInput) {
+    console.warn('⚠️ ไม่พบ element #imageInput หรือ #videoInput');
     return;
   }
   
-  // เพิ่ม event listener
-  input.addEventListener('change', handleFileSelect);
+  imageInput.addEventListener('change', handleFileSelect);
+  videoInput.addEventListener('change', handleFileSelect);
   
   console.log('✅ Media upload setup สำเร็จ');
 }
@@ -137,30 +187,34 @@ function setupMediaUpload() {
  * @param {Event} event - Change event จาก input file
  */
 function handleFileSelect(event) {
-  
   const input = event.target;
-  const grid = document.getElementById('uploadGrid');
-  
-  // แปลง FileList เป็น Array
   const files = Array.from(input.files);
   
-  // วนลูปแต่ละไฟล์
+  // ตรวจสอบว่าเป็น image หรือ video
+  const isImage = input.id === 'imageInput';
+  const grid = isImage ? document.getElementById('imageGrid') : document.getElementById('videoGrid');
+  
+  if (!grid) {
+    console.error('❌ ไม่พบ grid element');
+    return;
+  }
+  
   files.forEach(file => {
-    
-    // 🔧 ตรวจสอบจำนวนไฟล์สูงสุด
+    // ตรวจสอบจำนวนไฟล์สูงสุด
     if (filesArray.length >= MAX_FILES) {
       alert(`⚠️ อัปโหลดได้ไม่เกิน ${MAX_FILES} ไฟล์`);
       return;
     }
     
-    // 🔧 ตรวจสอบประเภทไฟล์
-    if (!file.type.startsWith('image') && !file.type.startsWith('video')) {
-      alert(`⚠️ ไฟล์ "${file.name}" ไม่ใช่รูปภาพหรือวิดีโอ`);
+    // ตรวจสอบประเภทไฟล์
+    const expectedType = isImage ? 'image' : 'video';
+    if (!file.type.startsWith(expectedType)) {
+      alert(`⚠️ ไฟล์ "${file.name}" ไม่ใช่${isImage ? 'รูปภาพ' : 'วิดีโอ'}`);
       return;
     }
     
-    // 🔧 ตรวจสอบขนาดไฟล์ (สูงสุด 50MB)
-    const MAX_SIZE = 50 * 1024 * 1024; // 50MB
+    // ตรวจสอบขนาดไฟล์ (สูงสุด 50MB)
+    const MAX_SIZE = 50 * 1024 * 1024;
     if (file.size > MAX_SIZE) {
       alert(`⚠️ ไฟล์ "${file.name}" มีขนาดเกิน 50MB`);
       return;
@@ -172,81 +226,83 @@ function handleFileSelect(event) {
     // สร้าง URL สำหรับ preview
     const url = URL.createObjectURL(file);
     
-    // สร้าง element สำหรับแสดง preview
-    const box = document.createElement('div');
-    box.className = 'preview-box';
+    // สร้าง preview element
+    const previewBox = document.createElement('div');
+    previewBox.className = 'preview-box';
     
-    // สร้าง HTML ของ media
-    let media = '';
-    
-    if (file.type.startsWith('image')) {
-      media = `<img src="${url}" alt="${file.name}">`;
-    } else if (file.type.startsWith('video')) {
-      media = `
-        <video controls>
-          <source src="${url}" type="${file.type}">
-        </video>
-      `;
+    // สร้าง media element
+    let media;
+    if (isImage) {
+      media = document.createElement('img');
+      media.src = url;
+      media.alt = file.name;
+    } else {
+      media = document.createElement('video');
+      media.controls = true;
+      const source = document.createElement('source');
+      source.src = url;
+      source.type = file.type;
+      media.appendChild(source);
     }
     
-    // สร้าง HTML ของ box
-    box.innerHTML = `
-      ${media}
-      <button class="remove-btn" type="button">×</button>
-    `;
+    // สร้างปุ่มลบ
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-btn';
+    removeBtn.type = 'button';
+    removeBtn.textContent = '×';
     
-    // จัดการปุ่มลบ
-    box.querySelector('.remove-btn').onclick = () => {
-      // ลบ element
-      box.remove();
-      
-      // ลบไฟล์จาก array
+    removeBtn.onclick = () => {
+      previewBox.remove();
       filesArray = filesArray.filter(f => f !== file);
-      
-      // 🔧 ปลดปล่อย URL object เพื่อประหยัด memory
       URL.revokeObjectURL(url);
-      
       console.log(`🗑️ ลบไฟล์: ${file.name}`);
     };
     
-    // แทรก box ไว้ด้านหน้าสุด (ก่อน upload box)
-    grid.insertBefore(box, grid.firstElementChild);
+    // ประกอบ preview box
+    previewBox.appendChild(media);
+    previewBox.appendChild(removeBtn);
     
+    // แทรก box ก่อน upload box
+    const uploadBox = grid.querySelector('.upload-box');
+    if (uploadBox) {
+      grid.insertBefore(previewBox, uploadBox);
+    } else {
+      grid.appendChild(previewBox);
+    }
   });
   
-  // 🔧 รีเซ็ต input เพื่อให้เลือกไฟล์เดิมได้อีกครั้ง
+  // รีเซ็ต input
   input.value = '';
-  
 }
 
 /**
  * รีเซ็ตการอัปโหลดไฟล์ (ลบ preview ทั้งหมด)
  */
 function resetMediaUpload() {
-  
-  // ล้าง array
   filesArray = [];
   
-  // ดึง upload grid
-  const grid = document.getElementById('uploadGrid');
-  if (!grid) return;
+  const imageGrid = document.getElementById('imageGrid');
+  const videoGrid = document.getElementById('videoGrid');
   
-  // ลบ preview boxes ทั้งหมด
-  const previewBoxes = grid.querySelectorAll('.preview-box');
-  previewBoxes.forEach(box => {
-    // ดึง URL จาก img/video เพื่อ revoke
-    const media = box.querySelector('img, video');
-    if (media && media.src) {
-      URL.revokeObjectURL(media.src);
-    }
-    box.remove();
+  [imageGrid, videoGrid].forEach(grid => {
+    if (!grid) return;
+    
+    const previewBoxes = grid.querySelectorAll('.preview-box');
+    previewBoxes.forEach(box => {
+      const media = box.querySelector('img, video');
+      if (media && media.src) {
+        URL.revokeObjectURL(media.src);
+      }
+      box.remove();
+    });
   });
   
-  // รีเซ็ต file input
-  const input = document.getElementById('claimMedia');
-  if (input) {
-    input.value = '';
-  }
+  // รีเซ็ต file inputs
+  const imageInput = document.getElementById('imageInput');
+  const videoInput = document.getElementById('videoInput');
+  
+  if (imageInput) imageInput.value = '';
+  if (videoInput) videoInput.value = '';
   
   console.log('✅ รีเซ็ตการอัปโหลดไฟล์สำเร็จ');
 }
@@ -262,14 +318,14 @@ function resetMediaUpload() {
  */
 function getFormData() {
   return {
-    product: document.getElementById('product')?.value || '',        // ชื่อสินค้า
-    claimDate: document.getElementById('claimDate')?.value || '',    // วันที่แจ้งเคลม
-    qty: document.getElementById('qty')?.value || '',                // จำนวน/รุ่น
-    buyDate: document.getElementById('buyDate')?.value || '',        // วันที่ซื้อ
-    claimTypes: getSelectedClaimTypes(),                             // ประเภทปัญหา (array)
-    detail: document.getElementById('detail')?.value || '',          // รายละเอียด
-    status: 'draft',                                                 // สถานะ (draft หรือ submitted)
-    createdAt: new Date().toISOString()                              // วันเวลาที่สร้าง
+    product: document.getElementById('product')?.value || '',
+    claimDate: document.getElementById('claimDate')?.value || '',
+    qty: document.getElementById('qty')?.value || '',
+    buyDate: document.getElementById('buyDate')?.value || '',
+    claimTypes: getSelectedClaimTypes(),
+    detail: document.getElementById('detail')?.value || '',
+    status: 'draft',
+    createdAt: new Date().toISOString()
   };
 }
 
@@ -279,22 +335,18 @@ function getFormData() {
  * @returns {Object} - { valid: boolean, message: string }
  */
 function validateFormData(data) {
-  // ตรวจสอบชื่อสินค้า
   if (!data.product || data.product.trim() === '') {
     return { valid: false, message: 'กรุณาระบุชื่อสินค้า' };
   }
   
-  // ตรวจสอบวันที่แจ้งเคลม
   if (!data.claimDate) {
     return { valid: false, message: 'กรุณาระบุวันที่แจ้งเคลม' };
   }
   
-  // ตรวจสอบประเภทปัญหา
   if (data.claimTypes.length === 0) {
     return { valid: false, message: 'กรุณาเลือกประเภทปัญหาอย่างน้อย 1 รายการ' };
   }
   
-  // ผ่านการตรวจสอบ
   return { valid: true, message: '' };
 }
 
@@ -302,22 +354,15 @@ function validateFormData(data) {
  * ล้างข้อมูลในฟอร์ม
  */
 function clearForm() {
-  document.getElementById('product').value = '';
-  document.getElementById('claimDate').value = '';
-  document.getElementById('qty').value = '';
-  document.getElementById('buyDate').value = '';
-  document.getElementById('detail').value = '';
+  const fields = ['product', 'claimDate', 'qty', 'buyDate', 'detail'];
+  fields.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) element.value = '';
+  });
   
-  // ล้างการเลือกประเภทปัญหา
   clearClaimTypeSelection();
-  
-  // 🔧 ล้างการอัปโหลดไฟล์
   resetMediaUpload();
-  
-  // ตั้งวันที่แจ้งเคลมเป็นวันปัจจุบันใหม่
   setDefaultDate();
-  
-  // รีเซ็ตสถานะการแก้ไข
   editingIndex = null;
 }
 
@@ -326,13 +371,19 @@ function clearForm() {
  * @param {Object} data - ข้อมูลที่จะเติมลงฟอร์ม
  */
 function fillForm(data) {
-  document.getElementById('product').value = data.product || '';
-  document.getElementById('claimDate').value = data.claimDate || '';
-  document.getElementById('qty').value = data.qty || '';
-  document.getElementById('buyDate').value = data.buyDate || '';
-  document.getElementById('detail').value = data.detail || '';
+  const fields = {
+    product: data.product,
+    claimDate: data.claimDate,
+    qty: data.qty,
+    buyDate: data.buyDate,
+    detail: data.detail
+  };
   
-  // ตั้งค่าประเภทปัญหาที่เลือก
+  Object.entries(fields).forEach(([id, value]) => {
+    const element = document.getElementById(id);
+    if (element) element.value = value || '';
+  });
+  
   if (data.claimTypes && data.claimTypes.length > 0) {
     setClaimTypeSelection(data.claimTypes);
   }
@@ -340,128 +391,40 @@ function fillForm(data) {
 
 
 /* =====================================================
-   DRAFT MANAGEMENT (การจัดการ Draft)
-   ===================================================== */
-
-/**
- * บันทึก Draft
- * ถ้ากำลังแก้ไขอยู่จะอัพเดท, ถ้าไม่ใช่จะสร้างใหม่
- */
-function saveDraft() {
-  // ดึงข้อมูลจากฟอร์ม
-  const data = getFormData();
-  
-  // ตรวจสอบความถูกต้อง
-  const validation = validateFormData(data);
-  if (!validation.valid) {
-    alert(validation.message);
-    return;
-  }
-  
-  // ถ้ากำลังแก้ไขอยู่
-  if (editingIndex !== null) {
-    // อัพเดทข้อมูลในตำแหน่งเดิม
-    drafts[editingIndex] = data;
-    alert('✅ อัพเดท Draft สำเร็จ');
-  } else {
-    // เพิ่มข้อมูลใหม่
-    drafts.push(data);
-    alert('✅ บันทึก Draft สำเร็จ');
-  }
-  
-  // บันทึกลง localStorage
-  saveDraftsToStorage();
-  
-  // แสดงรายการใหม่
-  displayDrafts();
-  
-  // ล้างฟอร์ม
-  clearForm();
-}
-
-/**
- * ส่งเคลม (แบบไม่มีไฟล์)
- * ⚠️ ใช้ submitClaimWithMedia() แทนถ้าต้องการอัปโหลดไฟล์
- */
-function submitClaim() {
-  // ดึงข้อมูลจากฟอร์ม
-  const data = getFormData();
-  
-  // ตรวจสอบความถูกต้อง
-  const validation = validateFormData(data);
-  if (!validation.valid) {
-    alert(validation.message);
-    return;
-  }
-  
-  // เปลี่ยนสถานะเป็น submitted
-  data.status = 'submitted';
-  
-  // ยืนยันการส่ง
-  if (!confirm('คุณต้องการส่งเคลมนี้ใช่หรือไม่?')) {
-    return;
-  }
-  
-  // ในระบบจริง: ส่งข้อมูลไปยัง Google Apps Script หรือ API
-  console.log('ส่งข้อมูลเคลม:', data);
-  
-  // TODO: เรียก API หรือ Google Apps Script
-  // google.script.run.withSuccessHandler(onSuccess).submitClaim(data);
-  
-  // สำหรับตัวอย่าง: แสดง alert และล้างฟอร์ม
-  alert('✅ ส่งเคลมสำเร็จ!\n\nสินค้า: ' + data.product + '\nวันที่: ' + data.claimDate);
-  
-  // ถ้ากำลังแก้ไข draft ให้ลบ draft นั้นออก
-  if (editingIndex !== null) {
-    deleteDraft(editingIndex);
-  }
-  
-  // ล้างฟอร์ม
-  clearForm();
-}
-
-
-/* =====================================================
-   🔧 UPLOAD CLAIM MEDIA TO SUPABASE
-   ฟังก์ชันอัปโหลดไฟล์ไปยัง Supabase Storage
+   UPLOAD CLAIM MEDIA TO SUPABASE
    ===================================================== */
 
 /**
  * อัปโหลดไฟล์หลายไฟล์ไปยัง Supabase Storage bucket "claim-media"
- * 
- * @param {Array<File>} files - Array ของ File objects ที่ต้องการอัปโหลด
- * @param {Object} client - Supabase client instance
- * @returns {Promise<Array<string>>} - Array ของ URL สาธารณะของไฟล์ที่อัปโหลดสำเร็จ
+ * @param {Array<File>} files - Array ของ File objects
+ * @returns {Promise<Array<string>>} - Array ของ URL สาธารณะ
  */
-async function uploadClaimMedia(files, client) {
-  
+async function uploadClaimMedia(files) {
   const urls = [];
   
-  // Validation
   if (!files || files.length === 0) {
     console.warn('⚠️ ไม่มีไฟล์สำหรับอัปโหลด');
     return urls;
   }
   
-  if (!client) {
+  // ใช้ window.supabaseClient แทน
+  if (!window.supabaseClient) {
     console.error('❌ ไม่พบ Supabase Client');
     throw new Error('Supabase client is required');
   }
   
-  // วนลูปอัปโหลดแต่ละไฟล์
   for (const file of files) {
-    
     if (!file || !(file instanceof File)) {
       console.warn('⚠️ พบ item ที่ไม่ใช่ File object - ข้าม:', file);
       continue;
     }
     
-    const fileName = `${Date.now()}_${file.name}`;
+    // สร้าง path ตามประเภทไฟล์
+    const folder = file.type.startsWith('image') ? 'images' : 'videos';
+    const fileName = `${folder}/${Date.now()}_${file.name}`;
     
     try {
-      
-      // อัปโหลดไฟล์
-      const { data: uploadData, error: uploadError } = await client
+      const { data: uploadData, error: uploadError } = await window.supabaseClient
         .storage
         .from('claim-media')
         .upload(fileName, file, {
@@ -470,23 +433,22 @@ async function uploadClaimMedia(files, client) {
         });
       
       if (uploadError) {
-        console.error(`❌ อัปโหลดไฟล์ "${file.name}" ล้มเหลว:`, uploadError.message);
+        console.error(`❌ อัปโหลด "${file.name}" ล้มเหลว:`, uploadError.message);
         continue;
       }
       
       if (!uploadData || !uploadData.path) {
-        console.error(`❌ ไม่ได้รับ path จาก upload สำหรับไฟล์ "${file.name}"`);
+        console.error(`❌ ไม่ได้รับ path จาก upload สำหรับ "${file.name}"`);
         continue;
       }
       
-      // ดึง public URL
-      const { data: urlData } = client
+      const { data: urlData } = window.supabaseClient
         .storage
         .from('claim-media')
         .getPublicUrl(uploadData.path);
       
       if (!urlData || !urlData.publicUrl) {
-        console.error(`❌ ไม่ได้รับ public URL สำหรับไฟล์ "${file.name}"`);
+        console.error(`❌ ไม่ได้รับ public URL สำหรับ "${file.name}"`);
         continue;
       }
       
@@ -497,110 +459,130 @@ async function uploadClaimMedia(files, client) {
       console.error(`❌ เกิดข้อผิดพลาดขณะอัปโหลด "${file.name}":`, error);
       continue;
     }
-    
   }
   
   console.log(`📊 สรุป: อัปโหลดสำเร็จ ${urls.length}/${files.length} ไฟล์`);
-  
-  if (urls.length === 0 && files.length > 0) {
-    console.warn('⚠️ ไม่มีไฟล์ใดที่อัปโหลดสำเร็จ');
-  }
   
   return urls;
 }
 
 
 /* =====================================================
-   🔧 SUBMIT CLAIM WITH MEDIA
-   บันทึกข้อมูลเคลมพร้อมอัปโหลดไฟล์
+   DRAFT MANAGEMENT (การจัดการ Draft)
    ===================================================== */
 
 /**
- * ส่งเคลมพร้อมอัปโหลดรูปภาพ/วิดีโอ
+ * บันทึก Draft
  */
-async function submitClaimWithMedia() {
-  
-  // ดึงข้อมูลฟอร์ม
+function saveDraft() {
   const data = getFormData();
   
-  // ตรวจสอบความถูกต้อง
   const validation = validateFormData(data);
   if (!validation.valid) {
     alert(validation.message);
     return;
   }
   
-  // 🔧 ตรวจสอบว่ามีไฟล์หรือไม่
+  if (editingIndex !== null) {
+    drafts[editingIndex] = data;
+    alert('✅ อัพเดท Draft สำเร็จ');
+  } else {
+    drafts.push(data);
+    alert('✅ บันทึก Draft สำเร็จ');
+  }
+  
+  saveDraftsToStorage();
+  displayDrafts();
+  clearForm();
+}
+
+/**
+ * ส่งเคลมพร้อมอัปโหลดไฟล์
+ */
+async function submitClaim() {
+  const data = getFormData();
+  
+  const validation = validateFormData(data);
+  if (!validation.valid) {
+    alert(validation.message);
+    return;
+  }
+  
   if (filesArray.length === 0) {
     alert('⚠️ กรุณาแนบรูปภาพหรือวิดีโออย่างน้อย 1 ไฟล์');
     return;
   }
   
-  // 🔧 ตรวจสอบว่ามี Supabase Client
-  if (!supabaseClient) {
+  if (!window.supabaseClient) {
     alert('❌ ระบบยังไม่พร้อม - กรุณารีเฟรชหน้าเว็บ');
     console.error('❌ Supabase Client ไม่พร้อม');
     return;
   }
   
-  // ยืนยันการส่ง
   if (!confirm('คุณต้องการส่งเคลมนี้ใช่หรือไม่?')) {
     return;
   }
   
-  // 🔧 แสดง loading indicator
+  // แสดง loading
   const submitBtn = event?.target;
+  const originalText = submitBtn?.textContent;
   if (submitBtn) {
     submitBtn.disabled = true;
     submitBtn.textContent = '⏳ กำลังอัปโหลด...';
   }
   
   try {
-    
-    // 📤 อัปโหลดไฟล์ไปยัง Supabase Storage
     console.log('🔄 กำลังอัปโหลดไฟล์...');
-    const mediaUrls = await uploadClaimMedia(filesArray, supabaseClient);
+    const mediaUrls = await uploadClaimMedia(filesArray);
     
-    // ตรวจสอบว่าอัปโหลดสำเร็จหรือไม่
     if (mediaUrls.length === 0) {
       throw new Error('ไม่สามารถอัปโหลดไฟล์ได้ กรุณาลองใหม่อีกครั้ง');
     }
     
-    // เพิ่ม URLs เข้าไปใน data
     data.mediaUrls = mediaUrls;
     data.status = 'submitted';
     
-    // 💾 บันทึกข้อมูลเคลมลงฐานข้อมูล
     console.log('💾 กำลังบันทึกข้อมูลเคลม...');
     
-    // TODO: เรียก API หรือ Google Apps Script เพื่อบันทึกข้อมูล
-    // const result = await saveClaimToDatabase(data);
+    // บันทึกลงฐานข้อมูล
+    const { error: insertError } = await window.supabaseClient
+      .from('claims')
+      .insert({
+        product: data.product,
+        claim_date: data.claimDate,
+        qty: data.qty,
+        buy_date: data.buyDate,
+        claim_types: data.claimTypes,
+        detail: data.detail,
+        media_urls: data.mediaUrls,
+        status: data.status,
+        created_at: data.createdAt
+      });
     
-    // แสดงความสำเร็จ
+    if (insertError) {
+      throw new Error(`ไม่สามารถบันทึกข้อมูลได้: ${insertError.message}`);
+    }
+    
     alert('✅ ส่งเคลมสำเร็จ!\n\n' +
           'สินค้า: ' + data.product + '\n' +
           'วันที่: ' + data.claimDate + '\n' +
           'ไฟล์แนบ: ' + mediaUrls.length + ' ไฟล์');
     
-    // ถ้ากำลังแก้ไข draft ให้ลบ draft นั้นออก
     if (editingIndex !== null) {
       deleteDraft(editingIndex);
     }
     
-    // ล้างฟอร์มและรีเซ็ต
     clearForm();
     
   } catch (error) {
     console.error('❌ เกิดข้อผิดพลาด:', error);
     alert('❌ เกิดข้อผิดพลาด: ' + error.message);
   } finally {
-    // 🔧 รีเซ็ต loading indicator
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.textContent = '▶️ ส่งเคลม';
+      submitBtn.textContent = originalText || '▶️ ส่งเคลม';
     }
   }
-  
 }
 
 
@@ -619,16 +601,13 @@ function displayDrafts() {
     return;
   }
   
-  // ล้างตารางเดิม
   tbody.innerHTML = '';
   
-  // ถ้าไม่มี draft
   if (drafts.length === 0) {
     tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#999;">ยังไม่มีรายการ Draft</td></tr>';
     return;
   }
   
-  // วนลูปสร้างแถวในตาราง
   drafts.forEach(function(draft, index) {
     const tr = document.createElement('tr');
     const displayDate = formatDate(draft.claimDate);
@@ -649,7 +628,6 @@ function displayDrafts() {
 
 /**
  * แก้ไข draft
- * @param {number} index - ตำแหน่งของ draft ใน array
  */
 function editDraft(index) {
   editingIndex = index;
@@ -661,7 +639,6 @@ function editDraft(index) {
 
 /**
  * ลบ draft
- * @param {number} index - ตำแหน่งของ draft ใน array
  */
 function deleteDraft(index) {
   if (!confirm('คุณต้องการลบ Draft นี้ใช่หรือไม่?')) {
@@ -707,7 +684,7 @@ function loadDrafts() {
     try {
       drafts = JSON.parse(jsonString);
     } catch (error) {
-      console.error('Error loading drafts:', error);
+      console.error('❌ ไม่สามารถโหลด drafts:', error);
       drafts = [];
     }
   }
@@ -720,8 +697,6 @@ function loadDrafts() {
 
 /**
  * แปลงวันที่ให้อ่านง่าย
- * @param {string} dateString - วันที่ในรูปแบบ YYYY-MM-DD
- * @returns {string} - วันที่ในรูปแบบ DD/MM/YYYY
  */
 function formatDate(dateString) {
   if (!dateString) return '-';
@@ -739,7 +714,7 @@ function formatDate(dateString) {
    ===================================================== */
 
 /**
- * ล้างข้อมูล drafts ทั้งหมด (สำหรับทดสอบ)
+ * ล้างข้อมูล drafts ทั้งหมด
  */
 function clearAllDrafts() {
   if (confirm('⚠️ คุณต้องการลบ Draft ทั้งหมดใช่หรือไม่?')) {
@@ -752,7 +727,7 @@ function clearAllDrafts() {
 }
 
 /**
- * แสดงข้อมูล drafts ใน console (สำหรับ debug)
+ * แสดงข้อมูล drafts ใน console
  */
 function showDrafts() {
   console.log('📋 Drafts:', drafts);

@@ -34,7 +34,7 @@ a {
   display: flex;                       /* ใช้ flexbox layout */
   justify-content: space-between;      /* กระจายพื้นที่ระหว่าง logo และชื่อผู้ใช้ */
   align-items: center;                 /* จัดแนวให้อยู่กึ่งกลางแนวตั้ง */
-  padding: 16px 24px;                  /* ช่องว่างด้านในบนล่าง 14px ซ้ายขวา 20px */
+  padding: 14px 24px;                  /* ช่องว่างด้านในบนล่าง 14px ซ้ายขวา 20px */
   background: #ffffff;                 /* พื้นหลังสีขาว */
   border-bottom: 1px solid #ddd;       /* เส้นขอบล่างสีเทา */
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
@@ -65,7 +65,80 @@ a {
    color: #15803d;   /* เขียว premium */
    letter-spacing: 0.5px;
 }
+/* userHeader */
 
+.topbar{
+  height:60px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 20px;
+  background:white;
+  border-bottom:1px solid #eee;
+}
+
+.user-box{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.user-avatar{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:#3FB7AE;
+  color:white;
+  font-weight:600;
+  font-size:20px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.user-info{
+  display:flex;
+  flex-direction:column;
+}
+
+.user-name{
+  font-weight:600;
+  font-size:16px;
+}
+
+.user-role{
+  font-size:13px;
+  color:#777;
+}
+
+.logout-btn{
+  margin-left:12px;
+  padding:6px 14px;
+
+  border:none;
+  border-radius:20px;
+
+  background:#ff4d4f;
+  color:white;
+
+  font-size:13px;
+  font-weight:500;
+
+  cursor:pointer;
+
+  display:flex;
+  align-items:center;
+  gap:4px;
+
+  transition:all .2s ease;
+}
+
+.logout-btn:hover{
+  background:#d9363e;
+  transform:translateY(-1px);
+  box-shadow:0 2px 6px rgba(0,0,0,0.15);
+}
 
 /* ================= STICKY NAV (แถบเมนูแบบติดด้านบน) ================= */
 
@@ -107,7 +180,7 @@ a {
   padding: 24px 16px;                  /* ช่องว่างด้านใน */
 }
 
-
+/* ======================================================================================================================================================== */
 /* ================= PAGE TITLE (หัวเรื่องหน้า) ================= */
 
 .page-title {

@@ -1,6 +1,6 @@
 /* =====================================================
-   📋 FORMS REPORT - STYLESHEET
-   ไฟล์ CSS สำหรับหน้า Forms Report
+   ⚠️ FORM CLAIM - STYLESHEET (แก้ไขและปรับปรุงแล้ว)
+   ไฟล์ CSS สำหรับหน้าแจ้งเคลมสินค้า
    ===================================================== */
 
 /* ================= BASE STYLES (โครงสร้างพื้นฐาน) ================= */
@@ -23,7 +23,6 @@ a {
   text-decoration: none; 
   color: inherit; 
 }
-
 
 /* ================= STICKY HEADER (แถบหัวเรื่องแบบติดด้านบน) ================= */
 
@@ -97,6 +96,13 @@ a {
   color: #fff;                         /* ตัวอักษรสีขาว */
 }
 
+/* ================= PAGE LAYOUT ================= */
+
+/* .page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+} */
 
 /* ================= CONTAINER (กล่องบรรจุเนื้อหา) ================= */
 
@@ -106,246 +112,196 @@ a {
   padding: 24px 16px;                  /* ช่องว่างด้านใน */
 }
 
+/* =====================================================
+   🔧 แก้ไขปุ่มลบในการอัปโหลดรูป/วิดีโอ
+   ===================================================== */
 
-/* ===================================================== */
-/* PAGE HEADER                                            */
-/* ===================================================== */
+/* ================= UPLOAD SECTION (แก้ไขใหม่) ================= */
 
-.page-header {
-  background: #ffffff;
-  padding: 24px 20px;
-  border-bottom: 1px solid #eee;
-}
-
-.page-header h1 {
-  margin: 0 0 6px;
-  font-size: 22px;
-}
-
-.page-header p {
-  margin: 0;
-  font-size: 13px;
-  color: #666;
-}
-
-
-/* ===================================================== */
-/* MAIN CONTAINER                                         */
-/* ===================================================== */
-
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 20px;
-}
-
-
-/* ===================================================== */
-/* CARD SECTION                                           */
-/* ===================================================== */
-
-.section {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 6px 14px rgba(0,0,0,.08);
-}
-
-.section h2 {
-  margin: 0 0 12px;
-  font-size: 18px;
-}
-
-
-/* ===================================================== */
-/* FORM LAYOUT                                            */
-/* ===================================================== */
-
-.form-grid {
+.upload-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
 }
 
-.form-group {
+.upload-box {
+  height: 140px;
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
   display: flex;
-  flex-direction: column;
-}
-
-.form-group.full {
-  grid-column: span 4;
-}
-
-label {
-  font-size: 12px;
-  margin-bottom: 4px;
-  color: #555;
-}
-
-input,
-select,
-textarea {
-  padding: 8px;
-  font-family: inherit;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-
-/* ===================================================== */
-/* BUTTONS                                                */
-/* ===================================================== */
-
-.actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 14px;
-}
-
-button {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
   cursor: pointer;
-  font-family: inherit;
+  color: #9ca3af;
+  background: #f9fafb;
+  transition: all 0.3s ease;
 }
 
-.btn-draft {
-  background: #fbc02d;
+.upload-box:hover {
+  background: #f3f4f6;
+  border-color: #15803d;
+  color: #15803d;
+  transform: scale(1.02);
 }
 
-.btn-save {
-  background: #4caf50;
-  color: #fff;
+/* ================= PREVIEW BOX (แก้ไขสำคัญ) ================= */
+
+.preview-box {
+  position: relative;  /* สำคัญ! ให้ปุ่มลบอยู่ภายใน */
+  height: 140px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid #e5e7eb;
+  background: #000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.action-buttons {
-  display: flex;
-  gap: 6px;
-}
-
-.action-buttons button {
-  border: none;
-  padding: 6px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: 0.2s ease;
-}
-
-.btn-view {
-  background: #e3f2fd;
-}
-
-.btn-edit {
-  background: #fff3cd;
-}
-
-.btn-delete {
-  background: #f8d7da;
-}
-
-.action-buttons button:hover {
-  transform: scale(1.05);
-} 
-
-/* ===================================================== */
-/* TABLE                                                  */
-/* ===================================================== */
-
-table {
+.preview-box img,
+.preview-box video {
   width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-th,
-td {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  text-align: left;
+/* ================= REMOVE BUTTON (ปุ่มลบ - แก้ไขใหม่) ================= */
+
+.remove-btn {
+  /* Position */
+  position: absolute;
+  top: 8px;           /* ระยะห่างจากด้านบน */
+  right: 8px;         /* ระยะห่างจากด้านขวา - แก้จาก left เป็น right */
+  
+  /* Size */
+  width: 32px;
+  height: 32px;
+  
+  /* Style */
+  border: none;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.95);  /* แดง พื้นหลังทึบขึ้น */
+  color: white;
+  
+  /* Text */
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1;
+  
+  /* Center content */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Cursor */
+  cursor: pointer;
+  
+  /* Shadow */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  
+  /* Transition */
+  transition: all 0.2s ease;
+  
+  /* Layer */
+  z-index: 10;  /* ให้อยู่ด้านบนสุด */
 }
 
-th {
-  background: #f7f7f7;
+.remove-btn:hover {
+  background: rgba(220, 38, 38, 1);  /* แดงเข้มขึ้นตอน hover */
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
+.remove-btn:active {
+  transform: scale(0.95);
+}
 
-.detail-text {
-  max-width: 150px;   /* ปรับตามความกว้างตาราง */
+/* ================= RESPONSIVE (สำหรับมือถือ) ================= */
+
+@media (max-width: 768px) {
+  .upload-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  
+  .upload-box,
+  .preview-box {
+    height: 120px;
+  }
+  
+  .remove-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+    top: 6px;
+    right: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .upload-box,
+  .preview-box {
+    height: 100px;
+  }
+  
+  .remove-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    top: 4px;
+    right: 4px;
+  }
+}
+
+/* ================= ปรับปรุงเพิ่มเติม ================= */
+
+/* เพิ่ม hover effect ให้ preview box */
+.preview-box:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
+}
+
+/* เพิ่ม loading state (ถ้าต้องการ) */
+.preview-box.uploading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.preview-box.uploading::after {
+  content: '⏳';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 32px;
+  z-index: 5;
+}
+
+/* เพิ่มแสดงชื่อไฟล์ตอน hover (optional) */
+.preview-box::before {
+  content: attr(data-filename);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  color: white;
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity 0.2s;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* ===== Modal ===== */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 999;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background: white;
-  width: 450px;
-  max-width: 90%;
-  border-radius: 12px;
-  padding: 20px;
-  animation: fadeIn 0.2s ease;
-}
-
-.close-btn {
-  float: right;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.modal-footer {
-  text-align: right;
-  margin-top: 15px;
-}
-
-#saveEditBtn {
-  background: #28a745;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-@keyframes fadeIn {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-/* ===================================================== */
-/* FOOTER                                                 */
-/* ===================================================== */
-
-.footer {
-  text-align: center;
-  font-size: 12px;
-  color: #777;
-  padding: 16px;
-}
-
-
-
-
-.dynamic-attributes {
-  margin-top: 15px;
-}
-
-.dynamic-attributes .form-group {
-  margin-bottom: 10px;
-}
-
-#dynamicAttributes {
-  grid-column: 1 / -1;   /* กินเต็มแถว */
-  margin-top: 10px;
+.preview-box:hover::before {
+  opacity: 1;
 }
