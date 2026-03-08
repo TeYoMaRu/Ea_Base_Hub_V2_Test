@@ -1,5 +1,5 @@
 /* =====================================================
-   📋 FORMS HUB - STYLESHEET
+   FORMS HUB - STYLESHEET
    ไฟล์ CSS สำหรับหน้า Forms Hub
    ===================================================== */
 
@@ -103,7 +103,6 @@ a {
   height: 32px;                        /* ความสูงของโลโก้ (สามารถปรับได้) */
   object-fit: contain;  
   position: relative;               /* รักษาสัดส่วนของรูป */
-
   
 }
 
@@ -153,7 +152,7 @@ a {
 .user-box{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:16px;
 }
 
 .user-avatar{
@@ -192,11 +191,12 @@ a {
   border:none;
   border-radius:20px;
 
-  background:#ff4d4f;
-  color:white;
+  background:#fff;
+  color:var(--green1);
+  font-weight:600;
 
-  font-size:13px;
-  font-weight:500;
+  font-size:14px;
+  font-weight:600;
 
   cursor:pointer;
 
@@ -244,7 +244,6 @@ a {
   color: #fff;                         /* ตัวอักษรสีขาว */
 }
 
-
 /* ================= CONTAINER (กล่องบรรจุเนื้อหา) ================= */
 
 .container {
@@ -253,7 +252,33 @@ a {
   padding: 24px 16px;                  /* ช่องว่างด้านใน */
 }
 
-/* ======================================================================================================================================================== */
+/* ==============================================================
+   PAGE BOX (เนื้อหาด้าใน)
+   ============================================================== */
+
+.page-header {
+  background: var(--white);
+  padding: 24px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.page-header h1 {
+  margin: 0 0 6px;
+  font-size: 22px;
+}
+
+.page-header p {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+}
+
+
+/* ==============================================================
+   PAGE BOX (เนื้อหาด้าใน)
+   ============================================================== */
+
+
 /* ================= PAGE TITLE (หัวเรื่องหน้า) ================= */
 
 .page-title {

@@ -48,7 +48,7 @@
           <!-- <div class="user-role" id="userRole"></div> -->
         </div>
 
-        <button id="logoutBtn" class="logout-btn">Logout</button>
+        <button id="logoutBtn" class="logout-btn">ออกจากระบบ</button>
       </div>
     </header>
 
@@ -64,27 +64,44 @@
     <!-- เมนูรายงานเยี่ยมร้านค้า -->
     <a href="report.html">รายงานเยี่ยมร้านค้า</a>
     
-    <!-- เมนู FormsHub -->
-    <a href="formHub.html">FormsHub</a>
-    
     <!-- เมนูแจ้งเคลมสินค้า -->
     <a href="formClaim.html" class="active">แจ้งเคลมสินค้า</a>
+    
+    <!-- เมนู FormsHub -->
+    <a href="formHub.html">FormsHub</a>
   </nav>
 
   
+<!-- ===================================================== -->
+<!-- MAIN CONTENT (เนื้อหาหลักของหน้า)                        -->
+<!-- ===================================================== -->
+<header class="page-header">
+
+  <!-- ชื่อหน้า -->
+  <h1>⚠️ แจ้งเคลมสินค้า</h1>
+
+  <!-- คำอธิบายสั้น ๆ -->
+  <p>กรอกข้อมูล • บันทึก • จัดการ • ส่งออก</p>
+
+</header>
 
   
+<!-- ===================================================== -->
+<!-- MAIN CONTENT CONTAINER                                 -->
+<!-- ===================================================== -->
+<main class="container">
 
-  <!-- MAIN CONTENT -->
-  <div class="page">
 
-    <!-- ===== SECTION 1: ข้อมูลพนักงานและลูกค้า ===== -->
+<!-- ===================================================== -->
+<!-- SECTION 1: ข้อมูลพนักงานและลูกค้า                          -->
+<!-- ===================================================== -->      
     <div class="card">
-      <h1>⚠️ แจ้งเคลมสินค้า</h1>
-      
+
       <div class="section-divider"></div>
-      
+      <!-- Grid สำหรับจัดเรียงช่องกรอก -->
       <div class="form-grid">
+      
+        <!-- User -->
         <div class="form-group">
           <label for="empName">พนักงานขาย</label>
           <input id="empName" readonly>
@@ -111,7 +128,10 @@
       </div>
     </div>
 
-    <!-- ===== SECTION 2: ข้อมูลทั่วไป ===== -->
+  <!-- ===================================================== -->
+  <!-- SECTION 2: ข้อมูลทั่วไป                                   -->
+  <!-- ===================================================== -->  
+    
     <div class="section-card">
       <h4>กรอกข้อมูลเบื้องต้นเกี่ยวกับสินค้าที่ต้องการเคลม</h4>
       <div class="section-divider"></div>

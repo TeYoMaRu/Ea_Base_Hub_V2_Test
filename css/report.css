@@ -1,3 +1,8 @@
+/* =====================================================
+   FORMS REPORT - STYLESHEET
+   ไฟล์ CSS สำหรับหน้า Forms Report
+   ===================================================== */
+
 /* =========================
    CSS VARIABLES - กำหนดค่าสีและค่าคงที่
    ========================= */
@@ -44,10 +49,7 @@
   --bg-Soft:#E7F4F2;
   --bg-AB: linear-gradient(180deg,#3FB7AE,#2FA39A);
   --bg-AC: linear-gradient(135deg, #8FD3CD, #3FB7AE);
-/* =====================================================
-   📋 FORMS REPORT - STYLESHEET
-   ไฟล์ CSS สำหรับหน้า Forms Report
-   ===================================================== */
+
 /* ================= BASE STYLES (โครงสร้างพื้นฐาน) ================= */
 
 /* รีเซ็ต box-sizing ให้ทุก element ใช้ border-box 
@@ -190,11 +192,12 @@ a {
   border:none;
   border-radius:20px;
 
-  background:#ff4d4f;
-  color:white;
+  background:#fff;
+  color:var(--green1);
+
 
   font-size:13px;
-  font-weight:500;
+  font-weight:600;
 
   cursor:pointer;
 
@@ -251,13 +254,12 @@ a {
   padding: 24px 16px;                  /* ช่องว่างด้านใน */
 }
 
-
 /* ===================================================== */
-/* PAGE HEADER                                            */
+/* PAGE BOX (เนื้อหาด้าใน)                                  */
 /* ===================================================== */
 
 .page-header {
-  background: #ffffff;
+  background: var(--white);
   padding: 24px 20px;
   border-bottom: 1px solid #eee;
 }

@@ -51,7 +51,7 @@
           <!-- <div class="user-role" id="userRole"></div> -->
         </div>
 
-        <button id="logoutBtn" class="logout-btn">Logout</button>
+        <button id="logoutBtn" class="logout-btn">ออกจากระบบ</button>
       </div>
     </header>
 
@@ -66,11 +66,11 @@
       <!-- เมนูรายงานเยี่ยมร้านค้า -->
       <a href="report.html">รายงานเยี่ยมร้านค้า</a>
 
-      <!-- เมนู FormsHub (หน้าปัจจุบัน - ใช้ class="active") -->
-      <a href="formsHub.html" class="active">FormsHub</a>
-
       <!-- เมนูแจ้งเคลมสินค้า -->
       <a href="formClaim.html">แจ้งเคลมสินค้า</a>
+      
+      <!-- เมนู FormsHub (หน้าปัจจุบัน - ใช้ class="active") -->
+      <a href="formsHub.html" class="active">FormsHub</a>
 
       <!-- <button id="logoutBtn" class="logout-btn">Logout</button> -->
     </nav>
@@ -78,22 +78,28 @@
     <!-- =====================================================
        MAIN CONTENT (เนื้อหาหลักของหน้า)
        ===================================================== -->
-    <div class="container">
-      <!-- ส่วนหัวเรื่องของหน้า -->
-      <div class="page-title">
-        <!-- หัวเรื่องหลัก -->
+       <header class="page-header">
+
+        <!-- ชื่อหน้า -->
         <h1>📋 Forms Hub</h1>
 
-        <!-- คำอธิบายหัวเรื่อง -->
+        <!-- คำอธิบายสั้น ๆ -->
         <p>เลือกแบบฟอร์มที่ต้องการใช้งาน</p>
-      </div>
 
-      <!-- กริดแสดงการ์ดแบบฟอร์มต่างๆ -->
-      <div class="forms-grid">
+      </header>
+
+      <!-- ===================================================== -->
+      <!-- MAIN CONTENT CONTAINER                                 -->
+      <!-- ===================================================== -->
+      <main class="container">
+  
+
         <!-- =====================================================
-           การ์ดที่ 1: แผนการเดินทาง (Trip Plan)
-           คลิกแล้วจะไปหน้า formPlan.html
-           ===================================================== -->
+        การ์ดที่ 1: แผนการเดินทาง (Trip Plan)
+        คลิกแล้วจะไปหน้า formPlan.html
+        ===================================================== -->
+        <!-- กริดแสดงการ์ดแบบฟอร์มต่างๆ -->
+        <div class="forms-grid">
         <div class="form-card" onclick="location.href = 'formPlan.html'">
           <!-- ไอคอนรูปวงกลมสีน้ำเงิน -->
           <div class="form-icon blue">
