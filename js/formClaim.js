@@ -60,6 +60,53 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+document.addEventListener("change", async (e)=>{
+
+  if(e.target.id === "modalCategory"){
+
+    const categoryId = e.target.value;
+
+    const select = document.getElementById("modalProduct");
+
+    const { data } = await supabaseClient
+      .from("products")
+      .select("id,name")
+      .eq("category_id",categoryId)
+      .order("name");
+
+    select.innerHTML = `<option value="">-- เลือกสินค้า --</option>`;
+
+    data.forEach(p=>{
+
+      const option = document.createElement("option");
+
+      option.value = p.id;
+      option.textContent = p.name;
+
+      select.appendChild(option);
+
+    });
+
+  }
+
+});
+
+
+document.addEventListener("change", async (e)=>{
+
+  if(e.target.id === "modalProduct"){
+
+    const productId = e.target.value;
+    const name = e.target.options[e.target.selectedIndex].text;
+
+    document.getElementById("product").value = name;
+
+    loadProductAttributes(productId);
+
+  }
+
+});
+
 
 document.addEventListener("change", async (e)=>{
 
@@ -103,15 +150,49 @@ async function loadProductAttributes(productId){
 // =====================================================
 // OPEN OR CLOSE MODAL
 // =====================================================
-function openProductModal(){
+async function openProductModal(categoryId){
 
+  
+  console.log("open modal category =", categoryId)
+  
   const modal = document.getElementById("productModal");
-
+  
   modal.style.display = "flex";
+  
+  const select = document.getElementById("modalProduct");
+  
+  const { data } = await supabaseClient
+  .from("products")
+  .select("id,name")
+  .eq("category_id",categoryId)
+  .order("name");
+  
+  select.innerHTML = `<option value="">-- เลือกสินค้า --</option>`;
+  
+  data.forEach(p=>{
 
-  loadCategories("modalCategory");
+    const option = document.createElement("option");
+
+    option.value = p.id;
+    option.textContent = p.name;
+
+    select.appendChild(option);
+
+  });
 
 }
+
+
+document.getElementById("modalProduct").addEventListener("change",(e)=>{
+
+  const name = e.target.options[e.target.selectedIndex].text;
+
+  document.getElementById("product").value = name;
+
+  closeProductModal();
+
+});
+
 
 function closeProductModal(){
 
@@ -119,6 +200,168 @@ function closeProductModal(){
 
 }
 
+
+// =====================================================
+// openProductModal
+// =====================================================
+async function openProductModal(categoryId){
+
+  const modal = document.getElementById("productModal");
+  const list = document.getElementById("modalProductList");
+
+  modal.style.display = "flex";
+
+  list.innerHTML = "กำลังโหลดสินค้า...";
+
+  const { data, error } = await supabaseClient
+    .from("products")
+    .select("id,name")
+    .eq("category_id", categoryId)
+    .order("name");
+
+  if(error){
+    console.error(error);
+    list.innerHTML = "โหลดสินค้าไม่สำเร็จ";
+    return;
+  }
+
+  list.innerHTML = "";
+
+  data.forEach(product => {
+
+  const div = document.createElement("div");
+
+  div.className = "product-card";
+
+  div.innerText = product.name;
+
+  div.onclick = () => {
+
+    console.log("product selected =", product.id)
+
+    loadProductVariants(product.id)
+
+  };
+
+  list.appendChild(div);
+
+});
+
+}
+
+
+
+
+
+// =====================================================
+// loadProductVariants
+// =====================================================
+async function loadProductVariants(productId){
+
+  const list = document.getElementById("modalProductList");
+
+  list.innerHTML = "กำลังโหลดสเปค...";
+
+  const { data, error } = await supabaseClient
+    .from("product_variants")
+    .select("*")
+    .eq("product_id", productId);
+
+  console.log("variants =", data)
+
+  if(error){
+    console.error(error)
+    list.innerHTML = "โหลดสเปคไม่สำเร็จ"
+    return
+  }
+
+  if(!data || data.length === 0){
+    list.innerHTML = "ไม่มีสเปคสินค้า"
+    return
+  }
+
+  list.innerHTML = "<h4>เลือกสเปค</h4>"
+
+  data.forEach(v => {
+
+    const div = document.createElement("div")
+
+    div.className = "product-card"
+
+    div.innerText = `${v.length} mm / ${v.thickness} micron`
+
+    div.onclick = () => {
+
+  document.getElementById("product").value =
+    `${v.length} mm / ${v.thickness} micron`
+
+  loadVariantAttributes(v.id)
+
+}
+
+    list.appendChild(div)
+
+  })
+
+}
+
+
+
+
+
+function closeProductModal(){
+
+  document.getElementById("productModal").style.display = "none";
+
+}
+
+// =====================================================
+// loadVariantAttributes
+// =====================================================
+
+async function loadVariantAttributes(variantId){
+
+  const box = document.getElementById("modalAttributes")
+
+  box.innerHTML = "กำลังโหลดคุณสมบัติ..."
+
+  const { data, error } = await supabaseClient
+    .from("variant_values")
+    .select(`
+      value,
+      attributes (
+        name
+      )
+    `)
+    .eq("variant_id", variantId)
+
+  if(error){
+    console.error(error)
+    box.innerHTML = "โหลด attribute ไม่สำเร็จ"
+    return
+  }
+
+  if(!data || data.length === 0){
+    closeProductModal()
+    return
+  }
+
+  box.innerHTML = "<h4>คุณสมบัติสินค้า</h4>"
+
+  data.forEach(attr => {
+
+    const div = document.createElement("div")
+
+    div.className = "product-card"
+
+    div.innerText =
+      `${attr.attributes.name} : ${attr.value}`
+
+    box.appendChild(div)
+
+  })
+
+}
 
 // =====================================================
 // 📅 SET TODAY DATE

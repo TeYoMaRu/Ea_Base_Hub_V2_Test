@@ -509,8 +509,57 @@ textarea::placeholder {
   color: #92400e;
   font-weight: 500;
 }
+/* ==================== MODAL ==================== */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+}
 
+.modal-content{
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  width:500px;
+  max-height:70vh;
+  overflow:auto;
+}
 
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.product-list{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.product-card{
+  border:1px solid #ddd;
+  padding:12px;
+  border-radius:8px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.product-card:hover{
+  background:#f5f5f5;
+}
+
+#modalSpec{
+  margin-top:20px;
+}
+
+#modalAttributes{
+  margin-top:20px;
+}
 
 /* =====================================================
    🔧 แก้ไขปุ่มลบในการอัปโหลดรูป/วิดีโอ
