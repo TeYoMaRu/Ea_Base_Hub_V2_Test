@@ -2,7 +2,13 @@
 // userService.js
 // บริการจัดการข้อมูล User แบบรวมศูนย์
 // ใช้ร่วมกันได้ทุกหน้า
+// ต้องโหลด supabaseClient.js ก่อนไฟล์นี้
 // =====================================================
+
+// ตรวจสอบว่ามี supabaseClient หรือยัง
+if (typeof supabaseClient === 'undefined') {
+  console.error('❌ supabaseClient ไม่พร้อมใช้งาน! ตรวจสอบว่าโหลด supabaseClient.js ก่อนหรือยัง');
+}
 
 // =====================================================
 // 🌐 GLOBAL USER DATA
@@ -12,7 +18,7 @@ window.currentUser = {
   email: null,
   full_name: null,
   display_name: null,
-  zone: null,
+  area: null,
   position: null,
   department: null,
   phone: null,
@@ -59,7 +65,7 @@ async function loadCurrentUser() {
       email: session.user.email,
       full_name: profile?.full_name || null,
       display_name: profile?.display_name || profile?.full_name || session.user.email,
-      zone: profile?.zone || null,
+      area: profile?.area || null,
       position: profile?.position || null,
       department: profile?.department || null,
       phone: profile?.phone || null,
@@ -91,7 +97,7 @@ function autoFillUserData(config = {}) {
    * config = {
    *   full_name: "empName",        // element ID สำหรับชื่อเต็ม
    *   display_name: "userName",    // element ID สำหรับชื่อแสดง
-   *   zone: "zone",                // element ID สำหรับเขต
+   *   area: "area",                // element ID สำหรับเขต
    *   position: "position",        // element ID สำหรับตำแหน่ง
    *   department: "dept",          // element ID สำหรับแผนก
    *   phone: "phone",              // element ID สำหรับเบอร์โทร
@@ -112,7 +118,7 @@ function autoFillUserData(config = {}) {
   const fieldMappings = {
     full_name: config.full_name,
     display_name: config.display_name,
-    zone: config.zone,
+    area: config.area,
     position: config.position,
     department: config.department,
     phone: config.phone,
@@ -173,7 +179,7 @@ function getUserData(field = null) {
    * 
    * ตัวอย่าง:
    * getUserData("full_name")  → "สมชาย ใจดี"
-   * getUserData("zone")       → "กรุงเทพฯ"
+   * getUserData("area")       → "กรุงเทพฯ"
    * getUserData()             → { id: "...", full_name: "...", ... }
    */
 
@@ -262,7 +268,7 @@ async function updateUserProfile(updates = {}) {
    * @returns {boolean} - true ถ้าสำเร็จ
    * 
    * ตัวอย่าง:
-   * updateUserProfile({ zone: "ภาคเหนือ", phone: "081-234-5678" })
+   * updateUserProfile({ area: "ภาคเหนือ", phone: "081-234-5678" })
    */
 
   try {
@@ -303,13 +309,21 @@ async function initUserService() {
 
   try {
     // โหลดข้อมูล User
-    await loadCurrentUser();
+    const user = await loadCurrentUser();
+    
+    if (!user) {
+      console.warn("⚠️ Failed to load user data");
+      return false;
+    }
 
     // อัพเดทชื่อใน header
     updateUserNameDisplay();
 
     // ใช้งาน permission-based UI
     applyPermissionBasedUI();
+
+    // เติมข้อมูล user อัตโนมัติ
+    autoFillUserAttributes();
 
     console.log("✅ User service initialized");
     return true;
@@ -323,16 +337,79 @@ async function initUserService() {
 // =====================================================
 // 📦 EXPORT (ถ้าใช้ ES6 modules)
 // =====================================================
-// export {
-//   loadCurrentUser,
-//   autoFillUserData,
-//   updateUserNameDisplay,
-//   getUserData,
-//   checkUserPermission,
-//   applyPermissionBasedUI,
-//   refreshUserData,
-//   updateUserProfile,
-//   initUserService
-// };
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    loadCurrentUser,
+    autoFillUserData,
+    updateUserNameDisplay,
+    getUserData,
+    checkUserPermission,
+    applyPermissionBasedUI,
+    refreshUserData,
+    updateUserProfile,
+    initUserService
+  };
+}
 
 console.log("✅ userService.js loaded");
+
+
+// =====================================================
+// 🧠 AUTO FILL USER BY ATTRIBUTE
+// =====================================================
+function autoFillUserAttributes() {
+  /**
+   * ระบบเติมข้อมูล user อัตโนมัติ
+   * โดยใช้ attribute ใน HTML
+   * 
+   * ตัวอย่าง HTML
+   * <input data-user="display_name">
+   * <input data-user="area">
+   */
+
+  if (!window.currentUser || !window.currentUser.id) {
+    console.warn("⚠️ User data not loaded yet");
+    return;
+  }
+
+  // หา element ที่มี data-user
+  const elements = document.querySelectorAll("[data-user]");
+
+  elements.forEach(element => {
+
+    // ชื่อ field ที่ต้องการจาก user
+    const field = element.dataset.user;
+
+    // ค่าใน user
+    const value = window.currentUser[field];
+
+    if (value !== undefined && value !== null) {
+
+      // ถ้าเป็น input
+      if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
+        element.value = value;
+      }
+
+      // ถ้าเป็น select
+      else if (element.tagName === "SELECT") {
+        element.value = value;
+      }
+
+      // ถ้าเป็น div / span
+      else {
+        element.textContent = value;
+      }
+
+      console.log(`✅ Auto filled ${field} →`, value);
+    }
+
+    // ถ้าต้องการ readonly
+    if (element.hasAttribute("data-user-readonly")) {
+      element.readOnly = true;
+      element.style.background = "#f1f5f9";
+      element.style.color = "#64748b";
+    }
+
+  });
+
+}

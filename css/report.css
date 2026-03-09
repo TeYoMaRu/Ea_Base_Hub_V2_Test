@@ -275,16 +275,44 @@ a {
   color: #666;
 }
 
+/* ===================================================== */
+/* CARD                                                  */
+/* ===================================================== */ 
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* .card-cause {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+} */
+
 
 /* ===================================================== */
 /* MAIN CONTAINER                                         */
 /* ===================================================== */
 
-.container {
+/* .container {
   max-width: 1200px;
   margin: auto;
   padding: 20px;
-}
+} */
 
 
 /* ===================================================== */
@@ -496,3 +524,5 @@ th {
   grid-column: 1 / -1;   /* กินเต็มแถว */
   margin-top: 10px;
 }
+
+}   /*===END===*/

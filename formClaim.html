@@ -10,7 +10,7 @@
   <!-- ชื่อหน้าเว็บที่แสดงบน tab เบราว์เซอร์ -->
   <title>Forms Claim</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!--0-->
 
   <!-- นำเข้า Google Material Icons สำหรับใช้ไอคอนต่างๆ -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -18,6 +18,7 @@
 
   <!-- เชื่อมโยงไฟล์ CSS ภายนอก -->
   <link rel="stylesheet" href="css/formClaim1.css">
+  <link rel="stylesheet" href="css/base-style.css">
 </head>
 
 <body>
@@ -68,7 +69,7 @@
     <a href="formClaim.html" class="active">แจ้งเคลมสินค้า</a>
     
     <!-- เมนู FormsHub -->
-    <a href="formHub.html">FormsHub</a>
+    <a href="formHub.html">แบบฟอร์ม</a>
   </nav>
 
   
@@ -100,16 +101,16 @@
       <div class="section-divider"></div>
       <!-- Grid สำหรับจัดเรียงช่องกรอก -->
       <div class="form-grid">
-      
+               
         <!-- User -->
         <div class="form-group">
-          <label for="empName">พนักงานขาย</label>
-          <input id="empName" readonly>
+          <label for="userName">พนักงานขาย</label>
+          <input data-user="display_name" data-user-readonly>
         </div>
         
         <div class="form-group">
-          <label for="area">เขตการขาย</label>
-          <input id="area" readonly>
+          <label for="areaCount">เขตการขาย</label>
+          <input data-user="area" data-user-readonly>
         </div>
       </div>
 
@@ -305,13 +306,33 @@
       <button class="btn-submit" onclick="submitClaim()">✅ ส่งเคลม</button>
     </div>
 
-  </div>     <!--ปิด-->
+    
+    
+  <!-- ===================================================== -->
+  <!-- FOOTER                                                 -->
+  <!-- ===================================================== -->
+  <footer class="footer">
+      © 2026 EABaseHub
+  </footer>
+    
+    
+  <!-- </div>     ปิด -->
+  
+<!-- ===================================================== -->
+<!-- SCRIPT SECTION                                         -->
+<!-- ===================================================== -->
 
-  <!-- SCRIPTS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/core/supabaseClient.js"></script>
-  <script src="js/core/auth.js"></script>
-  <script src="js/formClaim.js"></script>
 
+
+<!-- Core System -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/core/supabaseClient.js"></script>
+<script src="js/core/userService.js"></script>
+<script src="js/core/auth.js"></script>
+  
+
+<!-- Page Script -->
+
+<script src="js/formClaim.js"></script>
 </body>
-</html>
+</html>   <!--ปิด-->
