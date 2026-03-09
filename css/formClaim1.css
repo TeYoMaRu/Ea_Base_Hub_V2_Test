@@ -458,7 +458,8 @@ textarea::placeholder {
 
 .product-icon {
   font-size: 32px;
-  margin-bottom: 8px;
+  margin-bottom: 0;
+  color: #4CAF50;
   filter: grayscale(0.3);
   transition: filter 0.2s;
 }
@@ -467,6 +468,12 @@ textarea::placeholder {
 .product-item.active .product-icon {
   filter: grayscale(0);
 }
+
+/* ================= ปรับขนาด icon ================= */
+.material-symbols-outlined {
+  font-size: 48px;
+}
+
 
 /* ================= CLAIM TYPE GRID ================= */
 
@@ -502,6 +509,7 @@ textarea::placeholder {
   color: #92400e;
   font-weight: 500;
 }
+
 
 
 /* =====================================================

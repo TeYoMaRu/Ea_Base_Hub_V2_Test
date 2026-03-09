@@ -13,7 +13,7 @@
   <!--0-->
 
   <!-- นำเข้า Google Material Icons สำหรับใช้ไอคอนต่างๆ -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
 
   <!-- เชื่อมโยงไฟล์ CSS ภายนอก -->
@@ -160,44 +160,68 @@
       </div>
 
       <div class="product-grid">
-        <div class="product-item">
-          <div class="product-icon">🔲</div>
+
+        <div class="product-item" onclick="openProductModal()">
+          <div class="product-icon">
+            <span class="material-symbols-outlined">plumbing</span>
+          </div>
           ท่อพีอี
         </div>
-        <div class="product-item">
-          <div class="product-icon">🏠</div>
+
+        <div class="product-item" onclick="openProductModal()">
+          <div class="product-icon">
+            <span class="material-symbols-outlined">grid_on</span>
+            </div>
           ตาข่ายกรองแสง
         </div>
+
         <div class="product-item">
-          <div class="product-icon">🌊</div>
+          <div class="product-icon">
+            <span class="material-symbols-outlined">potted_plant</span>
+            </div>
           ถุงเพาะชำ
         </div>
+
         <div class="product-item">
-          <div class="product-icon">🌱</div>
-          เทปน้ำพุ่ง
+          <div class="product-icon">
+            <span class="material-symbols-outlined">shopping_bag</span>
+            </div>
+          ถุงอเนกประสงค์
         </div>
         <div class="product-item">
-          <div class="product-icon">🔲</div>
+          <div class="product-icon">
+            <span class="material-symbols-outlined">delete</span>
+            </div>
           ถุงขยะ
         </div>
         <div class="product-item">
-          <div class="product-icon">🏠</div>
+          <div class="product-icon">
+            <span class="material-symbols-outlined">home</span>
+          </div>
           พลาสติกโรงเรือน
         </div>
         <div class="product-item">
-          <div class="product-icon">🌊</div>
+          <div class="product-icon">
+            <span class="material-symbols-outlined">water</span>
+          </div>
           พลาสติกปูบ่อ
         </div>
         <div class="product-item">
-          <div class="product-icon">🌱</div>
+          <div class="product-icon">
+            <span class="material-symbols-outlined">grass</span>
+          </div>
           พลาสติกคลุมดิน
         </div>
         <div class="product-item">
-          <div class="product-icon">🌊</div>
-          ฟิล์มพิมพ์
+          <div class="product-icon">
+            <span class="material-symbols-outlined">water_drop</span>
+          </div>
+          เทปน้ำพุ่ง
         </div>
         <div class="product-item">
-          <div class="product-icon">🌱</div>
+          <div class="product-icon">
+            <span class="material-symbols-outlined">compost</span>
+          </div>
           สินค้าอื่นๆ
         </div>
       </div>
@@ -308,6 +332,31 @@
 
     
     
+
+
+    <div class="modal" id="productModal">
+
+  <div class="modal-content">
+
+    <h3>เลือกสินค้า</h3>
+
+    <div class="form-group">
+      <label>หมวดสินค้า</label>
+      <select id="modalCategory"></select>
+    </div>
+
+    <div class="form-group">
+      <label>สินค้า</label>
+      <select id="modalProduct"></select>
+    </div>
+
+    <div id="modalAttributes"></div>
+
+    <button onclick="closeProductModal()">ปิด</button>
+
+  </div>
+
+</div>
   <!-- ===================================================== -->
   <!-- FOOTER                                                 -->
   <!-- ===================================================== -->
@@ -329,7 +378,7 @@
 <script src="js/core/supabaseClient.js"></script>
 <script src="js/core/userService.js"></script>
 <script src="js/core/auth.js"></script>
-  
+<script src="js/services/categoryService.js"></script>  
 
 <!-- Page Script -->
 

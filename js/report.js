@@ -765,7 +765,9 @@ async function saveReport() {
   }
 
   try {
-    const user = (await supabaseClient.auth.getUser()).data.user;
+
+    // ใช้ userService
+    const userId = getUserData("id");
     
     const reportData = {
       report_date: reportDate,
@@ -776,7 +778,7 @@ async function saveReport() {
       quantity: quantity,
       followup_date: document.getElementById("followupDate")?.value || null,
       note: document.getElementById("note")?.value || null,
-      sale_id: user.id,
+      sale_id: userId,
       attributes: collectDynamicAttributes(),
       created_at: new Date().toISOString()
     };

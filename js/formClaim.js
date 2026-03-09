@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setTodayDate();
 
     // 📋 โหลดข้อมูล
+    await loadCategories();
     await loadCustomerList();
     await loadDrafts();
 
@@ -58,6 +59,66 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert('เกิดข้อผิดพลาดในการโหลดหน้า: ' + error.message);
   }
 });
+
+
+document.addEventListener("change", async (e)=>{
+
+  if(e.target.id === "modalProduct"){
+
+    const productId = e.target.value;
+
+    loadProductAttributes(productId);
+
+  }
+
+});
+
+async function loadProductAttributes(productId){
+
+  const container = document.getElementById("modalAttributes");
+
+  container.innerHTML = "";
+
+  const { data } = await supabaseClient
+    .from("attributes")
+    .select("*")
+    .eq("product_id",productId)
+    .order("order_no");
+
+  data.forEach(attr=>{
+
+    const div = document.createElement("div");
+
+    div.innerHTML = `
+      <label>${attr.name}</label>
+      <input type="text">
+    `;
+
+    container.appendChild(div);
+
+  });
+
+}
+
+// =====================================================
+// OPEN OR CLOSE MODAL
+// =====================================================
+function openProductModal(){
+
+  const modal = document.getElementById("productModal");
+
+  modal.style.display = "flex";
+
+  loadCategories("modalCategory");
+
+}
+
+function closeProductModal(){
+
+  document.getElementById("productModal").style.display = "none";
+
+}
+
 
 // =====================================================
 // 📅 SET TODAY DATE
