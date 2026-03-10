@@ -1,0 +1,508 @@
+/* =====================================================
+   ADMIN SHOP - STYLESHEET
+   ไฟล์ CSS สำหรับหน้า Forms Hub
+   ===================================================== */
+
+  
+
+
+
+/* ===============================
+   SHOPS PAGE ONLY
+================================ */
+
+#saleTitle {
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #666;
+}
+
+.shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.btn-add {
+  background: #4caf50;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+
+
+/* ===============================
+   MODAL OVERLAY
+================================ */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  animation: fadeIn 0.2s ease;
+}
+
+/* ===============================
+   MODAL BOX
+================================ */
+.modal-content {
+  background: #ffffff;
+  width: 420px;
+  max-width: 95%;
+  border-radius: 18px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  padding: 24px;
+  animation: slideUp 0.25s ease;
+}
+
+/* HEADER */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.modal-header h3 {
+  font-weight: 600;
+}
+
+.close-btn {
+  font-size: 22px;
+  cursor: pointer;
+  color: #999;
+  transition: 0.2s;
+}
+
+.close-btn:hover {
+  color: #ff4d4d;
+}
+
+/* BODY */
+.modal-body .form-group {
+  margin-bottom: 14px;
+}
+
+.modal-body input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-family: inherit;
+  transition: 0.2s;
+}
+
+.modal-body input:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76,175,80,0.15);
+}
+
+/* FOOTER */
+.modal-footer {
+  text-align: right;
+  margin-top: 18px;
+}
+
+.btn-save {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-save:hover {
+  background: #43a047;
+}
+
+.btn-cancel {
+  background: #ddd;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+/*new 190269*/
+.shop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.shop-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 18px 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  transition: 0.2s ease;
+}
+
+.shop-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.shop-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.shop-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.shop-code {
+  font-size: 13px;
+  color: #888;
+  margin-top: 4px;
+}
+
+.shop-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-icon {
+  border: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+/* สีแต่ละปุ่ม */
+
+.btn-edit {
+  background: #e3f2fd;
+}
+
+.btn-transfer {
+  background: #fff3cd;
+}
+
+.btn-unlink {
+  background: #f8d7da;
+}
+
+.btn-delete {
+  background: #ffe5e5;
+}
+
+.btn-icon:hover {
+  opacity: 0.8;
+}
+
+
+/* ANIMATION */
+@keyframes slideUp {
+  from { transform: translateY(15px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+
+/* =====================================================
+   ADMIN PAGE LAYOUT
+   ===================================================== */
+
+/* HEADER ของหน้า admin */
+.admin-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.admin-header h2{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:20px;
+  font-weight:500;
+}
+
+/* ปุ่มกลับ */
+.btn-back{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  background:#eee;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+
+  cursor:pointer;
+  font-family:inherit;
+  font-size:14px;
+}
+
+.btn-back:hover{
+  background:#e0e0e0;
+}
+
+/* =====================================================
+   TABS
+   ===================================================== */
+
+.admin-tabs{
+  display:flex;
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.admin-tab{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  padding:8px 14px;
+  border-radius:10px;
+  background:#f3f3f3;
+
+  font-size:14px;
+  transition:0.2s;
+}
+
+.admin-tab:hover{
+  background:#e7e7e7;
+}
+
+/* tab active */
+.admin-tab.active{
+  background:var(--secondary-700);
+  color:white;
+}
+
+/* =====================================================
+   REFRESH BUTTON
+   ===================================================== */
+
+.btn-refresh{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  background:var(--primary-500);
+  color:white;
+
+  border:none;
+  padding:8px 14px;
+  border-radius:10px;
+
+  cursor:pointer;
+  margin-bottom:20px;
+}
+
+.btn-refresh:hover{
+  background:var(--primary-700);
+}
+
+/* =====================================================
+   FORM
+   ===================================================== */
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  margin-bottom:18px;
+}
+
+.form-group label{
+  font-size:14px;
+  margin-bottom:6px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.form-group select{
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-family:inherit;
+}
+
+/* =====================================================
+   EMPTY STATE
+   ===================================================== */
+
+.empty-state{
+  text-align:center;
+  padding:40px 20px;
+  color:#888;
+}
+
+.empty-state span{
+  font-size:48px;
+  display:block;
+  margin-bottom:10px;
+}
+
+.empty-state-text{
+  font-size:14px;
+}
+
+/* =====================================================
+   SHOP TOOLBAR
+   ===================================================== */
+
+.shop-toolbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+  gap:10px;
+}
+
+/* SEARCH */
+
+.search-box{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  background:white;
+  border:1px solid #ddd;
+  border-radius:10px;
+
+  padding:6px 10px;
+  flex:1;
+  max-width:320px;
+}
+
+.search-box input{
+  border:none;
+  outline:none;
+  font-family:inherit;
+  width:100%;
+}
+
+/* ADD SHOP BUTTON */
+
+.btn-add-shop{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  background:var(--primary-500);
+  color:white;
+
+  border:none;
+  border-radius:10px;
+
+  padding:8px 14px;
+  cursor:pointer;
+}
+
+.btn-add-shop:hover{
+  background:var(--primary-700);
+}
+
+/* =====================================================
+   SHOP GRID
+   ===================================================== */
+
+.shop-list{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+}
+
+/* =====================================================
+   SHOP CARD MODERN
+   ===================================================== */
+
+.shop-card{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  background:white;
+  border-radius:14px;
+
+  padding:18px;
+
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+  transition:.2s;
+}
+
+.shop-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 22px rgba(0,0,0,0.08);
+}
+
+.shop-info{
+  display:flex;
+  flex-direction:column;
+}
+
+.shop-name{
+  font-size:16px;
+  font-weight:600;
+}
+
+.shop-code{
+  font-size:13px;
+  color:#777;
+}
+
+/* ACTIONS */
+
+.shop-actions{
+  display:flex;
+  gap:6px;
+}
+
+.btn-icon{
+  border:none;
+  border-radius:8px;
+  padding:6px 8px;
+  cursor:pointer;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* colors */
+
+.btn-edit{
+  background:#e3f2fd;
+}
+
+.btn-transfer{
+  background:#fff3cd;
+}
+
+.btn-unlink{
+  background:#ffe5e5;
+}
+
+.btn-delete{
+  background:#f8d7da;
+}
+
+.btn-icon:hover{
+  opacity:0.8;
+}

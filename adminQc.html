@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <!-- กำหนด character encoding เป็น UTF-8 เพื่อรองรับภาษาไทย -->
+  <meta charset="UTF-8">
+  
+  <!-- กำหนดให้หน้าเว็บแสดงผลได้ดีบนมือถือ (responsive) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- ชื่อหน้าเว็บที่แสดงบน tab เบราว์เซอร์ -->
+  <title>Admin QC</title>
+ 
+  <!-- นำเข้า Google Material Icons สำหรับใช้ไอคอนต่างๆ -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+
+  <!-- เชื่อมโยงไฟล์ CSS ภายนอก -->
+  <link rel="stylesheet" href="css/base/adminBase.css">
+  <link rel="stylesheet" href="css/adminQc.css">
+</head>
+
+<body>  
+  <!-- ===================================================
+       HEADER SECTION (ส่วนหัวเว็บไซต์)
+       แสดงโลโก้และชื่อผู้ใช้งาน
+       =================================================== -->
+  <header class="app-header">
+      <!-- ส่วนโลโก้และชื่อระบบ -->
+      <div class="logo">
+        <div class="logo-circle">
+        <!-- รูปโลโก้ (ถ้ามี) -->
+        <img src="assets/icons/icon-192.png" alt="logo">
+        </div>
+        <!-- ชื่อระบบ -->
+        <h2>EABaseHub</h2>
+      </div>
+      </div>
+
+      
+      <!-- แสดงชื่อผู้ใช้งาน (JavaScript สามารถเปลี่ยนค่านี้ได้ภายหลัง) -->
+    <div class="user-box">
+      <div class="user-avatar" id="userAvatar">👤</div>
+
+      <div class="user-info">
+        <div class="user-name" id="userName">กำลังโหลด...</div>
+      </div>
+
+      <button id="logoutBtn" class="logout-btn">ออกจากระบบ</button>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       NAVIGATION SECTION (ส่วนเมนูนำทาง)
+       แสดงลิงก์ไปยังหน้าต่างๆ ในระบบ (หน้าปัจจุบัน - ใช้ class="active") 
+       ===================================================== -->
+  <nav class="app-nav">
+    <!-- เมนูหน้าแรก -->
+    <a href="adminDashboard.html">Admin Dashboard</a>
+
+    <a href="adminQc.html" class="active">QC Dashboard</a>
+  </nav>
+
+<!-- ===================================================== -->
+<!-- PAGE HEADER (เนื้อหาหลักของหน้า)                        -->
+<!-- ===================================================== -->
+  <header class="page-header">
+
+    <!-- ชื่อหน้า -->
+    <h1>🔍 QC Dashboard</h1>
+
+    <!-- คำอธิบายสั้น ๆ -->
+    <p>ตรวจสอบ • อนุมัติ • บันทึกผล • Export</p>
+
+  </header>
+
+
+<!-- ===================================================== -->
+<!-- MAIN CONTENT CONTAINER                                 -->
+<!-- ===================================================== -->
+<main class="container">
+<!-- ===================================================== -->
+<!-- SECTION 1: ข้อมูลพนักงานและลูกค้า                          -->
+<!-- ===================================================== -->      
+    <div class="card">
+
+      <div class="section-divider"></div>
+      <!-- Grid สำหรับจัดเรียงช่องกรอก -->
+      <div class="form-grid">
+
+  <!-- ===================================================
+       SUMMARY CARDS
+       =================================================== -->
+  <div class="qc-summary">
+    <div class="summary-card total">
+      <div class="summary-icon"><span class="material-symbols-outlined">inventory_2</span></div>
+      <div class="summary-info">
+        <div class="summary-num" id="sumTotal">—</div>
+        <div class="summary-label">ทั้งหมด</div>
+      </div>
+    </div>
+    <div class="summary-card pending">
+      <div class="summary-icon"><span class="material-symbols-outlined">pending</span></div>
+      <div class="summary-info">
+        <div class="summary-num" id="sumPending">—</div>
+        <div class="summary-label">รออนุมัติ</div>
+      </div>
+    </div>
+    <div class="summary-card approved">
+      <div class="summary-icon"><span class="material-symbols-outlined">check_circle</span></div>
+      <div class="summary-info">
+        <div class="summary-num" id="sumApproved">—</div>
+        <div class="summary-label">อนุมัติแล้ว</div>
+      </div>
+    </div>
+    <div class="summary-card rejected">
+      <div class="summary-icon"><span class="material-symbols-outlined">cancel</span></div>
+      <div class="summary-info">
+        <div class="summary-num" id="sumRejected">—</div>
+        <div class="summary-label">ปฏิเสธ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       FILTER BAR
+       =================================================== -->
+  <div class="qc-filter-bar">
+
+    <div class="filter-group">
+      <span class="material-symbols-outlined filter-icon">search</span>
+      <input type="text" id="searchInput" placeholder="ค้นหาสินค้า / ร้านค้า / พนักงาน...">
+    </div>
+
+    <div class="filter-group">
+      <span class="material-symbols-outlined filter-icon">calendar_month</span>
+      <input type="date" id="filterDateFrom" title="จากวันที่">
+      <span class="filter-sep">–</span>
+      <input type="date" id="filterDateTo" title="ถึงวันที่">
+    </div>
+
+    <div class="filter-group">
+      <span class="material-symbols-outlined filter-icon">flag</span>
+      <select id="filterStatus">
+        <option value="">ทุกสถานะ</option>
+        <option value="submitted">รออนุมัติ</option>
+        <option value="approved">อนุมัติแล้ว</option>
+        <option value="rejected">ปฏิเสธ</option>
+      </select>
+    </div>
+
+    <button class="btn-filter-reset" onclick="resetFilters()">
+      <span class="material-symbols-outlined">restart_alt</span> รีเซ็ต
+    </button>
+
+    <button class="btn-export-excel" onclick="exportExcel()">
+      <span class="material-symbols-outlined">table_view</span> Excel
+    </button>
+
+  </div>
+
+  <!-- ===================================================
+       MAIN TABLE
+       =================================================== -->
+  <main class="qc-main">
+    <div class="table-wrap">
+      <table class="qc-table" id="qcTable">
+        <thead>
+          <tr>
+            <th>วันที่</th>
+            <th>พนักงาน / เขต</th>
+            <th>ร้านค้า</th>
+            <th>สินค้า</th>
+            <th>ประเภทปัญหา</th>
+            <th>ไฟล์</th>
+            <th>สถานะ</th>
+            <th>จัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="qcTableBody">
+          <tr>
+            <td colspan="8" class="table-loading">
+              <span class="material-symbols-outlined spin">progress_activity</span>
+              กำลังโหลด...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- ===================================================
+       POPUP DETAIL MODAL
+       =================================================== -->
+  <div class="qc-modal" id="qcModal">
+    <div class="qc-modal-box">
+
+      <!-- Modal Header -->
+      <div class="qc-modal-header">
+        <div class="qc-modal-title">
+          <span class="material-symbols-outlined">manage_search</span>
+          <span id="modalTitle">รายละเอียดเคลม</span>
+        </div>
+        <div class="qc-modal-header-actions">
+          <button class="btn-export-pdf" onclick="exportPDF()">
+            <span class="material-symbols-outlined">picture_as_pdf</span> Export PDF
+          </button>
+          <button class="modal-close-btn" onclick="closeModal()">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="qc-modal-body">
+
+        <!-- ข้อมูลหลัก -->
+        <div class="modal-section">
+          <div class="modal-info-grid" id="modalInfoGrid">
+            <!-- JS inject -->
+          </div>
+        </div>
+
+        <!-- ประเภทปัญหา -->
+        <div class="modal-section">
+          <div class="modal-section-label">
+            <span class="material-symbols-outlined">warning</span> ประเภทปัญหา
+          </div>
+          <div class="modal-claim-types" id="modalClaimTypes">
+            <!-- JS inject -->
+          </div>
+        </div>
+
+        <!-- รายละเอียด -->
+        <div class="modal-section">
+          <div class="modal-section-label">
+            <span class="material-symbols-outlined">notes</span> รายละเอียด
+          </div>
+          <div class="modal-detail-box" id="modalDetail">—</div>
+        </div>
+
+        <!-- รูปภาพ / วิดีโอ -->
+        <div class="modal-section">
+          <div class="modal-section-label">
+            <span class="material-symbols-outlined">photo_library</span> รูปภาพ / วิดีโอ
+          </div>
+          <div class="modal-media-grid" id="modalMediaGrid">
+            <!-- JS inject -->
+          </div>
+        </div>
+
+        <!-- QC Action -->
+        <div class="modal-section qc-action-section">
+          <div class="modal-section-label">
+            <span class="material-symbols-outlined">rate_review</span> ผลการพิจารณา QC
+          </div>
+
+          <div class="qc-status-current" id="qcStatusCurrent">
+            <!-- JS inject current status -->
+          </div>
+
+          <textarea
+            id="qcComment"
+            rows="3"
+            placeholder="หมายเหตุ / ความเห็น QC (ถ้ามี)..."
+          ></textarea>
+
+          <div class="qc-action-btns">
+            <button class="btn-approve" onclick="updateClaimStatus('approved')">
+              <span class="material-symbols-outlined">check_circle</span> อนุมัติ
+            </button>
+            <button class="btn-reject" onclick="updateClaimStatus('rejected')">
+              <span class="material-symbols-outlined">cancel</span> ปฏิเสธ
+            </button>
+          </div>
+        </div>
+
+      </div><!-- end modal-body -->
+    </div><!-- end modal-box -->
+  </div><!-- end modal -->
+
+  <!-- ===================================================
+       LIGHTBOX สำหรับดูรูปเต็ม
+       =================================================== -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <img id="lightboxImg" src="" alt="">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  </div>
+
+  <footer class="footer">© 2026 EABaseHub</footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/core/supabaseClient.js"></script>
+  <script src="js/core/userService.js"></script>
+  <script src="js/core/auth.js"></script>
+  <script src="js/adminQc.js"></script>
+
+</body>
+</html>

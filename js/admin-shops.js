@@ -26,6 +26,40 @@ async function loadSalesForPermissions() {
 }
 
 
+
+// ===============================
+// เพิ่ม JS Search Filter
+// ===============================
+function filterShops(){
+
+  const keyword = document
+    .getElementById("searchShop")
+    .value
+    .toLowerCase();
+
+  const cards = document.querySelectorAll(".shop-card");
+
+  cards.forEach(card => {
+
+    const name = card
+      .querySelector(".shop-name")
+      .innerText
+      .toLowerCase();
+
+    const code = card
+      .querySelector(".shop-code")
+      ?.innerText
+      .toLowerCase();
+
+    if(name.includes(keyword) || code.includes(keyword)){
+      card.style.display = "flex";
+    }else{
+      card.style.display = "none";
+    }
+
+  });
+
+}
 // ===============================
 // โหลดร้านค้าของ Sales ที่เลือก
 // ===============================

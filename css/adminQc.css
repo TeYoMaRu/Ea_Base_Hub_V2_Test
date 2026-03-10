@@ -1,4 +1,10 @@
 /* =====================================================
+   adminQC.css
+   CSS สำหรับหน้า QC Dashboard
+   ===================================================== */
+
+
+/* =====================================================
    SUMMARY CARDS
    ===================================================== */
 .qc-summary {
@@ -7,7 +13,7 @@
   gap: 16px;
   max-width: 1200px;
   margin: 24px auto 0;
-  padding: 0 20px;
+  /* padding: 0 20px; */
 }
 
 .summary-card {
@@ -21,10 +27,23 @@
   border-left: 4px solid transparent;
 }
 
-.summary-card.total    { border-color: #64748b; }
-.summary-card.pending  { border-color: #f59e0b; }
-.summary-card.approved { border-color: #22c55e; }
-.summary-card.rejected { border-color: #ef4444; }
+.summary-card.total    {
+   border-color: #64748b;
+   background: #Ecf5ff; 
+  }
+.summary-card.pending  {
+   border-color: #f59e0b;
+   background: #fff9f0;
+   
+  }
+.summary-card.approved {
+   border-color: #22c55e;
+   background: #dcfce7; 
+  }
+.summary-card.rejected { 
+  border-color: #ef4444;
+  background: #fee2e2; 
+}
 
 .summary-icon {
   width: 44px;
@@ -36,10 +55,13 @@
   font-size: 1.4rem;
 }
 
-.summary-card.total    .summary-icon { background: #f1f5f9; color: #64748b; }
-.summary-card.pending  .summary-icon { background: #fef9c3; color: #d97706; }
-.summary-card.approved .summary-icon { background: #dcfce7; color: #16a34a; }
-.summary-card.rejected .summary-icon { background: #fee2e2; color: #dc2626; }
+.summary-card.total    .summary-icon {
+   background: #d3e6fa;
+   color: #64748b; 
+  }
+.summary-card.pending  .summary-icon { background: #fee9c3; color: #d97706; }
+.summary-card.approved .summary-icon { background: #c3fdd8; color: #16a34a; }
+.summary-card.rejected .summary-icon { background: #fad1d1; color: #dc2626; }
 
 .summary-num {
   font-size: 1.8rem;
@@ -144,8 +166,8 @@
    ===================================================== */
 .qc-main {
   max-width: 1200px;
-  margin: 20px auto 40px;
-  padding: 0 20px;
+  margin: 20px auto 20px;
+  /* padding: 0 10px; */
 }
 
 .table-wrap {
