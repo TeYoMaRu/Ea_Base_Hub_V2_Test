@@ -97,7 +97,7 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 padding: 10px 24px;
-background: var(--Dark-Teal);
+background: var(--secondary-700);
 border-bottom: 1px solid #ddd;
 box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
