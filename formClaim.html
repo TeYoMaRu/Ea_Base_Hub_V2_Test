@@ -91,8 +91,6 @@
 <!-- MAIN CONTENT CONTAINER                                 -->
 <!-- ===================================================== -->
 <main class="container">
-
-
 <!-- ===================================================== -->
 <!-- SECTION 1: ข้อมูลพนักงานและลูกค้า                          -->
 <!-- ===================================================== -->      
@@ -155,22 +153,20 @@
 
       <div class="section-divider"></div>
 
-      
-
       <div class="section-title">
         📦 รายการสินค้าที่เคลม
       </div>
 
       <div class="product-grid">
 
-        <div class="product-item" onclick="openProductModal('b10f48d6-3909-4396-9df4-19aaef03f823')">
+        <div class="product-item" onclick="openProductModal()">
           <div class="product-icon">
             <span class="material-symbols-outlined">plumbing</span>
           </div>
           ท่อพีอี
         </div>
 
-        <div class="product-item" onclick="openProductModal('0f4bff06-fc48-4220-bb97-f8ad21415739')">
+        <div class="product-item" onclick="openProductModal()">
           <div class="product-icon">
             <span class="material-symbols-outlined">grid_on</span>
             </div>
@@ -340,14 +336,21 @@
 
   <div class="modal-content">
 
-    <div class="modal-header">
-      <h3>เลือกสินค้า</h3>
-      <button onclick="closeProductModal()">✕</button>
+    <h3>เลือกสินค้า</h3>
+
+    <div class="form-group">
+      <label>หมวดสินค้า</label>
+      <select id="modalCategory"></select>
     </div>
 
-    <div id="modalProductList"></div>
-    <div id="modalSpec"></div>
+    <div class="form-group">
+      <label>สินค้า</label>
+      <select id="modalProduct"></select>
+    </div>
+
     <div id="modalAttributes"></div>
+
+    <button onclick="closeProductModal()">ปิด</button>
 
   </div>
 
