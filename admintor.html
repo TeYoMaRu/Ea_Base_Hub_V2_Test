@@ -1,25 +1,81 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
+  <!-- กำหนด character encoding เป็น UTF-8 เพื่อรองรับภาษาไทย -->
   <meta charset="UTF-8">
-  <title>Admin | จัดการผู้ใช้และสิทธิ์</title>
+  
+  <!-- กำหนดให้หน้าเว็บแสดงผลได้ดีบนมือถือ (responsive) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- ชื่อหน้าเว็บที่แสดงบน tab เบราว์เซอร์ -->
+  <title>EABaseHub | จัดการผู้ใช้และสิทธิ์</title>  
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- นำเข้า Google Material Icons สำหรับใช้ไอคอนต่างๆ -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
 
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
-
-  <link rel="stylesheet" href="css/admin-base.css">
+  <!-- เชื่อมโยงไฟล์ CSS ภายนอก -->
+  <link rel="stylesheet" href="css/base/adminBase.css">
+  <link rel="stylesheet" href="css/adminShops.css">
 </head>
 
-<body> <!-- ❗ ต้องมี -->
+<body>
 
-<header class="topbar">
-  <div class="brand">🌿 EABaseHub | Admin</div>
-  <button onclick="logout()" class="btn">Logout</button>
+  <!-- =====================================================
+       HEADER SECTION (ส่วนหัวเว็บไซต์)
+       แสดงโลโก้และชื่อผู้ใช้งาน
+       ===================================================== -->
+  <header class="app-header">
+      <!-- ส่วนโลโก้และชื่อระบบ -->
+      <div class="logo">
+        <div class="logo-circle">
+        <!-- รูปโลโก้ (ถ้ามี) -->
+        <img src="assets/icons/icon-192.png" alt="logo">
+        </div>
+        <!-- ชื่อระบบ -->
+        <h2>EABaseHub</h2>
+      </div>
+      </div>
+      
+
+      <!-- แสดงชื่อผู้ใช้งาน (JavaScript สามารถเปลี่ยนค่านี้ได้ภายหลัง) -->
+      <div class="user-box">
+        <div class="user-avatar" id="userAvatar">👤</div>
+
+        <div class="user-info">
+          <div class="user-name" id="userName">กำลังโหลด...</div>
+          <!-- <div class="user-role" id="userRole"></div> -->
+        </div>
+
+        <button id="logoutBtn" class="logout-btn">ออกจากระบบ</button>
+      </div>
+    </header>
+
+
+
+<!-- ===================================================== -->
+<!-- PAGE TITLE SECTION                                     -->
+<!-- ===================================================== -->
+<header class="page-header">
+
+  <!-- ชื่อหน้า -->
+  <h1>📋 การจัดการ Sales</h1>
+  <!-- คำอธิบายสั้น ๆ -->
+  <p>กรอกข้อมูล • บันทึก • จัดการ • ส่งออก</p>
+
 </header>
 
+
+<!-- ===================================================== -->
+<!-- MAIN CONTENT CONTAINER                                 -->
+<!-- ===================================================== -->
 <main class="container">
+
+
+  <!-- ===================================================== -->
+  <!-- SECTION A : FORM INPUT                                -->
+  <!-- ===================================================== -->
+  <div class="card">
 
 <div class="admin-container">
 
@@ -40,12 +96,12 @@
       ผู้ใช้งาน
     </a>
 
-    <a class="admin-tab" href="admin-sales.html">
+    <a class="admin-tab" href="adminSales.html">
       <span class="material-symbols-outlined">badge</span>
       Sales
     </a>
 
-    <a class="admin-tab" href="admin-shops.html">
+    <a class="admin-tab" href="adminShops.html">
       <span class="material-symbols-outlined">store</span>
       สิทธิ์ร้านค้า
     </a>

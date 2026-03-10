@@ -1,121 +1,106 @@
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background: #F6F8FB;
+body{
+
+font-family:sans-serif;
+margin:0;
+background:#f5f6fa;
+
 }
 
-.layout {
-  display: flex;
-  height: 100vh;
+
+.app-header{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:15px 25px;
+
+background:white;
+border-bottom:1px solid #ddd;
+
 }
 
-/* Sidebar */
-.sidebar {
-  width: 240px;
-  background: #111827;
-  color: white;
-  padding: 20px;
+
+.layout{
+
+display:flex;
+height:calc(100vh - 60px);
+
 }
 
-.logo {
-  font-weight: 700;
-  margin-bottom: 30px;
+
+.sidebar{
+
+width:220px;
+background:white;
+border-right:1px solid #ddd;
+padding:20px;
+
+display:flex;
+flex-direction:column;
+gap:10px;
+
 }
 
-.sidebar nav a {
-  display: block;
-  padding: 10px 0;
-  color: #9CA3AF;
-  cursor: pointer;
+
+.sidebar a{
+
+text-decoration:none;
+color:#333;
+padding:8px;
+
+border-radius:6px;
+
 }
 
-.sidebar nav a.active,
-.sidebar nav a:hover {
-  color: white;
+
+.sidebar a:hover{
+
+background:#eee;
+
 }
 
-/* Main */
-.main {
-  flex: 1;
-  padding: 30px;
-  overflow-y: auto;
+
+.menu-title{
+
+margin-top:15px;
+font-size:12px;
+color:#777;
+
 }
 
-/* Topbar */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
+
+.content{
+
+flex:1;
+padding:30px;
+overflow:auto;
+
 }
 
-.user-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.summary-grid{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:20px;
+margin-bottom:30px;
+
 }
 
-.user-box img {
-  border-radius: 50%;
+
+.card{
+
+background:white;
+padding:20px;
+border-radius:10px;
+
 }
 
-/* KPI Grid */
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-bottom: 25px;
-}
 
-/* Card */
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
-}
+.recent{
 
-.card.large {
-  margin-bottom: 25px;
-}
+background:white;
+padding:20px;
+border-radius:10px;
 
-.card h4 {
-  margin: 0;
-  color: #6B7280;
-}
-
-.card p {
-  font-size: 28px;
-  font-weight: 700;
-  margin: 10px 0 0;
-}
-
-.positive {
-  color: #16A34A;
-}
-
-/* Table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 12px 8px;
-  text-align: left;
-}
-
-thead {
-  border-bottom: 1px solid #E5E7EB;
-}
-
-.badge {
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-}
-
-.badge.success {
-  background: #DCFCE7;
-  color: #166534;
 }

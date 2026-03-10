@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Admin Dashboard</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/admin-dashboard.css">
+
+  <!-- Google Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="admin-header">
+
+  <div class="logo">
+    <span class="material-symbols-outlined">dashboard</span>
+    <h2>EABaseHub Admin</h2>
+  </div>
+
+  <div class="admin-user">
+    <span class="material-symbols-outlined">account_circle</span>
+    Admin
+  </div>
+
+</header>
+
+
+<!-- ================= LAYOUT ================= -->
+
+<div class="admin-layout">
+
+  <!-- ========== SIDEBAR ========== -->
+
+  <aside class="sidebar">
+
+    <a class="menu active">
+      <span class="material-symbols-outlined">dashboard</span>
+      Dashboard
+    </a>
+
+    <a class="menu">
+      <span class="material-symbols-outlined">inventory_2</span>
+      Products
+    </a>
+
+    <a class="menu">
+      <span class="material-symbols-outlined">category</span>
+      Categories
+    </a>
+
+    <a class="menu">
+      <span class="material-symbols-outlined">group</span>
+      Customers
+    </a>
+
+    <a class="menu">
+      <span class="material-symbols-outlined">image</span>
+      Media
+    </a>
+
+    <a class="menu">
+      <span class="material-symbols-outlined">settings</span>
+      Settings
+    </a>
+
+  </aside>
+
+
+  <!-- ========== MAIN CONTENT ========== -->
+
+  <main class="dashboard-content">
+
+
+    <!-- ===== SUMMARY CARDS ===== -->
+
+    <section class="summary-grid">
+
+      <div class="card">
+        <span class="material-symbols-outlined">inventory</span>
+        <h3>128</h3>
+        <p>Products</p>
+      </div>
+
+      <div class="card">
+        <span class="material-symbols-outlined">extension</span>
+        <h3>356</h3>
+        <p>Variants</p>
+      </div>
+
+      <div class="card">
+        <span class="material-symbols-outlined">category</span>
+        <h3>14</h3>
+        <p>Categories</p>
+      </div>
+
+      <div class="card">
+        <span class="material-symbols-outlined">group</span>
+        <h3>52</h3>
+        <p>Customers</p>
+      </div>
+
+    </section>
+
+
+    <!-- ===== QUICK ACTIONS ===== -->
+
+    <section class="quick-actions">
+
+      <h3>Quick Actions</h3>
+
+      <div class="actions-grid">
+
+        <button class="action-btn">
+          <span class="material-symbols-outlined">add_box</span>
+          Add Product
+        </button>
+
+        <button class="action-btn">
+          <span class="material-symbols-outlined">create_new_folder</span>
+          Add Category
+        </button>
+
+        <button class="action-btn">
+          <span class="material-symbols-outlined">person_add</span>
+          Add Customer
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===== RECENT PRODUCTS ===== -->
+
+    <section class="recent-section">
+
+      <h3>Recent Products</h3>
+
+      <ul class="recent-list">
+        <li>ท่อพีอี 32 มม.</li>
+        <li>ตาข่ายกรองแสง 80%</li>
+        <li>หัวสปริงเกอร์</li>
+      </ul>
+
+    </section>
+
+
+    <!-- ===== RECENT CUSTOMERS ===== -->
+
+    <section class="recent-section">
+
+      <h3>Recent Customers</h3>
+
+      <ul class="recent-list">
+        <li>ร้านเกษตรรุ่งเรือง</li>
+        <li>สมชาย</li>
+        <li>บริษัท ABC</li>
+      </ul>
+
+    </section>
+
+
+  </main>
+
+</div>
+
+
+</body>
+</html>
