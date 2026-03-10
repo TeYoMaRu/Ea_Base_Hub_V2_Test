@@ -58,7 +58,7 @@ async function redirectIfLoggedIn() {
 
     // 🔥 Redirect ตาม Role
     if (profile.role === "admin") {
-      window.location.href = "admintor.html";
+      window.location.href = "adminDashboard.html";
     } else if (profile.role === "sales") {
       window.location.href = "index.html";
     } else if (profile.role === "manager") {
