@@ -1,3 +1,39 @@
+/* ================================
+   SIDEBAR
+================================ */
+
+.sidebar {
+
+  width: 220px;
+  background: white;
+
+  border-right: 1px solid #ddd;
+
+  padding-top: 20px;
+
+}
+
+.menu {
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 20px;
+
+  cursor: pointer;
+
+}
+
+.menu:hover {
+  background: #f1f3f5;
+}
+
+.menu.active {
+  background: #e9ecef;
+  font-weight: bold;
+}
+
 /* =====================================================
    SUMMARY CARDS
    ===================================================== */

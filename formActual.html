@@ -15,24 +15,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
   <link rel="stylesheet" href="css/formActual.css">
-
   <link rel="icon" href="assets/icons/icon-192.png">
 </head>
 
 <body>
 
-  <!-- =====================================================
-     NAVIGATION (ติดบน)
-     ===================================================== -->
 <div class="layout">
 
   <!-- ===== Sidebar ===== -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="logo-circle">
-      <img src="assets/icons/icon-192.png" alt="logo">
+        <img src="assets/icons/icon-192.png" alt="logo">
       </div>
-      <span class="logo-text"> EABaseHub </span>
+      <span class="logo-text">EABaseHub</span>
     </div>
 
     <nav class="sidebar-menu">
@@ -40,17 +36,14 @@
         <span class="material-symbols-outlined">home</span>
         หน้าแรก
       </a>
-
       <a href="report.html">
         <span class="material-symbols-outlined">assignment</span>
         รายงานเยี่ยมร้านค้า
       </a>
-
       <a href="formPlan.html">
         <span class="material-symbols-outlined">docs</span>
         ฟอร์ม ๑ แผนการเดินทาง
       </a>
-
       <a href="formActual.html" class="active">
         <span class="material-symbols-outlined">docs</span>
         ฟอร์ม ๒ เคลียร์ค่าใช้จ่าย
@@ -58,80 +51,75 @@
     </nav>
 
     <div class="sidebar-logout">
-      <!-- ป้ายอีเมลและปุ่ม Logout -->
-              <div style="display: flex; align-items: center; gap: 10px">
-                
-                <button class="logout-btn" onclick="logout()">
-                  ออกจากระบบ
-                </button>
-              </div>
-  
-    
-              
+      <!-- แสดงอีเมลผู้ใช้ -->
+      <span id="sidebarEmail" class="sidebar-email"></span>
+      <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
+    </div>
   </aside>
 
+  <!-- ================= PAGE ================= -->
+  <main class="main-content">
+    <div class="page">
+      <div class="paper">
 
+        <h2>ใบเดินทางจริงและเคลียร์ค่าใช้จ่าย ๒</h2>
 
-<!-- ================= PAGE ================= -->
-<main class="main-content">
-<div class="page">
-  <div class="paper">
+        <!-- SECTION: ข้อมูลหลัก -->
+        <div class="section">
+          <h3>ข้อมูลพนักงาน / ช่วงเวลา</h3>
 
-    <h2>ใบเดินทางจริงและเคลียร์ค่าใช้จ่าย ๒</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="empName">พนักงานขาย</label>
+              <!-- id="empName" ตรงกับ JS และ CSS -->
+              <input id="empName" readonly>
+            </div>
 
-    <!-- ===== FORM ===== -->
-  <!-- SECTION: ข้อมูลหลัก -->
-      <div class="section">
-        <h3>ข้อมูลพนักงาน / ช่วงเวลา</h3>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="empName">พนักงานขาย</label>
-            <input id="empName" readonly>
+            <div class="form-group">
+              <label for="empZone">เขตการขาย</label>
+              <!-- เปลี่ยนเป็น id="empZone" ให้ชัดเจน ไม่ชนกับ CSS variable -->
+              <input id="empZone" readonly>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="zone">เขตการขาย</label>
-            <input id="zone" readonly>
+          <table>
+            <thead>
+              <tr>
+                <th>ว/ด/ป</th>
+                <th>เส้นทางจริง</th>
+                <th>เบี้ยเลี้ยง</th>
+                <th>โรงแรม</th>
+                <th>น้ำมัน</th>
+                <th>อื่นๆ</th>
+                <th>หมายเหตุ</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+
+          <div class="btn-group">
+            <button class="btn-add" onclick="addRow()">➕ เพิ่มแถว</button>
+            <button class="btn-delete" onclick="deleteRow()">➖ ลบแถว</button>
           </div>
-        </div>
-      
 
-      <table>
-        <thead>
-          <tr>
-            <th>ว/ด/ป</th>
-            <th>เส้นทางจริง</th>
-            <th>เบี้ยเลี้ยง</th>
-            <th>โรงแรม</th>
-            <th>น้ำมัน</th>
-            <th>อื่นๆ</th>
-            <th>หมายเหตุ</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
+          <div class="summary-box">
+            รวม <strong id="days">0</strong> วัน |
+            รวมเงิน <strong id="total">0.00</strong> บาท
+          </div>
 
-      <div class="btn-group">
-        <button class="btn-add" onclick="addRow()">➕ เพิ่มแถว</button>
-        <button class="btn-delete" onclick="deleteRow()">➖ ลบแถว</button>
-      </div>
+          <div class="btn-group">
+            <button class="btn-save" onclick="saveDraft()">💾 Save Draft</button>
+            <button class="btn-export" onclick="exportCSV()">📤 Export CSV</button>
+          </div>
 
-      <div class="summary-box">
-        รวม <strong id="days">0</strong> วัน |
-        รวมเงิน <strong id="total">0.00</strong> บาท
-      </div>
+        </div><!-- /section -->
 
-      <div class="btn-group">
-        <button class="btn-save" onclick="saveDraft()">💾 Save Draft</button>
-        <button class="btn-export" onclick="exportCSV()">📤 Export CSV</button>
-      </div>
+      </div><!-- /paper -->
+    </div><!-- /page -->
+  </main>
 
-    </div>
+</div><!-- /layout -->
 
-  </div>
-</div>
-</main>
 <!-- ===================================================== -->
 <!-- FOOTER                                                 -->
 <!-- ===================================================== -->
@@ -139,15 +127,12 @@
   © 2026 EABaseHub
 </footer>
 
-
 <!-- ===================================================== -->
-<!-- SCRIPT SECTION                                         -->
+<!-- SCRIPT — โหลดตามลำดับ: supabaseClient → auth → page  -->
 <!-- ===================================================== -->
-
-
 <script src="js/core/supabaseClient.js"></script>
 <script src="js/core/auth.js"></script>
 <script src="js/formActual.js"></script>
-</body>
 
+</body>
 </html>

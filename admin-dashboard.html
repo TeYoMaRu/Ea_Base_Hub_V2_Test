@@ -8,9 +8,11 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/admin-dashboard.css">
+  <link rel="stylesheet" href="css/base/adminBase.css">
 
   <!-- Google Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 </head>
 
 <body>
@@ -20,10 +22,14 @@
 <header class="admin-header">
 
   <div class="logo">
-    <span class="material-symbols-outlined">dashboard</span>
+    <div class="logo-circle">
+        <!-- รูปโลโก้ (ถ้ามี) -->
+        <img src="assets/icons/icon-192.png" alt="logo">
+    </div>
+
     <h2>EABaseHub Admin</h2>
   </div>
-
+  <!-- ชื่อระบบ -->
   <div class="admin-user">
     <span class="material-symbols-outlined">account_circle</span>
     Admin
@@ -40,32 +46,36 @@
 
   <aside class="sidebar">
 
-    <a class="menu active">
+    <a class="menu active"  href="adminDashboard.html">
       <span class="material-symbols-outlined">dashboard</span>
       Dashboard
-    </a>
+    <!-- </a> -->
 
-    <a class="menu">
+    <!-- <a class="menu"> -->
+      <a class="menu"  href="adminSales.html">
       <span class="material-symbols-outlined">inventory_2</span>
-      Products
-    </a>
+      การจัดการผู้ใช้งาน
+    <!-- </a> -->
 
-    <a class="menu">
+    <!-- <a class="menu"> -->
+      <a class="menu"  href="adminShops.html">
       <span class="material-symbols-outlined">category</span>
-      Categories
-    </a>
+      การจัดการร้านค้า
+    <!-- </a> -->
 
-    <a class="menu">
+    <!-- <a class="menu"> -->
+      <a class="menu"  href="adminUserEdit.html">
       <span class="material-symbols-outlined">group</span>
       Customers
-    </a>
+    <!-- </a> -->
 
-    <a class="menu">
+    <!-- <a class="menu"> -->
+      <a class="menu"  href="adminQc.html">
       <span class="material-symbols-outlined">image</span>
-      Media
-    </a>
+      เคลมสินค้า
+    <!-- </a> -->
 
-    <a class="menu">
+    <a class="menu">      
       <span class="material-symbols-outlined">settings</span>
       Settings
     </a>
@@ -77,6 +87,16 @@
 
   <main class="dashboard-content">
 
+     <section class="recent-section">
+
+     <!-- ชื่อหน้า -->
+    <h2>🔍 QC Dashboard</h2>
+    
+    <!-- คำอธิบายสั้น ๆ -->
+    <p>ตรวจสอบ • อนุมัติ • บันทึกผล • Export</p>
+
+    </section>
+
 
     <!-- ===== SUMMARY CARDS ===== -->
 
@@ -85,25 +105,25 @@
       <div class="card">
         <span class="material-symbols-outlined">inventory</span>
         <h3>128</h3>
-        <p>Products</p>
+        <p>ร้านค้าทั้งหมด</p>
       </div>
 
       <div class="card">
         <span class="material-symbols-outlined">extension</span>
         <h3>356</h3>
-        <p>Variants</p>
+        <p>ผู้ใช้งานในระบบ</p>
       </div>
 
       <div class="card">
         <span class="material-symbols-outlined">category</span>
         <h3>14</h3>
-        <p>Categories</p>
+        <p>แบบฟอร์มต่างๆ</p>
       </div>
 
       <div class="card">
         <span class="material-symbols-outlined">group</span>
         <h3>52</h3>
-        <p>Customers</p>
+        <p>การติดตาม</p>
       </div>
 
     </section>
@@ -119,17 +139,32 @@
 
         <button class="action-btn">
           <span class="material-symbols-outlined">add_box</span>
-          Add Product
+          เพิ่มสินค้าเข้าระบบ
         </button>
 
         <button class="action-btn">
           <span class="material-symbols-outlined">create_new_folder</span>
-          Add Category
+          จัดการสิทธิผู้ใช้งาน
         </button>
 
         <button class="action-btn">
           <span class="material-symbols-outlined">person_add</span>
-          Add Customer
+          เพิ่มร้านค้าเข้าระบบ
+        </button>
+
+        <button class="action-btn">
+          <span class="material-symbols-outlined">person_add</span>
+          จัดการร้านค้า
+        </button>
+
+        <button class="action-btn">
+          <span class="material-symbols-outlined">person_add</span>
+          โอนสิทธิ์ร้านค้า
+        </button>
+
+        <button class="action-btn">
+          <span class="material-symbols-outlined">person_add</span>
+          จัดการข้อมูลและเอกสาร
         </button>
 
       </div>

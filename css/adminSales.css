@@ -1,0 +1,365 @@
+/* ============================================================
+   adminSales.css  —  Sales Management Page
+   style เขียว ตรงกับ admintor.html ที่ใช้อยู่
+   ============================================================ */
+
+/* ── Page Wrapper ───────────────────────────────────────── */
+.page-wrapper {
+  min-height: calc(100vh - 70px);
+  background: #f0f2f5;
+  padding: 28px 20px 40px;
+  box-sizing: border-box;
+}
+
+/* ── Admin Card ─────────────────────────────────────────── */
+.admin-card {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 28px 28px 32px;
+}
+
+/* ── Card Header Row ────────────────────────────────────── */
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.card-title .material-symbols-outlined {
+  font-size: 26px;
+  color: #3a7d44;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #475569;
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-back:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+/* ── Tab Bar ─────────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.tab-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 20px;
+  border-radius: 8px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  color: #4b5563;
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.tab-item:hover {
+  border-color: #3a7d44;
+  color: #3a7d44;
+  background: #f0fdf4;
+}
+
+.tab-item.tab-active {
+  background: #3a7d44;
+  border-color: #3a7d44;
+  color: #fff;
+  font-weight: 600;
+}
+
+.tab-item .material-symbols-outlined {
+  font-size: 18px;
+}
+
+/* ── Search Row ─────────────────────────────────────────── */
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.search-ic {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 20px;
+  pointer-events: none;
+}
+
+.search-wrap input {
+  width: 100%;
+  padding: 10px 14px 10px 40px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.92rem;
+  background: #f9fafb;
+  color: #1e293b;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-wrap input:focus {
+  outline: none;
+  border-color: #3a7d44;
+  box-shadow: 0 0 0 3px rgba(58, 125, 68, 0.12);
+  background: #fff;
+}
+
+.edit-tip {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+/* ── Table Wrap ─────────────────────────────────────────── */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+/* ── Data Table ─────────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  font-family: 'Kanit', sans-serif;
+}
+
+/* header เขียวเหมือนในรูป */
+.data-table thead tr {
+  background: #3a7d44;
+}
+
+.data-table th {
+  padding: 13px 18px;
+  text-align: left;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.data-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.12s;
+}
+
+.data-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+  background: #f0fdf4;
+}
+
+.data-table td {
+  padding: 13px 18px;
+  vertical-align: middle;
+  color: #374151;
+}
+
+/* ── Row fade-in ────────────────────────────────────────── */
+@keyframes rowIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-row {
+  animation: rowIn 0.22s ease both;
+}
+
+/* ── Username Chip ──────────────────────────────────────── */
+.username-chip {
+  display: inline-block;
+  background: #dcfce7;
+  color: #166534;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+/* ── Editable Cells ─────────────────────────────────────── */
+.editable-cell {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, background 0.15s;
+  min-width: 60px;
+  position: relative;
+}
+
+.editable-cell::after {
+  content: " ✏️";
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.editable-cell:hover::after {
+  opacity: 1;
+}
+
+.editable-cell:hover {
+  box-shadow: 0 0 0 2px #3a7d44;
+}
+
+/* ชื่อ Sales */
+.editable-name {
+  color: #1e40af;
+  font-weight: 500;
+  background: transparent;
+}
+
+.editable-name:hover {
+  background: #eff6ff;
+}
+
+/* พื้นที่ — badge สีน้ำเงินอ่อนเหมือนในรูป */
+.badge-area {
+  background: #dbeafe;
+  color: #1e40af;
+  font-weight: 500;
+  font-size: 0.87rem;
+}
+
+.badge-area:hover {
+  background: #bfdbfe;
+}
+
+/* ── Inline Input ───────────────────────────────────────── */
+.inline-input {
+  border: 2px solid #3a7d44;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.92rem;
+  color: #1e293b;
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(58, 125, 68, 0.14);
+  min-width: 120px;
+  max-width: 200px;
+}
+
+.inline-input:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+/* ── Shop Count Badge ───────────────────────────────────── */
+.badge-count {
+  display: inline-block;
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.87rem;
+  white-space: nowrap;
+}
+
+/* ── Manage Button ──────────────────────────────────────── */
+.btn-manage {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #3a7d44;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 7px 16px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.btn-manage:hover {
+  background: #2d6435;
+  transform: translateY(-1px);
+}
+
+.btn-manage:active {
+  transform: translateY(0);
+}
+
+/* ── State Cells ─────────────────────────────────────────── */
+.state-cell {
+  text-align: center;
+  padding: 40px 16px;
+  color: #9ca3af;
+  font-size: 0.95rem;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .admin-card {
+    padding: 18px 14px 24px;
+  }
+
+  .card-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .data-table th:nth-child(4),
+  .data-table td:nth-child(4) {
+    display: none;
+  }
+
+  .edit-tip {
+    display: none;
+  }
+}

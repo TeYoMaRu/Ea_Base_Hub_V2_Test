@@ -1,413 +1,56 @@
-/* =========================
-   CSS VARIABLES - กำหนดค่าสีและค่าคงที่
-   ========================= */
-:root {
-  /* สีหลัก */
-  --primary-1:#3FB7AE;
-  --Dark-Teal: #2FA39A;
-  --Light-Mint: #8FD3CD;
-  --primary-500: #4caf50;
-  --primary-700: #388e3c;
-  --primary-900: #1b5e20;
-  
-  --secondary-300: #81d4fa;
-  --secondary-500: #03a9f4;
-  --secondary-700: #0288d1;
-  --secondary-900: #01579b;
-  
-  /* --blue: #5e89ed; */
-  --blue: #bcdbeb;
-  --green1: #03624c;
-  --green2: #030f0f;
-  --green3: #00df82;
-  --green4: #03A791;
-  --text: #01579b;
-  
-  --gray-200: #e0e0e0;
-  --white: #ffffff;
-  
-  /* เงา */
-  --shadow-soft: 0 4px 12px rgba(0,0,0,0.06);
-  --shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
-  
-  /* มุมโค้ง */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
+/* =====================================================
+   EABaseHub — formActual.css
+   Theme: Clean Professional Teal (เดียวกับ formPlan)
+   ใช้ formPlan.css เป็น base แล้ว override เฉพาะจุด
+   ===================================================== */
 
-  /* พื้นหลัง */
-  --bg-A: #f5f9fc;
-  --bg-B: #edffed;
-  --bg-C: #eff4fe;
-  --bg-D: #f7f9fd;
-  --bg-Soft:#E7F4F2;
-  --bg-AB: linear-gradient(180deg,#3FB7AE,#2FA39A);
-  --bg-AC: linear-gradient(135deg, #8FD3CD, #3FB7AE);
-/* =========================
-   RESET พื้นฐาน
-   ========================= */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+@import url('formPlan.css');
 
-.layout {
-  display: flex;
-}
+/* =====================================================
+   OVERRIDES & EXTRAS สำหรับ formActual
+   ===================================================== */
 
-/* เพราะ sidebar fixed */
-.main-content,
-.main {
-  margin-left: 260px;
-  flex: 1;
-  min-height: 100vh;
-  background: #f4f6f8;
-  padding: 20px 30px;
-}
-
-/* ===== Sidebar ===== */
-.sidebar {
-  width: 260px;
-  height: 100%;
-  /* background: linear-gradient(180deg, #4facfe, #005bea); */
-  background: var(--bg-AB);
-  color: white;
-  display: flex;
-  flex-direction: column;
-  padding: 20px 15px;
-  transition: all 0.3s ease;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.8);
-  top: 0;
-  left: 0;
-  position: fixed;
-  /* overflow-y: auto; */
-  z-index: 1000;
-}
-
-.sidebar-brand,
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 30px;
+/* หัวการ์ด */
+.paper h2 {
   font-size: 20px;
-  font-weight: 600;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
-
-/* วงกลม */
-.logo-circle{
-  width:110px;
-  height:110px;
-  background:rgba(255,255,255,0.9);
-  border-radius:50%;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
-}
-
-/* รูปโลโก้ */
-.logo-circle img{
-  width:65px;
-  height:65px;
-  object-fit:contain;
-}
-
-/* ข้อความ */
-.logo-text{
-  color:white;
-  font-weight:600;
-  font-size:15px;
-}
-.sidebar-header img {
-  width: 60px;
-  margin-top: 30px;
-}
-
-.sidebar-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.sidebar-menu a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  color: white;
-  text-decoration: none;
-  transition: 0.2s;
-}
-
-.sidebar-menu a:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: rgb(1, 1, 118);
-}
-
-.sidebar-menu a.active {
-  background: white;
-  color: rgb(1, 1, 118);
-  font-weight: 600;
-
-  /* ยื่นออกไปทางขวา */
-  /* margin-right: -80px;
-  padding-right: 50px;
-  z-index: 15; */
-  box-shadow: 10px 0 20px rgba(0,0,0,0.05);
-  /* border-radius: 10px 0 0 10px; */
-  margin-right: -15px;
-  padding-right: 25px;
-}
-
-.sidebar-logout {
-  align-content: center;
-  margin-top: auto;
-  padding-top: 30px;
-  font-size: 15px;
-  border-top: 3px solid rgba(255, 255, 255, 0.2);
-}
-
-.logout-btn {
-  align-items: center;
-  margin-bottom: 10px;
-  margin-left: 50px;
-}
-/* ===== Main ===== */
-.main-content,
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin-top: 30px;
-}
-
-/* ==========================================================
-   4️⃣ PAGE TITLE
-   ========================================================== */
-
-/* =====================================================
-       BASE
-       ===================================================== */
-* {
-  box-sizing: border-box;
-}
-body {
-  margin: 0;
-  font-family: "Kanit", sans-serif;
-  background: #f4f6f8;
-  color: #333;
-}
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-h1 {
-  font-family: "kanit", Arial, Helvetica, sans-serif;
-  font-size: 24px;
   font-weight: 700;
+  color: var(--teal-700);
+  text-align: center;
   margin-bottom: 24px;
-  color: white;
-}
-/* =====================================================
-       STICKY HEADER
-       ===================================================== */
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: #fff;
-  border-bottom: 1px solid #ddd;
-  padding: 14px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.logo {
-  font-weight: 600;
 }
 
-/* =====================================================
-       STICKY NAV
-       ===================================================== */
-.app-nav {
-  position: sticky;
-  top: 52px;
-  z-index: 999;
-  background: #f0f0f0;
-  border-bottom: 1px solid #ddd;
-  padding: 10px 20px;
-  display: flex;
-  gap: 10px;
-}
-.app-nav a {
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-}
-.app-nav a.active {
-  background: #1976d2;
-  color: #fff;
+/* ตัวเลขในตาราง: align right + tabular */
+#tableBody td input[type="number"] {
+  text-align: right;
+  padding-right: 10px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.3px;
 }
 
-/* =====================================================
-       PAGE
-       ===================================================== */
-.page {
-  width: 100%;
-  max-width: 1600px;
-  margin: 0 auto;
-  /* margin: 40px auto; */
-  /* padding: 40px 60px; */
-}
-.paper {
-  width: 100%;
-  /* max-width: 1600px;   เดิมน่าจะประมาณ 1000-1100 */
-  /* margin: 0 auto;      ให้อยู่กลาง */
-  background: #fff;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-}
-h2 {
-  text-align: center;
-  color: #1565c0;
-  margin-bottom: 25px;
+/* เส้นทาง และ หมายเหตุ: align left */
+#tableBody td:nth-child(2) input,
+#tableBody td:last-child input {
+  text-align: left;
+  padding-left: 10px;
 }
 
-/* =====================================================
-       FORM
-       ===================================================== */
-label {
-  display: block;
-  margin-top: 14px;
-  font-weight: 500;
-}
-input,
-select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-family: inherit;
-}
-input:focus,
-select:focus {
-  outline: none;
-  border-color: #1565c0;
-}
-
-/* =====================================================
-       TABLE
-       ===================================================== */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  font-size: 13px;
-}
-th,
-td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
-}
-th {
-  background: #e3f2fd;
-  font-weight: 500;
-}
-td input {
-  width: 100%;
-  border: none;
-  background: transparent;
-  text-align: center;
-}
-
-/* =====================================================
-       BUTTON
-       ===================================================== */
-.btn-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 15px;
-  flex-wrap: wrap;
-}
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: inherit;
-}
-.btn-add {
-  background: #10b981;
-  color: #fff;
-}
-.btn-delete {
-  background: #ef4444;
-  color: #fff;
-}
-.btn-save {
-  background: #1565c0;
-  color: #fff;
-}
-.btn-export {
-  background: #ff9800;
-  color: #fff;
-}
-
-/* =====================================================
-       SUMMARY
-       ===================================================== */
+/* Summary box โดดเด่นขึ้น */
 .summary-box {
-  background: #e3f2fd;
-  padding: 15px;
-  border-radius: 8px;
-  margin-top: 20px;
+  background: linear-gradient(135deg, var(--teal-50) 0%, #eff6ff 100%);
+  border: 1.5px solid var(--teal-200);
+  padding: 16px 28px;
+  border-radius: var(--r-md);
+  margin-top: 18px;
   text-align: center;
   font-size: 16px;
+  font-weight: 500;
+  color: var(--teal-700);
+  box-shadow: var(--shadow-xs);
 }
 
-/* =========================
-   FORM GRID
-========================= */
-.form-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-#empName,
-#area {
-  color: #0d6efd;   /* สีตัวหนังสือ */
-  font-weight: 600; /* ทำให้เด่นขึ้น */
-}
-
-
-@media (max-width: 1024px) {
-  .main-content {
-    padding: 15px;
-  }
-
-  .page {
-    max-width: 100%;
-  }
-
-  .paper {
-    padding: 25px;
-  }
+.summary-box strong {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--teal-600);
+  margin: 0 4px;
 }

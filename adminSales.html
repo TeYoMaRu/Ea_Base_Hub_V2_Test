@@ -1,180 +1,116 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <!-- กำหนด character encoding เป็น UTF-8 เพื่อรองรับภาษาไทย -->
   <meta charset="UTF-8">
-  
-  <!-- กำหนดให้หน้าเว็บแสดงผลได้ดีบนมือถือ (responsive) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- ชื่อหน้าเว็บที่แสดงบน tab เบราว์เซอร์ -->
-  <title>EABaseHub | การจัดการ Sales</title>  
-
-  <!-- นำเข้า Google Material Icons สำหรับใช้ไอคอนต่างๆ -->
+  <title>EABaseHub | การจัดการ Sales</title>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
-
-  <!-- เชื่อมโยงไฟล์ CSS ภายนอก -->
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/base/adminBase.css">
-  <link rel="stylesheet" href="css/adminShops.css">
+  <link rel="stylesheet" href="css/adminSales.css">
 </head>
 
 <body>
 
   <!-- =====================================================
-       HEADER SECTION (ส่วนหัวเว็บไซต์)
-       แสดงโลโก้และชื่อผู้ใช้งาน
+       APP HEADER
        ===================================================== -->
   <header class="app-header">
-      <!-- ส่วนโลโก้และชื่อระบบ -->
-      <div class="logo">
-        <div class="logo-circle">
-        <!-- รูปโลโก้ (ถ้ามี) -->
+    <div class="logo">
+      <div class="logo-circle">
         <img src="assets/icons/icon-192.png" alt="logo">
-        </div>
-        <!-- ชื่อระบบ -->
-        <h2>EABaseHub</h2>
       </div>
-      </div>
-      
-
-      <!-- แสดงชื่อผู้ใช้งาน (JavaScript สามารถเปลี่ยนค่านี้ได้ภายหลัง) -->
-      <div class="user-box">
-        <div class="user-avatar" id="userAvatar">👤</div>
-
-        <div class="user-info">
-          <div class="user-name" id="userName">กำลังโหลด...</div>
-          <!-- <div class="user-role" id="userRole"></div> -->
-        </div>
-
-        <button id="logoutBtn" class="logout-btn">ออกจากระบบ</button>
-      </div>
-    </header>
-
-
-
-<!-- ===================================================== -->
-<!-- PAGE TITLE SECTION                                     -->
-<!-- ===================================================== -->
-<header class="page-header">
-
-  <!-- ชื่อหน้า -->
-  <h1>📋 การจัดการ Sales</h1>
-  <!-- คำอธิบายสั้น ๆ -->
-  <p>กรอกข้อมูล • บันทึก • จัดการ • ส่งออก</p>
-
-</header>
-
-
-<!-- ===================================================== -->
-<!-- MAIN CONTENT CONTAINER                                 -->
-<!-- ===================================================== -->
-<main class="container">
-
-
-  <!-- ===================================================== -->
-  <!-- SECTION A : FORM INPUT                                -->
-  <!-- ===================================================== -->
-  <div class="card">
-
-  <!-- ===============================
-       HEADER SECTION
-  ================================ -->
-  <div class="admin-header">
-    <h2>
-      <span class="material-symbols-outlined">badge</span>
-      จัดการ Sales
-    </h2>
-
-    <button onclick="goHome()" class="btn-back">
-      <span class="material-symbols-outlined">arrow_back</span>
-      กลับหน้าหลัก
-    </button>
-  </div>
-
-  <!-- ===============================
-       TABS NAVIGATION
-  ================================ -->
-  <div class="admin-tabs">
-
-    <a class="admin-tab" href="admintor.html">
-      <span class="material-symbols-outlined">people</span>
-      ผู้ใช้งาน
-    </a>
-
-    <a class="admin-tab active" href="adminSales.html">
-      <span class="material-symbols-outlined">badge</span>
-      Sales
-    </a>
-
-    <a class="admin-tab" href="adminShops.html">
-      <span class="material-symbols-outlined">store</span>
-      สิทธิ์ร้านค้า
-    </a>
-
-  </div>
-
-  <!-- ===============================
-       REFRESH BUTTON
-  ================================ -->
-  <button class="btn-refresh" onclick="loadSales()">
-    <span class="material-symbols-outlined">refresh</span>
-    รีเฟรช
-  </button>
-
-  <!-- ===============================
-       SEARCH
-  ================================ -->
-  <div class="search-box">
-    <input 
-      type="text" 
-      id="searchSales" 
-      placeholder="ค้นหา รหัส, ชื่อ Sales..." 
-      oninput="filterSales()"
-    >
-  </div>
-
-  <!-- ===============================
-       SALES TABLE
-  ================================ -->
-  <div class="admin-table-card">
-    <div class="admin-table-responsive">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>รหัส</th>
-            <th>ชื่อ Sales</th>
-            <th>พื้นที่</th>
-            <th>จำนวนร้านค้า</th>
-            <th>ดำเนินการ</th>
-          </tr>
-        </thead>
-
-        <tbody id="salesTable"></tbody>
-
-          
-        </tbody>
-
-      </table>
+      <h2>EABaseHub</h2>
     </div>
-  </div>
+    <div class="user-box">
+      <div class="user-avatar" id="userAvatar">👤</div>
+      <div class="user-info">
+        <div class="user-name" id="userName">กำลังโหลด...</div>
+      </div>
+      <button id="logoutBtn" class="logout-btn">ออกจากระบบ</button>
+    </div>
+  </header>
 
-</main>
+  <!-- =====================================================
+       MAIN CONTENT
+       ===================================================== -->
+  <main class="page-wrapper">
+    <div class="admin-card">
 
-<!-- ===============================
-     JAVASCRIPT
-================================ -->
+      <!-- ── CARD HEADER ── -->
+      <div class="card-header-row">
+        <div class="card-title">
+          <span class="material-symbols-outlined">badge</span>
+          จัดการผู้ใช้และสิทธิ์
+        </div>
+        <button onclick="goHome()" class="btn-back">
+          <span class="material-symbols-outlined">arrow_back</span>
+          กลับหน้าหลัก
+        </button>
+      </div>
 
-<!-- Core -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/core/supabaseClient.js"></script>
-<script src="js/core/userService.js"></script>
-<script src="js/core/auth.js"></script>
+      <!-- ── TABS ── -->
+      <div class="tab-bar">
+        <a class="tab-item" href="admintor.html">
+          <span class="material-symbols-outlined">people</span>
+          ผู้ใช้งาน
+        </a>
+        <a class="tab-item tab-active" href="adminSales.html">
+          <span class="material-symbols-outlined">badge</span>
+          Sales
+        </a>
+        <a class="tab-item" href="adminShops.html">
+          <span class="material-symbols-outlined">storefront</span>
+          สิทธิ์ร้านค้า
+        </a>
+      </div>
 
-<!-- Sales Logic -->
-<script src="js/admin-sales.js"></script>
+      <!-- ── SEARCH ── -->
+      <div class="search-row">
+        <div class="search-wrap">
+          <span class="material-symbols-outlined search-ic">search</span>
+          <input
+            type="text"
+            id="searchSales"
+            placeholder="ค้นหา รหัส, ชื่อ Sales, พื้นที่..."
+            oninput="filterSales()"
+          >
+        </div>
+        <span class="edit-tip">
+          <span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle">edit</span>
+          คลิกชื่อหรือพื้นที่เพื่อแก้ไขได้เลย
+        </span>
+      </div>
 
+      <!-- ── TABLE ── -->
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>รหัส</th>
+              <th>ชื่อ Sales</th>
+              <th>พื้นที่</th>
+              <th>จำนวนร้านค้า</th>
+              <th>ดำเนินการ</th>
+            </tr>
+          </thead>
+          <tbody id="salesTable">
+            <tr><td colspan="5" class="state-cell">⏳ กำลังโหลด...</td></tr>
+          </tbody>
+        </table>
+      </div>
 
+    </div>
+  </main>
+
+  <!-- =====================================================
+       SCRIPTS
+       ===================================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/core/supabaseClient.js"></script>
+  <script src="js/core/userService.js"></script>
+  <script src="js/core/auth.js"></script>
+  <script src="js/admin-sales.js"></script>
 
 </body>
 </html>

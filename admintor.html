@@ -1,123 +1,125 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <!-- กำหนด character encoding เป็น UTF-8 เพื่อรองรับภาษาไทย -->
   <meta charset="UTF-8">
-  
-  <!-- กำหนดให้หน้าเว็บแสดงผลได้ดีบนมือถือ (responsive) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- ชื่อหน้าเว็บที่แสดงบน tab เบราว์เซอร์ -->
-  <title>EABaseHub | จัดการผู้ใช้และสิทธิ์</title>  
-
-  <!-- นำเข้า Google Material Icons สำหรับใช้ไอคอนต่างๆ -->
+  <title>EABaseHub | จัดการผู้ใช้งาน</title>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
-
-  <!-- เชื่อมโยงไฟล์ CSS ภายนอก -->
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/base/adminBase.css">
-  <link rel="stylesheet" href="css/adminShops.css">
+  <link rel="stylesheet" href="css/admintor.css">
 </head>
 
 <body>
 
-  <!-- =====================================================
-       HEADER SECTION (ส่วนหัวเว็บไซต์)
-       แสดงโลโก้และชื่อผู้ใช้งาน
-       ===================================================== -->
+  <!-- APP HEADER -->
   <header class="app-header">
-      <!-- ส่วนโลโก้และชื่อระบบ -->
-      <div class="logo">
-        <div class="logo-circle">
-        <!-- รูปโลโก้ (ถ้ามี) -->
+    <div class="logo">
+      <div class="logo-circle">
         <img src="assets/icons/icon-192.png" alt="logo">
+      </div>
+      <h2>EABaseHub</h2>
+    </div>
+    <div class="user-box">
+      <div class="user-avatar" id="userAvatar">👤</div>
+      <div class="user-info">
+        <div class="user-name" id="userName">กำลังโหลด...</div>
+      </div>
+      <button id="logoutBtn" class="logout-btn">ออกจากระบบ</button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="page-wrapper">
+    <div class="admin-card">
+
+      <!-- CARD HEADER -->
+      <div class="card-header-row">
+        <div class="card-title">
+          <span class="material-symbols-outlined">manage_accounts</span>
+          จัดการผู้ใช้และสิทธิ์
         </div>
-        <!-- ชื่อระบบ -->
-        <h2>EABaseHub</h2>
+        <button onclick="goHome()" class="btn-back">
+          <span class="material-symbols-outlined">arrow_back</span>
+          กลับหน้าหลัก
+        </button>
       </div>
+
+      <!-- TABS -->
+      <div class="tab-bar">
+        <a class="tab-item tab-active" href="admintor.html">
+          <span class="material-symbols-outlined">people</span>
+          ผู้ใช้งาน
+        </a>
+        <a class="tab-item" href="adminSales.html">
+          <span class="material-symbols-outlined">badge</span>
+          Sales
+        </a>
+        <a class="tab-item" href="adminShops.html">
+          <span class="material-symbols-outlined">storefront</span>
+          สิทธิ์ร้านค้า
+        </a>
       </div>
-      
 
-      <!-- แสดงชื่อผู้ใช้งาน (JavaScript สามารถเปลี่ยนค่านี้ได้ภายหลัง) -->
-      <div class="user-box">
-        <div class="user-avatar" id="userAvatar">👤</div>
+      <!-- STATS BAR -->
+      <div class="stats-bar" id="statsBar">
+        <div class="stat-chip" id="statAll">
+          <span class="material-symbols-outlined">group</span>
+          <span id="countAll">-</span> ทั้งหมด
+        </div>
+        <div class="stat-chip chip-admin" id="statAdmin">
+          <span class="material-symbols-outlined">shield</span>
+          <span id="countAdmin">-</span> Admin
+        </div>
+        <div class="stat-chip chip-manager" id="statManager">
+          <span class="material-symbols-outlined">supervisor_account</span>
+          <span id="countManager">-</span> Manager
+        </div>
+        <div class="stat-chip chip-sales" id="statSales">
+          <span class="material-symbols-outlined">badge</span>
+          <span id="countSales">-</span> Sales
+        </div>
+        <div class="stat-chip chip-user" id="statUser">
+          <span class="material-symbols-outlined">person</span>
+          <span id="countUser">-</span> User
+        </div>
+        <div class="stat-chip chip-inactive" id="statInactive">
+          <span class="material-symbols-outlined">block</span>
+          <span id="countInactive">-</span> Inactive
+        </div>
+      </div>
 
-        <div class="user-info">
-          <div class="user-name" id="userName">กำลังโหลด...</div>
-          <!-- <div class="user-role" id="userRole"></div> -->
+      <!-- TOOLBAR -->
+      <div class="toolbar-row">
+        <div class="search-wrap">
+          <span class="material-symbols-outlined search-ic">search</span>
+          <input
+            type="text"
+            id="searchUser"
+            placeholder="ค้นหา email, username, ชื่อ..."
+            oninput="filterUsers()"
+          >
         </div>
 
-        <button id="logoutBtn" class="logout-btn">ออกจากระบบ</button>
+        <div class="filter-group">
+          <select id="filterRole" onchange="filterUsers()">
+            <option value="">ทุก Role</option>
+            <option value="admin">Admin</option>
+            <option value="manager">Manager</option>
+            <option value="sales">Sales</option>
+            <option value="user">User</option>
+          </select>
+          <select id="filterStatus" onchange="filterUsers()">
+            <option value="">ทุกสถานะ</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
       </div>
-    </header>
 
-
-
-<!-- ===================================================== -->
-<!-- PAGE TITLE SECTION                                     -->
-<!-- ===================================================== -->
-<header class="page-header">
-
-  <!-- ชื่อหน้า -->
-  <h1>📋 การจัดการ Sales</h1>
-  <!-- คำอธิบายสั้น ๆ -->
-  <p>กรอกข้อมูล • บันทึก • จัดการ • ส่งออก</p>
-
-</header>
-
-
-<!-- ===================================================== -->
-<!-- MAIN CONTENT CONTAINER                                 -->
-<!-- ===================================================== -->
-<main class="container">
-
-
-  <!-- ===================================================== -->
-  <!-- SECTION A : FORM INPUT                                -->
-  <!-- ===================================================== -->
-  <div class="card">
-
-<div class="admin-container">
-
-  <div class="admin-header">
-    <h2 class="admin-title">
-      <span class="material-symbols-outlined admin-title-icon">admin_panel_settings</span>
-      จัดการผู้ใช้และสิทธิ์
-    </h2>
-    <button class="btn-back" onclick="goHome()">
-      <span class="material-symbols-outlined btn-back-icon">arrow_back</span>
-      กลับหน้าหลัก
-    </button>
-  </div>
-
-  <div class="admin-tabs">
-    <a class="admin-tab active" href="admintor.html">
-      <span class="material-symbols-outlined">people</span>
-      ผู้ใช้งาน
-    </a>
-
-    <a class="admin-tab" href="adminSales.html">
-      <span class="material-symbols-outlined">badge</span>
-      Sales
-    </a>
-
-    <a class="admin-tab" href="adminShops.html">
-      <span class="material-symbols-outlined">store</span>
-      สิทธิ์ร้านค้า
-    </a>
-  </div>
-
-  <div id="tabUsers" class="tab-content active">
-
-    <button class="btn-refresh" onclick="loadUsers()">
-      <span class="material-symbols-outlined">refresh</span>
-      รีเฟรช
-    </button>
-
-    <div class="admin-table-card">
-      <div class="admin-table-responsive">
-        <table class="admin-table">
-
+      <!-- TABLE -->
+      <div class="table-wrap">
+        <table class="data-table">
           <thead>
             <tr>
               <th>Email</th>
@@ -125,27 +127,112 @@
               <th>ชื่อที่แสดง</th>
               <th>Role</th>
               <th>สถานะ</th>
-              <th>จัดการ</th>
+              <th>ดำเนินการ</th>
             </tr>
           </thead>
-
-          <!-- ❗ มี tbody แค่อันเดียว -->
-          <tbody id="userTable"></tbody>
-
+          <tbody id="userTable">
+            <tr><td colspan="6" class="state-cell">⏳ กำลังโหลด...</td></tr>
+          </tbody>
         </table>
       </div>
-    </div>
 
+    </div>
+  </main>
+
+  <!-- MODAL แก้ไขผู้ใช้ -->
+  <div id="editModal" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>แก้ไขข้อมูลผู้ใช้</h3>
+        <button class="modal-close" onclick="closeEditModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editUserId">
+
+        <div class="modal-user-info" id="modalUserInfo"></div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="editUsername" placeholder="username">
+          </div>
+          <div class="form-group">
+            <label>ชื่อที่แสดง</label>
+            <input type="text" id="editDisplayName" placeholder="ชื่อ-นามสกุล">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Role <span class="req">*</span></label>
+            <select id="editRole">
+              <option value="user">User</option>
+              <option value="sales">Sales</option>
+              <option value="manager">Manager</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>สถานะ <span class="req">*</span></label>
+            <select id="editStatus">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>พื้นที่ (Area)</label>
+          <input type="text" id="editArea" placeholder="เช่น กรุงเทพฯ, ภาคกลาง">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeEditModal()">ยกเลิก</button>
+        <button class="btn-save" id="saveBtn" onclick="saveUser()">
+          <span class="material-symbols-outlined">save</span>
+          บันทึก
+        </button>
+      </div>
+    </div>
   </div>
 
-</div>
-</main>
+  <!-- MODAL ยืนยันลบ -->
+  <div id="deleteModal" class="modal-overlay" style="display:none">
+    <div class="modal-box modal-box-sm">
+      <div class="modal-header">
+        <h3>ยืนยันการลบผู้ใช้</h3>
+        <button class="modal-close" onclick="closeDeleteModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="delete-warning">
+          <span class="material-symbols-outlined warn-icon">warning</span>
+          <div>
+            <div class="warn-title">ต้องการลบผู้ใช้นี้ใช่หรือไม่?</div>
+            <div class="warn-sub" id="deleteUserLabel"></div>
+          </div>
+        </div>
+        <p class="warn-note">การลบจะลบข้อมูล profile ออกจากระบบ แต่ไม่ได้ลบ Auth account</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeDeleteModal()">ยกเลิก</button>
+        <button class="btn-delete-confirm" onclick="confirmDelete()">
+          <span class="material-symbols-outlined">delete</span>
+          ลบผู้ใช้
+        </button>
+      </div>
+    </div>
+  </div>
 
-<script src="js/core/supabaseClient.js"></script>
-<script src="js/core/auth.js"></script>
-<script src="js/admintor.js"></script>
-
-
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/core/supabaseClient.js"></script>
+  <script src="js/core/userService.js"></script>
+  <script src="js/core/auth.js"></script>
+  <script src="js/admintor.js"></script>
 
 </body>
 </html>
