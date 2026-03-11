@@ -425,99 +425,244 @@ function setupSummaryCalculation() {
 function openPreview() {
   saveTableData(false); // sync trips ก่อน render
 
+  // ── helper: แปลงวันที่เป็น dd/mm/yyyy ──
+  function fmtDate(d) {
+    if (!d) return "-";
+    const [y, m, day] = d.split("-");
+    return `${day}/${m}/${y}`;
+  }
+
+  // ── สร้างแถวตาราง ──
   let tableRows = "";
-  trips.forEach((t) => {
+  trips.forEach((t, i) => {
+    const rowBg = i % 2 === 0 ? "" : 'style="background:#f7f9fb"';
     tableRows += `
-      <tr>
-        <td>${t.date || "-"}</td>
+      <tr ${rowBg}>
+        <td style="white-space:nowrap">${fmtDate(t.date)}</td>
         <td>${t.from || "-"}</td>
         <td>${t.to   || "-"}</td>
         <td>${t.shop1 || "-"}</td>
         <td>${t.shop2 || "-"}</td>
         <td>${t.shop3 || "-"}</td>
-        <td>${t.note  || "-"}</td>
-      </tr>
-    `;
+        <td style="text-align:left;padding-left:6px">${t.note || ""}</td>
+      </tr>`;
   });
 
-  const allowanceRate  = parseFloat(document.getElementById("allowanceRate")?.value) || 0;
-  const allowanceDays  = parseFloat(document.getElementById("allowanceDays")?.value) || 0;
-  const hotelRate      = parseFloat(document.getElementById("hotelRate")?.value)      || 0;
-  const hotelNights    = parseFloat(document.getElementById("hotelNights")?.value)    || 0;
-  const otherCost      = parseFloat(document.getElementById("otherCost")?.value)      || 0;
-  const grandTotalRaw  = (allowanceRate * allowanceDays) + (hotelRate * hotelNights) + otherCost;
+  if (!tableRows) {
+    tableRows = `<tr><td colspan="7" style="text-align:center;color:#999;padding:14px">ไม่มีข้อมูล</td></tr>`;
+  }
 
+  // ── ข้อมูลค่าใช้จ่าย ──
+  const allowanceRate = parseFloat(document.getElementById("allowanceRate")?.value) || 0;
+  const allowanceDays = parseFloat(document.getElementById("allowanceDays")?.value) || 0;
+  const hotelRate     = parseFloat(document.getElementById("hotelRate")?.value)      || 0;
+  const hotelNights   = parseFloat(document.getElementById("hotelNights")?.value)    || 0;
+  const otherCost     = parseFloat(document.getElementById("otherCost")?.value)      || 0;
+  const totalAllow    = allowanceRate * allowanceDays;
+  const totalHotel    = hotelRate * hotelNights;
+  const grandTotal    = totalAllow + totalHotel + otherCost;
+
+  const fmt = (n) => n.toLocaleString("th-TH", { minimumFractionDigits: 2 });
+
+  // ── ข้อมูลพนักงาน ──
   const empName = document.getElementById("empName")?.value || "-";
   const area    = document.getElementById("area")?.value    || "-";
-  const start   = document.getElementById("startDate")?.value || "-";
-  const end     = document.getElementById("endDate")?.value   || "-";
+  const start   = fmtDate(document.getElementById("startDate")?.value);
+  const end     = fmtDate(document.getElementById("endDate")?.value);
+
+  // ── วันที่พิมพ์ ──
+  const printDate = new Date().toLocaleDateString("th-TH", {
+    year: "numeric", month: "long", day: "numeric"
+  });
 
   document.getElementById("previewContent").innerHTML = `
-    <div class="doc-header">
-      <h2>บริษัท เอิร์นนี่ แอดวานซ์</h2>
-      <h3>แผนการเดินทางและเบิกทดลองจ่าย ๑</h3>
+  <style>
+    /* ── สไตล์เฉพาะ preview content ── */
+    .doc-wrap { font-family: 'Kanit', sans-serif; font-size: 13px; color: #1a1a1a; }
+
+    /* หัวเอกสาร */
+    .doc-company { text-align:center; margin-bottom:4px; }
+    .doc-company .company-name {
+      font-size: 16px; font-weight: 700; color: #1a1a1a; letter-spacing: 0.3px;
+    }
+    .doc-company .doc-title {
+      font-size: 14px; font-weight: 600; color: #1a1a1a; margin-top: 2px;
+    }
+    .doc-divider {
+      border: none; border-top: 2px solid #1a1a1a; margin: 8px 0 12px;
+    }
+
+    /* กล่องข้อมูลพนักงาน */
+    .doc-meta {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border: 1px solid #bbb; border-radius: 4px;
+      margin-bottom: 14px; overflow: hidden;
+    }
+    .doc-meta-cell {
+      padding: 7px 12px; font-size: 12.5px; line-height: 1.8;
+    }
+    .doc-meta-cell:first-child { border-right: 1px solid #bbb; }
+    .doc-meta-label { font-weight: 700; color: #444; margin-right: 4px; }
+
+    /* ตารางหลัก */
+    .doc-trip-table {
+      width: 100%; border-collapse: collapse; margin-bottom: 18px;
+      font-size: 12px;
+    }
+    .doc-trip-table th {
+      background: #1a6b64; color: #fff;
+      padding: 8px 7px; text-align: center;
+      font-weight: 600; font-size: 12px;
+      border: 1px solid #1a6b64;
+    }
+    .doc-trip-table td {
+      padding: 7px 7px; text-align: center;
+      border: 1px solid #ccc; vertical-align: middle;
+      font-size: 12px;
+    }
+    .doc-trip-table tbody tr:last-child td { border-bottom: 1px solid #ccc; }
+
+    /* หัวสรุป */
+    .doc-summary-title {
+      font-size: 13px; font-weight: 700; color: #1a1a1a;
+      margin-bottom: 6px; padding-bottom: 4px;
+      border-bottom: 1.5px solid #1a6b64;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .doc-summary-title::before {
+      content: ''; display: inline-block;
+      width: 3px; height: 14px;
+      background: #3FB7AE; border-radius: 2px;
+    }
+
+    /* ตารางสรุปค่าใช้จ่าย */
+    .doc-cost-table {
+      width: 55%; margin-left: auto; margin-bottom: 20px;
+      border-collapse: collapse; font-size: 12.5px;
+    }
+    .doc-cost-table td, .doc-cost-table th {
+      border: 1px solid #ccc; padding: 6px 10px;
+    }
+    .doc-cost-table td:first-child { font-weight: 600; color: #333; }
+    .doc-cost-table td:nth-child(2) { text-align: center; color: #555; }
+    .doc-cost-table td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+    .doc-cost-table .total-row th {
+      background: #1a6b64; color: #fff;
+      text-align: right; padding: 7px 10px; font-size: 13px;
+    }
+
+    /* ลายเซ็น */
+    .doc-sign {
+      margin-top: 60px;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 24px; text-align: center;
+    }
+    .doc-sign-box { font-size: 12px; line-height: 1.8; }
+    .doc-sign-line {
+      border-top: 1px solid #555; padding-top: 6px; margin-top: 36px;
+    }
+    .doc-sign-name { font-weight: 600; color: #1a1a1a; }
+    .doc-sign-role { color: #555; }
+
+    /* วันที่พิมพ์ */
+    .doc-print-date {
+      text-align: right; font-size: 11px; color: #777; margin-bottom: 10px;
+    }
+  </style>
+
+  <div class="doc-wrap">
+
+    <!-- วันที่พิมพ์ -->
+    <div class="doc-print-date">วันที่พิมพ์: ${printDate}</div>
+
+    <!-- หัวเอกสาร -->
+    <div class="doc-company">
+      <div class="company-name">บริษัท เอิร์นนี่ แอดวานซ์ จำกัด</div>
+      <div class="doc-title">แผนการเดินทางและเบิกทดลองจ่าย ๑</div>
+    </div>
+    <hr class="doc-divider">
+
+    <!-- ข้อมูลพนักงาน -->
+    <div class="doc-meta">
+      <div class="doc-meta-cell">
+        <div><span class="doc-meta-label">พนักงานขาย :</span>${empName}</div>
+        <div><span class="doc-meta-label">เขตการขาย :</span>${area}</div>
+      </div>
+      <div class="doc-meta-cell">
+        <div><span class="doc-meta-label">ระหว่างวันที่ :</span>${start}</div>
+        <div><span class="doc-meta-label">ถึงวันที่ :</span>${end}</div>
+      </div>
     </div>
 
-    <div class="doc-info">
-      <div>
-        <div>พนักงานขาย: ${empName}</div>
-        <div>เขตการขาย: ${area}</div>
-      </div>
-      <div>
-        <div>ระหว่างวันที่: ${start}</div>
-        <div>ถึงวันที่: ${end}</div>
-      </div>
-    </div>
-
-    <table class="doc-table">
+    <!-- ตารางเดินทาง -->
+    <table class="doc-trip-table">
       <thead>
         <tr>
-          <th>ว/ด/ป</th>
+          <th style="width:90px">ว/ด/ป</th>
           <th>จากจังหวัด</th>
           <th>ไปจังหวัด</th>
           <th>ร้านค้า 1</th>
           <th>ร้านค้า 2</th>
           <th>ร้านค้า 3</th>
-          <th>หมายเหตุ</th>
+          <th style="width:80px">หมายเหตุ</th>
         </tr>
       </thead>
-      <tbody>
-        ${tableRows || '<tr><td colspan="7" style="text-align:center">ไม่มีข้อมูล</td></tr>'}
-      </tbody>
+      <tbody>${tableRows}</tbody>
     </table>
 
-    <br>
-    <h3>สรุปค่าใช้จ่าย</h3>
-
-    <table class="doc-table cost-table">
+    <!-- สรุปค่าใช้จ่าย -->
+    <div class="doc-summary-title">สรุปค่าใช้จ่าย</div>
+    <table class="doc-cost-table">
       <tr>
         <td>เบี้ยเลี้ยง</td>
-        <td>${allowanceRate.toLocaleString()} × ${allowanceDays} วัน</td>
-        <td>${(allowanceRate * allowanceDays).toLocaleString()} บาท</td>
+        <td>${fmt(allowanceRate)} × ${allowanceDays} วัน</td>
+        <td>${fmt(totalAllow)} บาท</td>
       </tr>
       <tr>
         <td>ค่าที่พัก</td>
-        <td>${hotelRate.toLocaleString()} × ${hotelNights} คืน</td>
-        <td>${(hotelRate * hotelNights).toLocaleString()} บาท</td>
+        <td>${fmt(hotelRate)} × ${hotelNights} คืน</td>
+        <td>${fmt(totalHotel)} บาท</td>
       </tr>
       <tr>
         <td>ค่าใช้จ่ายอื่นๆ</td>
-        <td>-</td>
-        <td>${otherCost.toLocaleString()} บาท</td>
+        <td style="text-align:center">–</td>
+        <td>${fmt(otherCost)} บาท</td>
       </tr>
-      <tr>
-        <th colspan="2" style="text-align:right;">รวมเบิกทั้งหมด</th>
-        <th>${grandTotalRaw.toLocaleString()} บาท</th>
+      <tr class="total-row">
+        <th colspan="2">รวมเบิกทั้งหมด</th>
+        <th style="font-size:14px">${fmt(grandTotal)} บาท</th>
       </tr>
     </table>
 
-    <div class="signature-section">
-      <div>(${empName})<br>พนักงานขาย</div>
-      <div>(................................)<br>ผู้จัดการฝ่ายขาย</div>
-      <div>(................................)<br>ฝ่ายบัญชี</div>
-      <div>(................................)<br>ผู้อนุมัติ</div>
+    <!-- ลายเซ็น -->
+    <div class="doc-sign">
+      <div class="doc-sign-box">
+        <div class="doc-sign-line">
+          <div class="doc-sign-name">(${empName})</div>
+          <div class="doc-sign-role">พนักงานขาย</div>
+        </div>
+      </div>
+      <div class="doc-sign-box">
+        <div class="doc-sign-line">
+          <div class="doc-sign-name">(.........................................................)</div>
+          <div class="doc-sign-role">ผู้จัดการฝ่ายขาย</div>
+        </div>
+      </div>
+      <div class="doc-sign-box">
+        <div class="doc-sign-line">
+          <div class="doc-sign-name">(.........................................................)</div>
+          <div class="doc-sign-role">ฝ่ายบัญชี</div>
+        </div>
+      </div>
+      <div class="doc-sign-box">
+        <div class="doc-sign-line">
+          <div class="doc-sign-name">(.........................................................)</div>
+          <div class="doc-sign-role">ผู้อนุมัติ</div>
+        </div>
+      </div>
     </div>
-  `;
+
+  </div>`;
 
   document.getElementById("previewModal").style.display = "flex";
 }

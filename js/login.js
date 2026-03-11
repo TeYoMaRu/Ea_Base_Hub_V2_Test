@@ -58,7 +58,7 @@ async function redirectIfLoggedIn() {
 
     // 🔥 Redirect ตาม Role
     if (profile.role === "admin") {
-      window.location.href = "adminDashboard.html";
+      window.location.href = "/pages/admin/admintor.html";
     } else if (profile.role === "sales") {
       window.location.href = "index.html";
     } else if (profile.role === "manager") {
@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 🔥 Redirect ตาม Role
       if (profile.role === "admin") {
-        window.location.href = "adminDashboard.html";
+        window.location.href = "/pages/admin/admintor.html";
       } else if (profile.role === "sales") {
         window.location.href = "index.html";
       } else if (profile.role === "manager") {

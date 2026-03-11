@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EABaseHub | การจัดการ Sales</title>
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/base/adminBase.css">
-  <link rel="stylesheet" href="css/adminSales.css">
+  <link rel="stylesheet" href="/css/base/adminBase.css">
+  <link rel="stylesheet" href="/css/pages/adminSales.css">
 </head>
 
 <body>
@@ -18,7 +19,7 @@
   <header class="app-header">
     <div class="logo">
       <div class="logo-circle">
-        <img src="assets/icons/icon-192.png" alt="logo">
+        <img src="/assets/icons/icon-192.png" alt="logo">
       </div>
       <h2>EABaseHub</h2>
     </div>
@@ -51,15 +52,15 @@
 
       <!-- ── TABS ── -->
       <div class="tab-bar">
-        <a class="tab-item" href="admintor.html">
+        <a class="tab-item" href="/pages/admin/admintor.html">
           <span class="material-symbols-outlined">people</span>
           ผู้ใช้งาน
         </a>
-        <a class="tab-item tab-active" href="adminSales.html">
+        <a class="tab-item tab-active" href="/pages/admin/adminShops.html">
           <span class="material-symbols-outlined">badge</span>
           Sales
         </a>
-        <a class="tab-item" href="adminShops.html">
+        <a class="tab-item" href="/pages/admin/adminSales.html">
           <span class="material-symbols-outlined">storefront</span>
           สิทธิ์ร้านค้า
         </a>
@@ -106,11 +107,11 @@
   <!-- =====================================================
        SCRIPTS
        ===================================================== -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/core/supabaseClient.js"></script>
-  <script src="js/core/userService.js"></script>
-  <script src="js/core/auth.js"></script>
-  <script src="js/admin-sales.js"></script>
+  
+  <script src="/js/core/supabaseClient.js"></script>
+  <script src="/js/core/userService.js"></script>
+  <script src="/js/core/auth.js"></script>
+  <script src="/js/pages/adminSales.js"></script>
 
 </body>
 </html>

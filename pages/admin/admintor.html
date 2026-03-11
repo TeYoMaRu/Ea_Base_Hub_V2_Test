@@ -4,10 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EABaseHub | จัดการผู้ใช้งาน</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/base/adminBase.css">
-  <link rel="stylesheet" href="css/admintor.css">
+  <link rel="stylesheet" href="/css/base/adminBase.css">
+  <link rel="stylesheet" href="/css/pages/admintor.css">
 </head>
 
 <body>
@@ -16,7 +19,7 @@
   <header class="app-header">
     <div class="logo">
       <div class="logo-circle">
-        <img src="assets/icons/icon-192.png" alt="logo">
+        <img src="/assets/icons/icon-192.png" alt="logo">
       </div>
       <h2>EABaseHub</h2>
     </div>
@@ -228,11 +231,11 @@
   </div>
 
   <!-- SCRIPTS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/core/supabaseClient.js"></script>
-  <script src="js/core/userService.js"></script>
-  <script src="js/core/auth.js"></script>
-  <script src="js/admintor.js"></script>
+  
+  <script src="/js/core/supabaseClient.js"></script>
+  <script src="/js/core/userService.js"></script>
+  <script src="/js/core/auth.js"></script>
+  <script src="/js/pages/admintor.js"></script>
 
 </body>
 </html>

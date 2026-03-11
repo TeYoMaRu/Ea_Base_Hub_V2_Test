@@ -1,138 +1,142 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <!-- =====================================================
-       BASIC META
-       ===================================================== -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ใบเดินทางจริงและเคลียร์ค่าใช้จ่าย ๒</title>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- FONT -->
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
-
   <link rel="stylesheet" href="css/formActual.css">
   <link rel="icon" href="assets/icons/icon-192.png">
 </head>
-
 <body>
-
 <div class="layout">
 
-  <!-- ===== Sidebar ===== -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="logo-circle">
-        <img src="assets/icons/icon-192.png" alt="logo">
-      </div>
+      <div class="logo-circle"><img src="assets/icons/icon-192.png" alt="logo"></div>
       <span class="logo-text">EABaseHub</span>
     </div>
-
     <nav class="sidebar-menu">
-      <a href="index.html">
-        <span class="material-symbols-outlined">home</span>
-        หน้าแรก
-      </a>
-      <a href="report.html">
-        <span class="material-symbols-outlined">assignment</span>
-        รายงานเยี่ยมร้านค้า
-      </a>
-      <a href="formPlan.html">
-        <span class="material-symbols-outlined">docs</span>
-        ฟอร์ม ๑ แผนการเดินทาง
-      </a>
-      <a href="formActual.html" class="active">
-        <span class="material-symbols-outlined">docs</span>
-        ฟอร์ม ๒ เคลียร์ค่าใช้จ่าย
-      </a>
+      <a href="index.html"><span class="material-symbols-outlined">home</span>หน้าแรก</a>
+      <a href="report.html"><span class="material-symbols-outlined">assignment</span>รายงานเยี่ยมร้านค้า</a>
+      <a href="formPlan.html"><span class="material-symbols-outlined">map</span>ฟอร์ม ๑ แผนการเดินทาง</a>
+      <a href="formActual.html" class="active"><span class="material-symbols-outlined">check_circle</span>ฟอร์ม ๒ เคลียร์ค่าใช้จ่าย</a>
     </nav>
-
     <div class="sidebar-logout">
-      <!-- แสดงอีเมลผู้ใช้ -->
       <span id="sidebarEmail" class="sidebar-email"></span>
       <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
     </div>
   </aside>
 
-  <!-- ================= PAGE ================= -->
   <main class="main-content">
     <div class="page">
-      <div class="paper">
 
+      <!-- Banner แจ้งพบแผน -->
+      <div id="planBanner" class="plan-banner" style="display:none">
+        <span class="material-symbols-outlined">event_note</span>
+        <span id="planBannerText">พบข้อมูลแผนการเดินทาง (ฟอร์ม ๑)</span>
+        <button class="btn-import" onclick="importFromPlan()">
+          <span class="material-symbols-outlined">download</span> นำข้อมูลมาใช้
+        </button>
+        <button class="btn-banner-dismiss" onclick="dismissBanner()">✕</button>
+      </div>
+
+      <div class="paper">
         <h2>ใบเดินทางจริงและเคลียร์ค่าใช้จ่าย ๒</h2>
 
-        <!-- SECTION: ข้อมูลหลัก -->
+        <!-- SECTION: ข้อมูลพนักงาน -->
         <div class="section">
-          <h3>ข้อมูลพนักงาน / ช่วงเวลา</h3>
-
+          <h3>ข้อมูลพนักงาน</h3>
           <div class="form-row">
             <div class="form-group">
               <label for="empName">พนักงานขาย</label>
-              <!-- id="empName" ตรงกับ JS และ CSS -->
               <input id="empName" readonly>
             </div>
-
             <div class="form-group">
               <label for="empZone">เขตการขาย</label>
-              <!-- เปลี่ยนเป็น id="empZone" ให้ชัดเจน ไม่ชนกับ CSS variable -->
               <input id="empZone" readonly>
             </div>
+          </div>
+          <div class="form-row" style="margin-top:4px; align-items:flex-end">
+            <div class="form-group">
+              <label for="refPlanId">อ้างอิงแผน ฟอร์ม ๑ (Plan ID)</label>
+              <input id="refPlanId" placeholder="โหลดอัตโนมัติ หรือวาง ID แล้วกดโหลด">
+            </div>
+            <div class="form-group" style="max-width:160px">
+              <label>&nbsp;</label>
+              <button class="btn-load-plan" onclick="loadPlanById()">
+                <span class="material-symbols-outlined" style="font-size:15px;vertical-align:-3px">sync</span>
+                โหลดแผน
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION: ตารางค่าใช้จ่าย -->
+        <div class="section">
+          <h3>รายการค่าใช้จ่ายจริง</h3>
+
+          <div class="import-hint" id="importHint" style="display:none">
+            <span class="material-symbols-outlined">lightbulb</span>
+            นำข้อมูลจากแผนการเดินทางมาแล้ว — แก้ไข เพิ่ม หรือลบแถวได้อิสระค่ะ
           </div>
 
           <table>
             <thead>
               <tr>
-                <th>ว/ด/ป</th>
+                <th style="width:115px">ว/ด/ป</th>
                 <th>เส้นทางจริง</th>
-                <th>เบี้ยเลี้ยง</th>
-                <th>โรงแรม</th>
-                <th>น้ำมัน</th>
-                <th>อื่นๆ</th>
-                <th>หมายเหตุ</th>
+                <th style="width:95px">เบี้ยเลี้ยง</th>
+                <th style="width:95px">โรงแรม</th>
+                <th style="width:95px">น้ำมัน</th>
+                <th style="width:95px">อื่นๆ</th>
+                <th style="width:100px">หมายเหตุ</th>
               </tr>
             </thead>
             <tbody id="tableBody"></tbody>
           </table>
 
           <div class="btn-group">
-            <button class="btn-add" onclick="addRow()">➕ เพิ่มแถว</button>
+            <button class="btn-add"    onclick="addRow()">➕ เพิ่มแถว</button>
             <button class="btn-delete" onclick="deleteRow()">➖ ลบแถว</button>
           </div>
 
           <div class="summary-box">
-            รวม <strong id="days">0</strong> วัน |
+            รวม <strong id="days">0</strong> วัน &nbsp;|&nbsp;
             รวมเงิน <strong id="total">0.00</strong> บาท
           </div>
 
-          <div class="btn-group">
-            <button class="btn-save" onclick="saveDraft()">💾 Save Draft</button>
-            <button class="btn-export" onclick="exportCSV()">📤 Export CSV</button>
+          <div class="btn-group" style="margin-top:20px">
+            <button class="btn-save"    onclick="saveDraft()">💾 Save Draft</button>
+            <button class="btn-preview" onclick="openPreview()">🔍 บันทึกและดูตัวอย่าง</button>
+            <button class="btn-export"  onclick="exportCSV()">📤 Export CSV</button>
           </div>
+        </div>
 
-        </div><!-- /section -->
-
-      </div><!-- /paper -->
-    </div><!-- /page -->
+      </div>
+    </div>
   </main>
+</div>
 
-</div><!-- /layout -->
+<footer class="footer">© 2026 EABaseHub</footer>
 
-<!-- ===================================================== -->
-<!-- FOOTER                                                 -->
-<!-- ===================================================== -->
-<footer class="footer">
-  © 2026 EABaseHub
-</footer>
+<!-- Preview Modal -->
+<div id="previewModal" class="preview-modal">
+  <div class="preview-wrapper">
+    <div class="preview-actions">
+      <button onclick="saveAndClose()">💾 บันทึก</button>
+      <button onclick="printPreview()">🖨 พิมพ์</button>
+      <button onclick="exportPDF()">📤 Export PDF</button>
+      <button onclick="closePreview()">✕ ปิด</button>
+    </div>
+    <div id="previewContent" class="a4-page"></div>
+  </div>
+</div>
 
-<!-- ===================================================== -->
-<!-- SCRIPT — โหลดตามลำดับ: supabaseClient → auth → page  -->
-<!-- ===================================================== -->
 <script src="js/core/supabaseClient.js"></script>
 <script src="js/core/auth.js"></script>
 <script src="js/formActual.js"></script>
-
 </body>
 </html>
