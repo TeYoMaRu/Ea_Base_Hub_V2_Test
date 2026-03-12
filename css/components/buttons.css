@@ -10,7 +10,115 @@ BUTTON SYSTEM
 * toolbar
 * modal
   ===================================================== */
+:root {
 
+/* ================= PRIMARY (BLUE) ================= */
+
+--primary-1:#3FB7AE;
+--Dark-Teal: #2FA39A;
+--Light-Mint: #8FD3CD;
+
+--primary-500: #4caf50;
+--primary-700: #388e3c;
+--primary-900: #1b5e20;
+
+--secondary-300: #81d4fa;
+--secondary-500: #03a9f4;
+--secondary-700: #0288d1;
+--secondary-900: #01579b;
+
+--blue: #bcdbeb;
+
+--green1: #03624c;
+--green2: #030f0f;
+--green3: #00df82;
+--green4: #03A791;
+
+--text: #01579b;
+
+--gray-200: #e0e0e0;
+--white: #ffffff;
+
+/* ================= HEADER ================= */
+
+--header-blue:#1c86c8;
+--header-blue1:#90ceff;
+--header-blue2:#50aefc;
+--header-blue3:#044cbe;
+--header-blue4:#4aaefe;
+--orenge:#fdb177;
+
+/* ================= BACKGROUND ================= */
+
+--bg-page:#f4f7fb;
+--bg-card:#ffffff;
+--bg-soft:#eef6fc;
+
+/* ================= TEXT ================= */
+
+--text-main:#1e293b;
+--text-sub:#64748b;
+
+/* ================= BORDER ================= */
+
+--border-soft:#e5e7eb;
+
+/* ================= STATUS ================= */
+
+--success-bg:#e7f7ef;
+--success-text:#198754;
+
+--danger-bg:#fdeaea;
+--danger-text:#dc3545;
+
+/* ================= SHADOW ================= */
+
+--shadow-soft:0 4px 14px rgba(0,0,0,0.05);
+
+/* ================= RADIUS ================= */
+
+--radius-sm:8px;
+--radius-md:12px;
+--radius-lg:16px;
+
+/* ================= BACKGROUND ================= */
+
+--bg-page:#f5f8ff;
+--bg-card:#ffffff;
+--bg-soft:#eff6ff;
+
+/* ================= TEXT ================= */
+
+--text-main:#1e293b;
+--text-sub:#64748b;
+--text-soft:#94a3b8;
+
+/* ================= BORDER ================= */
+
+--border-soft:#e2e8f0;
+
+/* ================= STATUS ================= */
+
+--success-bg:#ecfdf5;
+--success-text:#065f46;
+
+--info-bg:#eff6ff;
+--info-text:#1d4ed8;
+
+--danger-bg:#fef2f2;
+--danger-text:#b91c1c;
+
+/* ================= SHADOW ================= */
+
+--shadow-soft:0 4px 14px rgba(0,0,0,0.05);
+
+/* ================= RADIUS ================= */
+
+--radius-sm:8px;
+--radius-md:12px;
+--radius-lg:16px;
+
+}
 /* =====================================================
 
 1. BASE BUTTON
@@ -216,6 +324,49 @@ BUTTON SYSTEM
 
 .btn-manage:hover {
   background: #197bb6;
+}
+
+.btn-manageA {
+  background: #a6d5f3;  
+  color: var(--header-blue3);
+  padding: 6px 14px;
+  font-weight: 600;
+  border-radius: 7px;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-manageA:hover {
+  background: #d5e9f5;
+}
+
+/* ── Manage Button ──────────────────────────────────────── */
+.btn-manage {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--Dark-Teal);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 7px 16px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.btn-manage:hover {
+  background: #2d6435;
+  transform: translateY(-1px);
+}
+
+.btn-manage:active {
+  transform: translateY(0);
 }
 
 /* =====================================================

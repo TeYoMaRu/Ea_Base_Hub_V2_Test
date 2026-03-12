@@ -196,7 +196,7 @@
   color: var(--info-text);
   font-family: 'Kanit', sans-serif;
   font-size: 0.92rem;
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: none;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
@@ -209,8 +209,8 @@
 }
 
 .tab-item.tab-active {
-  background:var(--header-blue3);
-  border-color: var(--secondary-900);
+  background:var(--header-blue);
+  border-color: var(--blue);
   color: #fff;
   font-weight: 600;
 }
@@ -287,7 +287,7 @@
 
 /* header */
 .data-table thead tr {
-  background: var(--header-blue3);
+  background: var(--header-blue);
 }
 
 .data-table th {
@@ -421,32 +421,7 @@
   white-space: nowrap;
 }
 
-/* ── Manage Button ──────────────────────────────────────── */
-.btn-manage {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: var(--Dark-Teal);
-  color: #fff;
-  border: none;
-  border-radius: 7px;
-  padding: 7px 16px;
-  font-family: 'Kanit', sans-serif;
-  font-size: 0.88rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.18s, transform 0.1s;
-  white-space: nowrap;
-}
 
-.btn-manage:hover {
-  background: #2d6435;
-  transform: translateY(-1px);
-}
-
-.btn-manage:active {
-  transform: translateY(0);
-}
 
 /* ── State Cells ─────────────────────────────────────────── */
 .state-cell {
