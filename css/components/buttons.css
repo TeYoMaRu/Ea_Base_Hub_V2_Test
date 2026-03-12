@@ -1,0 +1,268 @@
+/* =====================================================
+BUTTON SYSTEM
+ใช้กับระบบ Admin ทั้งหมด
+
+โทนสี : Azure Blue
+ใช้กับ
+
+* form
+* table action
+* toolbar
+* modal
+  ===================================================== */
+
+/* =====================================================
+
+1. BASE BUTTON
+
+---
+
+ปุ่มพื้นฐานที่ทุกปุ่มจะ inherit
+===================================================== */
+
+.btn {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 8px 16px;
+
+  font-family: "Kanit", sans-serif;
+
+  font-size: 14px;
+
+  border-radius: 8px;
+
+  border: none;
+
+  cursor: pointer;
+
+  transition: all 0.18s ease;
+
+  white-space: nowrap;
+}
+
+/* icon ภายในปุ่ม */
+
+.btn .material-symbols-outlined {
+  font-size: 18px;
+}
+
+/* =====================================================
+2. PRIMARY BUTTON
+-----------------
+
+ปุ่มหลักของระบบ
+ใช้กับ
+
+* Save
+* Submit
+* Add
+  ===================================================== */
+
+.btn-primary {
+  background: #1e88c9;
+
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #197bb6;
+
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* =====================================================
+3. SECONDARY BUTTON
+-------------------
+
+ปุ่มรอง
+===================================================== */
+
+.btn-secondary {
+  background: #eef6fc;
+
+  color: #1e88c9;
+
+  border: 1px solid #d4e7f5;
+}
+
+.btn-secondary:hover {
+  background: #e1f1fb;
+}
+
+/* =====================================================
+4. OUTLINE BUTTON
+-----------------
+
+ปุ่มเส้นขอบ
+===================================================== */
+
+.btn-outline {
+  background: white;
+
+  border: 1px solid #dfe6ee;
+
+  color: #475569;
+}
+
+.btn-outline:hover {
+  background: #f5f8fc;
+}
+
+/* =====================================================
+5. SUCCESS BUTTON
+-----------------
+
+ปุ่มสถานะสำเร็จ
+===================================================== */
+
+.btn-success {
+  background: #2fb980;
+
+  color: white;
+}
+
+.btn-success:hover {
+  background: #26a66f;
+}
+
+/* =====================================================
+6. DANGER BUTTON
+----------------
+
+ปุ่มลบ
+===================================================== */
+
+.btn-danger {
+  background: #e5484d;
+
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #d13438;
+}
+
+/* =====================================================
+7. SMALL BUTTON
+===================================================== */
+
+.btn-sm {
+  padding: 6px 12px;
+
+  font-size: 13px;
+}
+
+/* =====================================================
+8. LARGE BUTTON
+===================================================== */
+
+.btn-lg {
+  padding: 10px 22px;
+
+  font-size: 15px;
+}
+
+/* =====================================================
+9. ICON BUTTON
+--------------
+
+ปุ่มที่เป็น icon อย่างเดียว
+===================================================== */
+
+.btn-icon {
+  width: 36px;
+
+  height: 36px;
+
+  padding: 0;
+
+  border-radius: 8px;
+}
+
+/* =====================================================
+10. TABLE ACTION BUTTON
+-----------------------
+
+ปุ่มที่ใช้ในตาราง
+===================================================== */
+
+.btn-manage {
+  background: #1e88c9;
+
+  color: white;
+
+  padding: 6px 14px;
+
+  border-radius: 7px;
+
+  font-size: 13px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+}
+
+.btn-manage:hover {
+  background: #197bb6;
+}
+
+/* =====================================================
+11. BACK BUTTON
+---------------
+
+ปุ่ม "กลับหน้าหลัก"
+===================================================== */
+
+.btn-back {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 8px 16px;
+
+  background: white;
+
+  border: 1px solid #dfe6ee;
+
+  border-radius: 8px;
+
+  color: #475569;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.btn-back:hover {
+  background: #f4f7fb;
+}
+
+/* =====================================================
+12. DISABLED STATE
+===================================================== */
+
+.btn:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+/* =====================================================
+END
+===================================================== */

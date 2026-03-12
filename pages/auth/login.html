@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EABaseHub Login</title>
 
-    <!-- Supabase -->
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- Fonts -->
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="/css/pages/auth/login.css">
 </head>
 
 <body>
@@ -25,8 +25,7 @@
 
     <!-- Logo -->
     <div class="logo">
-      
-      <img src="assets/icons/icon-192.png" alt="logo">
+      <img src="/assets/icons/icon-192.png" alt="logo">
       <h1>EABaseHub</h1>
       <p>ศูนย์รวมข้อมูลและระบบงาน</p>
     </div>
@@ -83,29 +82,29 @@
     </form>
 
     <div class="register">
-      ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
+      ยังไม่มีบัญชี? <a href="/pages/auth/register.html">สมัครสมาชิก</a>
     </div>
 
   </div>
 </div>
 
-<!-- Scripts -->
-<script src="js/core/supabaseClient.js"></script>
-<script src="js/core/auth.js"></script>
-<script src="js/login.js"></script>
+<!-- Scripts — โหลดตามลำดับ: supabase → auth → login logic -->
+<script src="/js/core/supabaseClient.js"></script>
+<script src="/js/core/auth.js"></script>
+<script src="/js/pages/auth/login.js"></script>  <!-- ✅ แก้: เพิ่ม "> ปิด tag -->
 
-<!-- Toggle Password -->
+<!-- Toggle Password — ต้องอยู่หลัง login.js -->
 <script>
-const toggle = document.getElementById("togglePassword");
-const password = document.getElementById("password");
+  const toggle = document.getElementById("togglePassword");
+  const passwordInput = document.getElementById("password");  // ✅ แก้: เปลี่ยนชื่อตัวแปรไม่ชนกับ password ใน login.js
 
-toggle.addEventListener("click", () => {
-  const type = password.type === "password" ? "text" : "password";
-  password.type = type;
-  toggle.innerHTML = type === "password"
-    ? '<i class="fa-regular fa-eye"></i>'
-    : '<i class="fa-regular fa-eye-slash"></i>';
-});
+  toggle.addEventListener("click", () => {
+    const type = passwordInput.type === "password" ? "text" : "password";
+    passwordInput.type = type;
+    toggle.innerHTML = type === "password"
+      ? '<i class="fa-regular fa-eye"></i>'
+      : '<i class="fa-regular fa-eye-slash"></i>';
+  });
 </script>
 
 </body>

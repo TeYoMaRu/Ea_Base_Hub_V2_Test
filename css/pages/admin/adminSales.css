@@ -2,6 +2,119 @@
    adminSales.css  —  Sales Management Page
    style เขียว ตรงกับ admintor.html ที่ใช้อยู่
    ============================================================ */
+/* ===================================================== */
+/* 1. VARIABLES (ตัวแปรสี ขนาด เงา ฯลฯ) */
+/* ===================================================== */
+
+:root {
+
+/* ================= PRIMARY (BLUE) ================= */
+
+--primary-1:#3FB7AE;
+--Dark-Teal: #2FA39A;
+--Light-Mint: #8FD3CD;
+
+--primary-500: #4caf50;
+--primary-700: #388e3c;
+--primary-900: #1b5e20;
+
+--secondary-300: #81d4fa;
+--secondary-500: #03a9f4;
+--secondary-700: #0288d1;
+--secondary-900: #01579b;
+
+--blue: #bcdbeb;
+
+--green1: #03624c;
+--green2: #030f0f;
+--green3: #00df82;
+--green4: #03A791;
+
+--text: #01579b;
+
+--gray-200: #e0e0e0;
+--white: #ffffff;
+
+/* ================= HEADER ================= */
+
+--header-blue:#1c86c8;
+--header-blue1:#90ceff;
+--header-blue2:#50aefc;
+--header-blue3:#044cbe;
+--header-blue4:#4aaefe;
+--orenge:#fdb177;
+
+/* ================= BACKGROUND ================= */
+
+--bg-page:#f4f7fb;
+--bg-card:#ffffff;
+--bg-soft:#eef6fc;
+
+/* ================= TEXT ================= */
+
+--text-main:#1e293b;
+--text-sub:#64748b;
+
+/* ================= BORDER ================= */
+
+--border-soft:#e5e7eb;
+
+/* ================= STATUS ================= */
+
+--success-bg:#e7f7ef;
+--success-text:#198754;
+
+--danger-bg:#fdeaea;
+--danger-text:#dc3545;
+
+/* ================= SHADOW ================= */
+
+--shadow-soft:0 4px 14px rgba(0,0,0,0.05);
+
+/* ================= RADIUS ================= */
+
+--radius-sm:8px;
+--radius-md:12px;
+--radius-lg:16px;
+
+/* ================= BACKGROUND ================= */
+
+--bg-page:#f5f8ff;
+--bg-card:#ffffff;
+--bg-soft:#eff6ff;
+
+/* ================= TEXT ================= */
+
+--text-main:#1e293b;
+--text-sub:#64748b;
+--text-soft:#94a3b8;
+
+/* ================= BORDER ================= */
+
+--border-soft:#e2e8f0;
+
+/* ================= STATUS ================= */
+
+--success-bg:#ecfdf5;
+--success-text:#065f46;
+
+--info-bg:#eff6ff;
+--info-text:#1d4ed8;
+
+--danger-bg:#fef2f2;
+--danger-text:#b91c1c;
+
+/* ================= SHADOW ================= */
+
+--shadow-soft:0 4px 14px rgba(0,0,0,0.05);
+
+/* ================= RADIUS ================= */
+
+--radius-sm:8px;
+--radius-md:12px;
+--radius-lg:16px;
+
+}
 
 /* ── Page Wrapper ───────────────────────────────────────── */
 .page-wrapper {
@@ -38,9 +151,10 @@
   color: #1e293b;
 }
 
-.card-title .material-symbols-outlined {
-  font-size: 26px;
-  color: #3a7d44;
+.card-title 
+.material-symbols-outlined {
+  font-size: 36px;
+  color: var(--header-blue3);
 }
 
 .btn-back {
@@ -77,9 +191,9 @@
   gap: 6px;
   padding: 9px 20px;
   border-radius: 8px;
-  border: 1.5px solid #d1d5db;
+  border: 1.5px solid var(--blue);
   background: #fff;
-  color: #4b5563;
+  color: var(--info-text);
   font-family: 'Kanit', sans-serif;
   font-size: 0.92rem;
   font-weight: 500;
@@ -95,8 +209,8 @@
 }
 
 .tab-item.tab-active {
-  background: #3a7d44;
-  border-color: #3a7d44;
+  background:var(--header-blue3);
+  border-color: var(--secondary-900);
   color: #fff;
   font-weight: 600;
 }
@@ -171,9 +285,9 @@
   font-family: 'Kanit', sans-serif;
 }
 
-/* header เขียวเหมือนในรูป */
+/* header */
 .data-table thead tr {
-  background: #3a7d44;
+  background: var(--header-blue3);
 }
 
 .data-table th {
@@ -312,7 +426,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: #3a7d44;
+  background: var(--Dark-Teal);
   color: #fff;
   border: none;
   border-radius: 7px;

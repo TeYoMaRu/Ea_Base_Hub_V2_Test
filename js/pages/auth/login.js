@@ -1,41 +1,6 @@
 // ===============================
 // Redirect if already logged in
 // ===============================
-// async function redirectIfLoggedIn() {
-//   try {
-//     const { data: { session } } = await supabaseClient.auth.getSession();
-//     if (!session) return;
-
-//     const { data: profile } = await supabaseClient
-//       .from("profiles")
-//       .select("role, status")
-//       .eq("id", session.user.id)
-//       .single();
-
-//     if (!profile) return;
-
-//     if (profile.status !== "Active") {
-//       await supabaseClient.auth.signOut();
-//       return;
-//     }
-
-//     if (profile.role === "admin") {
-//       window.location.href = "admintor.html";
-//     }
-//     else if (profile.role === "sales") {
-//       window.location.href = "index.html";
-//     }
-
-//   } catch (error) {
-//     console.error("Error checking session:", error);
-//   }
-// }
-
-// redirectIfLoggedIn();
-
-// ===============================
-// Redirect if already logged in
-// ===============================
 async function redirectIfLoggedIn() {
   try {
     const {
@@ -60,7 +25,7 @@ async function redirectIfLoggedIn() {
     if (profile.role === "admin") {
       window.location.href = "/pages/admin/admintor.html";
     } else if (profile.role === "sales") {
-      window.location.href = "index.html";
+      window.location.href = "/pages/index.html";
     } else if (profile.role === "manager") {
       window.location.href = "manager-dashboard.html";
     } else if (profile.role === "executive") {
@@ -146,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (profile.role === "admin") {
         window.location.href = "/pages/admin/admintor.html";
       } else if (profile.role === "sales") {
-        window.location.href = "index.html";
+        window.location.href = "/pages/index.html";
       } else if (profile.role === "manager") {
         window.location.href = "manager-dashboard.html";
       } else if (profile.role === "executive") {

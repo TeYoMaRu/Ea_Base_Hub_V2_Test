@@ -1,3 +1,75 @@
+:root{
+
+/* ================= PRIMARY BLUE ================= */
+
+--primary-1:#3FB7AE;
+--Dark-Teal: #2FA39A;
+--Light-Mint: #8FD3CD;
+
+--primary-500: #4caf50;
+--primary-700: #388e3c;
+--primary-900: #1b5e20;
+
+--secondary-300: #81d4fa;
+--secondary-500: #03a9f4;
+--secondary-700: #0288d1;
+--secondary-900: #01579b;
+
+--blue: #bcdbeb;
+
+--green1: #03624c;
+--green2: #030f0f;
+--green3: #00df82;
+--green4: #03A791;
+
+--text: #01579b;
+
+--gray-200: #e0e0e0;
+--white: #ffffff;
+
+/* ================= HEADER ================= */
+
+--header-blue:#1c86c8;
+--header-blue1:#90ceff;
+--header-blue2:#50aefc;
+--header-blue3:#044cbe;
+--header-blue4:#4aaefe;
+--orenge:#fdb177;
+
+/* ================= BACKGROUND ================= */
+
+--bg-page:#f4f7fb;
+--bg-card:#ffffff;
+--bg-soft:#eef6fc;
+
+/* ================= TEXT ================= */
+
+--text-main:#1e293b;
+--text-sub:#64748b;
+
+/* ================= BORDER ================= */
+
+--border-soft:#e5e7eb;
+
+/* ================= STATUS ================= */
+
+--success-bg:#e7f7ef;
+--success-text:#198754;
+
+--danger-bg:#fdeaea;
+--danger-text:#dc3545;
+
+/* ================= SHADOW ================= */
+
+--shadow-soft:0 4px 14px rgba(0,0,0,0.05);
+
+/* ================= RADIUS ================= */
+
+--radius-sm:8px;
+--radius-md:12px;
+--radius-lg:16px;
+
+}
 /* ============================================================
    admintor.css  —  User Management Page
    ============================================================ */
@@ -32,12 +104,13 @@
   gap: 10px;
   font-size: 1.2rem;
   font-weight: 600;
-  color: #1e293b;
+  color:var(--header-blue3);
 }
 
-.card-title .material-symbols-outlined {
-  font-size: 26px;
-  color: #3a7d44;
+.card-title 
+.material-symbols-outlined {
+  font-size: 48px;
+  color: var(--header-blue3);
 }
 
 .btn-back {
@@ -54,7 +127,9 @@
   cursor: pointer;
   transition: background 0.15s;
 }
-.btn-back:hover { background: #f1f5f9; }
+.btn-back:hover { 
+  background: #f1f5f9; 
+}
 
 /* ── Tabs ────────────────────────────────────────────────── */
 .tab-bar {
@@ -67,6 +142,7 @@
 .tab-item {
   display: inline-flex;
   align-items: center;
+  width: 150px;
   gap: 6px;
   padding: 9px 20px;
   border-radius: 8px;
@@ -79,9 +155,22 @@
   text-decoration: none;
   transition: all 0.15s;
 }
-.tab-item:hover { border-color: #3a7d44; color: #3a7d44; background: #f0fdf4; }
-.tab-item.tab-active { background: #3a7d44; border-color: #3a7d44; color: #fff; font-weight: 600; }
-.tab-item .material-symbols-outlined { font-size: 18px; }
+.tab-item:hover { 
+  border-color: #3a7d44; 
+  color: #3a7d44; 
+  background: #f0fdf4; 
+}
+
+.tab-item.tab-active {
+   background: var(--secondary-700);
+   border-color: var(--secondary-500);
+   color: #fff; font-weight: 600; 
+  }
+
+.tab-item 
+.material-symbols-outlined { 
+  font-size: 24px; 
+}
 
 /* ── Stats Bar ───────────────────────────────────────────── */
 .stats-bar {
@@ -94,9 +183,10 @@
 .stat-chip {
   display: inline-flex;
   align-items: center;
+  width: 15%;
   gap: 6px;
-  padding: 7px 14px;
-  border-radius: 20px;
+  padding: 14px 28px;
+  border-radius: 16px;
   font-size: 0.85rem;
   font-weight: 600;
   background: #f1f5f9;
@@ -105,8 +195,14 @@
   cursor: pointer;
   transition: box-shadow 0.15s;
 }
-.stat-chip:hover { box-shadow: 0 0 0 2px #3a7d44; }
-.stat-chip .material-symbols-outlined { font-size: 16px; }
+.stat-chip:hover { 
+  box-shadow: 0 0 0 2px #3a7d44; 
+}
+
+.stat-chip 
+.material-symbols-outlined { 
+  font-size: 24px; 
+}
 
 .chip-admin    { background: #fef3c7; color: #92400e; border-color: #fde68a; }
 .chip-manager  { background: #ede9fe; color: #5b21b6; border-color: #ddd6fe; }
@@ -201,7 +297,9 @@
   font-family: 'Kanit', sans-serif;
 }
 
-.data-table thead tr { background: #3a7d44; }
+.data-table thead tr { 
+  background: var(--secondary-700); 
+}
 .data-table th {
   padding: 13px 16px;
   text-align: left;
@@ -289,7 +387,7 @@
   white-space: nowrap;
 }
 .btn-icon:hover { opacity: 0.85; transform: translateY(-1px); }
-.btn-icon .material-symbols-outlined { font-size: 15px; }
+.btn-icon .material-symbols-outlined { font-size: 18px; }
 
 .btn-edit   { background: #dbeafe; color: #1d4ed8; }
 .btn-toggle-active   { background: #dcfce7; color: #166534; }
@@ -369,7 +467,11 @@
   font-size: 0.88rem;
   color: #475569;
 }
-.modal-user-info .material-symbols-outlined { color: #3a7d44; font-size: 20px; }
+.modal-user-info 
+.material-symbols-outlined { 
+  color:var(--secondary-500); 
+  font-size: 36px; 
+}
 
 .form-row {
   display: grid;

@@ -5,7 +5,6 @@
 :root {
 
 /* ================= COLORS ================= */
-
 --primary-1:#3FB7AE;
 --Dark-Teal: #2FA39A;
 --Light-Mint: #8FD3CD;
@@ -31,6 +30,14 @@
 --gray-200: #e0e0e0;
 --white: #ffffff;
 
+/* ================= HEADER ================= */
+
+--header-blue:#1c86c8;
+--header-blue1:#90ceff;
+--header-blue2:#50aefc;
+--header-blue3:#044cbe;
+--header-blue4:#4aaefe;
+--orenge:#fdb177;
 /* ================= SHADOW ================= */
 
 --shadow-soft: 0 4px 12px rgba(0,0,0,0.06);
@@ -97,14 +104,15 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 padding: 10px 24px;
-background: var(--secondary-700);
+background: var(--header-blue);
 border-bottom: 1px solid #ddd;
 box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 /* LOGO */
 
-.app-header .logo {
+.app-header 
+.logo {
 display: flex;
 align-items: center;
 gap: 12px;
@@ -113,7 +121,8 @@ font-size: 14px;
 flex-direction: row;
 }
 
-.app-header .logo img {
+.app-header 
+.logo img {
 width: 32px;
 height: 32px;
 object-fit: contain;
@@ -205,7 +214,7 @@ gap:12px;
 width:40px;
 height:40px;
 border-radius:50%;
-background:var(--Light-Mint);
+background:var(--white);
 color:white;
 font-weight:600;
 font-size:20px;
@@ -283,9 +292,9 @@ padding:12px 30px;
 border:none;
 border-radius:20px;
 background:#fff;
-color:var(--green1);
+color:var(--secondary-900);
 font-size:13px;
-font-weight:600;
+font-weight:800;
 cursor:pointer;
 display:flex;
 align-items:center;
@@ -314,7 +323,8 @@ align-items: center;
 gap: 4px;
 }
 
-.btn-action .material-symbols-outlined {
+.btn-action 
+.material-symbols-outlined {
 font-size: 16px;
 }
 

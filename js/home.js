@@ -52,7 +52,7 @@ async function protectPage() {
     await supabaseClient.auth.getSession();
 
   if (!session) {
-    window.location.href = "login.html";
+    window.location.href = "/pages/auth/login.html";
   }
 }
 
@@ -83,35 +83,38 @@ async function loadData() {
   const { data: { user } } = await supabaseClient.auth.getUser();
   if (!user) return;
 
-  const userId = user.id;
-
-  // โหลด reports
+  // ✅ ลอง auth.uid() แทน user_id ก่อน — หรือดึงทั้งหมดแล้วกรองทีหลัง
   const { data: reportData, error: reportError } =
     await supabaseClient
       .from("reports")
       .select("*")
+      .eq("sale_id", user.id)   // เปลี่ยน user_id ให้ตรงกับชื่อจริง
       .order("created_at", { ascending: false });
 
   if (reportError) {
-    console.error("โหลด reports ไม่ได้:", reportError);
+    console.error("โหลด reports ไม่ได้:", reportError.message);
   }
 
-
-
-  // โหลด claims
   const { data: claimData, error: claimError } =
     await supabaseClient
       .from("claims")
       .select("*");
 
   if (claimError) {
-    console.error("โหลด claims ไม่ได้:", claimError);
+    console.error("โหลด claims ไม่ได้:", claimError.message);
   }
 
   reports = reportData || [];
+  claims  = claimData  || [];
   
-  claims  = claimData || [];
+  // แสดงใน console เพื่อดูว่า column ชื่ออะไร
+  if (reports.length > 0) {
+    console.log("📋 Report columns:", Object.keys(reports[0]));
+  }
 }
+
+
+
 
 async function loadUserProfile() {
 
@@ -306,7 +309,7 @@ async function deleteItem(type, id) {
 
 function renderWeeklyProgress() {
   const reportDaysEl = document.getElementById("reportDays");
-  const progressFill = document.getElementById("reportProgress");
+  const progressFill = document.getElementById("progressFill");
 
   if (!reports.length) {
     if (reportDaysEl) reportDaysEl.textContent = "0";
@@ -429,7 +432,7 @@ function toggleSidebar() {
 
 async function logout() {
   await supabaseClient.auth.signOut();
-  window.location.href = "login.html";
+  window.location.href = "/pages/auth/login.html";
 }
 
 
@@ -437,43 +440,71 @@ async function logout() {
    🔟 INIT
 ================================================= */
 
+// ✅ แบบใหม่ - รันพร้อมกัน (~200-300ms)
 async function init() {
-  await protectPage();
-  await loadData();   // สำคัญมาก
-  await loadUserInfo();   // ต้องมีอันนี้
-  await loadUserProfile();
-  await loadUserEmail();
-  await loadUserRole();
-  await loadUserArea();
-  await loadStoreCount();
-  
+
+  // 1️⃣ ตรวจ session ก่อนเลย (บล็อกอย่างเดียว)
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) {
+    window.location.href = "/pages/auth/login.html";
+    return;
+  }
+
+  // 2️⃣ ยิง query ทุกอันพร้อมกันเลย
+  const [profileResult, reportsResult, claimsResult, storeResult] = await Promise.all([
+    
+    // โหลด profile (รวม role + area ในครั้งเดียว)
+    supabaseClient
+      .from("profiles")
+      .select("display_name, username, role, area")
+      .eq("id", session.user.id)
+      .single(),
+
+    // โหลด reports
+    supabaseClient
+      .from("reports")
+      .select("*")
+      .order("created_at", { ascending: false }),
+
+    // โหลด claims
+    supabaseClient
+      .from("claims")
+      .select("id"),   // select แค่ id พอ ไม่ต้องดึงทั้งหมด
+
+    // นับร้านค้า
+    supabaseClient
+      .from("shops")
+      .select("*", { count: "exact", head: true })
+      .eq("sale_id", session.user.id)
+  ]);
+
+  // 3️⃣ นำข้อมูลมาใส่ UI
+  const profile = profileResult.data;
+  reports = reportsResult.data || [];
+  claims  = claimsResult.data  || [];
+  const storeCount = storeResult.count ?? 0;
+
+  const fullName = profile?.display_name || profile?.username || session.user.email;
+
+  // อัพเดท UI ทีเดียว
+  document.getElementById("userName")?.textContent  && (document.getElementById("userName").textContent = fullName);
+  document.getElementById("displayName")?.textContent && (document.getElementById("displayName").textContent = fullName);
+  document.getElementById("userEmail") && (document.getElementById("userEmail").textContent = session.user.email);
+  document.getElementById("userRole")  && (document.getElementById("userRole").textContent = profile?.role || "Sales Executive");
+  document.getElementById("areaCount") && (document.getElementById("areaCount").textContent = profile?.area || "-");
+  document.getElementById("storeCount") && (document.getElementById("storeCount").textContent = storeCount);
+  document.getElementById("claimCount") && (document.getElementById("claimCount").textContent = claims.length);
+
+  // Admin badge
+  if (profile?.role === "admin") document.body.classList.add("is-admin");
+
+  // 4️⃣ Render UI
   initAvatarUpload();
   renderSummary();
   renderReportList();
   renderWeeklyProgress();
   renderCalendar();
 }
-
-
-async function loadUserRole() {
-
-  const { data: { user } } =
-    await supabaseClient.auth.getUser();
-
-  if (!user) return;
-
-  const { data: profile } =
-    await supabaseClient
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-  if (profile?.role === "admin") {
-    document.body.classList.add("is-admin");
-  }
-}
-
 
 /* =================================================
    📷 Avatar Upload

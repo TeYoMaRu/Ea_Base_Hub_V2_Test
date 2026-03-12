@@ -15,7 +15,7 @@ async function protectAdmin() {
   if (logoutBtn) logoutBtn.addEventListener("click", logout);
 }
 
-function goHome() { window.location.href = "index.html"; }
+function goHome() { window.location.href = "/pages/admin/admintor.html"; }
 
 // ── loadUsers — โหลดผู้ใช้ทั้งหมด ──────────────────────────
 async function loadUsers() {
