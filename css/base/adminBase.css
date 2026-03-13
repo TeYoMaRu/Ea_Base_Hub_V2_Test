@@ -194,7 +194,7 @@ padding: 10px 24px;
 
 /* background header */
 
-background: var(--header-blue);
+background: linear-gradient(135deg, #1d4ed8 0%, #0288d1 100%);
 
 /* เส้นแบ่ง */
 
