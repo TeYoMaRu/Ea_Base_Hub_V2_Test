@@ -126,7 +126,7 @@ function renderTable(data) {
       </td>
 
       <td>
-        <button class="btn-manageA"
+        <button class="btn-action btn-edit"
                 onclick="goManage('${sale.id}')">
           <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">store</span>
           จัดการ

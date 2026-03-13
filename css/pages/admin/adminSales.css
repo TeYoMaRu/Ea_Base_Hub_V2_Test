@@ -1,359 +1,75 @@
 /* ============================================================
    adminSales.css  —  Sales Management Page
-   style เขียว ตรงกับ admintor.html ที่ใช้อยู่
+   
+   ⚠️  style พื้นฐานทั้งหมด (layout, table, tab, modal ฯลฯ)
+       อยู่ใน admintor.css แล้ว
+       ไฟล์นี้มีแค่ style ที่ unique ของหน้า Sales เท่านั้น
    ============================================================ */
-/* ===================================================== */
-/* 1. VARIABLES (ตัวแปรสี ขนาด เงา ฯลฯ) */
-/* ===================================================== */
 
-:root {
 
-/* ================= PRIMARY (BLUE) ================= */
 
---primary-1:#3FB7AE;
---Dark-Teal: #2FA39A;
---Light-Mint: #8FD3CD;
+/* ============================================================
+   SEARCH ROW
+   หน้า Sales ใช้ .search-row (มี edit-tip ด้วย)
+   ต่างจาก admintor ที่ใช้ .toolbar-row
+   ============================================================ */
 
---primary-500: #4caf50;
---primary-700: #388e3c;
---primary-900: #1b5e20;
-
---secondary-300: #81d4fa;
---secondary-500: #03a9f4;
---secondary-700: #0288d1;
---secondary-900: #01579b;
-
---blue: #bcdbeb;
-
---green1: #03624c;
---green2: #030f0f;
---green3: #00df82;
---green4: #03A791;
-
---text: #01579b;
-
---gray-200: #e0e0e0;
---white: #ffffff;
-
-/* ================= HEADER ================= */
-
---header-blue:#1c86c8;
---header-blue1:#90ceff;
---header-blue2:#50aefc;
---header-blue3:#044cbe;
---header-blue4:#4aaefe;
---orenge:#fdb177;
-
-/* ================= BACKGROUND ================= */
-
---bg-page:#f4f7fb;
---bg-card:#ffffff;
---bg-soft:#eef6fc;
-
-/* ================= TEXT ================= */
-
---text-main:#1e293b;
---text-sub:#64748b;
-
-/* ================= BORDER ================= */
-
---border-soft:#e5e7eb;
-
-/* ================= STATUS ================= */
-
---success-bg:#e7f7ef;
---success-text:#198754;
-
---danger-bg:#fdeaea;
---danger-text:#dc3545;
-
-/* ================= SHADOW ================= */
-
---shadow-soft:0 4px 14px rgba(0,0,0,0.05);
-
-/* ================= RADIUS ================= */
-
---radius-sm:8px;
---radius-md:12px;
---radius-lg:16px;
-
-/* ================= BACKGROUND ================= */
-
---bg-page:#f5f8ff;
---bg-card:#ffffff;
---bg-soft:#eff6ff;
-
-/* ================= TEXT ================= */
-
---text-main:#1e293b;
---text-sub:#64748b;
---text-soft:#94a3b8;
-
-/* ================= BORDER ================= */
-
---border-soft:#e2e8f0;
-
-/* ================= STATUS ================= */
-
---success-bg:#ecfdf5;
---success-text:#065f46;
-
---info-bg:#eff6ff;
---info-text:#1d4ed8;
-
---danger-bg:#fef2f2;
---danger-text:#b91c1c;
-
-/* ================= SHADOW ================= */
-
---shadow-soft:0 4px 14px rgba(0,0,0,0.05);
-
-/* ================= RADIUS ================= */
-
---radius-sm:8px;
---radius-md:12px;
---radius-lg:16px;
-
-}
-
-/* ── Page Wrapper ───────────────────────────────────────── */
-.page-wrapper {
-  min-height: calc(100vh - 70px);
-  background: #f0f2f5;
-  padding: 28px 20px 40px;
-  box-sizing: border-box;
-}
-
-/* ── Admin Card ─────────────────────────────────────────── */
-.admin-card {
-  max-width: 1100px;
-  margin: 0 auto;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  padding: 28px 28px 32px;
-}
-
-/* ── Card Header Row ────────────────────────────────────── */
-.card-header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.card-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #1e293b;
-}
-
-.card-title 
-.material-symbols-outlined {
-  font-size: 36px;
-  color: var(--header-blue3);
-}
-
-.btn-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 8px;
-  background: #fff;
-  color: #475569;
-  font-family: 'Kanit', sans-serif;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-}
-
-.btn-back:hover {
-  background: #f1f5f9;
-  border-color: #94a3b8;
-}
-
-/* ── Tab Bar ─────────────────────────────────────────────── */
-.tab-bar {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.tab-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 20px;
-  border-radius: 8px;
-  border: 1.5px solid var(--blue);
-  background: #fff;
-  color: var(--info-text);
-  font-family: 'Kanit', sans-serif;
-  font-size: 0.92rem;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-}
-
-.tab-item:hover {
-  border-color: #3a7d44;
-  color: #3a7d44;
-  background: #f0fdf4;
-}
-
-.tab-item.tab-active {
-  background:var(--header-blue);
-  border-color: var(--blue);
-  color: #fff;
-  font-weight: 600;
-}
-
-.tab-item .material-symbols-outlined {
-  font-size: 18px;
-}
-
-/* ── Search Row ─────────────────────────────────────────── */
 .search-row {
-  display: flex;
+  display:     flex;
   align-items: center;
-  gap: 14px;
+  gap:         14px;
   margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-.search-wrap {
-  position: relative;
-  flex: 1;
-  min-width: 200px;
-}
-
-.search-ic {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #9ca3af;
-  font-size: 20px;
-  pointer-events: none;
-}
-
-.search-wrap input {
-  width: 100%;
-  padding: 10px 14px 10px 40px;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 8px;
-  font-family: 'Kanit', sans-serif;
-  font-size: 0.92rem;
-  background: #f9fafb;
-  color: #1e293b;
-  box-sizing: border-box;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.search-wrap input:focus {
-  outline: none;
-  border-color: #3a7d44;
-  box-shadow: 0 0 0 3px rgba(58, 125, 68, 0.12);
-  background: #fff;
+  flex-wrap:   wrap;
 }
 
 .edit-tip {
-  font-size: 0.8rem;
-  color: #9ca3af;
+  font-size:   0.8rem;
+  color:       #9ca3af;
   white-space: nowrap;
+  display:     flex;
+  align-items: center;
+  gap:         4px;
 }
 
-/* ── Table Wrap ─────────────────────────────────────────── */
-.table-wrap {
-  overflow-x: auto;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-}
 
-/* ── Data Table ─────────────────────────────────────────── */
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.92rem;
-  font-family: 'Kanit', sans-serif;
-}
 
-/* header */
-.data-table thead tr {
-  background: var(--header-blue);
-}
+/* ============================================================
+   USERNAME CHIP
+   หน้า Sales ใช้สีเขียว (ต่างจาก admintor ที่ใช้สีเทา)
+   ============================================================ */
 
-.data-table th {
-  padding: 13px 18px;
-  text-align: left;
-  font-weight: 600;
-  color: #fff;
-  white-space: nowrap;
-  letter-spacing: 0.01em;
-}
-
-.data-table tbody tr {
-  border-bottom: 1px solid #f1f5f9;
-  transition: background 0.12s;
-}
-
-.data-table tbody tr:last-child {
-  border-bottom: none;
-}
-
-.data-table tbody tr:hover {
-  background: #f0fdf4;
-}
-
-.data-table td {
-  padding: 13px 18px;
-  vertical-align: middle;
-  color: #374151;
-}
-
-/* ── Row fade-in ────────────────────────────────────────── */
-@keyframes rowIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.fade-in-row {
-  animation: rowIn 0.22s ease both;
-}
-
-/* ── Username Chip ──────────────────────────────────────── */
 .username-chip {
-  display: inline-block;
-  background: #dcfce7;
-  color: #166534;
-  font-weight: 600;
-  padding: 4px 12px;
+  display:       inline-block;
+  background:    #dcfce7;
+  color:         #166534;
+  font-weight:   600;
+  padding:       4px 12px;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size:     0.85rem;
 }
 
-/* ── Editable Cells ─────────────────────────────────────── */
+
+
+/* ============================================================
+   EDITABLE CELLS
+   คลิกเพื่อแก้ชื่อ / พื้นที่ inline
+   ============================================================ */
+
 .editable-cell {
-  display: inline-block;
-  padding: 5px 12px;
+  display:       inline-block;
+  padding:       5px 12px;
   border-radius: 6px;
-  cursor: pointer;
-  transition: box-shadow 0.15s, background 0.15s;
-  min-width: 60px;
-  position: relative;
+  cursor:        pointer;
+  transition:    box-shadow 0.15s, background 0.15s;
+  min-width:     60px;
+  position:      relative;
 }
 
+/* icon ดินสอ แสดงเมื่อ hover */
 .editable-cell::after {
-  content: " ✏️";
-  font-size: 11px;
-  opacity: 0;
+  content:    " ✏️";
+  font-size:  11px;
+  opacity:    0;
   transition: opacity 0.15s;
 }
 
@@ -362,93 +78,105 @@
 }
 
 .editable-cell:hover {
-  box-shadow: 0 0 0 2px #3a7d44;
+  box-shadow: 0 0 0 2px var(--blue-400, #60a5fa);
 }
+
 
 /* ชื่อ Sales */
 .editable-name {
-  color: #1e40af;
+  color:       #1e40af;
   font-weight: 500;
-  background: transparent;
+  background:  transparent;
 }
 
 .editable-name:hover {
   background: #eff6ff;
 }
 
-/* พื้นที่ — badge สีน้ำเงินอ่อนเหมือนในรูป */
+
+/* พื้นที่ — badge สีฟ้าอ่อน */
 .badge-area {
-  background: #dbeafe;
-  color: #1e40af;
+  background:  #dbeafe;
+  color:       #1e40af;
   font-weight: 500;
-  font-size: 0.87rem;
+  font-size:   0.87rem;
 }
 
 .badge-area:hover {
   background: #bfdbfe;
 }
 
-/* ── Inline Input ───────────────────────────────────────── */
+
+
+/* ============================================================
+   INLINE INPUT
+   input ที่โผล่มาแทน editable cell เมื่อคลิก
+   ============================================================ */
+
 .inline-input {
-  border: 2px solid #3a7d44;
+  border:      2px solid var(--blue-400, #60a5fa);
   border-radius: 6px;
-  padding: 5px 10px;
+  padding:     5px 10px;
   font-family: 'Kanit', sans-serif;
-  font-size: 0.92rem;
-  color: #1e293b;
-  background: #fff;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(58, 125, 68, 0.14);
-  min-width: 120px;
-  max-width: 200px;
+  font-size:   0.92rem;
+  color:       #1e293b;
+  background:  #fff;
+  outline:     none;
+  box-shadow:  0 0 0 3px rgba(59, 130, 246, 0.14);
+  min-width:   120px;
+  max-width:   200px;
 }
 
 .inline-input:disabled {
   opacity: 0.5;
-  cursor: wait;
+  cursor:  wait;
 }
 
-/* ── Shop Count Badge ───────────────────────────────────── */
+
+
+/* ============================================================
+   SHOP COUNT BADGE
+   badge แสดงจำนวนร้านค้า
+   ============================================================ */
+
 .badge-count {
-  display: inline-block;
-  background: #f0fdf4;
-  color: #166534;
-  border: 1px solid #bbf7d0;
-  padding: 4px 14px;
+  display:       inline-block;
+  background:    #f0fdf4;
+  color:         #166534;
+  border:        1px solid #bbf7d0;
+  padding:       4px 14px;
   border-radius: 20px;
-  font-weight: 600;
-  font-size: 0.87rem;
-  white-space: nowrap;
+  font-weight:   600;
+  font-size:     0.87rem;
+  white-space:   nowrap;
 }
 
 
 
-/* ── State Cells ─────────────────────────────────────────── */
-.state-cell {
-  text-align: center;
-  padding: 40px 16px;
-  color: #9ca3af;
-  font-size: 0.95rem;
-}
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 
-/* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 680px) {
-  .admin-card {
-    padding: 18px 14px 24px;
-  }
 
   .card-header-row {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    align-items:    flex-start;
+    gap:            10px;
   }
 
+  /* ซ่อน column จำนวนร้านค้า บนมือถือ */
   .data-table th:nth-child(4),
   .data-table td:nth-child(4) {
     display: none;
   }
 
-  .edit-tip {
-    display: none;
-  }
+  .edit-tip { display: none; }
+
 }
+
+
+
+/* ============================================================
+   END OF FILE
+   ============================================================ */

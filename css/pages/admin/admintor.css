@@ -1,610 +1,839 @@
 /* ============================================================
-   ROOT VARIABLES
-   เก็บตัวแปรสี / theme หลักของระบบ
-   ทำให้เปลี่ยน theme ทั้งระบบได้ง่าย
+   admintor.css  — Modern Redesign
+   โทน: Blue ระบบเดิม + refinement
    ============================================================ */
-:root{
-
-/* ================= PRIMARY BLUE ================= */
-/* สีหลักของระบบ (Primary palette) */
-
---primary-1:#3FB7AE;      /* สี teal หลัก */
---Dark-Teal: #2FA39A;     /* teal เข้ม ใช้ hover หรือ accent */
---Light-Mint: #8FD3CD;    /* mint อ่อน ใช้ background soft */
-
-/* โทนสีเขียวสำหรับสถานะหรือ action */
---primary-500: #4caf50;
---primary-700: #388e3c;
---primary-900: #1b5e20;
-
-/* โทนสีฟ้าสำหรับ secondary action */
---secondary-300: #81d4fa;
---secondary-500: #03a9f4;
---secondary-700: #0288d1;
---secondary-900: #01579b;
-
-/* ฟ้าอ่อน */
---blue: #bcdbeb;
-
-/* green palette เพิ่มเติม */
---green1: #03624c;
---green2: #030f0f;
---green3: #00df82;
---green4: #03A791;
-
-/* สีตัวอักษรหลัก */
---text: #01579b;
 
 
-/* ================= GRAY / NEUTRAL ================= */
+/* ============================================================
+   VARIABLES
+   ============================================================ */
 
---gray-200: #e0e0e0;   /* border สีอ่อน */
---white: #ffffff;
+:root {
 
+  /* ── Blue palette ── */
+  --blue-50:  #eff6ff;
+  --blue-100: #dbeafe;
+  --blue-200: #bfdbfe;
+  --blue-400: #60a5fa;
+  --blue-500: #3b82f6;
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+  --blue-800: #1e40af;
+  --blue-900: #1e3a8a;
 
-/* ================= HEADER COLORS ================= */
-/* สีเฉพาะ header */
+  /* header (คงสีเดิม) */
+  --header-bg:    #1c86c8;
+  --header-blue3: #044cbe;
 
---header-blue:#1c86c8;
---header-blue1:#90ceff;
---header-blue2:#50aefc;
---header-blue3:#044cbe;
---header-blue4:#4aaefe;
+  /* secondary (table header / tab active) */
+  --secondary-700: #0288d1;
+  --secondary-500: #03a9f4;
+  --secondary-900: #01579b;
 
---orenge:#fdb177;
+  /* ── Neutral ── */
+  --gray-50:  #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-700: #374151;
+  --gray-900: #0f172a;
 
+  /* ── Text ── */
+  --text-main: #1e293b;
+  --text-sub:  #64748b;
+  --text-soft: #94a3b8;
 
-/* ================= BACKGROUND ================= */
+  /* ── Semantic ── */
+  --success-bg:   #f0fdf4;
+  --success-text: #15803d;
+  --success-ring: #86efac;
 
---bg-page:#f4f7fb;  /* background หน้าเว็บ */
---bg-card:#ffffff;  /* background card */
---bg-soft:#eef6fc;  /* background soft section */
+  --danger-bg:    #fef2f2;
+  --danger-text:  #dc2626;
+  --danger-ring:  #fca5a5;
 
+  --warn-bg:   #fffbeb;
+  --warn-text: #d97706;
 
-/* ================= TEXT ================= */
+  /* ── Surface ── */
+  --bg-page: #f0f4f8;
+  --bg-card: #ffffff;
+  --border:  #e2e8f0;
 
---text-main:#1e293b; /* text หลัก */
---text-sub:#64748b;  /* text รอง */
+  /* ── Radius ── */
+  --r-sm:  6px;
+  --r-md:  10px;
+  --r-lg:  14px;
+  --r-xl:  20px;
+  --r-full: 9999px;
 
-
-/* ================= BORDER ================= */
-
---border-soft:#e5e7eb; /* border card */
-
-
-/* ================= STATUS ================= */
-
---success-bg:#e7f7ef;
---success-text:#198754;
-
---danger-bg:#fdeaea;
---danger-text:#dc3545;
-
-
-/* ================= SHADOW ================= */
-
---shadow-soft:0 4px 14px rgba(0,0,0,0.05);
-
-
-/* ================= BORDER RADIUS ================= */
-
---radius-sm:8px;
---radius-md:12px;
---radius-lg:16px;
-
+  /* ── Shadow ── */
+  --shadow-xs: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
 }
 
 
 /* ============================================================
    PAGE WRAPPER
-   container หลักของหน้า
    ============================================================ */
 
 .page-wrapper {
-
-  /* ทำให้ความสูงหน้าเต็ม viewport
-     หัก header 70px */
-  min-height: calc(100vh - 70px);
-
-  /* background ของหน้า */
-  background: #f0f2f5;
-
-  /* spacing รอบ content */
-  padding: 28px 20px 40px;
-
+  min-height: calc(100vh - 66px);
+  background: var(--bg-page);
+  padding: 32px 24px 48px;
   box-sizing: border-box;
 }
 
 
 /* ============================================================
    ADMIN CARD
-   กล่องหลักของหน้า User Management
    ============================================================ */
 
 .admin-card {
-
-  /* จำกัดความกว้าง */
   max-width: 1200px;
-
-  /* จัดให้อยู่กลาง */
   margin: 0 auto;
-
-  /* พื้นหลัง */
-  background: #fff;
-
-  /* มุมโค้ง */
-  border-radius: 16px;
-
-  /* เงา */
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-
-  /* padding ด้านใน */
-  padding: 28px 28px 32px;
+  background: var(--bg-card);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-md);
+  padding: 32px 32px 36px;
+  border: 1px solid var(--border);
 }
-
 
 
 /* ============================================================
    CARD HEADER
-   ส่วน header ของ card
    ============================================================ */
 
 .card-header-row {
-
-  /* layout แนวนอน */
   display: flex;
-
-  /* จัด icon กับ text ให้อยู่กลาง */
   align-items: center;
-
-  /* กระจายซ้ายขวา */
   justify-content: space-between;
-
-  /* margin ด้านล่าง */
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
-
-/* title ของหน้า */
 .card-title {
-
   display: flex;
   align-items: center;
-  gap: 10px;
-
-  font-size: 1.2rem;
-  font-weight: 600;
-
-  color:var(--header-blue3);
+  gap: 12px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--blue-800);
+  letter-spacing: -0.01em;
 }
 
-
-/* icon ใน title */
-
-.card-title 
-.material-symbols-outlined {
-
-  font-size: 48px;
-
-  color: var(--header-blue3);
+.card-title .material-symbols-outlined {
+  font-size: 30px;
+  color: var(--blue-600);
+  background: var(--blue-50);
+  border-radius: var(--r-md);
+  padding: 7px;
 }
 
-
-
-/* ============================================================
-   BUTTON BACK
-   ปุ่มกลับหน้า
-   ============================================================ */
-
+/* BACK BUTTON */
 .btn-back {
-
   display: inline-flex;
   align-items: center;
   gap: 6px;
-
-  padding: 8px 18px;
-
-  border: 1.5px solid #cbd5e1;
-  border-radius: 8px;
-
+  padding: 8px 16px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--r-md);
   background: #fff;
-  color: #475569;
-
+  color: var(--gray-500);
   font-family: 'Kanit', sans-serif;
-  font-size: 0.9rem;
-
+  font-size: 0.88rem;
+  font-weight: 500;
   cursor: pointer;
-
-  /* hover animation */
-  transition: background 0.15s;
+  transition: all 0.15s;
 }
 
-.btn-back:hover { 
-  background: #f1f5f9; 
+.btn-back:hover {
+  background: var(--gray-50);
+  border-color: var(--gray-300);
+  color: var(--gray-700);
 }
 
+.btn-back .material-symbols-outlined { font-size: 18px; }
 
 
 /* ============================================================
    TABS BAR
-   เมนูแท็บ (Admin / Manager / etc)
+   pill style
    ============================================================ */
 
 .tab-bar {
-
   display: flex;
-
-  gap: 10px;
-
-  margin-bottom: 20px;
-
-  /* ถ้าหน้าจอเล็กให้ wrap */
-  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 24px;
+  background: var(--gray-100);
+  padding: 5px;
+  border-radius: var(--r-lg);
+  width: fit-content;
+  flex-wrap: nowrap;
 }
-
-
-/* tab แต่ละปุ่ม */
 
 .tab-item {
-
   display: inline-flex;
-
   align-items: center;
-
-  width: 150px;
-
-  gap: 6px;
-
-  padding: 9px 20px;
-
-  border-radius: 8px;
-
-  border: 1.5px solid #d1d5db;
-
-  background: #fff;
-
-  color: #4b5563;
-
+  gap: 7px;
+  padding: 8px 18px;
+  border-radius: var(--r-md);
+  border: none;
+  background: transparent;
+  color: var(--gray-500);
   font-family: 'Kanit', sans-serif;
-
-  font-size: 0.92rem;
-
+  font-size: 0.9rem;
   font-weight: 500;
-
   text-decoration: none;
-
-  transition: all 0.15s;
+  transition: all 0.18s;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
-
-/* hover tab */
-
-.tab-item:hover { 
-
-  border-color: #3a7d44;
-
-  color: #3a7d44;
-
-  background: #f0fdf4;
-
+.tab-item:hover {
+  background: rgba(255,255,255,0.75);
+  color: var(--blue-700);
 }
-
-
-/* tab ที่ active */
 
 .tab-item.tab-active {
-
-   background: var(--secondary-700);
-
-   border-color: var(--secondary-500);
-
-   color: #fff;
-
-   font-weight: 600;
-
+  background: #fff;
+  color: var(--blue-700);
+  font-weight: 700;
+  box-shadow: var(--shadow-xs);
 }
 
-
-/* icon ใน tab */
-
-.tab-item 
-.material-symbols-outlined { 
-
-  font-size: 24px;
-
-}
-
+.tab-item .material-symbols-outlined { font-size: 20px; }
 
 
 /* ============================================================
    STATS BAR
-   กล่องสรุปจำนวน user
    ============================================================ */
 
 .stats-bar {
-
   display: flex;
-
   gap: 10px;
-
   flex-wrap: wrap;
-
-  margin-bottom: 18px;
+  margin-bottom: 24px;
 }
-
-
-/* chip stat */
 
 .stat-chip {
-
   display: inline-flex;
-
   align-items: center;
-
-  width: 15%;
-
-  gap: 6px;
-
-  padding: 14px 28px;
-
-  border-radius: 16px;
-
-  font-size: 0.85rem;
-
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: var(--r-lg);
+  font-size: 0.84rem;
   font-weight: 600;
-
-  background: #f1f5f9;
-
-  color: #475569;
-
-  border: 1px solid #e2e8f0;
-
+  background: var(--gray-50);
+  color: var(--gray-500);
+  border: 1.5px solid var(--border);
   cursor: pointer;
-
-  transition: box-shadow 0.15s;
+  transition: all 0.15s;
+  flex: 1;
+  min-width: 110px;
 }
 
-
-/* hover chip */
-
-.stat-chip:hover { 
-  box-shadow: 0 0 0 2px #3a7d44; 
+.stat-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xs);
 }
 
+.stat-chip .material-symbols-outlined { font-size: 20px; }
 
-/* icon ใน stat */
-
-.stat-chip 
-.material-symbols-outlined { 
-  font-size: 24px; 
+/* ตัวเลขใน chip */
+.stat-chip span[id^="count"] {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
-
-/* ============================================================
-   ROLE COLORS
-   สีของแต่ละ role
-   ============================================================ */
-
-.chip-admin    { background: #fef3c7; color: #92400e; border-color: #fde68a; }
-.chip-manager  { background: #ede9fe; color: #5b21b6; border-color: #ddd6fe; }
-.chip-sales    { background: #dbeafe; color: #1e40af; border-color: #bfdbfe; }
-.chip-user     { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
-.chip-inactive { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
-
+.chip-admin    { background:#fffbeb; color:#92400e; border-color:#fde68a; }
+.chip-manager  { background:#f5f3ff; color:#5b21b6; border-color:#ddd6fe; }
+.chip-sales    { background:#eff6ff; color:#1e40af; border-color:#bfdbfe; }
+.chip-user     { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; }
+.chip-inactive { background:#fef2f2; color:#991b1b; border-color:#fecaca; }
 
 
 /* ============================================================
    TOOLBAR
-   search + filter
    ============================================================ */
 
 .toolbar-row {
-
   display: flex;
-
-  gap: 12px;
-
+  gap: 10px;
   margin-bottom: 16px;
-
   flex-wrap: wrap;
-
   align-items: center;
 }
 
-
-/* search box wrapper */
-
 .search-wrap {
-
   position: relative;
-
   flex: 1;
-
   min-width: 220px;
 }
 
-
-/* search icon */
-
 .search-ic {
-
   position: absolute;
-
   left: 12px;
-
   top: 50%;
-
   transform: translateY(-50%);
-
-  color: #9ca3af;
-
+  color: var(--gray-400);
   font-size: 20px;
-
   pointer-events: none;
 }
 
-
-/* input search */
-
 .search-wrap input {
-
   width: 100%;
-
   padding: 10px 14px 10px 40px;
-
-  border: 1.5px solid #e5e7eb;
-
-  border-radius: 8px;
-
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
   font-family: 'Kanit', sans-serif;
-
   font-size: 0.92rem;
-
-  background: #f9fafb;
-
-  color: #1e293b;
-
+  background: var(--gray-50);
+  color: var(--text-main);
   box-sizing: border-box;
-
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.2s;
 }
 
-
-/* focus input */
-
 .search-wrap input:focus {
-
   outline: none;
-
-  border-color: #3a7d44;
-
-  box-shadow: 0 0 0 3px rgba(58,125,68,0.12);
-
+  border-color: var(--blue-400);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
   background: #fff;
 }
 
+.filter-group {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-group select {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.88rem;
+  background: var(--gray-50);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 130px;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: var(--blue-400);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+  background: #fff;
+}
 
 
 /* ============================================================
    TABLE
-   ตาราง user
    ============================================================ */
 
 .table-wrap {
-
   overflow-x: auto;
-
-  border-radius: 10px;
-
-  border: 1px solid #e5e7eb;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-xs);
 }
 
-
 .data-table {
-
   width: 100%;
-
   border-collapse: collapse;
-
-  font-size: 0.92rem;
-
+  font-size: 0.9rem;
   font-family: 'Kanit', sans-serif;
 }
 
-
-/* header table */
-
-.data-table thead tr { 
-
-  background: var(--secondary-700); 
-
+/* thead — gradient */
+.data-table thead tr {
+  background: linear-gradient(135deg, #1d4ed8 0%, #0288d1 100%);
 }
 
-
 .data-table th {
-
-  padding: 13px 16px;
-
+  padding: 14px 18px;
   text-align: left;
-
   font-weight: 600;
-
-  color: #fff;
-
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
-
-/* row table */
-
+/* tbody */
 .data-table tbody tr {
-
-  border-bottom: 1px solid #f1f5f9;
-
-  transition: background 0.12s;
+  border-bottom: 1px solid var(--gray-100);
+  transition: background 0.1s;
 }
 
-
-/* hover row */
-
-.data-table tbody tr:hover { 
-
-  background: #f0fdf4; 
-
+.data-table tbody tr:last-child {
+  border-bottom: none;
 }
 
-
-/* cell */
+.data-table tbody tr:hover {
+  background: var(--blue-50);
+}
 
 .data-table td {
-
-  padding: 12px 16px;
-
+  padding: 13px 18px;
   vertical-align: middle;
-
-  color: #374151;
+  color: var(--gray-700);
 }
 
+/* email */
+.email-text {
+  font-size: 0.87rem;
+  color: var(--text-sub);
+}
+
+/* display name */
+.display-name {
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+/* username chip */
+.username-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--r-full);
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  font-family: 'Courier New', monospace;
+}
+
+
+/* ── ROLE BADGE ── */
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: var(--r-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.role-badge .material-symbols-outlined { font-size: 14px; }
+
+.role-admin   { background:#fffbeb; color:#92400e; }
+.role-manager { background:#f5f3ff; color:#6d28d9; }
+.role-sales   { background:#eff6ff; color:#1d4ed8; }
+.role-user    { background:#f0fdf4; color:#15803d; }
+
+
+/* ── STATUS BADGE ── */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: var(--r-full);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.status-active {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-ring);
+}
+
+.status-inactive {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border: 1px solid var(--danger-ring);
+}
+
+
+/* ============================================================
+   ACTION BUTTONS
+   ============================================================ */
+
+.action-group {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 11px;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn-action .material-symbols-outlined { font-size: 15px; }
+
+/* แก้ไข */
+.btn-edit {
+  background: var(--blue-50);
+  color: var(--blue-700);
+  border-color: var(--blue-200);
+}
+.btn-edit:hover {
+  background: var(--blue-100);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(29,78,216,0.15);
+}
+
+/* ระงับ */
+.btn-toggle-inactive {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: #fde68a;
+}
+.btn-toggle-inactive:hover {
+  background: #fef3c7;
+  transform: translateY(-1px);
+}
+
+/* เปิดใช้ */
+.btn-toggle-active {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border-color: var(--success-ring);
+}
+.btn-toggle-active:hover {
+  background: #dcfce7;
+  transform: translateY(-1px);
+}
+
+/* ลบ */
+.btn-del {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border-color: var(--danger-ring);
+}
+.btn-del:hover {
+  background: #fee2e2;
+  transform: translateY(-1px);
+}
+
+
+/* ============================================================
+   STATE CELL
+   ============================================================ */
+
+.state-cell {
+  text-align: center;
+  padding: 48px 16px !important;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+}
+
+
+/* ============================================================
+   FADE ROW
+   ============================================================ */
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-row {
+  animation: fadeSlideIn 0.22s ease both;
+}
 
 
 /* ============================================================
    MODAL
-   popup dialog
    ============================================================ */
 
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.96) translateY(-8px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
 .modal-overlay {
-
   position: fixed;
-
   inset: 0;
-
-  background: rgba(0,0,0,0.45);
-
+  background: rgba(15,23,42,0.5);
+  backdrop-filter: blur(3px);
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   z-index: 1000;
-
   padding: 16px;
 }
 
-
 .modal-box {
-
   background: #fff;
-
-  border-radius: 14px;
-
+  border-radius: var(--r-xl);
   width: 100%;
-
   max-width: 500px;
-
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
-
   animation: modalIn 0.2s ease;
+  border: 1px solid var(--border);
 }
+
+.modal-box-sm { max-width: 400px; }
+
+/* modal header */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--r-sm);
+  background: var(--gray-100);
+  color: var(--gray-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.modal-close:hover {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.modal-close .material-symbols-outlined { font-size: 18px; }
+
+/* modal body */
+.modal-body { padding: 20px 24px; }
+
+.modal-user-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--blue-50);
+  border: 1px solid var(--blue-100);
+  border-radius: var(--r-md);
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  color: var(--blue-700);
+  margin-bottom: 18px;
+  font-weight: 500;
+}
+
+.modal-user-info .material-symbols-outlined { font-size: 17px; }
+
+/* form */
+.form-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.form-row .form-group { flex: 1; }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.form-group:last-child { margin-bottom: 0; }
+
+.form-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.form-group .req { color: #ef4444; margin-left: 2px; }
+
+.form-group input,
+.form-group select {
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.92rem;
+  color: var(--text-main);
+  background: var(--gray-50);
+  transition: all 0.2s;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--blue-400);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+  background: #fff;
+}
+
+/* modal footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 24px 20px;
+  border-top: 1px solid var(--gray-100);
+}
+
+.btn-cancel {
+  padding: 9px 20px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--r-md);
+  background: #fff;
+  color: var(--gray-500);
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-cancel:hover {
+  background: var(--gray-50);
+  border-color: var(--gray-300);
+}
+
+.btn-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 22px;
+  border: none;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+}
+
+.btn-save:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37,99,235,0.35);
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-save .material-symbols-outlined { font-size: 17px; }
+
+.btn-delete-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 22px;
+  border: none;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: #fff;
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 2px 8px rgba(220,38,38,0.3);
+}
+
+.btn-delete-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220,38,38,0.35);
+}
+
+.btn-delete-confirm .material-symbols-outlined { font-size: 17px; }
+
+
+/* ============================================================
+   DELETE WARNING
+   ============================================================ */
+
+.delete-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--warn-bg);
+  border: 1px solid #fde68a;
+  border-radius: var(--r-lg);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.warn-icon {
+  font-size: 30px;
+  color: var(--warn-text);
+  flex-shrink: 0;
+}
+
+.warn-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #92400e;
+  margin-bottom: 5px;
+}
+
+.warn-sub {
+  font-size: 0.85rem;
+  color: var(--blue-700);
+  word-break: break-all;
+  font-weight: 500;
+}
+
+.warn-note {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  margin: 0;
+  line-height: 1.6;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .admin-card { padding: 20px 16px 28px; }
+  .tab-bar    { width: 100%; flex-wrap: wrap; }
+  .form-row   { flex-direction: column; gap: 0; }
+}
+
+@media (max-width: 480px) {
+  .stat-chip { min-width: calc(50% - 5px); flex: none; }
+  .stats-bar { gap: 8px; }
+}
+
+
+/* ============================================================
+   END OF FILE
+   ============================================================ */

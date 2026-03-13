@@ -1,11 +1,10 @@
 // ============================================================
-// admin-users.js
+// admintor.js
 // หน้า Admin สำหรับจัดการผู้ใช้งาน
-// pattern โค้ดเหมือนกับ admin-sales.js
 //
 // หน้าที่หลักของไฟล์นี้
 // - โหลดข้อมูลผู้ใช้จาก Supabase
-// - แสดงตารางผู้ใช้
+// - แสดงตารางผู้ใช้ (ผ่าน renderUsers.js + template)
 // - filter / search
 // - แก้ไขผู้ใช้
 // - เปลี่ยนสถานะ Active / Inactive
@@ -47,6 +46,19 @@ async function protectAdmin() {
 
   if (logoutBtn)
     logoutBtn.addEventListener("click", logout);
+
+  // แสดงชื่อ user ใน header
+  if (window.currentUser) {
+
+    const nameEl = document.getElementById("userName");
+
+    if (nameEl)
+      nameEl.textContent =
+        window.currentUser.display_name ||
+        window.currentUser.username     ||
+        window.currentUser.email        ||
+        "Admin";
+  }
 }
 
 
@@ -54,11 +66,12 @@ async function protectAdmin() {
 // ============================================================
 // goHome()
 // ปุ่มกลับหน้าหลัก
+// ✅ แก้ไข: เปลี่ยนจาก admintor.html → index.html
 // ============================================================
 
 function goHome() {
 
-  window.location.href = "/pages/admin/admintor.html";
+  window.location.href = "/index.html";
 
 }
 
@@ -113,7 +126,7 @@ async function loadUsers() {
   // อัปเดต stat chips
   updateStats(allUsersData);
 
-  // render ตาราง
+  // render ตาราง (ใช้ renderUsers.js + template)
   renderUsers(allUsersData);
 
 }
@@ -152,162 +165,9 @@ function updateStats(data) {
 
 
 // ============================================================
-// renderUsers()
-// สร้าง HTML ตารางผู้ใช้
-// ============================================================
-
-function renderUsers(data) {
-
-  const tbody = document.getElementById("userTable");
-
-  // reset ตาราง
-  tbody.innerHTML = "";
-
-
-  // ถ้าไม่มีข้อมูล
-  if (data.length === 0) {
-
-    tbody.innerHTML =
-      `<tr>
-         <td colspan="6" class="state-cell">
-           ไม่พบผู้ใช้งาน
-         </td>
-       </tr>`;
-
-    return;
-  }
-
-
-  // loop user
-  data.forEach((user, i) => {
-
-    const tr = document.createElement("tr");
-
-    // animation row
-    tr.className = "fade-row";
-    tr.style.animationDelay = `${i * 0.03}s`;
-
-    // เก็บ id
-    tr.dataset.id = user.id;
-
-    // ตรวจสอบสถานะ
-    const isActive =
-      (user.status || "").toLowerCase() === "active";
-
-
-    // HTML row
-    tr.innerHTML = `
-
-      <!-- EMAIL -->
-      <td>
-        <span class="email-text">
-          ${escapeHtml(user.email || "-")}
-        </span>
-      </td>
-
-
-      <!-- USERNAME -->
-      <td>
-        <span class="username-chip">
-          ${escapeHtml(user.username || "-")}
-        </span>
-      </td>
-
-
-      <!-- DISPLAY NAME -->
-      <td>
-        <span class="display-name">
-          ${escapeHtml(user.display_name || "-")}
-        </span>
-      </td>
-
-
-      <!-- ROLE -->
-      <td>
-        ${roleBadge(user.role)}
-      </td>
-
-
-      <!-- STATUS -->
-      <td>
-        <span class="status-badge
-          ${isActive ? "status-active" : "status-inactive"}">
-
-          ${isActive ? "✅ Active" : "🚫 Inactive"}
-
-        </span>
-      </td>
-
-
-      <!-- ACTION BUTTONS -->
-      <td>
-
-        <div class="action-group">
-
-          <!-- EDIT -->
-          <button class="btn-icon btn-edit"
-                  onclick="openEditModal('${user.id}')">
-
-            <span class="material-symbols-outlined">
-              edit
-            </span>
-
-            แก้ไข
-
-          </button>
-
-
-          <!-- TOGGLE STATUS -->
-          <button class="btn-icon
-            ${isActive ? "btn-toggle-inactive" : "btn-toggle-active"}"
-
-            onclick="toggleStatus(
-              '${user.id}',
-              '${isActive ? "Inactive" : "Active"}'
-            )">
-
-            <span class="material-symbols-outlined">
-              ${isActive ? "block" : "check_circle"}
-            </span>
-
-            ${isActive ? "ระงับ" : "เปิดใช้"}
-
-          </button>
-
-
-          <!-- DELETE -->
-          <button class="btn-icon btn-del"
-
-            onclick="openDeleteModal(
-              '${user.id}',
-              '${escapeAttr(user.email || user.username || "")}'
-            )">
-
-            <span class="material-symbols-outlined">
-              delete
-            </span>
-
-            ลบ
-
-          </button>
-
-        </div>
-
-      </td>
-
-    `;
-
-    tbody.appendChild(tr);
-
-  });
-
-}
-
-
-
-// ============================================================
 // roleBadge()
 // สร้าง badge สำหรับ role
+// ใช้ใน renderUsers.js ด้วย (global function)
 // ============================================================
 
 function roleBadge(role) {
@@ -315,26 +175,26 @@ function roleBadge(role) {
   const map = {
 
     admin: {
-      cls: "role-admin",
-      icon: "shield",
+      cls:   "role-admin",
+      icon:  "shield",
       label: "Admin"
     },
 
     manager: {
-      cls: "role-manager",
-      icon: "supervisor_account",
+      cls:   "role-manager",
+      icon:  "supervisor_account",
       label: "Manager"
     },
 
     sales: {
-      cls: "role-sales",
-      icon: "badge",
+      cls:   "role-sales",
+      icon:  "badge",
       label: "Sales"
     },
 
     user: {
-      cls: "role-user",
-      icon: "person",
+      cls:   "role-user",
+      icon:  "person",
       label: "User"
     },
 
@@ -433,4 +293,272 @@ async function toggleStatus(userId, newStatus) {
 
   filterUsers();
 
+}
+
+
+
+// ============================================================
+// ── EDIT MODAL ──────────────────────────────────────────────
+// ============================================================
+
+// ============================================================
+// openEditModal()
+// เปิด modal แก้ไข user และโหลดข้อมูลเข้า form
+// ============================================================
+
+function openEditModal(userId) {
+
+  const user = allUsersData.find(u => u.id === userId);
+
+  if (!user) return;
+
+  // เก็บ id ใน hidden input
+  document.getElementById("editUserId").value = userId;
+
+  // แสดงอีเมลใน header modal
+  document.getElementById("modalUserInfo").innerHTML = `
+    <span class="material-symbols-outlined">person</span>
+    ${escapeHtml(user.email || "-")}
+  `;
+
+  // กรอกข้อมูลเดิมเข้า form
+  document.getElementById("editUsername").value    = user.username     || "";
+  document.getElementById("editDisplayName").value = user.display_name || "";
+  document.getElementById("editRole").value        = user.role         || "user";
+  document.getElementById("editStatus").value      = user.status       || "Active";
+  document.getElementById("editArea").value        = user.area         || "";
+
+  // เปิด modal
+  document.getElementById("editModal").style.display = "flex";
+
+}
+
+
+
+// ============================================================
+// closeEditModal()
+// ปิด modal แก้ไข
+// ============================================================
+
+function closeEditModal() {
+
+  document.getElementById("editModal").style.display = "none";
+
+  // reset ปุ่ม save กลับเป็นปกติ
+  const btn = document.getElementById("saveBtn");
+
+  btn.disabled = false;
+
+  btn.innerHTML = `
+    <span class="material-symbols-outlined">save</span>
+    บันทึก
+  `;
+
+}
+
+
+
+// ============================================================
+// saveUser()
+// บันทึกการแก้ไข user ลง Supabase
+// ============================================================
+
+async function saveUser() {
+
+  const userId      = document.getElementById("editUserId").value;
+  const username    = document.getElementById("editUsername").value.trim();
+  const displayName = document.getElementById("editDisplayName").value.trim();
+  const role        = document.getElementById("editRole").value;
+  const status      = document.getElementById("editStatus").value;
+  const area        = document.getElementById("editArea").value.trim();
+
+  // validation เบื้องต้น
+  if (!role || !status) {
+    alert("กรุณาเลือก Role และ สถานะ");
+    return;
+  }
+
+  // disable ปุ่มกันกด 2 ครั้ง
+  const btn = document.getElementById("saveBtn");
+
+  btn.disabled = true;
+
+  btn.innerHTML = `
+    <span class="material-symbols-outlined">hourglass_top</span>
+    กำลังบันทึก...
+  `;
+
+
+  const { error } = await supabaseClient
+    .from("profiles")
+    .update({
+      username:     username     || null,
+      display_name: displayName  || null,
+      role,
+      status,
+      area:         area         || null,
+    })
+    .eq("id", userId);
+
+
+  if (error) {
+
+    alert("บันทึกไม่สำเร็จ: " + error.message);
+    console.error("saveUser error:", error);
+
+    btn.disabled = false;
+
+    btn.innerHTML = `
+      <span class="material-symbols-outlined">save</span>
+      บันทึก
+    `;
+
+    return;
+  }
+
+  // อัปเดต local cache
+  const user = allUsersData.find(u => u.id === userId);
+
+  if (user) {
+    user.username     = username     || null;
+    user.display_name = displayName  || null;
+    user.role         = role;
+    user.status       = status;
+    user.area         = area         || null;
+  }
+
+  updateStats(allUsersData);
+
+  filterUsers();
+
+  closeEditModal();
+
+}
+
+
+
+// ============================================================
+// ── DELETE MODAL ─────────────────────────────────────────────
+// ============================================================
+
+// ============================================================
+// openDeleteModal()
+// เปิด modal ยืนยันการลบ user
+// ============================================================
+
+function openDeleteModal(userId, label) {
+
+  deleteTargetId = userId;
+
+  document.getElementById("deleteUserLabel").textContent =
+    label || userId;
+
+  document.getElementById("deleteModal").style.display = "flex";
+
+}
+
+
+
+// ============================================================
+// closeDeleteModal()
+// ปิด modal ยืนยันลบ และ reset state
+// ============================================================
+
+function closeDeleteModal() {
+
+  deleteTargetId = null;
+
+  document.getElementById("deleteModal").style.display = "none";
+
+}
+
+
+
+// ============================================================
+// confirmDelete()
+// ลบ profile user ออกจาก Supabase
+// หมายเหตุ: ลบเฉพาะ profile ไม่ได้ลบ Auth account
+// ============================================================
+
+async function confirmDelete() {
+
+  if (!deleteTargetId) return;
+
+  const { error } = await supabaseClient
+    .from("profiles")
+    .delete()
+    .eq("id", deleteTargetId);
+
+  if (error) {
+
+    alert("ลบไม่สำเร็จ: " + error.message);
+    console.error("confirmDelete error:", error);
+
+    return;
+  }
+
+  // ลบออกจาก local cache
+  allUsersData =
+    allUsersData.filter(u => u.id !== deleteTargetId);
+
+  updateStats(allUsersData);
+
+  filterUsers();
+
+  closeDeleteModal();
+
+}
+
+
+
+// ============================================================
+// INIT PAGE
+// เริ่มทำงานเมื่อหน้าเว็บโหลดเสร็จ
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+  await protectAdmin();
+
+  await loadUsers();
+
+});
+
+
+
+// ============================================================
+// ── UTILITIES ───────────────────────────────────────────────
+// ============================================================
+
+// ============================================================
+// escapeHtml()
+// ป้องกัน XSS ก่อนแสดงผลใน HTML
+// ============================================================
+
+function escapeHtml(text) {
+
+  if (!text) return "";
+
+  return text
+    .replace(/&/g,  "&amp;")
+    .replace(/</g,  "&lt;")
+    .replace(/>/g,  "&gt;")
+    .replace(/"/g,  "&quot;")
+    .replace(/'/g,  "&#039;");
+}
+
+
+
+// ============================================================
+// escapeAttr()
+// ป้องกันปัญหาใน HTML attribute
+// ============================================================
+
+function escapeAttr(text) {
+
+  if (!text) return "";
+
+  return text
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }

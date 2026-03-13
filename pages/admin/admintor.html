@@ -45,6 +45,7 @@
 
   <!-- CSS เฉพาะหน้า Admin User -->
   <link rel="stylesheet" href="/css/pages/admin/admintor.css">
+  
 
 </head>
 
@@ -624,6 +625,107 @@
   </div>
 
 
+  <!-- ============================================================
+     USER ROW TEMPLATE  
+     JS จะ clone template นี้แล้วเติมข้อมูลลงไป
+     ต้องการแก้ layout / สี / icon → แก้ใน template นี้ได้เลย
+     ไม่ต้องแตะ admintor.js
+     ============================================================ -->
+
+<template id="tmpl-user-row">
+
+  <tr class="fade-row">
+
+    <!-- EMAIL -->
+    <td>
+      <span class="email-text"
+            data-field="email">
+      </span>
+    </td>
+
+
+    <!-- USERNAME -->
+    <td>
+      <span class="username-chip"
+            data-field="username">
+      </span>
+    </td>
+
+
+    <!-- DISPLAY NAME -->
+    <td>
+      <span class="display-name"
+            data-field="display_name">
+      </span>
+    </td>
+
+
+    <!-- ROLE -->
+    <td data-field="role-badge">
+      <!-- JS จะ inject roleBadge() ตรงนี้ -->
+    </td>
+
+
+    <!-- STATUS -->
+    <td>
+      <span class="status-badge"
+            data-field="status-badge">
+        <!-- JS จะใส่ text Active/Inactive -->
+      </span>
+    </td>
+
+
+    <!-- ACTION BUTTONS -->
+    <td>
+
+      <div class="action-group">
+
+        <!-- ── EDIT ────────────────────────────── -->
+        <button class="btn-action btn-edit"
+                data-action="edit">
+
+          <span class="material-symbols-outlined">
+            edit
+          </span>
+
+          แก้ไข
+
+        </button>
+
+
+        <!-- ── TOGGLE STATUS ───────────────────── -->
+        <button class="btn-action"
+                data-action="toggle">
+
+          <span class="material-symbols-outlined"
+                data-field="toggle-icon">
+          </span>
+
+          <span data-field="toggle-label"></span>
+
+        </button>
+
+
+        <!-- ── DELETE ─────────────────────────── -->
+        <button class="btn-action btn-del"
+                data-action="delete">
+
+          <span class="material-symbols-outlined">
+            delete
+          </span>
+
+          ลบ
+
+        </button>
+
+      </div>
+
+    </td>
+
+  </tr>
+
+</template>
+
 
   <!-- =====================================================
        JAVASCRIPT FILES
@@ -639,6 +741,7 @@
   <script src="/js/core/auth.js"></script>
 
   <!-- script ของหน้า admin user -->
+  <script src="/js/pages/admin/renderUsers.js"></script>
   <script src="/js/pages/admin/admintor.js"></script>
 
 </body>
