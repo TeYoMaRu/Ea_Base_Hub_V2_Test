@@ -3,6 +3,78 @@
    ใช้ design system เดียวกับ adminSales.css (เขียว #3a7d44)
    ============================================================ */
 
+   /* ============================================================
+   VARIABLES
+   ============================================================ */
+
+:root {
+
+  /* ── Blue palette ── */
+  --blue-50:  #eff6ff;
+  --blue-100: #dbeafe;
+  --blue-200: #bfdbfe;
+  --blue-400: #60a5fa;
+  --blue-500: #3b82f6;
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+  --blue-800: #1e40af;
+  --blue-900: #1e3a8a;
+
+  /* header (คงสีเดิม) */
+  --header-bg:    #1c86c8;
+  --header-blue3: #044cbe;
+
+  /* secondary (table header / tab active) */
+  --secondary-700: #0288d1;
+  --secondary-500: #03a9f4;
+  --secondary-900: #01579b;
+
+  /* ── Neutral ── */
+  --gray-50:  #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-700: #374151;
+  --gray-900: #0f172a;
+
+  /* ── Text ── */
+  --text-main: #1e293b;
+  --text-sub:  #64748b;
+  --text-soft: #94a3b8;
+
+  /* ── Semantic ── */
+  --success-bg:   #f0fdf4;
+  --success-text: #15803d;
+  --success-ring: #86efac;
+
+  --danger-bg:    #fef2f2;
+  --danger-text:  #dc2626;
+  --danger-ring:  #fca5a5;
+
+  --warn-bg:   #fffbeb;
+  --warn-text: #d97706;
+
+  /* ── Surface ── */
+  --bg-page: #f0f4f8;
+  --bg-card: #ffffff;
+  --border:  #e2e8f0;
+
+  /* ── Radius ── */
+  --r-sm:  6px;
+  --r-md:  10px;
+  --r-lg:  14px;
+  --r-xl:  20px;
+  --r-full: 9999px;
+
+  /* ── Shadow ── */
+  --shadow-xs: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+}
+
+
 /* ── Page Wrapper ───────────────────────────────────────── */
 .page-wrapper {
   min-height: calc(100vh - 70px);
@@ -125,8 +197,8 @@
 }
 
 .selector-label .material-symbols-outlined {
-  font-size: 20px;
-  color: #3a7d44;
+  font-size: 24px;
+  color: var(--blue-600);
 }
 
 .selector-row select {
@@ -151,7 +223,7 @@
 
 .selector-row select:focus {
   outline: none;
-  border-color: #3a7d44;
+  border-color:var(--blue-500);
   box-shadow: 0 0 0 3px rgba(58,125,68,0.12);
   background-color: #fff;
 }
@@ -205,7 +277,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: #3a7d44;
+  background: linear-gradient(135deg, #1d4ed8 0%, #0288d1 100%);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -219,7 +291,7 @@
 }
 
 .btn-add:hover {
-  background: #2d6435;
+  background: var(--secondary-700);
   transform: translateY(-1px);
 }
 
@@ -238,8 +310,8 @@
 }
 
 .shop-count-bar .material-symbols-outlined {
-  font-size: 18px;
-  color: #3a7d44;
+  font-size: 24px;
+  color: var(--blue-600);
 }
 
 /* ── Empty State ────────────────────────────────────────── */
@@ -451,7 +523,7 @@
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #3a7d44;
+  border-color: var(--blue-500);
   box-shadow: 0 0 0 3px rgba(58,125,68,0.12);
   background: #fff;
 }

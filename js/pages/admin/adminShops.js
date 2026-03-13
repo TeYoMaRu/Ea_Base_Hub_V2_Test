@@ -125,8 +125,8 @@ function renderShops(shops) {
 
   const tbody = shops.map((shop, i) => `
     <tr class="fade-row" style="animation-delay:${i * 0.04}s">
+    <td><span class="shop-code-badge">${escapeHtml(shop.shop_code || "-")}</span></td>
       <td><span class="shop-name-text">${escapeHtml(shop.shop_name)}</span></td>
-      <td><span class="shop-code-badge">${escapeHtml(shop.shop_code || "-")}</span></td>
       <td>
         ${shop.province
           ? `<span class="province-badge"><span class="material-symbols-outlined" style="font-size:13px;vertical-align:middle">location_on</span> ${escapeHtml(shop.province)}</span>`
@@ -160,8 +160,8 @@ function renderShops(shops) {
       <table class="data-table">
         <thead>
           <tr>
-            <th>ชื่อร้านค้า</th>
-            <th>รหัสร้าน</th>
+          <th>รหัสร้าน</th>
+          <th>ชื่อร้านค้า</th>
             <th>จังหวัด</th>
             <th>ดำเนินการ</th>
           </tr>
