@@ -1,16 +1,17 @@
 // /js/services/lineNotify.js
-// =====================================================
-// เรียก Supabase Edge Function เพื่อส่ง LINE notify
-// =====================================================
+
+const SUPABASE_URL      = "https://vhazgytcfvjhhikiqpwm.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoYXpneXRjZnZqaGhpa2lxcHdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NjA1MjgsImV4cCI6MjA4NjIzNjUyOH0.wHHUPop0xMrUgX6X8Jkk-fahVfIMW-iYx4NT0zg5lxM";
 
 export async function sendLineNotify(data) {
   try {
     const res = await fetch(
-      "https://vhazgytcfvjhihkiqpwm.supabase.co/functions/v1/send-line-notify",
+      `${SUPABASE_URL}/functions/v1/send-line-notify`,
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type":  "application/json",
+          "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify(data),
       }
@@ -25,8 +26,7 @@ export async function sendLineNotify(data) {
 
     return result;
   } catch (err) {
-    // log แต่ไม่ throw ออกไป — ไม่ block UI ถ้า notify ล้มเหลว
     console.error("❌ sendLineNotify failed:", err.message);
-    throw err; // ให้ caller จัดการเอง (formClaim.js ใช้ .catch() อยู่แล้ว)
+    throw err;
   }
 }

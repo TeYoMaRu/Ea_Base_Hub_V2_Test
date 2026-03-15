@@ -676,10 +676,7 @@ async function uploadMediaFiles(claimId) {
 
     const { error } = await supabaseClient.storage
       .from("claim-media")
-      .upload(filePath, file, {
-        upsert: true,
-        contentType: file.type || "image/jpeg", // ระบุ content-type ให้ LINE แสดงรูปได้
-      });
+      .upload(filePath, file, { upsert: true });
 
     if (error) { console.error(`❌ Upload ${folder} error:`, error); return null; }
 
@@ -919,34 +916,22 @@ window.submitClaim = async function (draftId = null) {
         .from("claims").select("*").eq("id", draftId).single();
       if (fetchErr) throw fetchErr;
 
-      // อัปโหลดรูปที่ค้างใน form (ถ้ามี) แล้ว merge กับรูปเดิมใน draft
-      const newMediaUrls = await uploadMediaFiles(draftId);
-      const allMediaUrls = [...(draft.media_urls ?? []), ...newMediaUrls];
-
-      // Update status → submitted + media_urls ล่าสุด
+      // Update status → submitted
       const { error } = await supabaseClient
         .from("claims")
-        .update({
-          status:     "submitted",
-          media_urls: allMediaUrls,
-          updated_at: new Date().toISOString(),
-        })
+        .update({ status: "submitted", updated_at: new Date().toISOString() })
         .eq("id", draftId);
       if (error) throw error;
 
       showToast(`ส่งเคลมสำเร็จ! 🎉\n${draft.product}`);
       await loadDrafts();
 
-      // Line Notify พร้อมรูปครบ
+      // Line Notify
       sendLineNotify({
-        claimId:    draftId,
-        shop:       draft.customer,
-        product:    draft.product,
-        qty:        draft.qty,
-        claimTypes: draft.claim_types ?? [],
-        detail:     draft.detail      ?? "",
-        mediaUrls:  allMediaUrls,
-        sales:      window.currentUser.display_name || window.currentUser.full_name,
+        shop:    draft.customer,
+        product: draft.product,
+        qty:     draft.qty,
+        sales:   window.currentUser.display_name || window.currentUser.full_name,
       }).catch((e) => console.warn("⚠️ Line Notify:", e));
 
     } catch (err) {
@@ -999,17 +984,12 @@ window.submitClaim = async function (draftId = null) {
       await supabaseClient.from("claims").update({ media_urls: merged }).eq("id", claimId);
     }
 
-    // ส่ง Line Notify ก่อน clearForm — ใช้ข้อมูลที่มีอยู่แล้วทันที
-    notifyPayload.claimId    = claimId;
-    notifyPayload.mediaUrls  = mediaUrls;                    // จาก uploadMediaFiles() ที่เพิ่ง upload
-    notifyPayload.claimTypes = getSelectedClaimTypes();
-    notifyPayload.detail     = document.getElementById("detail").value ?? "";
-    sendLineNotify(notifyPayload).catch((e) => console.warn("⚠️ Line Notify:", e));
-
     window.currentDraftId = null;
     showToast("ส่งเคลมสำเร็จ! 🎉");
     clearForm();
     await loadDrafts();
+
+    sendLineNotify(notifyPayload).catch((e) => console.warn("⚠️ Line Notify:", e));
 
   } catch (err) {
     console.error("❌ Error submitting claim:", err);
