@@ -3,21 +3,19 @@
   <head>
     <!-- กำหนด character encoding เป็น UTF-8 เพื่อรองรับภาษาไทย -->
     <meta charset="UTF-8" />
-
     <!-- กำหนดให้หน้าเว็บแสดงผลได้ดีบนมือถือ (responsive) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <!-- ชื่อหน้าเว็บที่แสดงบน tab เบราว์เซอร์ -->
     <title>Forms Hub</title>
 
     <!-- นำเข้า Google Material Icons สำหรับใช้ไอคอนต่างๆ -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600" rel="stylesheet"/>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Kanit&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet"/>
 
     <!-- เชื่อมโยงไฟล์ CSS ภายนอก -->
+    <link rel="stylesheet" href="/css/base/layout.css">
     <link rel="stylesheet" href="/css/pages/forms/formHub.css" />
   </head>
 
@@ -47,20 +45,11 @@
        NAVIGATION SECTION (ส่วนเมนูนำทาง)
        แสดงลิงก์ไปยังหน้าต่างๆ ในระบบ
        ===================================================== -->
-    <nav class="app-nav">
-      <!-- เมนูหน้าแรก -->
-      <a href="/pages/index.html">หน้าแรก</a>
-
-      <!-- เมนูรายงานเยี่ยมร้านค้า -->
-      <a href="/pages/reports/report.html">รายงานเยี่ยมร้านค้า</a>
-
-      <!-- เมนูแจ้งเคลมสินค้า -->
-      <a href="/pages/forms/formClaim.html">แจ้งเคลมสินค้า</a>
-      
-      <!-- เมนู FormsHub (หน้าปัจจุบัน - ใช้ class="active") -->
-      <a href="/pages/forms/formHub.html" class="active">แบบฟอร์ม</a>
-
-      <!-- <button id="logoutBtn" class="logout-btn">Logout</button> -->
+    <nav class="app-nav">      
+      <a href="/pages/index.html">หน้าแรก</a>      
+      <a href="/pages/reports/report.html">รายงานเยี่ยมร้านค้า</a>    
+      <a href="/pages/forms/formClaim.html">แจ้งเคลมสินค้า</a> 
+      <a href="/pages/forms/formHub.html" class="active">แบบฟอร์ม</a>    
     </nav>
 
     <!-- =====================================================
@@ -68,13 +57,9 @@
        ===================================================== -->
       <div class="container">
        <div class="page-header">
-
         <!-- ชื่อหน้า -->
         <h1>📋 Forms Hub</h1>
-
-        <!-- คำอธิบายสั้น ๆ -->
         <p>เลือกแบบฟอร์มที่ต้องการใช้งาน</p>
-
       </div>
 
       <!-- ===================================================== -->
