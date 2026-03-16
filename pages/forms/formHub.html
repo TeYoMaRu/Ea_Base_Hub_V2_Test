@@ -11,14 +11,14 @@
     <title>Forms Hub</title>
 
     <!-- นำเข้า Google Material Icons สำหรับใช้ไอคอนต่างๆ -->
-    <<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600" rel="stylesheet"/>
     <link
       href="https://fonts.googleapis.com/css2?family=Kanit&display=swap"
       rel="stylesheet"
     />
 
     <!-- เชื่อมโยงไฟล์ CSS ภายนอก -->
-    <link rel="stylesheet" href="css/formHub.css" />
+    <link rel="stylesheet" href="/css/pages/forms/formHub.css" />
   </head>
 
   <body>
@@ -26,31 +26,22 @@
        HEADER SECTION (ส่วนหัวเว็บไซต์)
        แสดงโลโก้และชื่อผู้ใช้งาน
        ===================================================== -->
-    <header class="app-header">
-      <!-- ส่วนโลโก้และชื่อระบบ -->
-      <div class="logo">
-        <div class="logo-circle">
-        <!-- รูปโลโก้ (ถ้ามี) -->
-        <img src="assets/icons/icon-192.png" alt="logo">
-        </div>
-        <!-- ชื่อระบบ -->
-        <h2>EABaseHub</h2>
+     <header class="app-header">
+    <div class="logo">
+      <div class="logo-circle">
+        <img src="/assets/icons/icon-192.png" alt="logo">
       </div>
+      <h2>EABaseHub</h2>
+    </div>
+
+    <div class="user-box">
+      <div class="user-avatar" id="userAvatar">👤</div>
+      <div class="user-info">
+        <div class="user-name" id="userName">กำลังโหลด...</div>
       </div>
-      
-
-      <!-- แสดงชื่อผู้ใช้งาน (JavaScript สามารถเปลี่ยนค่านี้ได้ภายหลัง) -->
-      <div class="user-box">
-        <div class="user-avatar" id="userAvatar">👤</div>
-
-        <div class="user-info">
-          <div class="user-name" id="userName">กำลังโหลด...</div>
-          <!-- <div class="user-role" id="userRole"></div> -->
-        </div>
-
-        <button id="logoutBtn" class="logout-btn">ออกจากระบบ</button>
-      </div>
-    </header>
+      <button id="logoutBtn" class="logout-btn">ออกจากระบบ</button>
+    </div>
+  </header>
 
     <!-- =====================================================
        NAVIGATION SECTION (ส่วนเมนูนำทาง)
@@ -58,16 +49,16 @@
        ===================================================== -->
     <nav class="app-nav">
       <!-- เมนูหน้าแรก -->
-      <a href="index.html">หน้าแรก</a>
+      <a href="/pages/index.html">หน้าแรก</a>
 
       <!-- เมนูรายงานเยี่ยมร้านค้า -->
-      <a href="report.html">รายงานเยี่ยมร้านค้า</a>
+      <a href="/pages/reports/report.html">รายงานเยี่ยมร้านค้า</a>
 
       <!-- เมนูแจ้งเคลมสินค้า -->
-      <a href="formClaim.html">แจ้งเคลมสินค้า</a>
+      <a href="/pages/forms/formClaim.html">แจ้งเคลมสินค้า</a>
       
       <!-- เมนู FormsHub (หน้าปัจจุบัน - ใช้ class="active") -->
-      <a href="formsHub.html" class="active">แบบฟอร์ม</a>
+      <a href="/pages/forms/formHub.html" class="active">แบบฟอร์ม</a>
 
       <!-- <button id="logoutBtn" class="logout-btn">Logout</button> -->
     </nav>
@@ -75,7 +66,8 @@
     <!-- =====================================================
        MAIN CONTENT (เนื้อหาหลักของหน้า)
        ===================================================== -->
-       <header class="page-header">
+      <div class="container">
+       <div class="page-header">
 
         <!-- ชื่อหน้า -->
         <h1>📋 Forms Hub</h1>
@@ -83,12 +75,11 @@
         <!-- คำอธิบายสั้น ๆ -->
         <p>เลือกแบบฟอร์มที่ต้องการใช้งาน</p>
 
-      </header>
+      </div>
 
       <!-- ===================================================== -->
       <!-- MAIN CONTENT CONTAINER                                 -->
       <!-- ===================================================== -->
-      <main class="container">
   
 
         <!-- =====================================================
@@ -135,8 +126,8 @@
 
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/core/supabaseClient.js"></script>
-    <script src="js/core/auth.js"></script>
-    <script src="js/formHub.js"></script>
+    <script src="/js/core/supabaseClient.js"></script>
+    <script src="/js/core/auth.js"></script>
+    <script src="/js/pages/forms/formHub.js"></script>
   </body>
 </html>

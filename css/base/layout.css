@@ -1,0 +1,135 @@
+/* =====================================================
+   GLOBAL LAYOUT (ใช้ทุกหน้า)
+   ===================================================== */
+
+:root{
+  --primary:#0d9488;
+  --primary-dark:#0f766e;
+  --primary-xdark:#115e59;
+
+  --bg-base:#f0fdfa;
+  --bg-card:#ffffff;
+
+  --border:#99f6e4;
+  --radius-md:12px;
+}
+
+*,
+*::before,
+*::after{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:'Kanit',sans-serif;
+  background:var(--bg-base);
+}
+
+/* ================= HEADER ================= */
+
+.app-header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  height:64px;
+  padding:10px 24px;
+
+  background:linear-gradient(135deg,var(--primary-dark),var(--primary-xdark));
+
+  box-shadow:0 2px 12px rgba(13,148,136,.3);
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logo-circle{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.logo-circle img{
+  width:65%;
+}
+
+/* ================= USER ================= */
+
+.user-box{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.user-avatar{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:var(--primary);
+  color:#fff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.logout-btn{
+  padding:4px 10px;
+  border:none;
+  border-radius:16px;
+  background:#fff;
+  color:var(--primary-dark);
+  font-size:12px;
+  cursor:pointer;
+}
+
+/* ================= NAV ================= */
+
+.app-nav{
+  position:sticky;
+  top:64px;
+  z-index:999;
+
+  background:#f0f0f0;
+  border-bottom:1px solid #ddd;
+
+  padding:8px 16px;
+
+  display:flex;
+  gap:8px;
+
+  overflow-x:auto;
+}
+
+.app-nav a{
+  padding:6px 12px;
+  border-radius:6px;
+  font-size:13px;
+  white-space:nowrap;
+}
+
+.app-nav a.active{
+  background:#1976d2;
+  color:#fff;
+}
+
+/* ================= CONTAINER ================= */
+
+.container{
+  max-width:960px;
+  margin:auto;
+  padding:20px;
+}

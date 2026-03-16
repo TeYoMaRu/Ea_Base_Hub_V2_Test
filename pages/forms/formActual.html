@@ -7,22 +7,22 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
-  <link rel="stylesheet" href="css/formActual.css">
-  <link rel="icon" href="assets/icons/icon-192.png">
+  <link rel="stylesheet" href="/css/pages/forms/formActual.css">
+  <link rel="icon" href="/assets/icons/icon-192.png">
 </head>
 <body>
 <div class="layout">
 
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="logo-circle"><img src="assets/icons/icon-192.png" alt="logo"></div>
+      <div class="logo-circle"><img src="/assets/icons/icon-192.png" alt="logo"></div>
       <span class="logo-text">EABaseHub</span>
     </div>
     <nav class="sidebar-menu">
-      <a href="index.html"><span class="material-symbols-outlined">home</span>หน้าแรก</a>
-      <a href="report.html"><span class="material-symbols-outlined">assignment</span>รายงานเยี่ยมร้านค้า</a>
-      <a href="formPlan.html"><span class="material-symbols-outlined">map</span>ฟอร์ม ๑ แผนการเดินทาง</a>
-      <a href="formActual.html" class="active"><span class="material-symbols-outlined">check_circle</span>ฟอร์ม ๒ เคลียร์ค่าใช้จ่าย</a>
+      <a href="/pages/index.html"><span class="material-symbols-outlined">home</span>หน้าแรก</a>
+      <a href="/pages/reports/report.html"><span class="material-symbols-outlined">assignment</span>รายงานเยี่ยมร้านค้า</a>
+      <a href="/pages/forms/formPlan.html"><span class="material-symbols-outlined">map</span>ฟอร์ม ๑ แผนการเดินทาง</a>
+      <a href="/pages/forms/formActual.html" class="active"><span class="material-symbols-outlined">check_circle</span>ฟอร์ม ๒ เคลียร์ค่าใช้จ่าย</a>
     </nav>
     <div class="sidebar-logout">
       <span id="sidebarEmail" class="sidebar-email"></span>
@@ -135,8 +135,8 @@
   </div>
 </div>
 
-<script src="js/core/supabaseClient.js"></script>
-<script src="js/core/auth.js"></script>
-<script src="js/formActual.js"></script>
+<script src="/js/core/supabaseClient.js"></script>
+<script src="/js/core/auth.js"></script>
+<script src="/js/pages/forms/formActual.js"></script>
 </body>
 </html>

@@ -68,7 +68,7 @@ if (loginForm) {
       // รอสักครู่เพื่อให้ user เห็นข้อความ
       setTimeout(() => {
         // redirect ไปหน้า index
-        window.location.href = "index.html";
+        window.location.href = "/pages/index.html";
       }, 500);
 
     } catch (error) {
@@ -168,14 +168,14 @@ async function protectPage(allowedRoles = []) {
     // ตรวจสอบ session error
     if (sessionError) {
       console.error("❌ Session error:", sessionError);
-      window.location.href = "login.html";
+      window.location.href = "/pages/auth/login.html";
       return;
     }
 
     // ถ้าไม่มี session แปลว่ายังไม่ได้ login
     if (!session) {
       console.warn("⚠️ No active session");
-      window.location.href = "login.html";
+      window.location.href = "/pages/auth/login.html";
       return;
     }
 
@@ -192,13 +192,13 @@ async function protectPage(allowedRoles = []) {
     // ถ้า query error หรือไม่พบ profile
     if (profileError) {
       console.error("❌ Profile error:", profileError);
-      window.location.href = "login.html";
+      window.location.href = "/pages/auth/login.html";
       return;
     }
 
     if (!profile) {
       console.error("❌ Profile not found");
-      window.location.href = "login.html";
+      window.location.href = "/pages/auth/login.html";
       return;
     }
 
@@ -216,7 +216,7 @@ async function protectPage(allowedRoles = []) {
       alert("บัญชีของคุณถูกระงับการใช้งาน");
 
       // redirect ไป login
-      window.location.href = "login.html";
+      window.location.href = "/pages/auth/login.html";
       return;
     }
 
@@ -231,7 +231,7 @@ async function protectPage(allowedRoles = []) {
         alert("คุณไม่มีสิทธิ์เข้าถึงหน้านี้");
 
         // redirect ไปหน้า index หรือ login
-        window.location.href = "index.html";
+        window.location.href = "/pages/auth/login.html";
         return;
       }
     }
@@ -245,7 +245,7 @@ async function protectPage(allowedRoles = []) {
 
   } catch (error) {
     console.error("❌ protectPage error:", error);
-    window.location.href = "login.html";
+    window.location.href = "/pages/auth/login.html";
   }
 }
 
@@ -286,12 +286,12 @@ async function logout() {
     console.log("✅ Logged out successfully");
 
     // redirect กลับหน้า login
-    window.location.href = "login.html";
+    window.location.href = "/pages/auth/login.html";
 
   } catch (error) {
     console.error("❌ Unexpected logout error:", error);
     // ถึงแม้จะเกิด error ก็ redirect ไป login
-    window.location.href = "login.html";
+    window.location.href = "/pages/auth/login.html";
   }
 }
 

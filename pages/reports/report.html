@@ -1,265 +1,199 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <!-- กำหนด character encoding เป็น UTF-8 เพื่อรองรับภาษาไทย -->
   <meta charset="UTF-8">
-  
-  <!-- กำหนดให้หน้าเว็บแสดงผลได้ดีบนมือถือ (responsive) -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- ชื่อหน้าเว็บที่แสดงบน tab เบราว์เซอร์ -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>EABaseHub | รายงานเยี่ยมร้านค้า</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- นำเข้า Google Material Icons สำหรับใช้ไอคอนต่างๆ -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
 
-  <!-- เชื่อมโยงไฟล์ CSS ภายนอก -->
-  <link rel="stylesheet" href="css/report.css">
+  <!-- เปลี่ยนมาใช้ไฟล์ CSS ใหม่ที่มี responsive -->
+  <link rel="stylesheet" href="/css/pages/report/report.css">
 </head>
 
 <body>
 
-  <!-- =====================================================
-       HEADER SECTION (ส่วนหัวเว็บไซต์)
-       แสดงโลโก้และชื่อผู้ใช้งาน
-       ===================================================== -->
+  <!-- HEADER -->
   <header class="app-header">
-      <!-- ส่วนโลโก้และชื่อระบบ -->
-      <div class="logo">
-        <div class="logo-circle">
-        <!-- รูปโลโก้ (ถ้ามี) -->
-        <img src="assets/icons/icon-192.png" alt="logo">
-        </div>
-        <!-- ชื่อระบบ -->
-        <h2>EABaseHub</h2>
+    <div class="logo">
+      <div class="logo-circle">
+        <img src="/assets/icons/icon-192.png" alt="logo">
       </div>
+      <h2>EABaseHub</h2>
+    </div>
+
+    <div class="user-box">
+      <div class="user-avatar" id="userAvatar">👤</div>
+      <div class="user-info">
+        <div class="user-name" id="userName">กำลังโหลด...</div>
       </div>
-      
-
-      <!-- แสดงชื่อผู้ใช้งาน (JavaScript สามารถเปลี่ยนค่านี้ได้ภายหลัง) -->
-      <div class="user-box">
-        <div class="user-avatar" id="userAvatar">👤</div>
-
-        <div class="user-info">
-          <div class="user-name" id="userName">กำลังโหลด...</div>
-          <!-- <div class="user-role" id="userRole"></div> -->
-        </div>
-
-        <button id="logoutBtn" class="logout-btn">ออกจากระบบ</button>
-      </div>
-    </header>
+      <button id="logoutBtn" class="logout-btn">ออกจากระบบ</button>
+    </div>
+  </header>
 
 
-  <!-- =====================================================
-       NAVIGATION SECTION (ส่วนเมนูนำทาง)
-       แสดงลิงก์ไปยังหน้าต่างๆ ในระบบ  (หน้าปัจจุบัน - ใช้ class="active") 
-       ===================================================== -->
+  <!-- NAV -->
   <nav class="app-nav">
-    <!-- เมนูหน้าแรก -->
-    <a href="index.html">หน้าแรก</a>
-    
-    <!-- เมนูรายงานเยี่ยมร้านค้า -->
-    <a href="report.html" class="active">รายงานเยี่ยมร้านค้า</a>
-    
-    <!-- เมนูแจ้งเคลมสินค้า -->
-    <a href="formClaim.html">แจ้งเคลมสินค้า</a>
-    
-    <!-- เมนู FormsHub-->
-    <a href="formHub.html">แบบฟอร์ม</a>
+    <a href="/pages/index.html">หน้าแรก</a>
+    <a href="/pages/reports/report.html" class="active">รายงานเยี่ยมร้านค้า</a>
+    <a href="/pages/forms/formClaim.html">แจ้งเคลมสินค้า</a>
+    <a href="/pages/forms/formHub.html">แบบฟอร์ม</a>
   </nav>
 
 
-<!-- ===================================================== -->
-<!-- PAGE TITLE SECTION                                     -->
-<!-- ===================================================== -->
-<header class="page-header">
-
-  <!-- ชื่อหน้า -->
-  <h1>📋 Report Management</h1>
-
-  <!-- คำอธิบายสั้น ๆ -->
-  <p>กรอกข้อมูล • บันทึก • จัดการ • ส่งออก</p>
-
-</header>
+  <!-- PAGE TITLE -->
+  <header class="page-header">
+    <h1>📋 Report Management</h1>
+    <p>กรอกข้อมูล • บันทึก • จัดการ • ส่งออก</p>
+  </header>
 
 
-<!-- ===================================================== -->
-<!-- MAIN CONTENT CONTAINER                                 -->
-<!-- ===================================================== -->
-<main class="container">
+  <!-- MAIN -->
+  <main class="container">
 
 
-  <!-- ===================================================== -->
-  <!-- SECTION A : FORM INPUT                                -->
-  <!-- ===================================================== -->
-  <div class="card">
+    <!-- SECTION A : FORM INPUT -->
+    <div class="card">
 
-    <h2>📝 กรอกข้อมูลรายงาน</h2>
+      <h2>📝 กรอกข้อมูลรายงาน</h2>
 
-    <!-- Grid สำหรับจัดเรียงช่องกรอก -->
-    <div class="form-grid">
+      <div class="form-grid">
 
-      <!-- วันที่ -->
-      <div class="form-group">
-        <label>วันที่</label>
-        <input type="date" id="reportDate">
+        <div class="form-group">
+          <label>วันที่</label>
+          <input type="date" id="reportDate">
+        </div>
+
+        <div class="form-group">
+          <label>ร้านค้า</label>
+          <select id="shopSelect">
+            <option value="">-- เลือกร้านค้า --</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>สินค้าที่ขายกับร้านนี้</label>
+          <select id="categorySelect">
+            <option value="">-- เลือกหมวด --</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>สินค้า</label>
+          <select id="productSelect">
+            <option value="">-- เลือกสินค้า --</option>
+          </select>
+        </div>
+
+        <div id="dynamicAttributes"></div>
+
+        <div class="form-group">
+          <label>แหล่งที่มา</label>
+          <select id="source">
+            <option>Walk-in</option>
+            <option>LINE</option>
+            <option>Facebook</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>สถานะ</label>
+          <select id="status">
+            <option>เข้าพบลูกค้า</option>
+            <option>รอเข้าพบรอบต่อไป</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>ยอดสั่งซื้อ</label>
+          <input type="number" id="amount">
+        </div>
+
+        <div class="form-group">
+          <label>วันที่ติดตาม</label>
+          <input type="date" id="followupDate">
+        </div>
+
+        <div class="form-group full">
+          <label>รายละเอียด</label>
+          <textarea id="note" rows="5"></textarea>
+        </div>
+
       </div>
 
-      <!-- ร้านค้า -->
-      <div class="form-group">
-        <label>ร้านค้า</label>
-        <select id="shopSelect">
-          <option value="">-- เลือกร้านค้า --</option>
-        </select>
-      </div>
-
-      <!-- หมวดสินค้า -->
-      <div class="form-group">
-        <label>สินค้าที่ขายกับร้านนี้</label>
-        <select id="categorySelect">
-          <option value="">-- เลือกหมวด --</option>
-        </select>
-      </div>
-
-      <!-- สินค้า -->
-      <div class="form-group">
-        <label>สินค้า</label>
-        <select id="productSelect">      
-          <option value="">-- เลือกสินค้า --</option>
-        </select>
-      </div>
-
-      <div id="dynamicAttributes"></div>
-      
-      <!-- แหล่งที่มา -->
-      <div class="form-group">
-        <label>แหล่งที่มา</label>
-        <select id="source">
-          <option>Walk-in</option>
-          <option>LINE</option>
-          <option>Facebook</option>
-        </select>
-      </div>
-
-      <!-- สถานะ -->
-      <div class="form-group">
-        <label>สถานะ</label>
-        <select id="status">
-          <option>เข้าพบลูกค้า</option>
-          <option>รอเข้าพบรอบต่อไป</option>
-        </select>
-      </div>
-
-      <!-- ยอดสั่งซื้อ -->
-      <div class="form-group">
-        <label>ยอดสั่งซื้อ</label>
-        <input type="number" id="amount">
-      </div>
-
-      <!-- วันที่ติดตาม -->
-      <div class="form-group">
-        <label>วันที่ติดตาม</label>
-        <input type="date" id="followupDate">
-      </div>
-
-      <!-- หมายเหตุ -->
-      <div class="form-group full">
-        <label>รายละเอียด</label>
-        <textarea id="note" rows="5"></textarea>
+      <div class="actions">
+        <button class="btn-draft">💾 Save Draft</button>
+        <button class="btn-save" onclick="saveReport()">✅ บันทึก</button>
       </div>
 
     </div>
 
-    <!-- ปุ่มบันทึก -->
-    <div class="actions">
-      <button class="btn-draft">💾 Save Draft</button>
-      <button class="btn-save" onclick="saveReport()">✅ บันทึก</button>
+
+    <!-- SECTION B : RESULT TABLE -->
+    <div class="section">
+
+      <h2>📋 รายการรายงาน</h2>
+
+      <!-- ★ เพิ่ม table-wrapper เพื่อให้ scroll แนวนอนบนมือถือได้ -->
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>วันที่</th>
+              <th>ร้านค้า</th>
+              <th>สถานะ</th>
+              <th>รายละเอียด</th>
+              <th>สินค้า</th>
+              <th>จัดการรายงานของฉัน</th>
+            </tr>
+          </thead>
+          <thead id="reportHead"></thead>
+          <tbody id="reportBody">
+            <tr>
+              <td colspan="6">ยังไม่มีข้อมูล</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
 
-  </div>
 
+    <!-- SECTION C : EXPORT -->
+    <div class="section">
 
-  <!-- ===================================================== -->
-  <!-- SECTION B : RESULT TABLE                              -->
-  <!-- ===================================================== -->
-  <div class="section">
+      <h2>📤 ส่งออกข้อมูล</h2>
 
-    <h2>📋 รายการรายงาน</h2>
+      <div class="actions">
+        <button>Export CSV</button>
+        <button>Export Excel</button>
+        <button>Export PDF</button>
+      </div>
 
-    <table>
-
-      <!-- หัวตาราง -->    
-      <thead>
-        <tr>
-          <th>วันที่</th>
-          <th>ร้านค้า</th>
-          <th>สถานะ</th>
-          <th>รายละเอียด</th>
-          <th>สินค้า</th>
-          <th>จัดการายงานของฉัน</th>
-        </tr>
-      </thead>
-      <thead id="reportHead"></thead>
-
-      <!-- เนื้อหาตาราง (JS จะเติมข้อมูลให้) -->
-      <tbody id="reportBody">
-        <tr>
-          <td colspan="6">ยังไม่มีข้อมูล</td>
-        </tr>
-      </tbody>
-
-    </table>
-
-  </div>
-
-
-  <!-- ===================================================== -->
-  <!-- SECTION C : EXPORT                                    -->
-  <!-- ===================================================== -->
-  <div class="section">
-
-    <h2>📤 ส่งออกข้อมูล</h2>
-
-    <div class="actions">
-      <button>Export CSV</button>
-      <button>Export Excel</button>
-      <button>Export PDF</button>
     </div>
 
-  </div>
-
-</main>
+  </main>
 
 
+  <!-- FOOTER -->
+  <footer class="footer">
+    © 2026 EABaseHub | บันทึกการเยี่ยมร้าค้า
+  </footer>
 
 
-<!-- ===================================================== -->
-<!-- FOOTER                                                 -->
-<!-- ===================================================== -->
-<footer class="footer">
-  © 2026 EABaseHub
-</footer>
+  <!-- SCRIPTS -->
+  <script src="/js/core/supabaseClient.js"></script>
+  <script src="/js/core/auth.js"></script>
+  <script src="/js/core/userService.js"></script>
+  <script src="/js/services/shopService.js"></script>
+  <script src="/js/services/categoryService.js"></script>
+  <script src="/js/services/reportService.js"></script>
+  <script src="/js/pages/report/report.js"></script>
 
-
-<!-- ===================================================== -->
-<!-- SCRIPT SECTION                                         -->
-<!-- ===================================================== -->
-
-
-
-<!-- Core System -->
-<script src="js/core/supabaseClient.js"></script>
-<script src="js/core/auth.js"></script>
-<script src="js/core/userService.js"></script>
-<script src="js/services/shopService.js"></script>
-<script src="js/services/categoryService.js"></script>
-<script src="js/services/reportService.js"></script>
-
-<!-- Page Script -->
-
-<script src="js/report1.js"></script>
 </body>
 </html>

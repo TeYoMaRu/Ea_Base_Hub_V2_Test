@@ -79,7 +79,7 @@ function setupLogout() {
 
     await supabaseClient.auth.signOut();
 
-    window.location.href = "login.html";
+    window.location.href = "/pages/auth/login.html";
 
   });
 

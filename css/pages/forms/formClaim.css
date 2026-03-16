@@ -4,8 +4,6 @@
    Base size: 768px tablet
    ===================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Kanit:wght@400;600;700&display=swap');
-
 /* ================= CSS VARIABLES ================= */
 
 :root {
@@ -60,20 +58,22 @@
   padding: 0;
 }
 
-html {
+/* html {
   font-size: 16px;
   -webkit-tap-highlight-color: transparent;
-}
+} */
 
 body {
-  font-family: 'Sarabun', sans-serif;
-  background: var(--bg-base);
-  color: var(--text-primary);
-  line-height: 1.65;
-  min-height: 100vh;
+  margin: 0;
+  font-family: 'Kanit', sans-serif;
+  background: var(--white);
+  font-size: 14px;
 }
 
-a { text-decoration: none; color: inherit; }
+a {
+  text-decoration: none;
+  color: inherit;
+}
 
 /* ================= STICKY HEADER ================= */
 
@@ -81,10 +81,10 @@ a { text-decoration: none; color: inherit; }
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-xdark) 100%);
-  padding: 0 24px;
-  height: 64px;
   display: flex;
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-xdark) 100%);
+  padding: 10px 24px;
+  height: 64px;  
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 12px rgba(13,148,136,0.3);
@@ -94,125 +94,158 @@ a { text-decoration: none; color: inherit; }
   display: flex;
   align-items: center;
   gap: 12px;
+  font-weight: 400;
+  font-size: 14px;
+  flex-direction: row;
+}
+
+.app-header .logo img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 .logo-circle {
-  width: 42px;
-  height: 42px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  border: 2px solid rgba(255,255,255,0.3);
+  background: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(4px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .logo-circle img {
-  width: 26px;
-  height: 26px;
+  width: 65%;
+  height: 65%;
   object-fit: contain;
-  filter: brightness(0) invert(1);
+  display: block;
 }
 
 .app-header .logo h2 {
-  font-family: 'Kanit', sans-serif;
-  font-size: var(--font-xl);
-  font-weight: 700;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 400;
   color: #fff;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
+
+/* ===== User Box ===== */
 
 .user-box {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 5px;
+  /* flex-shrink: 0; */
 }
 
 .user-avatar {
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+
   border-radius: 50%;
-  background: rgba(255,255,255,0.2);
-  border: 2px solid rgba(255,255,255,0.4);
+  background: var(--primary);
+  color: #fff;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
-  color: white;
+
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  border: 2px solid rgba(255,255,255,0.35);
+
+  flex-shrink: 0;
+}
+
+
+.user-info {
+  display: flex;
+  flex-direction: column;
 }
 
 .user-name {
-  font-size: var(--font-sm);
-  font-weight: 600;
-  color: rgba(255,255,255,0.95);
+  font-weight: 400;
+  font-size: 16px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
 }
 
 .logout-btn {
-  padding: 8px 18px;
-  background: rgba(255,255,255,0.15);
-  border: 1.5px solid rgba(255,255,255,0.35);
-  border-radius: var(--radius-sm);
-  color: #fff;
-  font-size: var(--font-xs);
-  font-weight: 500;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 16px;
+
+  background: #fff;
+  color: var(--primary-dark);
+
+  font-size: 11px;
+  font-weight: 600;
+
   cursor: pointer;
-  font-family: inherit;
-  transition: all 0.2s;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  white-space: nowrap;   /* กันขึ้นบรรทัดใหม่ */
 }
 
 .logout-btn:hover {
-  background: rgba(255,255,255,0.25);
-  border-color: rgba(255,255,255,0.5);
+  background: var(--primary);
+  color: #fff;
+  transform: translateY(-1px);
 }
 
 /* ================= STICKY NAV ================= */
 
 .app-nav {
   position: sticky;
-  top: 64px;
+  top: 60px;
   z-index: 999;
-  background: #fff;
-  border-bottom: 2px solid var(--border);
-  padding: 0 20px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+  padding: 8px 16px;
   display: flex;
-  gap: 4px;
+  gap: 8px;
+  /* Horizontal scroll on small screens */
   overflow-x: auto;
-  scrollbar-width: none;
-  box-shadow: 0 2px 8px rgba(13,148,136,0.08);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
 }
 
-.app-nav::-webkit-scrollbar { display: none; }
+.app-nav::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
 
 .app-nav a {
-  padding: 14px 20px;
-  font-size: var(--font-sm);
-  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
   white-space: nowrap;
-  color: var(--text-muted);
-  border-bottom: 3px solid transparent;
-  transition: all 0.2s;
   flex-shrink: 0;
 }
 
 .app-nav a:hover {
-  color: var(--primary);
-  background: var(--bg-subtle);
+  background: #e0e0e0;
 }
 
 .app-nav a.active {
-  color: var(--primary-dark);
-  font-weight: 700;
-  border-bottom-color: var(--primary);
+  background: #1976d2;
+  color: #fff;
 }
 
-/* ================= PAGE LAYOUT ================= */
-
-.container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 20px 20px 40px;
-}
 
 /* ================= PAGE HEADER ================= */
 
@@ -260,6 +293,13 @@ a { text-decoration: none; color: inherit; }
   position: relative;
   z-index: 1;
   margin: 0;
+}
+/* ================= PAGE LAYOUT ================= */
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px 20px 40px;
 }
 
 /* ================= CARDS ================= */
@@ -715,8 +755,8 @@ button {
   justify-content: center;
   gap: 8px;
   flex: 1;
-  min-width: 160px;
-  min-height: 52px;
+  min-width: 100px;   /*ขนาดปุ่ม logout*/
+  min-height: 32px;   /*ขนาดปุ่ม logout*/
 }
 
 button:hover { transform: translateY(-2px); }
@@ -1039,7 +1079,7 @@ button:disabled {
 /* ================= SCROLLBAR ================= */
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--bg-subtle); border-radius: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-subtle); border-radius: 4px; } */
 ::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
@@ -1123,19 +1163,50 @@ button:disabled {
 
   .container { padding: 12px 12px 32px; }
 
+  /* Header */
   .app-header {
-    padding: 0 14px;
-    height: 56px;
+    padding: 10px 14px;
+    min-height: 56px;
   }
 
-  .app-header .logo h2 { font-size: 17px; }
+  app-header .logo h2 {
+    font-size: 18px;
+  }
   .logo-circle { width: 36px; height: 36px; }
   .logo-circle img { width: 22px; }
 
-  .user-name { display: none; }
+  .user-name {
+    max-width: 80px;
+    font-size: 14px;
+  }
+
+  .logout-btn {
+    padding: 7px 14px;
+    font-size: 12px;
+  }
+
+   /* Nav */
+  .app-nav {
+    top: 56px;
+    padding: 7px 12px;
+    gap: 6px;
+  }
+
+  .app-nav a {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
 
   .page-header { padding: 20px 20px; border-radius: var(--radius-lg); }
-  .page-header h1 { font-size: 20px; }
+  /* Page header */
+  .page-header h1 {
+    font-size: 18px;
+  }
+
+  /* Container */
+  .container {
+    padding: 12px 10px;
+  }
 
   .card, .section-card, .card-cause { padding: 18px 16px; margin-bottom: 14px; }
 
@@ -1167,7 +1238,11 @@ button:disabled {
 
   .actions { flex-direction: column; }
 
-  button { width: 100%; min-width: unset; flex: none; }
+  button { 
+    /* width: 100%; 
+    min-width: unset;  */
+    flex: none; 
+  }
 
   .btn-back { flex: none; }
 
@@ -1181,11 +1256,155 @@ button:disabled {
 
 /* ================= SMALL MOBILE (< 480px) ================= */
 
-@media (max-width: 479px) {
-  .product-grid { grid-template-columns: repeat(2, 1fr); }
-  .claim-grid { grid-template-columns: 1fr; }
-  .upload-grid { grid-template-columns: repeat(2, 1fr); }
-  .logout-btn { padding: 6px 10px; font-size: 11px; }
+/* ---- Mobile: ≤ 480px ---- */
+@media (max-width: 480px) {
+
+  /* Header: ซ่อนชื่อผู้ใช้ เหลือแค่ avatar + logout */
+  .app-header {
+    padding: 8px 12px;
+    min-height: 52px;
+  }
+
+  .app-header .logo h2 {
+    font-size: 16px;
+  }
+
+  .logo-circle {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* ซ่อน user-info (ชื่อ) บนมือถือเล็ก */
+  .user-info {
+    display: none;
+  }
+
+  
+  .logout-btn {
+    padding: 4px;
+    /* font-size: 0; */
+  }
+ 
+  /* Nav */
+  .app-nav {
+    top: 52px;
+    padding: 6px 10px;
+  }
+
+  .app-nav a {
+    font-size: 11px;
+    padding: 5px 9px;
+  }
+
+  /* Page header */
+  .page-header {
+    padding: 14px 12px;
+  }
+
+  .page-header h1 {
+    font-size: 16px;
+  }
+
+  /* Card/Section */
+  .card,
+  .section {
+    padding: 16px 12px;
+    border-radius: 10px;
+  }
+
+  .card h2,
+  .section h2 {
+    font-size: 15px;
+  }
+
+  /* Form grid: 1 คอลัมน์บนมือถือ */
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .form-group.full {
+    grid-column: span 1;
+  }
+
+  #dynamicAttributes {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* ป้องกัน iOS zoom เมื่อ focus */
+    padding: 10px;
+  }
+
+  /* Buttons */
+  .actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .actions button,
+  .btn-draft,
+  .btn-save {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  /* Table: horizontal scroll */
+  .table-wrapper {
+    margin: 0 -4px; /* ขยายออกนิดหน่อย */
+  }
+
+  table {
+    font-size: 12px;
+    min-width: 480px;
+  }
+
+  th,
+  td {
+    padding: 8px 6px;
+  }
+
+  .detail-text {
+    max-width: 90px;
+  }
+
+  /* Export buttons */
+  .section .actions {
+    flex-direction: column;
+  }
+
+  .section .actions button {
+    width: 100%;
+  }
+
+  /* Modal */
+  .modal {
+    padding: 12px;
+    align-items: flex-end; /* slide up from bottom */
+  }
+
+  .modal-content {
+    border-radius: 16px 16px 0 0;
+    padding: 20px 16px;
+    max-height: 85vh;
+  }
+}
+
+/* ---- Very Small: ≤ 360px ---- */
+@media (max-width: 360px) {
+
+  .app-header .logo h2 {
+    display: none; /* ซ่อนชื่อระบบบนจอเล็กมาก */
+  }
+
+  .page-header h1 {
+    font-size: 15px;
+  }
 }
 
 /* ================= PRINT ================= */

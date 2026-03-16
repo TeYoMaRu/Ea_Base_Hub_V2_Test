@@ -3,270 +3,255 @@
    ไฟล์ CSS สำหรับหน้า Forms Report
    ===================================================== */
 
-/* =========================
-   CSS VARIABLES - กำหนดค่าสีและค่าคงที่
-   ========================= */
+/* ================= CSS VARIABLES ================= */
+
 :root {
-  /* สีหลัก */
-  --primary-1:#3FB7AE;
-  --Dark-Teal: #2FA39A;
-  --Light-Mint: #8FD3CD;
-  --primary-500: #4caf50;
-  --primary-700: #388e3c;
-  --primary-900: #1b5e20;
-  
-  --secondary-300: #81d4fa;
-  --secondary-500: #03a9f4;
-  --secondary-700: #0288d1;
-  --secondary-900: #01579b;
-  
-  /* --blue: #5e89ed; */
-  --blue: #bcdbeb;
-  --green1: #03624c;
-  --green2: #030f0f;
-  --green3: #00df82;
-  --green4: #03A791;
-  --text: #01579b;
-  
-  --gray-200: #e0e0e0;
-  --white: #ffffff;
-  
-  /* เงา */
-  --shadow-soft: 0 4px 12px rgba(0,0,0,0.06);
-  --shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
-  
-  /* มุมโค้ง */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
+  --primary:        #0d9488;
+  --primary-light:  #14b8a6;
+  --primary-dark:   #0f766e;
+  --primary-xdark:  #115e59;
+  --accent:         #f59e0b;
+  --accent-light:   #fcd34d;
+  --danger:         #ef4444;
+  --danger-dark:    #dc2626;
+  --success:        #10b981;
+  --info:           #3b82f6;
 
-  /* พื้นหลัง */
-  --bg-A: #f5f9fc;
-  --bg-B: #edffed;
-  --bg-C: #eff4fe;
-  --bg-D: #f7f9fd;
-  --bg-Soft:#E7F4F2;
-  --bg-AB: linear-gradient(180deg,#3FB7AE,#2FA39A);
-  --bg-AC: linear-gradient(135deg, #8FD3CD, #3FB7AE);
+  --bg-base:        #f0fdfa;
+  --bg-card:        #ffffff;
+  --bg-subtle:      #f0fdf4;
+  --bg-muted:       #ccfbf1;
 
-/* ================= BASE STYLES (โครงสร้างพื้นฐาน) ================= */
+  --border:         #99f6e4;
+  --border-strong:  #5eead4;
 
-/* รีเซ็ต box-sizing ให้ทุก element ใช้ border-box 
-   ทำให้การคำนวณขนาดรวม padding และ border ไว้ด้วย */ 
-* { 
-  box-sizing: border-box; 
+  --text-primary:   #134e4a;
+  --text-secondary: #0f766e;
+  --text-muted:     #6b7280;
+  --text-light:     #9ca3af;
+
+  --shadow-sm:      0 1px 4px rgba(13,148,136,0.08);
+  --shadow-md:      0 4px 16px rgba(13,148,136,0.12);
+  --shadow-lg:      0 8px 32px rgba(13,148,136,0.18);
+
+  --radius-sm:      8px;
+  --radius-md:      12px;
+  --radius-lg:      16px;
+  --radius-xl:      20px;
+
+  /* Tablet base: 14px → scale up */
+  --font-xs:    13px;
+  --font-sm:    14px;
+  --font-base:  15px;
+  --font-md:    16px;
+  --font-lg:    18px;
+  --font-xl:    22px;
+  --font-2xl:   26px;
 }
 
-/* สไตล์หลักของ body */
+/* ================= BASE STYLES ================= */
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  margin: 0;                           /* ลบ margin เริ่มต้นของเบราว์เซอร์ */
-  font-family: 'kanit', sans-serif;  /* ใช้ฟอนต์ระบบมาตรฐาน */
-  background:var(--white);                 /* สีพื้นหลังเทาอ่อน */
+  margin: 0;
+  font-family: 'Kanit', sans-serif;
+  background: var(--white);
+  font-size: 14px;
 }
 
-/* ลบขีดเส้นใต้และให้สีเหมือนกับ text ปกติ */
-a { 
-  text-decoration: none; 
-  color: inherit; 
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-
-/* ================= STICKY HEADER (แถบหัวเรื่องแบบติดด้านบน) ================= */
+/* ================= STICKY HEADER ================= */
 
 .app-header {
-  position: sticky;                    /* ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
-  top: 0;                              /* ติดที่ตำแหน่ง top = 0 */
-  z-index: 1000;                       /* ให้อยู่เหนือ element อื่นๆ */
-  display: flex;                       /* ใช้ flexbox layout */
-  justify-content: space-between;      /* กระจายพื้นที่ระหว่าง logo และชื่อผู้ใช้ */
-  align-items: center;                 /* จัดแนวให้อยู่กึ่งกลางแนวตั้ง */
-  padding: 10px 24px;                  /* ช่องว่างด้านในบนล่าง 14px ซ้ายขวา 20px */
-  background: var(--Dark-Teal);                 /* พื้นหลังสีขาว */
-  border-bottom: 1px solid #ddd;       /* เส้นขอบล่างสีเทา */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-xdark) 100%);
+  padding: 10px 24px;
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 12px rgba(13,148,136,0.3);
 }
 
-/* สไตล์สำหรับส่วนโลโก้ */
 .app-header .logo {
-  display: flex;                       /* ใช้ flexbox เพื่อจัดเรียงโลโก้และข้อความ */
-  align-items: center;                 /* จัดให้อยู่กึ่งกลางแนวตั้ง */
-  gap: 12px;                           /* ระยะห่างระหว่างรูปกับข้อความ */
-  font-weight: 400;                    /* ความหนาของตัวอักษร (semi-bold) */
-  font-size: 14px;                     /* ขนาดตัวอักษร */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 400;
+  font-size: 14px;
   flex-direction: row;
 }
 
-/* ปรับขนาดรูปโลโก้ */
 .app-header .logo img {
-  width: 32px;                         /* ความกว้างของโลโก้ (สามารถปรับได้) */
-  height: 32px;                        /* ความสูงของโลโก้ (สามารถปรับได้) */
-  object-fit: contain;  
-  position: relative;               /* รักษาสัดส่วนของรูป */
-
-  
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
-/* วงกลมสีขาว */
-.logo-circle{
-  width:45px;
-  height:45px;
-  border-radius:50%;  
-  background:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  /* margin:auto; */
-  box-shadow:0 15px 30px rgba(0,0,0,0.15);
-  overflow:hidden;      /*กันรูปทะลุวง */
+.logo-circle {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .logo-circle img {
-  width:65%;
-  height:65%;
-  object-fit:contain;
-  display:block;
-  
+  width: 65%;
+  height: 65%;
+  object-fit: contain;
+  display: block;
 }
 
-/* ปรับขนาดข้อความ h2 ในโลโก้ */
 .app-header .logo h2 {
-  margin: 0;                           /* ลบ margin เริ่มต้น */
-  font-size: 22px;                     /* ขนาดตัวอักษรชื่อระบบ (สามารถปรับได้) */
+  margin: 0;
+  font-size: 22px;
   font-weight: 400;
-  /*color: #2563eb;   /* ฟ้า modern */
-   color: #fff;   /* เขียว premium */
-   letter-spacing: 0.5px;
-}
-/* userHeader */
-
-.topbar{
-  height:60px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:0 20px;
-  background:white;
-  border-bottom:1px solid #eee;
+  color: #fff;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
-.user-box{
-  display:flex;
-  align-items:center;
-  gap:12px;
+/* ===== User Box ===== */
+
+.user-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
-.user-avatar{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  background:var(--Light-Mint);
-  color:white;
-  font-weight:600;
-  font-size:20px;
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  border: 2px solid rgba(255,255,255,0.35);
+
+  flex-shrink: 0;
 }
 
-.user-info{
-  display:flex;
-  flex-direction:column;
+.user-info {
+  display: flex;
+  flex-direction: column;
 }
 
-.user-name{
-  font-weight:400;
-  font-size:16px;
+.user-name {
+  font-weight: 400;
+  font-size: 16px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.user-role {
+  font-size: 13px;
+  color: #777;
+}
+
+.logout-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 20px;
+  background: #fff;
+  color: var(--green1);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.logout-btn:hover {
+  background: #8a8787;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* ================= STICKY NAV ================= */
+
+.app-nav {
+  position: sticky;
+  top: 60px;
+  z-index: 999;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+  padding: 8px 16px;
+  display: flex;
+  gap: 8px;
+  /* Horizontal scroll on small screens */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.app-nav::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.app-nav a {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.app-nav a:hover {
+  background: #e0e0e0;
+}
+
+.app-nav a.active {
+  background: #1976d2;
   color: #fff;
 }
 
-.user-role{
-  font-size:13px;
-  color:#777;
-}
-
-.logout-btn{
-  padding:12px 30px;
-
-  border:none;
-  border-radius:20px;
-
-  background:#fff;
-  color:var(--green1);
-
-
-  font-size:13px;
-  font-weight:600;
-
-  cursor:pointer;
-
-  display:flex;
-  align-items:center;
-  gap:4px;
-
-  transition:all .2s ease;
-}
-
-.logout-btn:hover{
-  background:#d9363e;
-  transform:translateY(-1px);
-  box-shadow:0 2px 6px rgba(0,0,0,0.15);
-}
-
-/* ================= STICKY NAV (แถบเมนูแบบติดด้านบน) ================= */
-
-.app-nav {
-  position: sticky;                    /* ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
-  top: 52px;                           /* ติดใต้ header (52px = ความสูงของ header) */
-  z-index: 999;                        /* ให้อยู่เหนือ content แต่ต่ำกว่า header */
-  background: #f0f0f0;                 /* พื้นหลังสีเทาอ่อน */
-  border-bottom: 1px solid #ddd;       /* เส้นขอบล่างสีเทา */
-  padding: 10px 20px;                  /* ช่องว่างด้านใน */
-  display: flex;                       /* ใช้ flexbox layout */
-  gap: 10px;                           /* ระยะห่างระหว่างปุ่มเมนู */
-}
-
-/* สไตล์สำหรับลิงก์เมนู */
-.app-nav a {
-  padding: 6px 12px;                   /* ช่องว่างด้านในของปุ่ม */
-  border-radius: 6px;                  /* มุมโค้งมน */
-  font-size: 13px;                     /* ขนาดตัวอักษร */
-}
-
-/* เมื่อ hover เมนู */
-.app-nav a:hover {
-  background: #e0e0e0;                 /* เปลี่ยนพื้นหลังเป็นสีเทาเข้มขึ้น */
-}
-
-/* เมนูที่กำลัง active */
-.app-nav a.active {
-  background: #1976d2;                 /* พื้นหลังสีน้ำเงิน */
-  color: #fff;                         /* ตัวอักษรสีขาว */
-}
-
-
-/* ================= CONTAINER (กล่องบรรจุเนื้อหา) ================= */
-
-.container {
-  max-width: 900px;                    /* ความกว้างสูงสุด 900px */
-  margin: auto;                        /* จัดกึ่งกลางหน้าจอ */
-  padding: 24px 16px;                  /* ช่องว่างด้านใน */
-}
-
-/* ===================================================== */
-/* PAGE BOX (เนื้อหาด้าใน)                                  */
-/* ===================================================== */
+/* ================= PAGE HEADER ================= */
 
 .page-header {
   background: var(--white);
-  padding: 24px 20px;
+  padding: 20px 16px;
   border-bottom: 1px solid #eee;
 }
 
 .page-header h1 {
   margin: 0 0 6px;
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .page-header p {
@@ -275,67 +260,43 @@ a {
   color: #666;
 }
 
-/* ===================================================== */
-/* CARD                                                  */
-/* ===================================================== */ 
+/* ================= CONTAINER ================= */
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 16px 12px;
+}
+
+/* ================= CARD / SECTION ================= */
 
 .card {
   background: #fff;
   border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 20px;
+  padding: 20px 16px;
+  margin-bottom: 16px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.section {
-  background: #fff;
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+.card h2 {
+  margin: 0 0 16px;
+  font-size: 17px;
 }
-
-/* .card-cause {
-  background: #fff;
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-} */
-
-
-/* ===================================================== */
-/* MAIN CONTAINER                                         */
-/* ===================================================== */
-
-/* .container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 20px;
-} */
-
-
-/* ===================================================== */
-/* CARD SECTION                                           */
-/* ===================================================== */
 
 .section {
   background: #ffffff;
   border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 6px 14px rgba(0,0,0,.08);
+  padding: 20px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
 }
 
 .section h2 {
   margin: 0 0 12px;
-  font-size: 18px;
+  font-size: 17px;
 }
 
-
-/* ===================================================== */
-/* FORM LAYOUT                                            */
-/* ===================================================== */
+/* ================= FORM LAYOUT ================= */
 
 .form-grid {
   display: grid;
@@ -361,33 +322,63 @@ label {
 input,
 select,
 textarea {
-  padding: 8px;
+  padding: 9px 10px;
   font-family: inherit;
+  font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 6px;
+  width: 100%;
+  background: #fafafa;
+  transition: border-color 0.2s;
 }
 
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary-1);
+  background: #fff;
+}
 
-/* ===================================================== */
-/* BUTTONS                                                */
-/* ===================================================== */
+/* ================= BUTTONS ================= */
 
 .actions {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   margin-top: 14px;
+  flex-wrap: wrap;
 }
 
-button {
+/* button {
   padding: 10px 16px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-family: inherit;
+  font-size: 14px;
+} */
+
+button {
+  padding: 14px 24px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--font-base);
+  font-weight: 600;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 100px;   /*ขนาดปุ่ม logout*/
+  min-height: 32px;   /*ขนาดปุ่ม logout*/
 }
 
 .btn-draft {
   background: #fbc02d;
+  color: #333;
 }
 
 .btn-save {
@@ -398,63 +389,64 @@ button {
 .action-buttons {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .action-buttons button {
   border: none;
-  padding: 6px 8px;
+  padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
   transition: 0.2s ease;
 }
 
-.btn-view {
-  background: #e3f2fd;
-}
-
-.btn-edit {
-  background: #fff3cd;
-}
-
-.btn-delete {
-  background: #f8d7da;
-}
+.btn-view  { background: #e3f2fd; }
+.btn-edit  { background: #fff3cd; }
+.btn-delete { background: #f8d7da; }
 
 .action-buttons button:hover {
   transform: scale(1.05);
-} 
+}
 
-/* ===================================================== */
-/* TABLE                                                  */
-/* ===================================================== */
+/* ================= TABLE ================= */
+
+/* Wrapper สำหรับ horizontal scroll บนมือถือ */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+}
 
 table {
   width: 100%;
+  min-width: 520px; /* ป้องกันตารางแหลก */
   border-collapse: collapse;
   font-size: 13px;
 }
 
 th,
 td {
-  padding: 10px;
+  padding: 10px 8px;
   border-bottom: 1px solid #eee;
   text-align: left;
+  vertical-align: middle;
 }
 
 th {
   background: #f7f7f7;
+  white-space: nowrap;
 }
 
-
 .detail-text {
-  max-width: 150px;   /* ปรับตามความกว้างตาราง */
+  max-width: 130px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* ===== Modal ===== */
+/* ================= MODAL ================= */
+
 .modal {
   display: none;
   position: fixed;
@@ -463,15 +455,18 @@ th {
   background: rgba(0,0,0,0.5);
   justify-content: center;
   align-items: center;
+  padding: 16px;
 }
 
 .modal-content {
   background: white;
-  width: 450px;
-  max-width: 90%;
+  width: 100%;
+  max-width: 450px;
   border-radius: 12px;
   padding: 20px;
   animation: fadeIn 0.2s ease;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .close-btn {
@@ -489,28 +484,18 @@ th {
   background: #28a745;
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
+  font-family: inherit;
 }
 
 @keyframes fadeIn {
   from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-/* ===================================================== */
-/* FOOTER                                                 */
-/* ===================================================== */
-
-.footer {
-  text-align: center;
-  font-size: 12px;
-  color: #777;
-  padding: 16px;
+  to   { transform: scale(1);    opacity: 1; }
 }
 
-
-
+/* ================= DYNAMIC ATTRIBUTES ================= */
 
 .dynamic-attributes {
   margin-top: 15px;
@@ -521,8 +506,239 @@ th {
 }
 
 #dynamicAttributes {
-  grid-column: 1 / -1;   /* กินเต็มแถว */
+  grid-column: 1 / -1;
   margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
 }
 
-}   /*===END===*/
+/* ================= FOOTER ================= */
+
+.footer {
+  text-align: center;
+  font-size: 12px;
+  color: #777;
+  padding: 16px;
+}
+
+
+/* =====================================================
+   RESPONSIVE BREAKPOINTS
+   ===================================================== */
+
+/* ---- Tablet: ≤ 768px ---- */
+@media (max-width: 768px) {
+
+  /* Header */
+  .app-header {
+    padding: 10px 14px;
+    min-height: 56px;
+  }
+
+  .app-header .logo h2 {
+    font-size: 18px;
+  }
+
+  .user-name {
+    max-width: 80px;
+    font-size: 14px;
+  }
+
+  .logout-btn {
+    padding: 7px 14px;
+    font-size: 12px;
+  }
+
+  /* Nav */
+  .app-nav {
+    top: 56px;
+    padding: 7px 12px;
+    gap: 6px;
+  }
+
+  .app-nav a {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  /* Page header */
+  .page-header h1 {
+    font-size: 18px;
+  }
+
+  /* Container */
+  .container {
+    padding: 12px 10px;
+  }
+
+  /* Form grid: 2 คอลัมน์บน tablet */
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-group.full {
+    grid-column: span 2;
+  }
+
+  #dynamicAttributes {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---- Mobile: ≤ 480px ---- */
+@media (max-width: 480px) {
+
+  /* Header: ซ่อนชื่อผู้ใช้ เหลือแค่ avatar + logout */
+  .app-header {
+    padding: 8px 12px;
+    min-height: 52px;
+  }
+
+  .app-header .logo h2 {
+    font-size: 16px;
+  }
+
+  .logo-circle {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* ซ่อน user-info (ชื่อ) บนมือถือเล็ก */
+  .user-info {
+    display: none;
+  }
+
+  .user-avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 17px;
+  }
+
+  .logout-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+    border-radius: 16px;
+  }
+
+  /* Nav */
+  .app-nav {
+    top: 52px;
+    padding: 6px 10px;
+  }
+
+  .app-nav a {
+    font-size: 11px;
+    padding: 5px 9px;
+  }
+
+  /* Page header */
+  .page-header {
+    padding: 14px 12px;
+  }
+
+  .page-header h1 {
+    font-size: 16px;
+  }
+
+  /* Card/Section */
+  .card,
+  .section {
+    padding: 16px 12px;
+    border-radius: 10px;
+  }
+
+  .card h2,
+  .section h2 {
+    font-size: 15px;
+  }
+
+  /* Form grid: 1 คอลัมน์บนมือถือ */
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .form-group.full {
+    grid-column: span 1;
+  }
+
+  #dynamicAttributes {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* ป้องกัน iOS zoom เมื่อ focus */
+    padding: 10px;
+  }
+
+  /* Buttons */
+  .actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .actions button,
+  .btn-draft,
+  .btn-save {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  /* Table: horizontal scroll */
+  .table-wrapper {
+    margin: 0 -4px; /* ขยายออกนิดหน่อย */
+  }
+
+  table {
+    font-size: 12px;
+    min-width: 480px;
+  }
+
+  th,
+  td {
+    padding: 8px 6px;
+  }
+
+  .detail-text {
+    max-width: 90px;
+  }
+
+  /* Export buttons */
+  .section .actions {
+    flex-direction: column;
+  }
+
+  .section .actions button {
+    width: 100%;
+  }
+
+  /* Modal */
+  .modal {
+    padding: 12px;
+    align-items: flex-end; /* slide up from bottom */
+  }
+
+  .modal-content {
+    border-radius: 16px 16px 0 0;
+    padding: 20px 16px;
+    max-height: 85vh;
+  }
+}
+
+/* ---- Very Small: ≤ 360px ---- */
+@media (max-width: 360px) {
+
+  .app-header .logo h2 {
+    display: none; /* ซ่อนชื่อระบบบนจอเล็กมาก */
+  }
+
+  .page-header h1 {
+    font-size: 15px;
+  }
+}

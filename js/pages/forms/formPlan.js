@@ -757,3 +757,27 @@ function escapeCsv(text) {
 }
 
 console.log("✅ formPlan.js loaded successfully");
+
+
+// =====================================================
+// 🚪 LOGOUT
+// =====================================================
+async function logout() {
+  try {
+
+    // logout supabase
+    const { error } = await supabaseClient.auth.signOut();
+    if (error) throw error;
+
+    showToast("ออกจากระบบแล้ว", "info");
+
+    // redirect ไปหน้า login
+    setTimeout(() => {
+      window.location.href = "/pages/auth/login.html";
+    }, 500);
+
+  } catch (err) {
+    console.error("❌ Logout error:", err);
+    showToast("ออกจากระบบไม่สำเร็จ", "error");
+  }
+}
