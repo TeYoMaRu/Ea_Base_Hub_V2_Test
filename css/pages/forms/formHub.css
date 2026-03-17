@@ -2,10 +2,8 @@
    FORMS HUB - STYLESHEET
    ไฟล์ CSS สำหรับหน้า Forms Hub
    ===================================================== */
-
-   /* =========================
-   CSS VARIABLES - กำหนดค่าสีและค่าคงที่
-   ========================= */
+   /* CSS VARIABLES - กำหนดค่าสีและค่าคงที่ */
+   
 :root {
   --primary:        #0d9488;
   --primary-light:  #14b8a6;
@@ -157,7 +155,7 @@ h3 {
   font-weight: 600;
   color: var(--primary);
   margin: 20px 0 14px;
-  display: flex;
+  /* display: flex; */
   align-items: center;
   gap: 8px;
 }
@@ -390,6 +388,7 @@ button:disabled {
   .user-name {
     max-width: 80px;
     font-size: 14px;
+    color: #fff;
   }
 
   .logout-btn {

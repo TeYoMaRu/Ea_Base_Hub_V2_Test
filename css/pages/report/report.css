@@ -2,8 +2,7 @@
    FORMS REPORT - STYLESHEET
    ไฟล์ CSS สำหรับหน้า Forms Report
    ===================================================== */
-
-/* ================= CSS VARIABLES ================= */
+/* CSS VARIABLES - กำหนดค่าสีและค่าคงที่ */
 
 :root {
   --primary:        #0d9488;
@@ -49,6 +48,55 @@
   --font-2xl:   26px;
 }
 
+/* ==============================================================
+PAGE BOX (เนื้อหาด้าใน)
+============================================================== */
+
+.page-header {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-light) 100%);
+  border-radius: var(--radius-xl);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 180px; height: 180px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 50%;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: -30px; left: 30%;
+  width: 120px; height: 120px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 50%;
+}
+
+.page-header h1 {
+  font-family: 'Kanit', sans-serif;
+  font-size: var(--font-2xl);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.page-header p {
+  font-size: var(--font-base);
+  color: rgba(255,255,255,0.8);
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
 /* ================= PAGE HEADER ================= */
 .app-header .logo {
   display: flex;
@@ -58,22 +106,8 @@
   font-size: 14px;
   flex-direction: row;
 }
-.page-header {
-  background: var(--white);
-  padding: 20px 16px;
-  border-bottom: 1px solid #eee;
-}
 
-.page-header h1 {
-  margin: 0 0 6px;
-  font-size: 20px;
-}
 
-.page-header p {
-  margin: 0;
-  font-size: 13px;
-  color: #666;
-}
 
 /* ================= CARD / SECTION ================= */
 

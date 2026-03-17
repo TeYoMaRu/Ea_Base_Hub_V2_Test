@@ -52,6 +52,16 @@
   --r-sm: 8px;
   --r-md: 12px;
   --r-lg: 18px;
+
+  --primary:#0d9488;
+     --primary-dark:#0f766e;
+     --primary-xdark:#115e59;
+     
+     --bg-base:#f0fdfa;
+     --bg-card:#ffffff;
+     
+     --border:#99f6e4;
+     --radius-md:12px;
 }
 
 /* =====================================================
@@ -262,8 +272,14 @@ h2 {
 /* =====================================================
    7. SECTION CARD
    ===================================================== */
+.paper {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-xdark) 100%);
+  box-shadow: var(--shadow-xs);
+  border-radius: var(--radius-md);
+  margin-bottom: 18px;
+} 
+
 .section,
-.paper,
 .summary-section {
   background: #fff;
   border-radius: var(--r-lg);
@@ -281,6 +297,16 @@ h2 {
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* หัวการ์ด */
+.paper h1 {
+  font-size: 20px;
+  font-weight: 700; 
+  color: var(--bg-card);
+  text-align: center;  
+  justify-content: center;
+  margin-bottom: 6px;
 }
 
 /* Section title */
@@ -789,4 +815,84 @@ button:active { transform: scale(0.97); }
   table { display: block; overflow-x: auto; }
   .summary-grid { grid-template-columns: 1fr; }
   .signature-section { grid-template-columns: 1fr 1fr; }
+}
+
+/* =====================================================
+   📱 MOBILE (<= 600px)
+   ===================================================== */
+@media (max-width: 600px) {
+
+  body {
+    font-size: 15px;
+  }
+
+  /* ===== MAIN ===== */
+  .main-content {
+    padding: 12px;
+  }
+
+  h1 {
+    font-size: 18px;
+  }
+
+  /* ===== CARD ===== */
+  .section {
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  /* ===== FORM ===== */
+  .section .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  input, select {
+    height: 44px;
+    font-size: 15px;
+  }
+
+}
+
+/* =====================================================
+   📱 TABLE → CARD MODE
+   ===================================================== */
+@media (max-width: 600px) {
+
+  .trip-table thead {
+    display: none;
+  }
+
+  .trip-table,
+  .trip-table tbody,
+  .trip-table tr,
+  .trip-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .trip-table tr {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-xs);
+  }
+
+  .trip-table td {
+    text-align: left;
+    padding: 6px 0;
+    border: none;
+  }
+
+  .trip-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gray-400);
+    margin-bottom: 2px;
+  }
+
 }

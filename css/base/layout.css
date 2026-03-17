@@ -29,7 +29,7 @@ a {
 }
 
 body{
-  font-family:'Kanit',sans-serif;
+  font-family:'Kanit',sans-serif;  
   background:var(--bg-base);
 }
 
@@ -98,6 +98,7 @@ body{
   display:flex;
   align-items:center;
   gap:8px;
+  color: #fff;
 }
 
 .user-avatar{

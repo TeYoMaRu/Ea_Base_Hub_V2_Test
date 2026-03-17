@@ -4,19 +4,36 @@
    ใช้ formPlan.css เป็น base แล้ว override เฉพาะจุด
    ===================================================== */
 
-@import url('formPlan.css');
-
-/* =====================================================
+   @import url('formPlan.css');
+   
+   /* =====================================================
    OVERRIDES & EXTRAS สำหรับ formActual
    ===================================================== */
-
+   :root{
+     --primary:#0d9488;
+     --primary-dark:#0f766e;
+     --primary-xdark:#115e59;
+     
+     --bg-base:#f0fdfa;
+     --bg-card:#ffffff;
+     
+     --border:#99f6e4;
+     --radius-md:12px;
+    }
+    
+.paper {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-xdark) 100%);
+  box-shadow: var(--shadow-xs);
+  
+} 
+    
 /* หัวการ์ด */
 .paper h2 {
   font-size: 20px;
-  font-weight: 700;
-  color: var(--teal-700);
-  text-align: center;
-  margin-bottom: 24px;
+  font-weight: 700; 
+  color: var(--bg-card);
+  text-align: center;  
+  margin-bottom: 6px;
 }
 
 /* ตัวเลขในตาราง: align right + tabular */
