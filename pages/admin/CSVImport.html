@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sales Report Transformer - EABaseHub</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Kanit", sans-serif;
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #3a7d44 0%, #2d6235 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 2rem auto;
+        padding: 0 2rem;
+      }
+
+      .card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+      }
+
+      .section-title {
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: #3a7d44;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .upload-area {
+        border: 2px dashed #3a7d44;
+        border-radius: 8px;
+        padding: 3rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .upload-area:hover {
+        background: #f0f7f1;
+      }
+      .upload-area.dragover {
+        background: #e8f5e9;
+        border-color: #2d6235;
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      .btn {
+        background: #3a7d44;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-family: "Kanit", sans-serif;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s;
+      }
+
+      .btn:hover:not(:disabled) {
+        background: #2d6235;
+      }
+      .btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+      .btn-secondary {
+        background: #6c757d;
+      }
+      .btn-danger {
+        background: #dc3545;
+      }
+
+      .alert {
+        padding: 1rem;
+        border-radius: 6px;
+        margin: 1rem 0;
+        display: none;
+      }
+      .alert.show {
+        display: block;
+      }
+      .alert.success {
+        background: #d4edda;
+        color: #155724;
+      }
+      .alert.error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .alert.info {
+        background: #d1ecf1;
+        color: #0c5460;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, #3a7d44 0%, #2d6235 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+      }
+
+      .stat-label {
+        font-size: 0.875rem;
+        opacity: 0.9;
+      }
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+      }
+
+      .table-wrapper {
+        overflow: auto;
+        max-height: 500px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        margin: 1rem 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+      }
+
+      th {
+        background: #3a7d44;
+        color: white;
+        padding: 0.75rem;
+        text-align: left;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      tbody tr:hover {
+        background: #f5f5f5;
+      }
+
+      .actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .process-log {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 6px;
+        max-height: 200px;
+        overflow-y: auto;
+        font-family: monospace;
+        font-size: 0.875rem;
+        margin: 1rem 0;
+      }
+
+      .process-log div {
+        padding: 0.25rem 0;
+      }
+
+      .process-log .success {
+        color: #155724;
+      }
+      .process-log .error {
+        color: #721c24;
+      }
+      .process-log .info {
+        color: #0c5460;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 2rem;
+      }
+
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3a7d44;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 1rem;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>
+        <span class="material-icons">transform</span>
+        Sales Report Transformer - แปลงรายงานยอดขาย
+      </h1>
+    </div>
+
+    <div class="container">
+      <!-- Upload -->
+      <div class="card">
+        <h2 class="section-title">
+          <span class="material-icons">upload_file</span>
+          1. อัพโหลดไฟล์รายงาน
+        </h2>
+
+        <div class="upload-area" id="uploadArea">
+          <div style="font-size: 4rem; color: #3a7d44; margin-bottom: 1rem">
+            📊
+          </div>
+          <h3>ลากไฟล์มาวางที่นี่ หรือคลิกเพื่อเลือก</h3>
+          <p style="margin-top: 0.5rem; color: #666">
+            รองรับ Excel (.xlsx, .xls) และ CSV
+          </p>
+          <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" />
+        </div>
+
+        <div id="alert" class="alert"></div>
+      </div>
+
+      <!-- Process Log -->
+      <div class="card hidden" id="processCard">
+        <h2 class="section-title">
+          <span class="material-icons">assignment</span>
+          2. กำลังประมวลผล
+        </h2>
+        <div id="processLog" class="process-log"></div>
+      </div>
+
+      <!-- Preview -->
+      <div class="card hidden" id="previewCard">
+        <h2 class="section-title">
+          <span class="material-icons">preview</span>
+          3. ข้อมูลที่แปลงแล้ว (แสดง 50 แถวแรก)
+        </h2>
+
+        <div id="statsGrid" class="stats-grid"></div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="exportBtn">
+            <span class="material-icons">download</span>
+            Export CSV
+          </button>
+          <button class="btn btn-secondary" id="importBtn" disabled>
+            <span class="material-icons">cloud_upload</span>
+            Import เข้า Supabase
+          </button>
+          <button class="btn btn-danger" id="clearBtn">
+            <span class="material-icons">clear</span>
+            ล้างข้อมูล
+          </button>
+        </div>
+      </div>
+
+      <!-- Help -->
+      <div class="card" style="background: #e8f5e9; border: 1px solid #c3e6cb">
+        <h3 style="color: #155724; margin-bottom: 1rem">
+          <span class="material-icons" style="vertical-align: middle"
+            >help_outline</span
+          >
+          วิธีใช้งาน
+        </h3>
+        <ol style="color: #155724; line-height: 2; padding-left: 1.5rem">
+          <li>อัพโหลดไฟล์รายงานยอดขาย (Excel หรือ CSV)</li>
+          <li>ระบบจะแปลงโครงสร้างซับซ้อนให้เป็นตาราง flat table</li>
+          <li>ตรวจสอบข้อมูลและ Export หรือ Import เข้า Supabase</li>
+        </ol>
+        <p style="color: #155724; margin-top: 1rem">
+          <strong>โครงสร้างที่รองรับ:</strong> รายงานที่มีหลายระดับ (พนักงาน →
+          ลูกค้า → สินค้า)
+        </p>
+      </div>
+    </div>
+
+    <script src="/js/core/supabaseClient.js"></script>
+    <script src="/js/core/userService.js"></script>
+    <script src="/js/core/auth.js"></script>
+
+    <script>
+      let transformedData = null;
+      let fileName = null;
+
+      // Init
+      (async function init() {
+        try {
+          while (!window.supabase) await new Promise((r) => setTimeout(r, 50));
+          await protectPage(["admin", "manager"]);
+          while (!window.currentUser)
+            await new Promise((r) => setTimeout(r, 50));
+          initUpload();
+        } catch (error) {
+          console.error("Init error:", error);
+        }
+      })();
+
+      function initUpload() {
+        const uploadArea = document.getElementById("uploadArea");
+        const fileInput = document.getElementById("fileInput");
+
+        uploadArea.addEventListener("click", () => fileInput.click());
+
+        uploadArea.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          uploadArea.classList.add("dragover");
+        });
+
+        uploadArea.addEventListener("dragleave", () => {
+          uploadArea.classList.remove("dragover");
+        });
+
+        uploadArea.addEventListener("drop", (e) => {
+          e.preventDefault();
+          uploadArea.classList.remove("dragover");
+          handleFile(e.dataTransfer.files[0]);
+        });
+
+        fileInput.addEventListener("change", (e) => {
+          handleFile(e.target.files[0]);
+        });
+
+        document
+          .getElementById("exportBtn")
+          .addEventListener("click", exportCSV);
+        document
+          .getElementById("clearBtn")
+          .addEventListener("click", clearData);
+        document
+          .getElementById("importBtn")
+          .addEventListener("click", importToSupabase);
+      }
+
+      async function importToSupabase() {
+        if (!transformedData) return;
+
+        try {
+          showAlert("กำลัง Import...", "info");
+
+          const { error } = await supabase
+            .from("sales_reports") // 👈 เปลี่ยนเป็น table ของคุณ
+            .insert(transformedData);
+
+          if (error) throw error;
+
+          showAlert("✅ Import สำเร็จ!", "success");
+        } catch (err) {
+          console.error(err);
+          showAlert("❌ Import ไม่สำเร็จ: " + err.message, "error");
+        }
+      }
+
+      async function handleFile(file) {
+        if (!file) return;
+
+        fileName = file.name;
+        showAlert("กำลังอ่านไฟล์...", "info");
+        showProcessLog("info", "📂 เปิดไฟล์: " + fileName);
+
+        try {
+          let rawData = null;
+
+          // อ่าน Excel หรือ CSV
+          if (file.name.endsWith(".xlsx") || file.name.endsWith(".xls")) {
+            rawData = await readExcel(file);
+          } else if (file.name.endsWith(".csv")) {
+            rawData = await readCSV(file);
+          } else {
+            throw new Error("รองรับเฉพาะไฟล์ .xlsx, .xls หรือ .csv");
+          }
+
+          showProcessLog(
+            "success",
+            "✅ อ่านไฟล์สำเร็จ: " + rawData.length + " แถว",
+          );
+
+          // แปลงข้อมูล
+          transformedData = transformSalesReport(rawData);
+
+          showProcessLog(
+            "success",
+            "✅ แปลงข้อมูลสำเร็จ: " + transformedData.length + " รายการ",
+          );
+
+          showPreview();
+          showAlert("✅ ประมวลผลสำเร็จ!", "success");
+
+          document.getElementById("importBtn").disabled = false;
+        } catch (error) {
+          console.error("Process error:", error);
+          showProcessLog("error", "❌ ข้อผิดพลาด: " + error.message);
+          showAlert("❌ เกิดข้อผิดพลาด: " + error.message, "error");
+        }
+      }
+
+      async function readExcel(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            try {
+              const data = new Uint8Array(e.target.result);
+              const workbook = XLSX.read(data, { type: "array" });
+              const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+              const rows = XLSX.utils.sheet_to_json(firstSheet, {
+                header: 1,
+                defval: "",
+              });
+              resolve(rows);
+            } catch (err) {
+              reject(err);
+            }
+          };
+          reader.onerror = reject;
+          reader.readAsArrayBuffer(file);
+        });
+      }
+
+      async function readCSV(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = async (e) => {
+            try {
+              let text = e.target.result;
+
+              // ลอง decode หลาย encoding
+              const arrayBuffer = await file.arrayBuffer();
+              const uint8Array = new Uint8Array(arrayBuffer);
+
+              for (const encoding of ["utf-8", "iso-8859-11", "tis-620"]) {
+                try {
+                  const decoder = new TextDecoder(encoding);
+                  text = decoder.decode(uint8Array);
+                  text = text.replace(/^\ufeff/, "").replace(/^\uFEFF/, "");
+                  if (!text.includes("�")) break;
+                } catch (e) {}
+              }
+
+              Papa.parse(text, {
+                complete: (results) => resolve(results.data),
+                error: reject,
+              });
+            } catch (err) {
+              reject(err);
+            }
+          };
+          reader.onerror = reject;
+          reader.readAsText(file);
+        });
+      }
+
+      function transformSalesReport(rows) {
+        const transformed = [];
+        let currentSales = null;
+        let currentCustomer = null;
+        let dataStarted = false;
+
+        showProcessLog("info", "🔄 กำลังแปลงข้อมูล...");
+
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          const firstCol = String(row[0] || "").trim();
+
+          // ข้าม header และ separator
+          if (
+            firstCol.includes("---") ||
+            firstCol.includes("===") ||
+            firstCol.includes("รายการสินค้า") ||
+            firstCol === ""
+          ) {
+            continue;
+          }
+
+          // ตรวจจับ พนักงานขาย
+          if (
+            firstCol.includes("บริษัท") ||
+            firstCol.match(/^[ก-ฮ\w\s]+\/[A-Z0-9\-]+$/)
+          ) {
+            const match = firstCol.match(/\/([A-Z0-9\-]+)$/);
+            if (match) {
+              currentSales = match[1];
+              currentCustomer = null;
+              showProcessLog("info", "  👤 พนักงาน: " + currentSales);
+            }
+            continue;
+          }
+
+          // ตรวจจับ ลูกค้า
+          if (firstCol.match(/^[\s]+[ก-ฮ\w\s\(\)\.]+\/[ก-ฮ\w0-9]+$/)) {
+            const match = firstCol.match(/\/([ก-ฮ\w0-9]+)$/);
+            if (match) {
+              currentCustomer = match[1];
+              showProcessLog("info", "    🏪 ลูกค้า: " + currentCustomer);
+            }
+            continue;
+          }
+
+          // ข้ามแถวรวม
+          if (
+            firstCol.includes("รวมลูกค้า") ||
+            firstCol.includes("รวมพนักงาน")
+          ) {
+            continue;
+          }
+
+          // แถวข้อมูลสินค้า
+          if (currentSales && row.length > 5) {
+            // ตรวจสอบว่ามีตัวเลข (มูลค่า) หรือไม่
+            const hasNumeric = row.slice(1).some((cell) => {
+              const val = String(cell || "").replace(/,/g, "");
+              return !isNaN(val) && val !== "";
+            });
+
+            if (hasNumeric) {
+              const product = firstCol.replace(/^[\s]+/, "");
+              const productCode = product.match(/\/([^\s]+)$/)?.[1] || "";
+
+              transformed.push({
+                sales_code: currentSales || "",
+                customer_code: currentCustomer || "",
+                product_name: product.replace(/\/[^\s]+$/, "").trim(),
+                product_code: productCode,
+                qty_cash:
+                  parseFloat(String(row[4] || "0").replace(/,/g, "")) || 0,
+                qty_credit:
+                  parseFloat(String(row[5] || "0").replace(/,/g, "")) || 0,
+                qty_free:
+                  parseFloat(String(row[6] || "0").replace(/,/g, "")) || 0,
+                qty_return:
+                  parseFloat(String(row[7] || "0").replace(/,/g, "")) || 0,
+                qty_net:
+                  parseFloat(String(row[9] || "0").replace(/,/g, "")) || 0,
+                unit: String(row[10] || ""),
+                amount_cash:
+                  parseFloat(String(row[11] || "0").replace(/,/g, "")) || 0,
+                amount_credit:
+                  parseFloat(String(row[12] || "0").replace(/,/g, "")) || 0,
+                amount_net:
+                  parseFloat(String(row[14] || "0").replace(/,/g, "")) || 0,
+                cost: parseFloat(String(row[15] || "0").replace(/,/g, "")) || 0,
+                profit:
+                  parseFloat(String(row[17] || "0").replace(/,/g, "")) || 0,
+                profit_percent:
+                  parseFloat(String(row[18] || "0").replace(/,/g, "")) || 0,
+              });
+            }
+          }
+        }
+
+        return transformed;
+      }
+
+      function showPreview() {
+        document.getElementById("previewCard").classList.remove("hidden");
+
+        // Stats
+        const stats = [
+          {
+            label: "จำนวนรายการทั้งหมด",
+            value: transformedData.length,
+            icon: "summarize",
+          },
+          {
+            label: "จำนวนพนักงาน",
+            value: new Set(transformedData.map((r) => r.sales_code)).size,
+            icon: "person",
+          },
+          {
+            label: "จำนวนลูกค้า",
+            value: new Set(
+              transformedData.map((r) => r.customer_code).filter(Boolean),
+            ).size,
+            icon: "store",
+          },
+        ];
+
+        document.getElementById("statsGrid").innerHTML = stats
+          .map(
+            (s) => `
+                <div class="stat-card">
+                    <div class="stat-label">
+                        <span class="material-icons" style="font-size: 1rem; margin-right: 0.25rem;">${s.icon}</span>
+                        ${s.label}
+                    </div>
+                    <div class="stat-value">${s.value.toLocaleString()}</div>
+                </div>
+            `,
+          )
+          .join("");
+
+        // Table (50 แถวแรก)
+        if (!transformedData || transformedData.length === 0) {
+          showAlert("ไม่มีข้อมูลหลังแปลง", "error");
+          return;
+        }
+        const thead = document.getElementById("tableHead");
+        const tbody = document.getElementById("tableBody");
+
+        thead.innerHTML =
+          "<tr>" + columns.map((c) => `<th>${c}</th>`).join("") + "</tr>";
+        tbody.innerHTML = transformedData
+          .slice(0, 50)
+          .map(
+            (row) =>
+              "<tr>" +
+              columns.map((c) => `<td>${row[c]}</td>`).join("") +
+              "</tr>",
+          )
+          .join("");
+
+        document
+          .getElementById("previewCard")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+
+      function exportCSV() {
+        if (!transformedData) return;
+
+        const csv = Papa.unparse(transformedData);
+        const BOM = "\uFEFF";
+        const blob = new Blob([BOM + csv], { type: "text/csv;charset=utf-8;" });
+
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName.replace(/\.[^.]+$/, "_transformed.csv");
+        link.click();
+
+        showAlert("✅ Export สำเร็จ!", "success");
+      }
+
+      function clearData() {
+        if (confirm("ต้องการล้างข้อมูลใช่หรือไม่?")) {
+          transformedData = null;
+          fileName = null;
+          document.getElementById("fileInput").value = "";
+          document.getElementById("previewCard").classList.add("hidden");
+          document.getElementById("processCard").classList.add("hidden");
+          document.getElementById("processLog").innerHTML = "";
+          document.getElementById("alert").className = "alert";
+        }
+      }
+
+      function showAlert(msg, type) {
+        const alert = document.getElementById("alert");
+        alert.textContent = msg;
+        alert.className = `alert show ${type}`;
+      }
+
+      function showProcessLog(type, msg) {
+        document.getElementById("processCard").classList.remove("hidden");
+        const log = document.getElementById("processLog");
+        const div = document.createElement("div");
+        div.className = type;
+        div.textContent = msg;
+        log.appendChild(div);
+        log.scrollTop = log.scrollHeight;
+      }
+    </script>
+  </body>
+</html>
