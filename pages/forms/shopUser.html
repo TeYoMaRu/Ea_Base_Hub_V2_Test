@@ -8,150 +8,66 @@
     <title>ร้านของฉัน</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/base/layout.css" />
     <link rel="stylesheet" href="/css/pages/forms/shopUser.css" />
   </head>
 
   <body>
 
-    <div class="topbar">
-      <div class="topbar-icon"></div>
-      <span class="topbar-title">ร้านของฉัน</span>
-      <span class="topbar-sub">EABaseHub</span>
-    </div>
-
-    <div class="main">
-
-      <!-- ── ซ้าย: รายชื่อร้าน ── -->
-      <div class="panel">
-        <div class="panel-head">
-          <span class="panel-head-title">รายชื่อร้านค้า</span>
-          <span class="panel-head-count" id="shopCount">0 ร้าน</span>
+    <header class="app-header">
+      <div class="logo">
+        <div class="logo-circle">
+          <img src="/assets/icons/icon-192.png" alt="logo">
         </div>
+        <h2>EABaseHub</h2>
+      </div>
+      <div class="user-box">
+        <div class="user-avatar" id="userAvatar">👤</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">กำลังโหลด...</div>
+        </div>
+        <button id="logoutBtn" class="logout-btn">ออกจากระบบ</button>
+      </div>
+    </header>
+
+    <nav class="app-nav">
+      <a href="/pages/index.html">หน้าแรก</a>
+      <a href="/pages/forms/shopUser.html" class="active">ร้านของฉัน</a>
+      <a href="/pages/reports/report.html">รายงานเยี่ยมร้านค้า</a>
+      <a href="/pages/forms/formClaim.html">แจ้งเคลมสินค้า</a>
+      <a href="/pages/forms/formHub.html">แบบฟอร์ม</a>
+    </nav>
+
+    <div class="container">
+      <div class="page-header">
+        <h1>ร้านของฉัน</h1>
+        <p>เลือกร้านเพื่อดูและแก้ไขข้อมูล</p>
+      </div>
+
+      <!-- TOOLBAR -->
+      <div class="toolbar">
         <div class="search-wrap">
           <input id="searchInput" placeholder="ค้นหาร้าน รหัส หรือจังหวัด..." />
         </div>
+        <span class="shop-count" id="shopCount">0 ร้าน</span>
+      </div>
+
+      <!-- TABLE -->
+      <div class="panel">
         <table class="shop-table">
           <thead>
             <tr>
-              <th>รหัสร้าน</th>
+              <th style="width:120px">รหัสร้าน</th>
               <th>ชื่อร้าน</th>
-              <th>จังหวัด</th>
+              <th style="width:160px">จังหวัด</th>
+              <th style="width:80px"></th>
             </tr>
           </thead>
           <tbody id="shopTableBody">
-            <tr><td colspan="3" class="table-placeholder">กำลังโหลด...</td></tr>
+            <tr><td colspan="4" class="table-placeholder">กำลังโหลด...</td></tr>
           </tbody>
         </table>
-      </div>
-
-      <!-- ── ขวา: ข้อมูลร้าน ── -->
-      <div class="panel">
-
-        <div id="emptyState" class="empty-state">
-          <div class="empty-icon">👈</div>
-          <div>กรุณาเลือกร้านจากตารางด้านซ้าย</div>
-        </div>
-
-        <div id="shopForm" style="display:none;">
-
-          <!-- Tab bar -->
-          <div class="tab-bar">
-            <button class="tab-btn active" data-tab="alias">ชื่อรอง</button>
-            <button class="tab-btn" data-tab="detail">รายละเอียด</button>
-            <button class="tab-btn" data-tab="images">รูปภาพ</button>
-          </div>
-
-          <!-- TAB: ชื่อรอง -->
-          <div class="tab-pane active" id="tab-alias">
-            <div class="form-body">
-              <div class="field">
-                <label>ชื่อร้าน <span class="lock-badge">ล็อก</span></label>
-                <input id="shopName" disabled />
-              </div>
-              <div class="field">
-                <label>จังหวัด <span class="lock-badge">ล็อก</span></label>
-                <input id="province" disabled />
-              </div>
-              <hr class="divider" />
-              <div class="alias-head">ชื่อรอง</div>
-              <div class="alias-row">
-                <input id="aliasInput" placeholder="เพิ่มชื่อรอง..." />
-                <button id="addAliasBtn">+ เพิ่ม</button>
-              </div>
-              <div id="aliasList" class="alias-list"></div>
-            </div>
-          </div>
-
-          <!-- TAB: รายละเอียด -->
-          <div class="tab-pane" id="tab-detail" style="display:none;">
-            <div class="form-body">
-
-              <div class="section-label">ที่อยู่</div>
-              <div class="field">
-                <label>ที่อยู่เต็ม</label>
-                <textarea id="detailAddress" rows="3" placeholder="เลขที่ ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์"></textarea>
-              </div>
-              <div class="field">
-                <label>Google Maps URL</label>
-                <div class="input-with-action">
-                  <input id="detailMapsUrl" type="url" placeholder="https://maps.google.com/..." />
-                  <a id="mapsLink" href="#" target="_blank" class="input-action-btn" style="display:none;">เปิด</a>
-                </div>
-              </div>
-
-              <hr class="divider" />
-              <div class="section-label">ผู้ติดต่อ</div>
-              <div class="field-row">
-                <div class="field">
-                  <label>เบอร์โทรร้าน</label>
-                  <input id="detailPhone" type="tel" placeholder="0XX-XXX-XXXX" />
-                </div>
-                <div class="field">
-                  <label>ผู้ติดต่อ</label>
-                  <input id="detailContactName" placeholder="ชื่อ-นามสกุล" />
-                </div>
-              </div>
-              <div class="field">
-                <label>LINE ID</label>
-                <input id="detailLineId" placeholder="@line_id หรือชื่อ LINE" />
-              </div>
-
-              <hr class="divider" />
-              <div class="section-label">ขนส่งประจำ</div>
-              <div class="shipping-chips" id="shippingChips"></div>
-
-              <hr class="divider" />
-              <div class="section-label">หมายเหตุ</div>
-              <div class="field">
-                <textarea id="detailNote" rows="3" placeholder="ข้อมูลเพิ่มเติมที่อยากบันทึกไว้..."></textarea>
-              </div>
-
-              <div class="save-row">
-                <span id="detailSaveStatus" class="save-status"></span>
-                <button id="saveDetailBtn" class="btn-save">💾 บันทึก</button>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- TAB: รูปภาพ -->
-          <div class="tab-pane" id="tab-images" style="display:none;">
-            <div class="form-body">
-              <div class="upload-area" id="uploadArea">
-                <input type="file" id="imageInput" accept="image/*" multiple hidden />
-                <div class="upload-placeholder">
-                  <div class="upload-icon">📷</div>
-                  <div>คลิกหรือลากรูปมาวางที่นี่</div>
-                  <div class="upload-hint">JPG, PNG, WEBP — ไม่เกิน 5MB ต่อรูป</div>
-                </div>
-              </div>
-              <div id="imageGrid" class="image-grid"></div>
-            </div>
-          </div>
-
-        </div>
       </div>
 
     </div>
@@ -161,8 +77,6 @@
     <script src="/js/core/supabaseClient.js"></script>
     <script src="/js/core/userService.js"></script>
     <script src="/js/core/auth.js"></script>
-    <script src="/js/services/categoryService.js"></script>
-    <script src="/js/services/shopDetailService.js"></script>
     <script src="/js/pages/forms/shopUser.js"></script>
   </body>
 </html>

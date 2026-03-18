@@ -2,41 +2,159 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Sales Dashboard</title>
-  <link rel="stylesheet" href="css/dashboard.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EABaseHub · Sales Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <link rel="stylesheet" href="/css/pages/dashboard/salesDashboard.css">
 </head>
 <body>
 
-<h1>📊 Dashboard ของฉัน</h1>
+<!-- Overlay สำหรับ mobile เมื่อ sidebar เปิด -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-<div class="kpi-grid">
-  <div class="card">
-    <h3>ร้านเข้าเดือนนี้</h3>
-    <p id="kpiVisits">0</p>
+<!-- ════════════════════════════════════
+     Sidebar
+     ════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-box"><span>EA</span></div>
+    <div class="logo-text">EABaseHub <small>BUSINESS HUB</small></div>
+    <button class="sidebar-close" onclick="closeSidebar()">
+      <span class="material-icons-round">close</span>
+    </button>
   </div>
-  <div class="card">
-    <h3>ยอดขายเดือนนี้</h3>
-    <p id="kpiSales">0</p>
+
+  <nav class="nav">
+    <div class="nav-group-label">หลัก</div>
+    <a class="nav-item" href="/pages/index.html"><span class="material-icons-round">home</span> หน้าหลัก</a>
+    <a class="nav-item active" href="#"><span class="material-icons-round">bar_chart</span> Dashboard</a>
+
+    <div class="nav-group-label">การขาย</div>
+    <a class="nav-item" href="/pages/forms/shopUser.html"><span class="material-icons-round">store</span> ร้านค้า</a>
+    <a class="nav-item" href="#"><span class="material-icons-round">receipt_long</span> รายงานยอดขาย</a>
+    <a class="nav-item" href="#"><span class="material-icons-round">inventory_2</span> สินค้า Claim</a>
+
+    <div class="nav-group-label">เดินทาง</div>
+    <a class="nav-item" href="/pages/forms/formPlan.html"><span class="material-icons-round">map</span> แผนเดินทาง</a>
+    <a class="nav-item" href="/pages/forms/formActual.html"><span class="material-icons-round">attach_money</span> ค่าใช้จ่าย</a>
+
+    <div class="nav-group-label">ผู้ดูแล</div>
+    <a class="nav-item" href="#"><span class="material-icons-round">manage_accounts</span> จัดการผู้ใช้</a>
+    <a class="nav-item" href="#"><span class="material-icons-round">settings</span> ตั้งค่า</a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="avatar">TN</div>
+      <div>
+        <div class="user-name">Tontoey N.</div>
+        <div class="user-role">Admin</div>
+      </div>
+    </div>
   </div>
-  <div class="card">
-    <h3>เคลมที่เปิดอยู่</h3>
-    <p id="kpiClaims">0</p>
-  </div>
-</div>
+</aside>
 
-<h2>ร้านที่ดูแล</h2>
-<table id="myShops"></table>
+<!-- ════════════════════════════════════
+     Main
+     ════════════════════════════════════ -->
+<div class="main">
+  <!-- Content -->
+  <div class="content">
 
-<h2>แจ้งเคลมของฉัน</h2>
-<table id="myClaims"></table>
+  <!-- Topbar -->
+  <header class="topbar">
+    <button class="hamburger" onclick="openSidebar()">
+      <span class="material-icons-round">menu</span>
+    </button>
 
-<h2>📈 ยอดขายของฉัน</h2>
-<iframe id="lookerFrame"
-  width="100%"
-  height="600"
-  frameborder="0">
-</iframe>
+    <div class="topbar-brand">
+      <div class="topbar-title">Sales Dashboard</div>
+      <div class="topbar-sub">ยอดขายรายเดือน · มีนาคม 2569</div>
+    </div>
 
-<script src="js/sales-dashboard.js"></script>
+    <div class="period-group">
+      <button class="period-btn" onclick="setPeriod('week',this)">สัปดาห์</button>
+      <button class="period-btn active" onclick="setPeriod('month',this)">เดือน</button>
+      <button class="period-btn" onclick="setPeriod('quarter',this)">ไตรมาส</button>
+    </div>
+
+    <div class="topbar-actions">
+      <button class="icon-btn" title="รีเฟรช"><span class="material-icons-round">refresh</span></button>
+      <button class="icon-btn" title="ดาวน์โหลด"><span class="material-icons-round">download</span></button>
+    </div>
+  </header>
+
+
+    <!-- Metric cards -->
+    <div class="metrics-grid">
+      <div class="mcard">
+        <div class="mcard-icon"><span class="material-icons-round">trending_up</span></div>
+        <div class="mcard-label">ยอดขายรวม</div>
+        <div class="mcard-val" id="m-total">฿4.28M</div>
+        <div class="mcard-delta delta-up"><span class="material-icons-round">arrow_upward</span>+12.4% จากช่วงก่อน</div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-icon"><span class="material-icons-round">shopping_cart</span></div>
+        <div class="mcard-label">คำสั่งซื้อ</div>
+        <div class="mcard-val" id="m-orders">1,347</div>
+        <div class="mcard-delta delta-up"><span class="material-icons-round">arrow_upward</span>+8.1%</div>
+      </div>
+      <div class="mcard red">
+        <div class="mcard-icon"><span class="material-icons-round" style="color:var(--red-500)">store</span></div>
+        <div class="mcard-label">ร้านค้าที่ใช้งาน</div>
+        <div class="mcard-val" id="m-shops">238</div>
+        <div class="mcard-delta delta-dn"><span class="material-icons-round">arrow_downward</span>-2 ร้าน</div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-icon"><span class="material-icons-round">equalizer</span></div>
+        <div class="mcard-label">ค่าเฉลี่ย / ออเดอร์</div>
+        <div class="mcard-val" id="m-avg">฿3,178</div>
+        <div class="mcard-delta delta-up"><span class="material-icons-round">arrow_upward</span>+3.9%</div>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="card-header">
+          <div class="card-title">ยอดขายรายงวด (฿ล้าน)</div>
+          <span class="card-badge">เปรียบเทียบปีก่อน</span>
+        </div>
+        <div class="legend-row">
+          <span><span class="leg-dot" style="background:#33913f"></span>ปีนี้</span>
+          <span><span class="leg-dot" style="background:#c8e6c9"></span>ปีก่อน</span>
+        </div>
+        <div style="position:relative;height:200px"><canvas id="barChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="card-header"><div class="card-title">สัดส่วนตามภูมิภาค</div></div>
+        <div class="legend-row" id="donut-legend"></div>
+        <div style="position:relative;height:165px"><canvas id="donutChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="bottom-row">
+      <div class="chart-card">
+        <div class="card-header"><div class="card-title">พื้นที่ยอดขายสูงสุด</div></div>
+        <div class="tbl-head">
+          <span>พื้นที่</span>
+          <span style="text-align:right">ยอด (฿M)</span>
+          <span style="text-align:right">เติบโต</span>
+        </div>
+        <div id="area-list"></div>
+      </div>
+      <div class="chart-card">
+        <div class="card-header"><div class="card-title">ยอดขายรายวัน (มีนาคม)</div></div>
+        <div style="position:relative;height:200px"><canvas id="lineChart"></canvas></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="/js/pages/dashboard/salesDashboard.js"></script>
 </body>
 </html>

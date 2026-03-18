@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EABaseHub · Executive Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <link rel="stylesheet" href="/css/pages/dashboard/executiveDashboard.css">
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-box"><span>EA</span></div>
+    <div class="logo-text">EABaseHub <small>EXECUTIVE</small></div>
+    <button class="sidebar-close" onclick="closeSidebar()">
+      <span class="material-icons-round">close</span>
+    </button>
+  </div>
+  <nav class="nav">
+    <div class="nav-group-label">ภาพรวม</div>
+    <a class="nav-item active" href="#"><span class="material-icons-round">dashboard</span> Executive Overview</a>
+    <a class="nav-item" href="#"><span class="material-icons-round">bar_chart</span> Sales Dashboard</a>
+
+    <div class="nav-group-label">รายละเอียด</div>
+    <a class="nav-item" href="#"><span class="material-icons-round">store</span> ร้านค้า</a>
+    <a class="nav-item" href="#"><span class="material-icons-round">inventory_2</span> Claim & QC</a>
+    <a class="nav-item" href="#"><span class="material-icons-round">map</span> แผนเดินทาง</a>
+    <a class="nav-item" href="#"><span class="material-icons-round">attach_money</span> ค่าใช้จ่าย</a>
+
+    <div class="nav-group-label">ระบบ</div>
+    <a class="nav-item" href="#"><span class="material-icons-round">manage_accounts</span> จัดการผู้ใช้</a>
+    <a class="nav-item" href="#"><span class="material-icons-round">settings</span> ตั้งค่า</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="avatar">TN</div>
+      <div>
+        <div class="user-name">Tontoey N.</div>
+        <div class="user-role">Executive</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── Main ── -->
+<div class="main">
+
+  <header class="topbar">
+    <button class="hamburger" onclick="openSidebar()">
+      <span class="material-icons-round">menu</span>
+    </button>
+    <div class="topbar-brand">
+      <div class="topbar-title">Executive Overview</div>
+      <div class="topbar-sub">ภาพรวมธุรกิจ · มีนาคม 2569</div>
+    </div>
+    <div class="period-group">
+      <button class="period-btn" onclick="setPeriod('month',this)">เดือน</button>
+      <button class="period-btn active" onclick="setPeriod('quarter',this)">ไตรมาส</button>
+      <button class="period-btn" onclick="setPeriod('year',this)">ปี</button>
+    </div>
+    <div class="topbar-actions">
+      <div class="live-badge"><span class="live-dot"></span>Live</div>
+      <button class="icon-btn" title="รีเฟรช"><span class="material-icons-round">refresh</span></button>
+      <button class="icon-btn" title="ดาวน์โหลด"><span class="material-icons-round">download</span></button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ══ KPI Strip ══ -->
+    <div class="kpi-grid">
+      <div class="kpi-card accent-green">
+        <div class="kpi-top">
+          <span class="kpi-label">รายได้รวม</span>
+          <span class="kpi-icon material-icons-round">payments</span>
+        </div>
+        <div class="kpi-val" id="kv-revenue">฿11.9M</div>
+        <div class="kpi-sub">
+          <span class="chip up"><span class="material-icons-round">arrow_upward</span>+18.4%</span>
+          <span class="kpi-vs">vs ไตรมาสก่อน</span>
+        </div>
+        <canvas class="spark-canvas" id="ks-revenue" height="36"></canvas>
+      </div>
+      <div class="kpi-card accent-blue">
+        <div class="kpi-top">
+          <span class="kpi-label">Claim รออนุมัติ</span>
+          <span class="kpi-icon material-icons-round">pending_actions</span>
+        </div>
+        <div class="kpi-val" id="kv-claim">47</div>
+        <div class="kpi-sub">
+          <span class="chip dn"><span class="material-icons-round">arrow_downward</span>-12</span>
+          <span class="kpi-vs">จากเดือนก่อน</span>
+        </div>
+        <canvas class="spark-canvas" id="ks-claim" height="36"></canvas>
+      </div>
+      <div class="kpi-card accent-amber">
+        <div class="kpi-top">
+          <span class="kpi-label">ทีมขายทั้งหมด</span>
+          <span class="kpi-icon material-icons-round">group</span>
+        </div>
+        <div class="kpi-val" id="kv-team">34</div>
+        <div class="kpi-sub">
+          <span class="chip up"><span class="material-icons-round">arrow_upward</span>+3 คน</span>
+          <span class="kpi-vs">ไตรมาสนี้</span>
+        </div>
+        <canvas class="spark-canvas" id="ks-team" height="36"></canvas>
+      </div>
+      <div class="kpi-card accent-red">
+        <div class="kpi-top">
+          <span class="kpi-label">ร้านค้าใช้งาน</span>
+          <span class="kpi-icon material-icons-round">store</span>
+        </div>
+        <div class="kpi-val" id="kv-shops">238</div>
+        <div class="kpi-sub">
+          <span class="chip dn"><span class="material-icons-round">arrow_downward</span>-2 ร้าน</span>
+          <span class="kpi-vs">จากเดือนก่อน</span>
+        </div>
+        <canvas class="spark-canvas" id="ks-shops" height="36"></canvas>
+      </div>
+    </div>
+
+    <!-- ══ Row 1: Revenue + Claim donut ══ -->
+    <div class="row-2col wide">
+      <div class="chart-card">
+        <div class="card-head">
+          <div class="card-title">แนวโน้มรายได้ (฿M)</div>
+          <div class="legend-row">
+            <span><span class="leg-dot" style="background:#33913f"></span>รายได้จริง</span>
+            <span><span class="leg-dot" style="background:#c8e6c9"></span>เป้าหมาย</span>
+          </div>
+        </div>
+        <div class="chart-wrap h220"><canvas id="revenueChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="card-head">
+          <div class="card-title">สถานะ Claim & QC</div>
+          <span class="badge-info" id="claim-total">รวม 182 รายการ</span>
+        </div>
+        <div class="claim-layout">
+          <div class="chart-wrap h160"><canvas id="claimChart"></canvas></div>
+          <div class="claim-legend" id="claim-legend"></div>
+        </div>
+        <div class="claim-stats" id="claim-stats"></div>
+      </div>
+    </div>
+
+    <!-- ══ Row 2: Team performance + QC approval rate ══ -->
+    <div class="row-2col equal">
+      <div class="chart-card">
+        <div class="card-head">
+          <div class="card-title">ประสิทธิภาพทีมขาย</div>
+          <span class="card-sub">ยอดขาย vs เป้า (฿M) · ไตรมาสนี้</span>
+        </div>
+        <div class="team-list" id="team-list"></div>
+      </div>
+      <div class="chart-card">
+        <div class="card-head">
+          <div class="card-title">ยอดขายรายเดือน (฿M)</div>
+          <span class="card-sub">6 เดือนล่าสุด</span>
+        </div>
+        <div class="chart-wrap h200"><canvas id="salesMonthChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ══ Alert table ══ -->
+    <div class="chart-card">
+      <div class="card-head">
+        <div class="card-title">รายการที่ต้องติดตาม</div>
+        <span class="badge-alert">3 รายการด่วน</span>
+      </div>
+      <div class="alert-table">
+        <div class="at-head">
+          <span>รายการ</span><span>หมวด</span><span>สถานะ</span><span>ผู้รับผิดชอบ</span><span>วันที่</span>
+        </div>
+        <div class="at-row">
+          <span class="at-name"><span class="dot red"></span>Claim #C-0482 เกินกำหนด 5 วัน</span>
+          <span><span class="tag red">Claim</span></span>
+          <span class="st red">รอ QC</span>
+          <span>สมชาย ก.</span><span class="at-date">12 มี.ค.</span>
+        </div>
+        <div class="at-row">
+          <span class="at-name"><span class="dot amber"></span>Claim #C-0491 ส่งกลับแก้ไข</span>
+          <span><span class="tag amber">Claim</span></span>
+          <span class="st amber">แก้ไข</span>
+          <span>มานี ร.</span><span class="at-date">14 มี.ค.</span>
+        </div>
+        <div class="at-row">
+          <span class="at-name"><span class="dot red"></span>ทีมใต้ยอดขายต่ำกว่าเป้า 24%</span>
+          <span><span class="tag red">Sales</span></span>
+          <span class="st red">ต่ำกว่าเป้า</span>
+          <span>วิไล ส.</span><span class="at-date">15 มี.ค.</span>
+        </div>
+        <div class="at-row">
+          <span class="at-name"><span class="dot green"></span>ทีมเหนือยอดขายทะลุเป้า Q1</span>
+          <span><span class="tag green">Sales</span></span>
+          <span class="st green">บรรลุเป้า</span>
+          <span>สุรีย์ พ.</span><span class="at-date">18 มี.ค.</span>
+        </div>
+        <div class="at-row">
+          <span class="at-name"><span class="dot blue"></span>พนักงานใหม่ 3 คนรอ onboard</span>
+          <span><span class="tag blue">HR</span></span>
+          <span class="st blue">ดำเนินการ</span>
+          <span>HR Team</span><span class="at-date">18 มี.ค.</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="/js/pages/dashboard/executiveDashboard.js"></script>
+</body>
+</html>
