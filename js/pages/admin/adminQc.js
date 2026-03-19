@@ -401,9 +401,19 @@ async function updateClaimStatus(newStatus) {
   if (!currentClaim) return;
 
   const comment = document.getElementById('qcComment').value.trim();
-  const label   = newStatus === 'approved' ? 'อนุมัติ' : 'ปฏิเสธ';
+  // ✅ ใส่แทน
+const label = newStatus === 'approved' ? 'อนุมัติ' : 'ปฏิเสธ';
+const type  = newStatus === 'approved' ? 'success' : 'danger';
 
-  if (!confirm(`ยืนยันการ${label}เคลมนี้?`)) return;
+const ok = await ConfirmDialog.show({
+  title:   `ยืนยันการ${label}`,
+  message: `ยืนยันการ${label}เคลมนี้?`,
+  okText:  label,
+  type:    type,
+});
+if (!ok) return;
+
+  
 
   try {
     // อัปเดตใน DB
@@ -438,11 +448,22 @@ const updateData = {
     document.getElementById('qcStatusCurrent').innerHTML =
       `สถานะปัจจุบัน: ${buildStatusBadge(newStatus)}`;
 
-    alert(`✅ ${label}เคลมสำเร็จ`);
+  // ✅ ใหม่
+    // ปิด modal เคลมก่อน แล้วค่อยแสดง success
+    closeModal();
+
+  // ✅ ใหม่ (toast หายเองใน 2.5 วิ)
+closeModal();
+showToast(`${label}เคลมสำเร็จ`, type);
 
   } catch (err) {
     console.error('❌ updateClaimStatus error:', err);
-    alert('❌ เกิดข้อผิดพลาด: ' + err.message);
+    await ConfirmDialog.show({
+      title:   'เกิดข้อผิดพลาด',
+      message: err.message,
+      okText:  'ตกลง',
+      type:    'danger',
+    });
   }
 }
 
@@ -646,3 +667,57 @@ function formatDateTime(ts) {
 }
 
 console.log('✅ adminQC.js loaded');
+
+// =====================================================
+// 🔔 TOAST NOTIFICATION
+// =====================================================
+function showToast(message, type = 'success') {
+  // ลบ toast เก่าถ้ามี
+  document.getElementById('ea-toast')?.remove();
+
+  const colorMap = {
+    success: { bg: '#2e7d32', icon: '✅' },
+    danger:  { bg: '#c62828', icon: '❌' },
+    warning: { bg: '#e65100', icon: '⚠️' },
+    info:    { bg: '#1565c0', icon: 'ℹ️' },
+  };
+  const c = colorMap[type] || colorMap.success;
+
+  const toast = document.createElement('div');
+  toast.id = 'ea-toast';
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: ${c.bg};
+    color: #fff;
+    font-family: "Kanit", sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 14px 24px;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 99999;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  `;
+  toast.innerHTML = `<span>${c.icon}</span><span>${message}</span>`;
+  document.body.appendChild(toast);
+
+  // แสดง
+  requestAnimationFrame(() => {
+    toast.style.opacity   = '1';
+    toast.style.transform = 'translateY(0)';
+  });
+
+  // หายเองใน 2.5 วิ
+  setTimeout(() => {
+    toast.style.opacity   = '0';
+    toast.style.transform = 'translateY(12px)';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
