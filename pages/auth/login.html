@@ -3,8 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes"> -->
   <title>EABaseHub Login</title>
 
   <!-- Supabase -->
@@ -22,6 +20,34 @@
 
 <body>
 
+<!-- ================================
+     SPLASH SCREEN (ก่อน login card)
+================================= -->
+<div id="splash-screen">
+  <div class="splash-logo">
+    <img src="/assets/icons/icon-192.png" alt="logo">
+  </div>
+  <div class="splash-title">EABaseHub</div>
+  <div class="splash-sub">ศูนย์รวมข้อมูลและระบบงาน</div>
+  <div class="splash-dots">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
+<!-- ================================
+     LOGIN SUCCESS OVERLAY (หลัง login)
+================================= -->
+<div id="login-overlay">
+  <div class="overlay-box">
+    <div class="overlay-ring"></div>
+    <h3>กำลังเข้าสู่ระบบ...</h3>
+    <p>กรุณารอสักครู่</p>
+  </div>
+</div>
+
+<!-- ================================
+     LOGIN CARD
+================================= -->
 <div class="login-wrapper">
   <div class="login-card">
 
@@ -35,7 +61,6 @@
     <!-- Form -->
     <form id="loginForm">
 
-      <!-- Email / Username -->
       <div class="form-group">
         <label for="email">Email หรือ Username</label>
         <div class="input-box">
@@ -51,7 +76,6 @@
         </div>
       </div>
 
-      <!-- Password -->
       <div class="form-group">
         <label for="password">รหัสผ่าน</label>
         <div class="input-box">
@@ -70,12 +94,10 @@
         </div>
       </div>
 
-      <!-- Forgot -->
       <div class="forgot">
         <a href="forgot-password.html">ลืมรหัสผ่าน?</a>
       </div>
 
-      <!-- Login Button -->
       <button type="submit" id="loginBtn" class="btn-login">
         <span class="btn-text">เข้าสู่ระบบ</span>
         <span class="spinner"></span>
@@ -90,19 +112,19 @@
   </div>
 </div>
 
-<!-- Scripts — โหลดตามลำดับ: supabase → auth → login logic -->
+<!-- Scripts -->
 <script src="/js/core/supabaseClient.js"></script>
 <script src="/js/core/auth.js"></script>
-<script src="/js/pages/auth/login.js"></script>  <!-- ✅ แก้: เพิ่ม "> ปิด tag -->
+<script src="/js/pages/auth/login.js"></script>
 
-<!-- Toggle Password — ต้องอยู่หลัง login.js -->
+<!-- Toggle Password -->
 <script>
   const toggle = document.getElementById("togglePassword");
-  const passwordInput = document.getElementById("password");  // ✅ แก้: เปลี่ยนชื่อตัวแปรไม่ชนกับ password ใน login.js
+  const passwordField = document.getElementById("password");
 
   toggle.addEventListener("click", () => {
-    const type = passwordInput.type === "password" ? "text" : "password";
-    passwordInput.type = type;
+    const type = passwordField.type === "password" ? "text" : "password";
+    passwordField.type = type;
     toggle.innerHTML = type === "password"
       ? '<i class="fa-regular fa-eye"></i>'
       : '<i class="fa-regular fa-eye-slash"></i>';

@@ -3,33 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>EABaseHub | รายงานเยี่ยมร้านค้า</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
-
-  <!-- เปลี่ยนมาใช้ไฟล์ CSS ใหม่ที่มี responsive -->
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/base/layout.css">
   <link rel="stylesheet" href="/css/pages/report/report.css">
 </head>
-
 <body>
 
-  <!-- ===================================================== -->
-  <!-- HEADER                                                -->
-  <!-- ===================================================== -->
   <header class="app-header">
     <div class="logo">
-      <div class="logo-circle">
-        <img src="/assets/icons/icon-192.png" alt="logo">
-      </div>
+      <div class="logo-circle"><img src="/assets/icons/icon-192.png" alt="logo"></div>
       <h2>EABaseHub</h2>
     </div>
-
     <div class="user-box">
       <div class="user-avatar" id="userAvatar">👤</div>
       <div class="user-info">
@@ -39,58 +27,45 @@
     </div>
   </header>
 
-
-  <!-- ===================================================== -->
-  <!-- NAVIGATION                                            -->
-  <!-- ===================================================== -->
   <nav class="app-nav">
     <a href="/pages/index.html">หน้าแรก</a>
     <a href="/pages/reports/report.html" class="active">รายงานเยี่ยมร้านค้า</a>
     <a href="/pages/forms/formClaim.html">แจ้งเคลมสินค้า</a>
     <a href="/pages/forms/formHub.html">แบบฟอร์ม</a>
+    <a href="/pages/forms/shopUser.html">ร้านค้าของฉัน</a>
   </nav>
 
+  <main>
+  <div class="container">
 
-<div class="container">
+    <!-- PAGE HEADER -->
     <div class="page-header">
+      <h1>📋 Report Management</h1>
+      <p>กรอกข้อมูล • Save Draft (เก็บในเครื่อง) • ส่งรายงานสัปดาห์</p>
+    </div>
 
-    <h1>📋 Report Management</h1>
-    <p>กรอกข้อมูล • บันทึก • จัดการ • ส่งออก</p>
-  </div>
-
-<!-- ===================================================== -->
-<!-- SECTION 1: FORM INPUT                                 -->
-<!-- ===================================================== -->      
+    <!-- ===================================================== -->
+    <!-- SECTION 1: FORM                                        -->
+    <!-- ===================================================== -->
     <div class="card">
-
       <h2>📝 กรอกข้อมูลรายงาน</h2>
 
       <div class="form-grid">
-
         <div class="form-group">
           <label>วันที่</label>
           <input type="date" id="reportDate">
         </div>
-
         <div class="form-group">
           <label>ร้านค้า</label>
-          <select id="shopSelect">
-            <option value="">-- เลือกร้านค้า --</option>
-          </select>
+          <select id="shopSelect"><option value="">-- เลือกร้านค้า --</option></select>
         </div>
-
         <div class="form-group">
-          <label>สินค้าที่ขายกับร้านนี้</label>
-          <select id="categorySelect">
-            <option value="">-- เลือกหมวด --</option>
-          </select>
+          <label>หมวดสินค้า</label>
+          <select id="categorySelect"><option value="">-- เลือกหมวด --</option></select>
         </div>
-
         <div class="form-group">
           <label>สินค้า</label>
-          <select id="productSelect">
-            <option value="">-- เลือกสินค้า --</option>
-          </select>
+          <select id="productSelect"><option value="">-- เลือกสินค้า --</option></select>
         </div>
 
         <div id="dynamicAttributes"></div>
@@ -98,97 +73,165 @@
         <div class="form-group">
           <label>แหล่งที่มา</label>
           <select id="source">
-            <option>Walk-in</option>
-            <option>LINE</option>
-            <option>Facebook</option>
+            <option value="Walk-in">Walk-in</option>
+            <option value="LINE">LINE</option>
+            <option value="Facebook">Facebook</option>
           </select>
         </div>
-
         <div class="form-group">
-          <label>สถานะ</label>
+          <label>สถานะการเยี่ยม</label>
           <select id="status">
-            <option>เข้าพบลูกค้า</option>
-            <option>รอเข้าพบรอบต่อไป</option>
+            <option value="เข้าพบลูกค้า">เข้าพบลูกค้า</option>
+            <option value="รอเข้าพบรอบต่อไป">รอเข้าพบรอบต่อไป</option>
           </select>
         </div>
-
         <div class="form-group">
-          <label>ยอดสั่งซื้อ</label>
-          <input type="number" id="amount">
+          <label>ยอดสั่งซื้อ (บาท)</label>
+          <input type="number" id="amount" min="0" placeholder="0">
         </div>
-
         <div class="form-group">
           <label>วันที่ติดตาม</label>
           <input type="date" id="followupDate">
         </div>
-
         <div class="form-group full">
-          <label>รายละเอียด</label>
-          <textarea id="note" rows="5"></textarea>
+          <label>รายละเอียด / หมายเหตุ</label>
+          <textarea id="note" rows="4" placeholder="บันทึกสิ่งที่พูดคุย สิ่งที่ต้องติดตาม..."></textarea>
         </div>
-
       </div>
 
+      <!-- ปุ่ม -->
       <div class="actions">
-        <button class="btn-draft">💾 Save Draft</button>
-        <button class="btn-save" onclick="saveReport()">✅ บันทึก</button>
+        <button class="btn-draft" onclick="saveDraft()">
+          💾 Save Draft
+          <span class="draft-badge" id="draftCount">0</span>
+        </button>
+        <button class="btn-save" onclick="saveReport()">✅ ส่งทันที</button>
       </div>
 
+      <p class="form-hint">
+        💡 <strong>Save Draft</strong> = เก็บในเครื่องนี้ ยังไม่ส่งให้ผู้บริหาร &nbsp;|&nbsp;
+        <strong>ส่งทันที</strong> = บันทึกและส่งเลย
+      </p>
     </div>
-  
 
-    <!-- SECTION B : RESULT TABLE -->
-    <div class="section">
 
-      <h2>📋 รายการรายงาน</h2>
+    <!-- ===================================================== -->
+    <!-- SECTION 2: DRAFT LIST (แสดงเฉพาะตอนมี draft)          -->
+    <!-- ===================================================== -->
+    <div class="card draft-section" id="draftSection" style="display:none;">
+      <div class="section-header-row">
+        <h2>📝 Draft ที่รอส่ง (<span id="draftCount2">0</span> รายการ)</h2>
+        <button class="btn-submit-all" id="submitAllBtn" onclick="submitAllDrafts()">
+          📤 ส่งรายงานประจำสัปดาห์ทั้งหมด
+        </button>
+      </div>
 
-      <!-- ★ เพิ่ม table-wrapper เพื่อให้ scroll แนวนอนบนมือถือได้ -->
+      <div class="draft-hint">
+        ⚠️ Draft เก็บเฉพาะในเบราว์เซอร์นี้ — หากล้าง cache หรือเปลี่ยนอุปกรณ์ข้อมูลจะหาย
+        กรุณาส่งรายงานก่อนสิ้นสัปดาห์
+      </div>
+
       <div class="table-wrapper">
         <table>
           <thead>
             <tr>
               <th>วันที่</th>
               <th>ร้านค้า</th>
+              <th>สินค้า</th>
+              <th>รายละเอียด</th>
+              <th>บันทึกเมื่อ</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="draftBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- SECTION 3: SUBMITTED REPORTS                           -->
+    <!-- ===================================================== -->
+    <div class="section">
+      <h2>✅ รายงานที่ส่งแล้ว</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>วันที่ส่ง</th>
+              <th>ร้านค้า</th>
               <th>สถานะ</th>
               <th>รายละเอียด</th>
               <th>สินค้า</th>
-              <th>จัดการรายงานของฉัน</th>
+              <th>ยอด (฿)</th>
+              <th>จัดการ</th>
             </tr>
           </thead>
-          <thead id="reportHead"></thead>
           <tbody id="reportBody">
-            <tr>
-              <td colspan="6">ยังไม่มีข้อมูล</td>
-            </tr>
+            <tr><td colspan="7" style="text-align:center;color:#888;">ยังไม่มีข้อมูล</td></tr>
           </tbody>
         </table>
       </div>
-
     </div>
-    
-    <!-- SECTION C : EXPORT -->
+
+
+    <!-- ===================================================== -->
+    <!-- SECTION 4: EXPORT                                      -->
+    <!-- ===================================================== -->
     <div class="section">
-      
       <h2>📤 ส่งออกข้อมูล</h2>
-      
       <div class="actions">
-        <button>Export CSV</button>
-        <button>Export Excel</button>
-        <button>Export PDF</button>
+        <button onclick="exportData('csv')">📄 Export CSV</button>
+        <button onclick="exportData('excel')">📊 Export Excel</button>
+        <button onclick="exportData('pdf')">🖨️ Export PDF</button>
       </div>
-      
     </div>
-    </div><!-- /.container -->
+
+  </div>
   </main>
-  
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    © 2026 EABaseHub | บันทึกการเยี่ยมร้าค้า
-  </footer>
 
 
-  <!-- SCRIPTS -->
+  <!-- ===================================================== -->
+  <!-- MODAL: ดูรายละเอียด submitted                          -->
+  <!-- ===================================================== -->
+  <div id="reportModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeModalBtn">✕</span>
+      <h3 id="modalTitle">รายละเอียดรายงาน</h3>
+
+      <div style="margin-top:12px;display:grid;gap:8px;font-size:14px;">
+        <div><strong>วันที่:</strong>       <span id="m-date">—</span></div>
+        <div><strong>ร้านค้า:</strong>      <span id="m-store">—</span></div>
+        <div><strong>สินค้า:</strong>       <span id="m-product">—</span></div>
+        <div><strong>แหล่งที่มา:</strong>   <span id="m-source">—</span></div>
+        <div><strong>สถานะ:</strong>        <span id="m-status">—</span></div>
+        <div><strong>ยอดสั่งซื้อ:</strong>  <span id="m-qty">—</span></div>
+        <div><strong>วันที่ติดตาม:</strong> <span id="m-followup">—</span></div>
+        <div id="m-attributes"></div>
+        <div>
+          <label style="font-weight:600;font-size:12px;color:#555;">หมายเหตุ</label>
+          <textarea id="m-note" rows="3" style="width:100%;margin-top:4px;" disabled></textarea>
+        </div>
+
+        <!-- Manager comments (read-only สำหรับ sales) -->
+        <div>
+          <label style="font-weight:600;font-size:12px;color:#555;">💬 Comment จากผู้บริหาร</label>
+          <div id="m-manager-comments" style="margin-top:6px;"></div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="saveEditBtn" style="display:none;" onclick="saveEdit()">💾 บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
+
+  <footer class="footer">© 2026 EABaseHub | บันทึกการเยี่ยมร้านค้า</footer>
+
   <script src="/js/core/supabaseClient.js"></script>
   <script src="/js/core/auth.js"></script>
   <script src="/js/core/userService.js"></script>
@@ -196,6 +239,5 @@
   <script src="/js/services/categoryService.js"></script>
   <script src="/js/services/reportService.js"></script>
   <script src="/js/pages/report/report.js"></script>
-
 </body>
 </html>

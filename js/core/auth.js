@@ -224,7 +224,7 @@ async function protectPage(allowedRoles = []) {
     // allowedRoles คือ array เช่น ["admin","manager"]
     if (allowedRoles.length > 0) {
       // ถ้า role ของ user ไม่อยู่ใน allowedRoles
-      if (!allowedRoles.includes(profile.role)) {
+      if (!allowedRoles.map(r => r.toLowerCase()).includes((profile.role || '').toLowerCase())) {
         console.warn("⚠️ User role not allowed:", profile.role);
         
         // แสดง alert

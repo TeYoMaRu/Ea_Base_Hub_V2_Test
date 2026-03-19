@@ -1,4 +1,18 @@
 // ===============================
+// Helper: แสดง overlay ก่อน redirect
+// ===============================
+function showLoginOverlay(redirectUrl) {
+  const overlay = document.getElementById("login-overlay");
+  if (overlay) {
+    overlay.classList.add("show");
+  }
+  // หน่วงเล็กน้อยให้ animation เสร็จก่อน redirect
+  setTimeout(() => {
+    window.location.href = redirectUrl;
+  }, 900);
+}
+
+// ===============================
 // Redirect if already logged in
 // ===============================
 async function redirectIfLoggedIn() {
@@ -21,15 +35,17 @@ async function redirectIfLoggedIn() {
       return;
     }
 
-    // 🔥 Redirect ตาม Role
+    // Redirect ตาม Role (ไม่แสดง overlay เพราะ user ไม่ได้กด login)
     if (profile.role === "admin") {
       window.location.href = "/pages/admin/admintor.html";
+    } else if (profile.role === "adminQc") {
+      window.location.href = "/pages/dashboard/QcDashboard.html";
     } else if (profile.role === "sales") {
       window.location.href = "/pages/index.html";
     } else if (profile.role === "manager") {
-      window.location.href = "manager-dashboard.html";
+      window.location.href = "/pages/dashboard/managerDashboard.html";
     } else if (profile.role === "executive") {
-      window.location.href = "executive-dashboard.html";
+      window.location.href = "/pages/dashboard/executiveDashboard.html";
     }
   } catch (error) {
     console.error("Error checking session:", error);
@@ -66,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       let emailToUse = identifier;
 
-      // ถ้าไม่มี @ → แปลว่าเป็น username
       if (!identifier.includes("@")) {
         const { data: userData, error } = await supabaseClient
           .from("profiles")
@@ -89,9 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (loginError) throw loginError;
 
-      // ===============================
-      // เช็ค role หลัง login
-      // ===============================
       const { data: profile, error: roleError } = await supabaseClient
         .from("profiles")
         .select("role, status")
@@ -107,19 +119,22 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error("บัญชีของคุณถูกระงับ");
       }
 
-      // 🔥 Redirect ตาม Role
+      // 🔥 แสดง overlay ก่อน redirect ตาม Role
       if (profile.role === "admin") {
-        window.location.href = "/pages/admin/admintor.html";
+        showLoginOverlay("/pages/admin/admintor.html");
+      } else if (profile.role === "adminQc") {
+        showLoginOverlay("/pages/dashboard/QcDashboard.html");
       } else if (profile.role === "sales") {
-        window.location.href = "/pages/index.html";
+        showLoginOverlay("/pages/index.html");
       } else if (profile.role === "manager") {
-        window.location.href = "manager-dashboard.html";
+        showLoginOverlay("/pages/dashboard/managerDashboard.html");
       } else if (profile.role === "executive") {
-        window.location.href = "executive-dashboard.html";
+        showLoginOverlay("/pages/dashboard/executiveDashboard.html");
       } else {
         await supabaseClient.auth.signOut();
         throw new Error("คุณไม่มีสิทธิ์เข้าใช้งานระบบนี้");
       }
+
     } catch (err) {
       let errorMessage = err.message;
 
@@ -128,9 +143,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       alert("เข้าสู่ระบบไม่สำเร็จ: " + errorMessage);
-    } finally {
+
       loginBtn.disabled = false;
       loginBtn.classList.remove("loading");
     }
+    // ❌ ไม่มี finally — ถ้า login สำเร็จ ให้ overlay ค้างอยู่จนกว่าจะ redirect
   });
 });

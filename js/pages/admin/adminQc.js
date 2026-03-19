@@ -30,15 +30,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const ready = await waitForSupabase();
     if (!ready) { alert('ไม่สามารถเชื่อมต่อระบบได้'); return; }
+    
+    setupLogout();
 
-    await protectPage();
+    await protectPage(["admin", "adminQC", "adminqc"]);
 
     // โหลดข้อมูล
     await loadClaims();
 
     // Setup
     setupEventListeners();
-    setupLogout();
 
   } catch (err) {
     console.error('❌ Init error:', err);
@@ -407,7 +408,14 @@ async function updateClaimStatus(newStatus) {
   try {
     // อัปเดตใน DB
     // หมายเหตุ: ถ้าต้องการเก็บ qc_comment ให้เพิ่ม column qc_comment (text) ใน table claims
-    const updateData = { status: newStatus, updated_at: new Date().toISOString() };
+    const { data: { user } } = await supabaseClient.auth.getUser();
+
+const updateData = {
+  status:     newStatus,
+  qc_comment: comment || null,
+  qc_by:      user?.id || null,
+  updated_at: new Date().toISOString()
+};
 
     const { error } = await supabaseClient
       .from('claims')

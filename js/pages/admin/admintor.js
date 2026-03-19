@@ -146,9 +146,15 @@ function updateStats(data) {
   document.getElementById("countAdmin").textContent
     = data.filter(u => u.role === "admin").length;
 
+    document.getElementById("countAdminQC").textContent
+  = data.filter(u => u.role === "adminQc").length;
+
   document.getElementById("countManager").textContent
     = data.filter(u => u.role === "manager").length;
 
+    document.getElementById("countExecutive").textContent
+    = data.filter(u => u.role === "executive").length;
+    
   document.getElementById("countSales").textContent
     = data.filter(u => u.role === "sales").length;
 
@@ -179,11 +185,23 @@ function roleBadge(role) {
       icon:  "shield",
       label: "Admin"
     },
-
+    
+    adminQc: {
+      cls:   "role-adminqc",
+      icon:  "verified_user",
+      label: "AdminQC"
+    },
+    
     manager: {
       cls:   "role-manager",
       icon:  "supervisor_account",
       label: "Manager"
+    },
+
+    executive: {
+      cls:   "role-executive",
+      icon:  "star",
+      label: "Executive"
     },
 
     sales: {
@@ -196,8 +214,7 @@ function roleBadge(role) {
       cls:   "role-user",
       icon:  "person",
       label: "User"
-    },
-
+    }, 
   };
 
   const r =

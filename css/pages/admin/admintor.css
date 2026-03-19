@@ -254,6 +254,8 @@
 .chip-sales    { background:#eff6ff; color:#1e40af; border-color:#bfdbfe; }
 .chip-user     { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; }
 .chip-inactive { background:#fef2f2; color:#991b1b; border-color:#fecaca; }
+.chip-executive { background:#fdf4ff; color:#7e22ce; border-color:#e9d5ff; }
+.chip-adminqc   { background:#fff7ed; color:#c2410c; border-color:#fed7aa; }
 
 
 /* ============================================================
@@ -427,6 +429,8 @@
 .role-manager { background:#f5f3ff; color:#6d28d9; }
 .role-sales   { background:#eff6ff; color:#1d4ed8; }
 .role-user    { background:#f0fdf4; color:#15803d; }
+.role-executive { background:#fdf4ff; color:#7e22ce; }
+.role-adminqc   { background:#fff7ed; color:#c2410c; }
 
 
 /* ── STATUS BADGE ── */

@@ -1,8 +1,6 @@
 /* =====================================================
    FORMS REPORT - STYLESHEET
-   ไฟล์ CSS สำหรับหน้า Forms Report
    ===================================================== */
-/* CSS VARIABLES - กำหนดค่าสีและค่าคงที่ */
 
 :root {
   --primary:        #0d9488;
@@ -38,7 +36,6 @@
   --radius-lg:      16px;
   --radius-xl:      20px;
 
-  /* Tablet base: 14px → scale up */
   --font-xs:    13px;
   --font-sm:    14px;
   --font-base:  15px;
@@ -49,7 +46,7 @@
 }
 
 /* ==============================================================
-PAGE BOX (เนื้อหาด้าใน)
+PAGE BOX
 ============================================================== */
 
 .page-header {
@@ -97,6 +94,7 @@ PAGE BOX (เนื้อหาด้าใน)
   z-index: 1;
   margin: 0;
 }
+
 /* ================= PAGE HEADER ================= */
 .app-header .logo {
   display: flex;
@@ -106,8 +104,6 @@ PAGE BOX (เนื้อหาด้าใน)
   font-size: 14px;
   flex-direction: row;
 }
-
-
 
 /* ================= CARD / SECTION ================= */
 
@@ -177,7 +173,8 @@ input:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: var(--primary-1);
+  /* FIX: แก้ var(--primary-1) → var(--primary) */
+  border-color: var(--primary);
   background: #fff;
 }
 
@@ -189,7 +186,6 @@ textarea:focus {
   margin-top: 14px;
   flex-wrap: wrap;
 }
-
 
 button {
   padding: 14px 24px;
@@ -205,8 +201,8 @@ button {
   justify-content: center;
   gap: 8px;
   flex: 1;
-  min-width: 100px;   /*ขนาดปุ่ม logout*/
-  min-height: 32px;   /*ขนาดปุ่ม logout*/
+  min-width: 100px;
+  min-height: 32px;
 }
 
 .btn-draft {
@@ -244,7 +240,6 @@ button {
 
 /* ================= TABLE ================= */
 
-/* Wrapper สำหรับ horizontal scroll บนมือถือ */
 .table-wrapper {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -253,7 +248,7 @@ button {
 
 table {
   width: 100%;
-  min-width: 520px; /* ป้องกันตารางแหลก */
+  min-width: 520px;
   border-collapse: collapse;
   font-size: 13px;
 }
@@ -306,6 +301,13 @@ th {
   float: right;
   font-size: 20px;
   cursor: pointer;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.close-btn:hover {
+  background: #f1f1f1;
 }
 
 .modal-footer {
@@ -321,6 +323,7 @@ th {
   border-radius: 6px;
   cursor: pointer;
   font-family: inherit;
+  flex: none;
 }
 
 @keyframes fadeIn {
@@ -360,8 +363,6 @@ th {
    RESPONSIVE BREAKPOINTS
    ===================================================== */
 
-/* ================= TABLET (768px) - PRIMARY BREAKPOINT ================= */
-
 @media (min-width: 768px) and (max-width: 1024px) {
   :root {
     --font-xs:   13px;
@@ -374,9 +375,7 @@ th {
   }
 
   .container { padding: 20px 16px 40px; }
-
   .app-header { padding: 0 20px; height: 64px; }
-
   .app-nav a { padding: 13px 18px; }
 
   .product-grid {
@@ -410,8 +409,6 @@ th {
   }
 }
 
-/* ================= MOBILE (< 768px) ================= */
-
 @media (max-width: 767px) {
   :root {
     --font-xs:   12px;
@@ -425,7 +422,6 @@ th {
 
   .container { padding: 12px 12px 32px; }
 
-  /* Header */
   .app-header {
     padding: 10px 14px;
     min-height: 64px;
@@ -435,12 +431,12 @@ th {
     font-size: 16px;
   }
   .logo-circle { 
-      width: 45px; 
-      height: 45px; 
-}
+    width: 45px; 
+    height: 45px; 
+  }
   .logo-circle img { 
-      width: 65%; 
-}
+    width: 65%; 
+  }
 
   .user-name {
     max-width: 80px;
@@ -452,7 +448,6 @@ th {
     font-size: 12px;
   }
 
-   /* Nav */
   .app-nav {
     top: 56px;
     padding: 7px 12px;
@@ -465,12 +460,11 @@ th {
   }
 
   .page-header { padding: 20px 20px; border-radius: var(--radius-lg); }
-  /* Page header */
+
   .page-header h1 {
     font-size: 18px;
   }
 
-  /* Container */
   .container {
     padding: 12px 10px;
   }
@@ -506,8 +500,6 @@ th {
   .actions { flex-direction: column; }
 
   button { 
-    /* width: 100%; 
-    min-width: unset;  */
     flex: none; 
   }
 
@@ -521,12 +513,8 @@ th {
   .modal-content { max-width: 100%; border-radius: 16px 16px 0 0; margin: auto 0 0; max-height: 90vh; }
 }
 
-/* ================= SMALL MOBILE (< 480px) ================= */
-
-/* ---- Mobile: ≤ 480px ---- */
 @media (max-width: 480px) {
 
-  /* Header: ซ่อนชื่อผู้ใช้ เหลือแค่ avatar + logout */
   .app-header {
     padding: 8px 12px;
     min-height: 64px;
@@ -541,18 +529,14 @@ th {
     height: 38px;
   }
 
-  /* ซ่อน user-info (ชื่อ) บนมือถือเล็ก */
   .user-info {
     display: none;
   }
 
-  
   .logout-btn {
     padding: 4px;
-    /* font-size: 0; */
   }
  
-  /* Nav */
   .app-nav {
     top: 52px;
     padding: 6px 10px;
@@ -563,7 +547,6 @@ th {
     padding: 5px 9px;
   }
 
-  /* Page header */
   .page-header {
     padding: 14px 12px;
   }
@@ -572,7 +555,6 @@ th {
     font-size: 16px;
   }
 
-  /* Card/Section */
   .card,
   .section {
     padding: 16px 12px;
@@ -584,7 +566,6 @@ th {
     font-size: 15px;
   }
 
-  /* Form grid: 1 คอลัมน์บนมือถือ */
   .form-grid {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -602,11 +583,10 @@ th {
   input,
   select,
   textarea {
-    font-size: 16px; /* ป้องกัน iOS zoom เมื่อ focus */
+    font-size: 16px;
     padding: 10px;
   }
 
-  /* Buttons */
   .actions {
     flex-direction: column;
     gap: 8px;
@@ -621,9 +601,8 @@ th {
     text-align: center;
   }
 
-  /* Table: horizontal scroll */
   .table-wrapper {
-    margin: 0 -4px; /* ขยายออกนิดหน่อย */
+    margin: 0 -4px;
   }
 
   table {
@@ -640,7 +619,6 @@ th {
     max-width: 90px;
   }
 
-  /* Export buttons */
   .section .actions {
     flex-direction: column;
   }
@@ -649,10 +627,9 @@ th {
     width: 100%;
   }
 
-  /* Modal */
   .modal {
     padding: 12px;
-    align-items: flex-end; /* slide up from bottom */
+    align-items: flex-end;
   }
 
   .modal-content {
@@ -662,19 +639,15 @@ th {
   }
 }
 
-/* ---- Very Small: ≤ 360px ---- */
 @media (max-width: 360px) {
-
   .app-header .logo h2 {
-    display: none; /* ซ่อนชื่อระบบบนจอเล็กมาก */
+    display: none;
   }
 
   .page-header h1 {
     font-size: 15px;
   }
 }
-
-/* ================= PRINT ================= */
 
 @media print {
   .app-header, .app-nav, .actions,
@@ -698,4 +671,3 @@ th {
     gap: 6px;
   }
 }
-
