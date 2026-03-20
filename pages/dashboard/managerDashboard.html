@@ -4,16 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>EABaseHub | Manager Dashboard</title>
+  <title>EABaseHub | Sales Dashboard</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/base/layout.css">
   <link rel="stylesheet" href="/css/pages/dashboard/managerDashboard.css">
 </head>
 <body>
 
+  <!-- ── HEADER ── -->
   <header class="app-header">
     <div class="logo">
       <div class="logo-circle"><img src="/assets/icons/icon-192.png" alt="logo"></div>
@@ -29,210 +30,210 @@
     </div>
   </header>
 
+  <!-- ── NAV ── -->
   <nav class="app-nav">
-    <a href="/pages/index.html">หน้าแรก</a>
-    <a href="/pages/reports/report.html">รายงานเยี่ยมร้านค้า</a>
-    <a href="/pages/manager/dashboard.html" class="active">📊 Manager Dashboard</a>
+   
+    <a href="/pages/dashboard/managerDashboard.html" class="active">หน้าหลัก</a>
+    <a href="/pages/reports/reportTracker.html">รายงานเยี่ยมร้านค้า</a>
+    <a href="/pages/reports/importData.html">นำเข้าข้อมูล</a>
   </nav>
 
   <main>
   <div class="container">
 
-    <!-- PAGE HEADER -->
+    <!-- ── PAGE HEADER ── -->
     <div class="page-header">
       <div class="page-header-text">
-        <h1>📊 Manager Dashboard</h1>
-        <p>ติดตามรายงานเยี่ยมร้านค้าของทีม</p>
+        <h1>📊 Sales <span class="accent">Intelligence</span></h1>
+        <p>ภาพรวมยอดขายและประสิทธิภาพทีม</p>
       </div>
-      <div class="week-nav">
-        <button onclick="changeWeek(-1)" class="week-btn">‹</button>
-        <div>
-          <div id="weekOffsetLabel" style="font-size:11px;opacity:0.8;text-align:center;">สัปดาห์นี้</div>
-          <div id="weekLabel" style="font-size:13px;font-weight:600;">—</div>
+      <div class="header-controls">
+        <div class="period-selector">
+          <label>ช่วงเวลา</label>
+          <select id="periodSelect" onchange="changePeriod(this.value)">
+            <option value="week">รายสัปดาห์</option>
+            <option value="month">รายเดือน</option>
+            <option value="quarter">รายไตรมาส</option>
+          </select>
         </div>
-        <button onclick="changeWeek(1)"  class="week-btn">›</button>
+        <div class="week-nav">
+          <button onclick="changeWeek(-1)" class="week-btn">‹</button>
+          <div class="week-label-box">
+            <div id="weekOffsetLabel">สัปดาห์นี้</div>
+            <div id="weekLabel">—</div>
+          </div>
+          <button onclick="changeWeek(1)" class="week-btn">›</button>
+        </div>
       </div>
     </div>
 
-    <!-- KPI CARDS -->
-    <div class="kpi-grid">
-      <div class="kpi-card kpi-total">
-        <div class="kpi-icon">📋</div>
-        <div class="kpi-body">
-          <div class="kpi-number" id="kpiTotal">—</div>
-          <div class="kpi-label">รายงานทั้งหมด</div>
-        </div>
+    <!-- ── INSIGHT PILLS ── -->
+    <div class="insight-row">
+      <div class="insight-pill">
+        <span class="pill-icon">🏆</span>
+        <span class="pill-val" id="topSale">—</span>
+        <span class="pill-label">เซลล์ยอดสูงสุด</span>
       </div>
-      <div class="kpi-card kpi-amount">
+      <div class="insight-pill">
+        <span class="pill-icon">📦</span>
+        <span class="pill-val" id="topProduct">—</span>
+        <span class="pill-label">สินค้าขายดีอันดับ 1</span>
+      </div>
+      <div class="insight-pill">
+        <span class="pill-icon">🏪</span>
+        <span class="pill-val" id="topShop">—</span>
+        <span class="pill-label">ร้านค้ายอดสูงสุด</span>
+      </div>
+      <div class="insight-pill">
+        <span class="pill-icon">📈</span>
+        <span class="pill-val" id="growthRate">—</span>
+        <span class="pill-label">เติบโตเทียบสัปดาห์ก่อน</span>
+      </div>
+    </div>
+
+    <!-- ── KPI CARDS ── -->
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-green">
         <div class="kpi-icon">💰</div>
         <div class="kpi-body">
           <div class="kpi-number" id="kpiAmount">—</div>
-          <div class="kpi-label">ยอดรวม (฿)</div>
+          <div class="kpi-label">ยอดขายรวม (฿)</div>
+          <div class="kpi-change" id="kpiAmountChange">— vs สัปดาห์ก่อน</div>
         </div>
       </div>
-      <div class="kpi-card kpi-shops">
-        <div class="kpi-icon">🏪</div>
+      <div class="kpi-card kpi-orange">
+        <div class="kpi-icon">🎯</div>
         <div class="kpi-body">
-          <div class="kpi-number" id="kpiShops">—</div>
-          <div class="kpi-label">จำนวนร้านค้า</div>
+          <div class="kpi-number" id="kpiTargetPct">—</div>
+          <div class="kpi-label">% บรรลุเป้าหมาย</div>
+          <div class="kpi-change" id="kpiTargetSub">เป้า: —</div>
         </div>
       </div>
-      <div class="kpi-card kpi-sales">
+      <div class="kpi-card kpi-blue">
         <div class="kpi-icon">👥</div>
         <div class="kpi-body">
           <div class="kpi-number" id="kpiSalesRate">—</div>
           <div class="kpi-label">เซลล์ส่งรายงาน</div>
+          <div class="kpi-change" id="kpiSalesSub">จากทั้งหมด — คน</div>
         </div>
       </div>
-      <div class="kpi-card kpi-ack">
-        <div class="kpi-icon">👁️</div>
+      <div class="kpi-card kpi-purple">
+        <div class="kpi-icon">🏪</div>
         <div class="kpi-body">
-          <div class="kpi-number" id="kpiAck">—</div>
-          <div class="kpi-label">รับทราบแล้ว</div>
+          <div class="kpi-number" id="kpiShops">—</div>
+          <div class="kpi-label">ร้านที่เข้าเยี่ยม</div>
+        </div>
+      </div>
+      <div class="kpi-card kpi-pink">
+        <div class="kpi-icon">📋</div>
+        <div class="kpi-body">
+          <div class="kpi-number" id="kpiTotal">—</div>
+          <div class="kpi-label">รายงานทั้งหมด</div>
+          <div class="kpi-change" id="kpiAck">รับทราบ: —</div>
         </div>
       </div>
     </div>
 
-    <!-- SALES STATUS GRID -->
-    <div class="card">
-      <h2>👥 สถานะการส่งรายงานของทีม <span style="font-size:12px;color:#888;font-weight:400">(คลิกกรอง)</span></h2>
-      <div class="sales-grid" id="salesGrid">
-        <div class="loading-text">กำลังโหลด...</div>
-      </div>
-    </div>
-
-    <!-- CHARTS -->
-    <div class="chart-grid">
-
-      <!-- ยอดขายแต่ละเซลล์ -->
-      <div class="card chart-card">
-        <h2>📊 ยอดขายแยกตามเซลล์</h2>
-        <div class="chart-wrap">
-          <canvas id="chartSales"></canvas>
+    <!-- ── ROW: TARGET BARS + WEEKLY TREND ── -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🎯 เป้าหมาย vs ยอดจริง (รายเซลล์)</div>
+          <a href="/pages/manager/reportTracker.html" class="card-link">ดูรายงาน →</a>
+        </div>
+        <div id="targetSection">
+          <div class="loading-text">กำลังโหลด...</div>
         </div>
       </div>
 
-      <!-- ร้านค้า Top 8 -->
-      <div class="card chart-card">
-        <h2>🏪 ร้านค้า (Top 8)</h2>
-        <div class="chart-wrap">
-          <canvas id="chartShop"></canvas>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📈 แนวโน้มยอดขาย 8 สัปดาห์</div>
         </div>
-      </div>
-
-      <!-- สินค้า Top 8 (horizontal bar) -->
-      <div class="card chart-card chart-wide">
-        <h2>📦 ยอดรวมแยกตามสินค้า (Top 8)</h2>
-        <div class="chart-wrap chart-wrap-tall">
-          <canvas id="chartProduct"></canvas>
-        </div>
-      </div>
-
-      <!-- Trend 8 สัปดาห์ -->
-      <div class="card chart-card chart-wide">
-        <h2>📈 แนวโน้มยอดขาย 8 สัปดาห์</h2>
         <div class="chart-wrap">
           <canvas id="chartWeekly"></canvas>
         </div>
       </div>
-
     </div>
 
-    <!-- FILTER BAR -->
-    <div class="card filter-bar">
-      <div class="filter-group">
-        <label>เซลล์</label>
-        <select id="filterSales"><option value="">— ทั้งหมด —</option></select>
+    <!-- ── ROW: LEADERBOARD + TOP PRODUCTS + SHOP PIE ── -->
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🏆 Leaderboard เซลล์</div>
+          <span class="card-badge">สัปดาห์นี้</span>
+        </div>
+        <div id="leaderboard">
+          <div class="loading-text">กำลังโหลด...</div>
+        </div>
       </div>
-      <div class="filter-group">
-        <label>ร้านค้า</label>
-        <select id="filterShop"><option value="">— ทั้งหมด —</option></select>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📦 สินค้าขายดี Top 8</div>
+        </div>
+        <div id="topProductsList">
+          <div class="loading-text">กำลังโหลด...</div>
+        </div>
       </div>
-      <div class="filter-group">
-        <label>สถานะอ่าน</label>
-        <select id="filterAck">
-          <option value="">— ทั้งหมด —</option>
-          <option value="yes">👁️ อ่านแล้ว</option>
-          <option value="no">🕐 ยังไม่อ่าน</option>
-        </select>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🏪 ยอดแยกตามร้านค้า (Top 8)</div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartShop"></canvas>
+        </div>
       </div>
-      <button onclick="applyFilter()" class="btn-filter">🔍 กรอง</button>
-      <button onclick="resetFilter()" class="btn-reset">↺ Reset</button>
-      <button onclick="exportData('csv')" class="btn-export">📄 Export CSV</button>
     </div>
 
-    <!-- REPORT TABLE -->
+    <!-- ── ROW: SALES BAR + ACTIVITY ── -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📊 ยอดขายแยกตามเซลล์</div>
+        </div>
+        <div class="chart-wrap chart-tall">
+          <canvas id="chartSales"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📦 ยอดรวมแยกตามสินค้า</div>
+        </div>
+        <div class="chart-wrap chart-tall">
+          <canvas id="chartProduct"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── HEATMAP ── -->
     <div class="card">
-      <h2>📋 รายการรายงาน</h2>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>วันที่ส่ง</th>
-              <th>เซลล์</th>
-              <th>ร้านค้า</th>
-              <th>สถานะ</th>
-              <th>สินค้า</th>
-              <th>ยอด (฿)</th>
-              <th>อ่านแล้ว</th>
-              <th>จัดการ</th>
-            </tr>
-          </thead>
-          <tbody id="reportBody">
-            <tr><td colspan="8" style="text-align:center;color:#888;">กำลังโหลด...</td></tr>
-          </tbody>
-        </table>
+      <div class="card-header">
+        <div class="card-title">🗓️ Heatmap การเข้าเยี่ยม (30 วันที่ผ่านมา)</div>
+        <span class="card-badge">Daily Activity</span>
       </div>
-      <div class="pagination" id="pagination"></div>
+      <div class="heatmap-wrap" id="heatmapWrap">
+        <div class="loading-text">กำลังโหลด...</div>
+      </div>
     </div>
 
   </div>
   </main>
 
-
-  <!-- MODAL: ดู + Comment -->
-  <div id="reportModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" id="closeModalBtn">✕</span>
-      <h3 id="modalTitle">รายละเอียดรายงาน</h3>
-
-      <div class="modal-body">
-        <div class="modal-row"><span class="modal-label">วันที่</span>       <span id="m-date">—</span></div>
-        <div class="modal-row"><span class="modal-label">เซลล์</span>        <span id="m-sales">—</span></div>
-        <div class="modal-row"><span class="modal-label">ร้านค้า</span>      <span id="m-store">—</span></div>
-        <div class="modal-row"><span class="modal-label">สินค้า</span>       <span id="m-product">—</span></div>
-        <div class="modal-row"><span class="modal-label">แหล่งที่มา</span>   <span id="m-source">—</span></div>
-        <div class="modal-row"><span class="modal-label">สถานะ</span>        <span id="m-status">—</span></div>
-        <div class="modal-row"><span class="modal-label">ยอดสั่งซื้อ</span> <span id="m-qty">—</span></div>
-        <div class="modal-row"><span class="modal-label">วันติดตาม</span>   <span id="m-followup">—</span></div>
-        <div id="m-attributes"></div>
-        <div class="modal-row full">
-          <span class="modal-label">รายละเอียด</span>
-          <div id="m-note-text" class="note-display">—</div>
-        </div>
-
-        <!-- Comments -->
-        <div class="comment-section">
-          <div class="modal-label" style="margin-bottom:6px;">💬 Comments</div>
-          <div id="existingComments" class="existing-comments"></div>
-          <textarea id="managerComment" rows="3" placeholder="พิมพ์ comment / คำแนะนำ..."></textarea>
-          <div class="comment-actions">
-            <button onclick="acknowledgeReport()" class="btn-ack">✅ รับทราบ</button>
-            <button onclick="saveComment()" class="btn-comment">💬 บันทึก Comment</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TOAST -->
   <div id="toast" class="toast"></div>
-
-  <footer class="footer">© 2026 EABaseHub | Manager Dashboard</footer>
+  <footer class="footer">© 2026 EABaseHub | Sales Intelligence Dashboard</footer>
 
   <script src="/js/core/supabaseClient.js"></script>
   <script src="/js/core/auth.js"></script>
   <script src="/js/core/userService.js"></script>
+  <script src="/js/services/shopService.js"></script>
+  <script src="/js/services/categoryService.js"></script>
+  <script src="/js/services/reportService.js"></script>
   <script src="/js/pages/dashboard/managerDashboard.js"></script>
+
+  <script src="/js/core/splash.js"></script>
+  <script src="/js/core/loadingSplash.js"></script>
 </body>
 </html>

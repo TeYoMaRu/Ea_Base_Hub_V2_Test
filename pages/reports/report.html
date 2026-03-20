@@ -7,7 +7,7 @@
   <title>EABaseHub | รายงานเยี่ยมร้านค้า</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/base/layout.css">
   <link rel="stylesheet" href="/css/pages/report/report.css">
 </head>
@@ -51,14 +51,52 @@
       <h2>📝 กรอกข้อมูลรายงาน</h2>
 
       <div class="form-grid">
+
         <div class="form-group">
           <label>วันที่</label>
           <input type="date" id="reportDate">
         </div>
+
+        <div class="form-group">
+          <label>แหล่งที่มา</label>
+          <select id="source">
+            <option value="Walk-in">Walk-in</option>
+            <option value="LINE">LINE</option>
+            <option value="Facebook">Facebook</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>จังหวัด</label>
+          <select id="provinceSelect"><option value="">-- เลือกจังหวัด --</option></select>
+        </div>
+
         <div class="form-group">
           <label>ร้านค้า</label>
-          <select id="shopSelect"><option value="">-- เลือกร้านค้า --</option></select>
+          <select id="shopSelect" disabled><option value="">-- เลือกจังหวัดก่อน --</option></select>
         </div>
+
+        <div class="form-group">
+          <label>สถานะการเยี่ยม</label>
+          <select id="status">
+            <option value="เข้าพบลูกค้า">เข้าพบลูกค้า</option>
+            <option value="รอเข้าพบรอบต่อไป">รอเข้าพบรอบต่อไป</option>
+          </select>
+        </div>
+
+        <div class="form-group full">
+          <label>รายละเอียด / หมายเหตุ</label>
+          <textarea id="note" rows="3" placeholder="บันทึกสิ่งที่พูดคุย สิ่งที่ต้องติดตาม..."></textarea>
+        </div>
+
+      </div>
+
+      <!-- Divider: สินค้า -->
+      <div class="form-section-divider">
+        <span>📦 สินค้าที่ขายกับร้านนี้</span>
+      </div>
+
+      <div class="form-grid">
         <div class="form-group">
           <label>หมวดสินค้า</label>
           <select id="categorySelect"><option value="">-- เลือกหมวด --</option></select>
@@ -69,34 +107,6 @@
         </div>
 
         <div id="dynamicAttributes"></div>
-
-        <div class="form-group">
-          <label>แหล่งที่มา</label>
-          <select id="source">
-            <option value="Walk-in">Walk-in</option>
-            <option value="LINE">LINE</option>
-            <option value="Facebook">Facebook</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>สถานะการเยี่ยม</label>
-          <select id="status">
-            <option value="เข้าพบลูกค้า">เข้าพบลูกค้า</option>
-            <option value="รอเข้าพบรอบต่อไป">รอเข้าพบรอบต่อไป</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>ยอดสั่งซื้อ (บาท)</label>
-          <input type="number" id="amount" min="0" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label>วันที่ติดตาม</label>
-          <input type="date" id="followupDate">
-        </div>
-        <div class="form-group full">
-          <label>รายละเอียด / หมายเหตุ</label>
-          <textarea id="note" rows="4" placeholder="บันทึกสิ่งที่พูดคุย สิ่งที่ต้องติดตาม..."></textarea>
-        </div>
       </div>
 
       <!-- ปุ่ม -->
@@ -105,26 +115,20 @@
           💾 Save Draft
           <span class="draft-badge" id="draftCount">0</span>
         </button>
-        <button class="btn-save" onclick="saveReport()">✅ ส่งทันที</button>
       </div>
 
       <p class="form-hint">
-        💡 <strong>Save Draft</strong> = เก็บในเครื่องนี้ ยังไม่ส่งให้ผู้บริหาร &nbsp;|&nbsp;
-        <strong>ส่งทันที</strong> = บันทึกและส่งเลย
+        💡 <strong>Save Draft</strong> = เก็บในเครื่องนี้ ยังไม่ส่งให้ผู้บริหาร
       </p>
     </div>
 
 
     <!-- ===================================================== -->
-    <!-- SECTION 2: DRAFT LIST (แสดงเฉพาะตอนมี draft)          -->
+    <!-- SECTION 2: DRAFT LIST                                  -->
     <!-- ===================================================== -->
     <div class="card draft-section" id="draftSection" style="display:none;">
-      <div class="section-header-row">
-        <h2>📝 Draft ที่รอส่ง (<span id="draftCount2">0</span> รายการ)</h2>
-        <button class="btn-submit-all" id="submitAllBtn" onclick="submitAllDrafts()">
-          📤 ส่งรายงานประจำสัปดาห์ทั้งหมด
-        </button>
-      </div>
+
+      <h2>📝 Draft ที่รอส่ง (<span id="draftCount2">0</span> รายการ)</h2>
 
       <div class="draft-hint">
         ⚠️ Draft เก็บเฉพาะในเบราว์เซอร์นี้ — หากล้าง cache หรือเปลี่ยนอุปกรณ์ข้อมูลจะหาย
@@ -146,6 +150,13 @@
           <tbody id="draftBody"></tbody>
         </table>
       </div>
+
+      <div class="section-header-row" style="margin-top:16px;">
+        <button class="btn-submit-all" id="submitAllBtn" onclick="submitAllDrafts()">
+          📤 ส่งรายงานประจำสัปดาห์ทั้งหมด
+        </button>
+      </div>
+
     </div>
 
 
@@ -164,12 +175,11 @@
               <th>สถานะ</th>
               <th>รายละเอียด</th>
               <th>สินค้า</th>
-              <th>ยอด (฿)</th>
               <th>จัดการ</th>
             </tr>
           </thead>
           <tbody id="reportBody">
-            <tr><td colspan="7" style="text-align:center;color:#888;">ยังไม่มีข้อมูล</td></tr>
+            <tr><td colspan="6" style="text-align:center;color:#aaa;padding:24px;">ยังไม่มีข้อมูล</td></tr>
           </tbody>
         </table>
       </div>
@@ -182,9 +192,9 @@
     <div class="section">
       <h2>📤 ส่งออกข้อมูล</h2>
       <div class="actions">
-        <button onclick="exportData('csv')">📄 Export CSV</button>
-        <button onclick="exportData('excel')">📊 Export Excel</button>
-        <button onclick="exportData('pdf')">🖨️ Export PDF</button>
+        <button onclick="exportData('csv')">📄 CSV</button>
+        <button onclick="exportData('excel')">📊 Excel</button>
+        <button onclick="exportData('pdf')">🖨️ PDF</button>
       </div>
     </div>
 
@@ -193,31 +203,27 @@
 
 
   <!-- ===================================================== -->
-  <!-- MODAL: ดูรายละเอียด submitted                          -->
+  <!-- MODAL                                                  -->
   <!-- ===================================================== -->
   <div id="reportModal" class="modal">
     <div class="modal-content">
       <span class="close-btn" id="closeModalBtn">✕</span>
       <h3 id="modalTitle">รายละเอียดรายงาน</h3>
 
-      <div style="margin-top:12px;display:grid;gap:8px;font-size:14px;">
-        <div><strong>วันที่:</strong>       <span id="m-date">—</span></div>
-        <div><strong>ร้านค้า:</strong>      <span id="m-store">—</span></div>
-        <div><strong>สินค้า:</strong>       <span id="m-product">—</span></div>
-        <div><strong>แหล่งที่มา:</strong>   <span id="m-source">—</span></div>
-        <div><strong>สถานะ:</strong>        <span id="m-status">—</span></div>
-        <div><strong>ยอดสั่งซื้อ:</strong>  <span id="m-qty">—</span></div>
-        <div><strong>วันที่ติดตาม:</strong> <span id="m-followup">—</span></div>
+      <div style="display:grid;gap:10px;font-size:14px;margin-top:4px;">
+        <div class="modal-row"><strong>วันที่:</strong>       <span id="m-date">—</span></div>
+        <div class="modal-row"><strong>ร้านค้า:</strong>      <span id="m-store">—</span></div>
+        <div class="modal-row"><strong>สินค้า:</strong>       <span id="m-product">—</span></div>
+        <div class="modal-row"><strong>แหล่งที่มา:</strong>   <span id="m-source">—</span></div>
+        <div class="modal-row"><strong>สถานะ:</strong>        <span id="m-status">—</span></div>
         <div id="m-attributes"></div>
         <div>
-          <label style="font-weight:600;font-size:12px;color:#555;">หมายเหตุ</label>
-          <textarea id="m-note" rows="3" style="width:100%;margin-top:4px;" disabled></textarea>
+          <label style="font-weight:600;font-size:12px;color:#555;text-transform:uppercase;letter-spacing:0.4px;">หมายเหตุ</label>
+          <textarea id="m-note" rows="3" style="width:100%;margin-top:6px;" disabled></textarea>
         </div>
-
-        <!-- Manager comments (read-only สำหรับ sales) -->
         <div>
-          <label style="font-weight:600;font-size:12px;color:#555;">💬 Comment จากผู้บริหาร</label>
-          <div id="m-manager-comments" style="margin-top:6px;"></div>
+          <label style="font-weight:600;font-size:12px;color:#555;text-transform:uppercase;letter-spacing:0.4px;">💬 Comment จากผู้บริหาร</label>
+          <div id="m-manager-comments" style="margin-top:8px;"></div>
         </div>
       </div>
 
@@ -239,8 +245,7 @@
   <script src="/js/services/categoryService.js"></script>
   <script src="/js/services/reportService.js"></script>
   <script src="/js/pages/report/report.js"></script>
-
-  <script src="/js/core/splash.js"></script> 
+  <script src="/js/core/splash.js"></script>
   <script src="/js/core/loadingSplash.js"></script>
 </body>
 </html>
