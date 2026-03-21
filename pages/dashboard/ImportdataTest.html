@@ -2,10 +2,8 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>นำเข้าข้อมูล - EABaseHub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>นำเข้าข้อมูล (ทดสอบ) - EABaseHub</title>
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -22,21 +20,16 @@
 <body>
     <!-- Navigation -->
     <nav class="app-nav">
-        <a href="/pages/dashboard/managerDashboard.html">หน้าหลัก</a>
-        <a href="/pages/reports/reportTracker.html">รายงานเยี่ยมร้านค้า</a>
-        <a href="/pages/reports/importData.html" class="active">นำเข้าข้อมูล</a>
+        <a href="#">หน้าหลัก</a>
+        <a href="#">รายงานเยี่ยมร้านค้า</a>
+        <a href="#" class="active">นำเข้าข้อมูล (ทดสอบ)</a>
     </nav>
 
     <div class="header">
-        <div class="header-content">
-            <button class="btn-back" onclick="history.back()" title="กลับ">
-                <span class="material-icons">arrow_back</span>
-            </button>
-            <h1>
-                <span class="material-icons">transform</span> 
-                นำเข้าข้อมูล - แปลงรายงานยอดขาย
-            </h1>
-        </div>
+        <h1>
+            <span class="material-icons">transform</span> 
+            นำเข้าข้อมูล - แปลงรายงานยอดขาย (ทดสอบ)
+        </h1>
     </div>
 
     <div class="container">
@@ -113,10 +106,6 @@
 
             <!-- Actions -->
             <div class="actions">
-                <button class="btn" id="importToSupabaseBtn">
-                    <span class="material-icons">cloud_upload</span> 
-                    บันทึกลง Supabase
-                </button>
                 <button class="btn" id="exportBtn">
                     <span class="material-icons">download</span> 
                     Export CSV
@@ -129,12 +118,7 @@
         </div>
     </div>
 
-    <!-- Core Scripts -->
-    <script src="/js/core/supabaseClient.js"></script>
-    <script src="/js/core/userService.js"></script>
-    <script src="/js/core/auth.js"></script>
-    
-    <!-- Main Script -->
+    <!-- Main Script (No Auth Required) -->
     <script src="/js/pages/dashboard/importData.js"></script>
 </body>
 </html>
