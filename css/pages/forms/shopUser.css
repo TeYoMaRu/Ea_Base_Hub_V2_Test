@@ -1,40 +1,63 @@
 /* =====================================================
-   shopUser.css — หน้ารายชื่อร้าน (ตารางเต็มหน้า)
+   shopUser.css — หน้ารายชื่อร้าน
+   Palette: Teal / Sage / Mint — ตรงกับ index + report + formClaim + formPlan
    ===================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;500&display=swap');
 
 :root {
-  --teal-50:  #E1F5EE;
-  --teal-100: #9FE1CB;
-  --teal-400: #1D9E75;
-  --teal-600: #0F6E56;
-  --teal-800: #085041;
-  --gray-50:  #F7F8FA;
-  --gray-100: #F0F0F0;
-  --gray-400: #BBBEC5;
-  --gray-600: #888;
-  --gray-900: #1a1a1a;
-  --border:        1px solid #ECEEF2;
-  --border-subtle: 1px solid #F0F0F0;
+  /* === Teal === */
+  --teal-50:  #e8f8f7;
+  --teal-100: #b8ece9;
+  --teal-200: #7fd6d0;
+  --teal-400: #3FB7AE;
+  --teal-500: #2FA39A;
+  --teal-700: #1f7a73;
+  --teal-900: #0f524e;
+
+  /* === Mint === */
+  --mint-50:  #f4faf9;
+  --mint-100: #daf1ef;
+  --mint-200: #b8e6e3;
+
+  /* === Neutrals === */
+  --gray-50:  #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-400: #94a3b8;
+  --gray-600: #475569;
+  --gray-900: #1e293b;
+
+  /* === Semantic === */
+  --bg-base:   var(--mint-50);
+  --bg-card:   #ffffff;
+  --border:        1px solid #cde8e5;
+  --border-subtle: 1px solid #e2ecea;
+
+  --text-primary:   #0f3330;
+  --text-secondary: #3d6e6a;
+  --text-muted:     #7aaba7;
+
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-xl: 18px;
-  --focus-ring: 0 0 0 3px rgba(29,158,117,0.10);
+  --focus-ring: 0 0 0 3px rgba(63,183,174,0.14);
   --font: 'Kanit', 'Segoe UI', sans-serif;
+  --transition: 0.18s ease;
 }
 
 /* =====================================================
    PAGE HEADER
    ===================================================== */
 .page-header {
-  background: linear-gradient(135deg, #0F6E56 0%, #1D9E75 60%, #34d399 100%);
+  background: linear-gradient(135deg, var(--teal-900) 0%, var(--teal-500) 60%, var(--teal-400) 100%);
   border-radius: var(--radius-xl);
   padding: 28px 32px;
   margin-bottom: 24px;
   color: #fff;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 6px 28px rgba(47,163,154,0.26);
 }
 .page-header::before {
   content: '';
@@ -54,7 +77,7 @@
 }
 .page-header p {
   font-size: 14px;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.80);
   position: relative;
   z-index: 1;
   margin: 0;
@@ -70,21 +93,19 @@
   margin-bottom: 16px;
 }
 
-.search-wrap {
-  flex: 1;
-  position: relative;
-}
+.search-wrap { flex: 1; position: relative; }
+
 .search-wrap::before {
   content: '';
   position: absolute;
   left: 13px;
   top: 50%;
   transform: translateY(-50%);
-  width: 15px;
-  height: 15px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Ccircle cx='7' cy='7' r='5' stroke='%23BBBEC5' stroke-width='1.5'/%3E%3Cpath d='M11 11l3 3' stroke='%23BBBEC5' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  width: 15px; height: 15px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Ccircle cx='7' cy='7' r='5' stroke='%237aaba7' stroke-width='1.5'/%3E%3Cpath d='M11 11l3 3' stroke='%237aaba7' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;
   pointer-events: none;
 }
+
 .search-wrap input,
 #searchInput {
   width: 100%;
@@ -93,10 +114,10 @@
   border-radius: var(--radius-md);
   font-size: 14px;
   font-family: var(--font);
-  background: #fff;
-  color: var(--gray-900);
+  background: var(--bg-card);
+  color: var(--text-primary);
   outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color var(--transition), box-shadow var(--transition);
 }
 .search-wrap input:focus,
 #searchInput:focus {
@@ -107,8 +128,9 @@
 .shop-count {
   font-size: 12px;
   font-weight: 500;
-  color: var(--teal-600);
+  color: var(--teal-700);
   background: var(--teal-50);
+  border: 1px solid var(--teal-100);
   padding: 6px 14px;
   border-radius: 20px;
   white-space: nowrap;
@@ -118,7 +140,7 @@
    PANEL + TABLE
    ===================================================== */
 .panel {
-  background: #fff;
+  background: var(--bg-card);
   border: var(--border);
   border-radius: var(--radius-xl);
   overflow: hidden;
@@ -129,33 +151,39 @@
   border-collapse: collapse;
   font-size: 14px;
 }
+
 .shop-table thead tr {
-  background: var(--gray-50);
+  background: linear-gradient(to right, var(--teal-900), var(--teal-700));
 }
+
 .shop-table th {
   padding: 12px 20px;
   text-align: left;
   font-size: 11px;
-  font-weight: 500;
-  color: var(--gray-400);
+  font-weight: 600;
+  color: rgba(255,255,255,0.88);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  border-bottom: var(--border-subtle);
+  border-bottom: none;
 }
+
 .shop-table td {
   padding: 14px 20px;
   border-bottom: var(--border-subtle);
-  color: var(--gray-900);
+  color: var(--text-primary);
 }
-.shop-table tbody tr:last-child td {
-  border-bottom: none;
-}
+
+.shop-table tbody tr:last-child td { border-bottom: none; }
+
 .shop-table tbody tr {
   cursor: pointer;
-  transition: background 0.12s;
+  transition: background var(--transition);
 }
+.shop-table tbody tr:nth-child(even) { background: var(--mint-50); }
+.shop-table tbody tr:nth-child(odd)  { background: var(--bg-card); }
+
 .shop-table tbody tr:hover {
-  background: #FAFEF9;
+  background: var(--teal-50);
 }
 .shop-table tbody tr:hover .go-btn {
   opacity: 1;
@@ -164,33 +192,34 @@
 
 .shop-name-cell {
   font-weight: 500;
-  color: var(--gray-900);
+  color: var(--text-primary);
 }
 
 .code-badge {
   font-size: 11px;
-  background: var(--gray-100);
-  color: var(--gray-600);
+  background: var(--mint-100);
+  color: var(--teal-700);
   padding: 3px 8px;
   border-radius: 5px;
   font-family: monospace;
   letter-spacing: 0.02em;
+  border: 1px solid var(--teal-100);
 }
 
 .go-btn {
   font-size: 12px;
-  color: var(--teal-600);
+  color: var(--teal-500);
   font-weight: 500;
   opacity: 0;
   transform: translateX(-4px);
-  transition: opacity 0.15s, transform 0.15s;
+  transition: opacity var(--transition), transform var(--transition);
   display: inline-block;
 }
 
 .table-placeholder {
   text-align: center;
   padding: 40px;
-  color: var(--gray-400);
+  color: var(--text-muted);
   font-size: 14px;
 }
 
@@ -201,7 +230,7 @@
   padding: 16px 24px;
   text-align: center;
   font-size: 11px;
-  color: var(--gray-400);
+  color: var(--text-muted);
   letter-spacing: 0.03em;
   margin-top: 24px;
 }

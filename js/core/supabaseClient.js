@@ -29,3 +29,5 @@ console.log('✅ Supabase client initialized successfully');
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { supabaseClient };
 }
+// ✅ expose client instance (ไม่ใช่ library) ให้ทุกไฟล์เข้าถึงได้
+window.supabaseClient = supabaseClient; // alias ให้ปลอดภัย

@@ -201,30 +201,28 @@ a {
 }
 
 
+/* =========================
+   LOGOUT BTN
+   ========================= */
 .logout-btn {
-  padding: 4px 10px;
-  border: none;
-  border-radius: 16px;
-  flex:0;
-  background: #fff;
-  color: var(--primary-dark);
-
-  font-size: 11px;
-  font-weight: 600;
-
-  cursor: pointer;
-
   display: flex;
   align-items: center;
-  gap: 10px;
-
-  white-space: nowrap;   /* กันขึ้นบรรทัดใหม่ */
+  gap: 6px;
+  padding: 7px 14px;
+  background: none;
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Kanit', sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
 }
 
 .logout-btn:hover {
-  background: var(--primary);
-  color: #fff;
-  transform: translateY(-1px);
+  border-color: #e07070;
+  color: #c0392b;
+  background: #fff5f5;
 }
 
 /* ================= STICKY NAV (แถบเมนูแบบติดด้านบน) ================= */
@@ -410,8 +408,8 @@ button {
   justify-content: center;
   gap: 8px;
   flex: 1;
-  min-width: 100px;   /*ขนาดปุ่ม logout*/
-  min-height: 32px;   /*ขนาดปุ่ม logout*/
+  /* min-width: 100px;   ขนาดปุ่ม logout
+  min-height: 32px;   ขนาดปุ่ม logout */
 }
 
 button:hover { transform: translateY(-2px); }
@@ -650,10 +648,10 @@ button:disabled {
   display:none;
 }
 
-.logout-btn{
+/* .logout-btn{
   padding:4px 8px;
   font-size:10px;
-}
+} */
 
 }
 

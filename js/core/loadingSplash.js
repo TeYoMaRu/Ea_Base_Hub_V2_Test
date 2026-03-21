@@ -1,195 +1,169 @@
 /**
- * loading-overlay.js — Reusable Loading Overlay Popup
+ * loadingPopup.js — Reusable Loading Popup (small, centered)
+ * วิธีใช้:
+ *   LoadingPopup.show()           → แสดง popup
+ *   LoadingPopup.show("กำลังบันทึก...") → แสดงพร้อมข้อความกำหนดเอง
+ *   LoadingPopup.hide()           → ซ่อน popup
  *
- * วิธีใช้: ใส่ <script src="/js/core/loading-overlay.js"></script>
- *          ใน <head> หรือก่อน </body> ของทุกหน้าที่ต้องการ
- *
- * แล้วเรียกใช้ผ่าน:
- *   LoadingOverlay.show()                 → แสดง overlay (ข้อความ default)
- *   LoadingOverlay.show("กำลังบันทึก...") → แสดงพร้อมข้อความกำหนดเอง
- *   LoadingOverlay.hide()                 → ซ่อน overlay
- *   LoadingOverlay.redirect(url)          → แสดง แล้ว redirect หลัง 900ms
+ * ตัวอย่าง:
+ *   LoadingPopup.show("กำลังส่งข้อมูล...");
+ *   await someAsyncFunction();
+ *   LoadingPopup.hide();
  */
 
-const LoadingOverlay = (() => {
+const LoadingPopup = (() => {
   // ============================================================
-  // 1. Inject CSS
+  // 1. Inject CSS (ครั้งเดียว)
   // ============================================================
-  const style = document.createElement("style");
-  style.textContent = `
-    #ea-loading-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(10, 40, 12, 0.65);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 99998;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
+  const STYLE_ID = "ea-loading-popup-style";
 
-    #ea-loading-overlay.show {
-      opacity: 1;
-      pointer-events: all;
-    }
+  function injectStyle() {
+    if (document.getElementById(STYLE_ID)) return;
+    const style = document.createElement("style");
+    style.id = STYLE_ID;
+    style.textContent = `
+      /* Overlay */
+      #ea-loading-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 99998;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+      }
 
-    /* popup box */
-    .ea-overlay-box {
-      background: #fff;
-      border-radius: 24px;
-      padding: 36px 52px 40px;
-      text-align: center;
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
-      transform: scale(0.8);
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      min-width: 230px;
-    }
+      #ea-loading-overlay.visible {
+        opacity: 1;
+        pointer-events: all;
+      }
 
-    #ea-loading-overlay.show .ea-overlay-box {
-      transform: scale(1);
-    }
+      /* Card */
+      #ea-loading-card {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 28px 36px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        box-shadow:
+          0 8px 32px rgba(0, 0, 0, 0.14),
+          0 2px 8px rgba(0, 0, 0, 0.08);
+        transform: scale(0.85) translateY(10px);
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        min-width: 160px;
+      }
 
-    /* โลโก้ pop */
-    .ea-overlay-logo {
-      opacity: 0;
-      transform: scale(0.5);
-      transition:
-        opacity   0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s,
-        transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s;
-    }
+      #ea-loading-overlay.visible #ea-loading-card {
+        transform: scale(1) translateY(0);
+      }
 
-    #ea-loading-overlay.show .ea-overlay-logo {
-      opacity: 1;
-      transform: scale(1);
-    }
+      /* Logo */
+      #ea-loading-card .lp-logo {
+        width: 52px;
+        height: 52px;
+        object-fit: contain;
+        filter: drop-shadow(0 4px 10px rgba(58, 125, 68, 0.25));
+        animation: lpPulse 1.8s ease-in-out infinite;
+      }
 
-    .ea-overlay-logo img {
-      width: 68px;
-      filter: drop-shadow(0 6px 16px rgba(76,175,80,0.28));
-    }
+      /* Dots */
+      #ea-loading-card .lp-dots {
+        display: flex;
+        gap: 6px;
+      }
 
-    /* ชื่อระบบ */
-    .ea-overlay-box h3 {
-      font-family: "Kanit", "Segoe UI", sans-serif;
-      font-size: 17px;
-      font-weight: 600;
-      color: #2e7d32;
-      margin-top: 12px;
-      margin-bottom: 3px;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.35s ease 0.2s, transform 0.35s ease 0.2s;
-    }
+      #ea-loading-card .lp-dots span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #4CAF50;
+        animation: lpBounce 0.9s ease-in-out infinite;
+      }
 
-    #ea-loading-overlay.show .ea-overlay-box h3 {
-      opacity: 1;
-      transform: translateY(0);
-    }
+      #ea-loading-card .lp-dots span:nth-child(2) { animation-delay: 0.15s; }
+      #ea-loading-card .lp-dots span:nth-child(3) { animation-delay: 0.30s; }
 
-    /* ข้อความรอง */
-    .ea-overlay-box p {
-      font-family: "Kanit", "Segoe UI", sans-serif;
-      font-size: 13px;
-      color: #999;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.35s ease 0.28s, transform 0.35s ease 0.28s;
-    }
+      /* Text */
+      #ea-loading-card .lp-text {
+        color: #555;
+        font-family: "Kanit", "Segoe UI", sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        letter-spacing: 0.3px;
+        text-align: center;
+        line-height: 1.4;
+      }
 
-    #ea-loading-overlay.show .ea-overlay-box p {
-      opacity: 1;
-      transform: translateY(0);
-    }
+      /* Animations */
+      @keyframes lpPulse {
+        0%, 100% { transform: scale(1);    opacity: 1; }
+        50%       { transform: scale(0.93); opacity: 0.8; }
+      }
 
-    /* bouncing dots */
-    .ea-overlay-dots {
-      display: flex;
-      gap: 7px;
-      justify-content: center;
-      margin-top: 20px;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.35s ease 0.36s, transform 0.35s ease 0.36s;
-    }
-
-    #ea-loading-overlay.show .ea-overlay-dots {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .ea-overlay-dots span {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #4CAF50;
-      animation: eaOvDotBounce 1s ease-in-out infinite;
-    }
-
-    .ea-overlay-dots span:nth-child(2) { animation-delay: 0.15s; }
-    .ea-overlay-dots span:nth-child(3) { animation-delay: 0.30s; }
-
-    @keyframes eaOvDotBounce {
-      0%, 100% { transform: translateY(0);    opacity: 0.45; }
-      50%       { transform: translateY(-8px); opacity: 1; }
-    }
-  `;
-  document.head.appendChild(style);
+      @keyframes lpBounce {
+        0%, 100% { transform: translateY(0);   opacity: 0.4; }
+        50%       { transform: translateY(-6px); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
   // ============================================================
-  // 2. Inject HTML
+  // 2. สร้าง DOM (ครั้งเดียว, lazy)
   // ============================================================
-  const overlay = document.createElement("div");
-  overlay.id = "ea-loading-overlay";
-  overlay.innerHTML = `
-    <div class="ea-overlay-box">
-      <div class="ea-overlay-logo">
-        <img src="/assets/icons/icon-192.png" alt="EABaseHub">
-      </div>
-      <h3 id="ea-overlay-title">กำลังโหลด...</h3>
-      <p id="ea-overlay-sub">กรุณารอสักครู่</p>
-      <div class="ea-overlay-dots">
+  let overlay = null;
+  let textEl = null;
+
+  function build() {
+    if (overlay) return;
+
+    injectStyle();
+
+    overlay = document.createElement("div");
+    overlay.id = "ea-loading-overlay";
+
+    const card = document.createElement("div");
+    card.id = "ea-loading-card";
+    card.innerHTML = `
+      <img class="lp-logo" src="/assets/icons/icon-192.png" alt="Loading">
+      <div class="lp-dots">
         <span></span><span></span><span></span>
       </div>
-    </div>
-  `;
+      <div class="lp-text">กำลังโหลด...</div>
+    `;
 
-  const inject = () => document.body.appendChild(overlay);
-  if (document.body) inject();
-  else document.addEventListener("DOMContentLoaded", inject);
+    textEl = card.querySelector(".lp-text");
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+  }
 
   // ============================================================
   // 3. Public API
   // ============================================================
-  return {
-    /**
-     * แสดง overlay
-     * @param {string} title  - ข้อความหลัก (optional)
-     * @param {string} sub    - ข้อความรอง (optional)
-     */
-    show(title = "กำลังโหลด...", sub = "กรุณารอสักครู่") {
-      document.getElementById("ea-overlay-title").textContent = title;
-      document.getElementById("ea-overlay-sub").textContent = sub;
-      overlay.classList.add("show");
-    },
+  function show(message = "กำลังโหลด...") {
+    if (!document.body) {
+      document.addEventListener("DOMContentLoaded", () => show(message));
+      return;
+    }
+    build();
+    if (textEl) textEl.textContent = message;
 
-    /** ซ่อน overlay */
-    hide() {
-      overlay.classList.remove("show");
-    },
+    // Force reflow ก่อนเพิ่ม class เพื่อให้ transition ทำงาน
+    overlay.getBoundingClientRect();
+    overlay.classList.add("visible");
+  }
 
-    /**
-     * แสดง overlay แล้ว redirect หลัง delay
-     * @param {string} url    - URL ปลายทาง
-     * @param {string} title  - ข้อความหลัก (optional)
-     * @param {number} delay  - หน่วง ms ก่อน redirect (default 900)
-     */
-    redirect(url, title = "กำลังเข้าสู่ระบบ...", delay = 900) {
-      this.show(title);
-      setTimeout(() => { window.location.href = url; }, delay);
-    },
-  };
+  function hide() {
+    if (!overlay) return;
+    overlay.classList.remove("visible");
+  }
+
+  return { show, hide };
 })();

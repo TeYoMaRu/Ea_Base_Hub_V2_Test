@@ -21,7 +21,7 @@ async function protectAdmin() {
 // goHome
 // -------------------------------------------------------
 function goHome() {
-  window.location.href = "index.html";
+  window.location.href = "/pages/admin/adminDashboard.html";
 }
 
 // -------------------------------------------------------
@@ -82,6 +82,7 @@ async function loadSaleShops() {
 
   // เก็บ saleId ไว้ใช้ตอนเพิ่มร้าน
   window.currentSaleId = saleId;
+  
 
   container.innerHTML = `<div class="empty-state"><div>⏳ กำลังโหลด...</div></div>`;
 

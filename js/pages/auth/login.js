@@ -2,7 +2,7 @@
 // Helper: แสดง overlay ก่อน redirect
 // ===============================
 function showLoginOverlay(redirectUrl) {
-  const overlay = document.getElementById("login-overlay");
+  const overlay = document.getElementById("loadingSplash");
   if (overlay) {
     overlay.classList.add("show");
   }
@@ -37,11 +37,11 @@ async function redirectIfLoggedIn() {
 
     // Redirect ตาม Role (ไม่แสดง overlay เพราะ user ไม่ได้กด login)
     if (profile.role === "admin") {
-      window.location.href = "/pages/admin/admintor.html";
+      window.location.href = "/pages/admin/adminDashboard.html";
     } else if (profile.role === "adminQc") {
       window.location.href = "/pages/dashboard/QcDashboard.html";
     } else if (profile.role === "sales") {
-      window.location.href = "/pages/index.html";
+      window.location.href = "/index.html";
     } else if (profile.role === "manager") {
       window.location.href = "/pages/dashboard/managerDashboard.html";
     } else if (profile.role === "executive") {
@@ -121,11 +121,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 🔥 แสดง overlay ก่อน redirect ตาม Role
       if (profile.role === "admin") {
-        showLoginOverlay("/pages/admin/admintor.html");
+        showLoginOverlay("/pages/admin/adminDashboard.html");
       } else if (profile.role === "adminQc") {
         showLoginOverlay("/pages/dashboard/QcDashboard.html");
       } else if (profile.role === "sales") {
-        showLoginOverlay("/pages/index.html");
+        showLoginOverlay("/index.html");
       } else if (profile.role === "manager") {
         showLoginOverlay("/pages/dashboard/managerDashboard.html");
       } else if (profile.role === "executive") {

@@ -11,8 +11,9 @@
   </script>
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"> -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 
   <!-- CSS -->
   <link rel="stylesheet" href="/css/base/adminBase.css">
@@ -228,64 +229,7 @@
   <script src="/js/core/supabaseClient.js"></script>
   <script src="/js/core/userService.js"></script>
   <script src="/js/core/auth.js"></script>
-
-  <!-- ConfirmDialog + showToast — ต้องโหลดก่อน adminQc.js -->
-  <script>
-    /* ── ConfirmDialog ── */
-    var ConfirmDialog = {
-      show: function(opts) {
-        return new Promise(function(resolve) {
-          // ลบ dialog เก่า
-          var old = document.getElementById('_confirmDialog');
-          if (old) old.remove();
-
-          var typeColor = { success:'var(--pass)', danger:'var(--fail)', warning:'var(--warn)', info:'var(--accent)' };
-          var color = typeColor[opts.type] || 'var(--accent)';
-
-          var overlay = document.createElement('div');
-          overlay.id = '_confirmDialog';
-          overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
-
-          overlay.innerHTML =
-            '<div style="background:var(--bg-card);border:1px solid var(--border-lit);border-radius:16px;padding:28px 28px 22px;max-width:400px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.5);animation:modalIn .2s ease;">' +
-              '<div style="font-size:1rem;font-weight:600;color:var(--text-1);margin-bottom:10px;">' + (opts.title||'ยืนยัน') + '</div>' +
-              '<div style="font-size:.85rem;color:var(--text-2);margin-bottom:22px;line-height:1.6;">' + (opts.message||'') + '</div>' +
-              '<div style="display:flex;gap:10px;justify-content:flex-end;">' +
-                '<button id="_cdCancel" style="padding:8px 18px;background:var(--bg-elevated);color:var(--text-2);border:1px solid var(--border-lit);border-radius:10px;font-family:var(--font);font-size:.85rem;cursor:pointer;">ยกเลิก</button>' +
-                '<button id="_cdOk" style="padding:8px 18px;background:transparent;color:'+color+';border:1px solid '+color+';border-radius:10px;font-family:var(--font);font-size:.85rem;font-weight:600;cursor:pointer;">' + (opts.okText||'ตกลง') + '</button>' +
-              '</div>' +
-            '</div>';
-
-          document.body.appendChild(overlay);
-
-          document.getElementById('_cdOk').onclick = function() { overlay.remove(); resolve(true); };
-          document.getElementById('_cdCancel').onclick = function() { overlay.remove(); resolve(false); };
-          overlay.onclick = function(e) { if (e.target === overlay) { overlay.remove(); resolve(false); } };
-        });
-      }
-    };
-
-    /* ── showToast ── */
-    function showToast(message, type) {
-      var old = document.getElementById('_ea_toast');
-      if (old) old.remove();
-      var colorMap = { success:'#2e7d32', danger:'#c62828', warning:'#e65100', info:'#1565c0' };
-      var iconMap  = { success:'✅', danger:'❌', warning:'⚠️', info:'ℹ️' };
-      var bg   = colorMap[type] || colorMap.success;
-      var icon = iconMap[type]  || '✅';
-      var el = document.createElement('div');
-      el.id = '_ea_toast';
-      el.style.cssText = 'position:fixed;bottom:32px;right:32px;background:'+bg+';color:#fff;font-family:var(--font);font-size:15px;font-weight:500;padding:14px 24px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:flex;align-items:center;gap:10px;z-index:99999;opacity:0;transform:translateY(12px);transition:opacity .3s,transform .3s;';
-      el.innerHTML = '<span>'+icon+'</span><span>'+message+'</span>';
-      document.body.appendChild(el);
-      requestAnimationFrame(function() { el.style.opacity='1'; el.style.transform='translateY(0)'; });
-      setTimeout(function() {
-        el.style.opacity='0'; el.style.transform='translateY(12px)';
-        setTimeout(function() { el.remove(); }, 300);
-      }, 2500);
-    }
-  </script>
-
+  <script src="/js/core/confirm-dialog.js"></script>
   <script src="/js/pages/admin/adminQc.js"></script>
   <script src="/js/core/splash.js"></script>
   <script src="/js/core/loadingSplash.js"></script>

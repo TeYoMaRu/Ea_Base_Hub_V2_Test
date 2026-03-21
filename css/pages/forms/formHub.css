@@ -24,9 +24,9 @@
   --border:         #99f6e4;
   --border-strong:  #5eead4;
 
-  --text-primary:   #134e4a;
+  /* --text-primary:   #134e4a;
   --text-secondary: #0f766e;
-  --text-muted:     #6b7280;
+  --text-muted:     #6b7280; */
   --text-light:     #9ca3af;
 
   --shadow-sm:      0 1px 4px rgba(13,148,136,0.08);
@@ -46,6 +46,40 @@
   --font-lg:    18px;
   --font-xl:    22px;
   --font-2xl:   26px;
+
+  /* === Semantic — ใช้ตาม role === */
+  --bg-main:           #f4faf9;   /* mint-50 — พื้นหลังหน้า */
+  --bg-surface:        #ffffff;   /* card / panel */
+  --bg-sidebar:        #2FA39A;   /* teal-500 */
+  --bg-sidebar-hover:  rgba(255,255,255,0.12);
+  --bg-sidebar-active: rgba(255,255,255,0.22);
+
+  --text-primary:   #0f3330;    /* teal-900 ปรับอ่าน */
+  --text-secondary: #3d6e6a;    /* teal กลาง */
+  --text-muted:     #7aaba7;    /* mint กลาง */
+  --text-on-dark:   #daf1ef;    /* mint-100 บน sidebar */
+
+  --accent:        var(--teal-400);
+  --accent-light:  var(--teal-50);
+  --accent-border: var(--teal-100);
+
+  /* === Border === */
+  --border:        1px solid #cde8e5;   /* mint-200 ปรับ */
+  --border-accent: 1px solid var(--teal-100);
+
+  /* === Shadow — flat minimal === */
+  --shadow-xs: 0 1px 3px rgba(47,163,154,0.08);
+  --shadow-sm: 0 2px 8px rgba(47,163,154,0.10);
+  --shadow-md: 0 4px 16px rgba(47,163,154,0.12);
+
+  /* === Radius === */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* === Transition === */
+  --transition: 0.18s ease;
 }
 
 
@@ -190,9 +224,9 @@ button {
   justify-content: center;
   gap: 8px;
   flex: 1;
-  min-width: 100px;   /*ขนาดปุ่ม logout*/
-  min-height: 32px;   /*ขนาดปุ่ม logout*/
-}
+  /* min-width: 100px;   /*ขนาดปุ่ม logout*/
+  /* min-height: 32px;   ขนาดปุ่ม logout */
+} 
 
 button:hover { transform: translateY(-2px); }
 button:active { transform: translateY(0); }
@@ -202,6 +236,31 @@ button:disabled {
   cursor: not-allowed;
   transform: none !important;
 }
+
+ /* =========================
+   LOGOUT BTN
+   ========================= */
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: var(--bg-base);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Kanit', sans-serif;
+  font-size: 13px;
+  color: var(--primary-xdark);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.logout-btn:hover {
+  border-color: #e07070;
+  color: #c0392b;
+  background: #fff5f5;
+}
+
 
 
 /* ================= PAGE TITLE (หัวเรื่องหน้า) ================= */

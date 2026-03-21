@@ -1,45 +1,73 @@
 /* =====================================================
-   REPORT PAGE — REDESIGNED STYLESHEET
-   เน้น: clean, warm-teal, เรียบแต่มีชีวิต
+   REPORT PAGE — รีแมป palette ให้ตรง index.css
+   Teal / Sage / Mint — Flat Minimal
    ===================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap');
 
 :root {
-  --primary:        #0d9488;
-  --primary-light:  #14b8a6;
-  --primary-dark:   #0f766e;
-  --primary-xdark:  #115e59;
-  --accent:         #f59e0b;
-  --accent-light:   #fcd34d;
-  --danger:         #ef4444;
-  --danger-dark:    #dc2626;
-  --success:        #10b981;
-  --info:           #3b82f6;
+  /* === Teal — primary / sidebar / action === */
+  --teal-50:  #e8f8f7;
+  --teal-100: #b8ece9;
+  --teal-200: #7fd6d0;
+  --teal-400: #3FB7AE;
+  --teal-500: #2FA39A;
+  --teal-700: #1f7a73;
+  --teal-900: #0f524e;
 
-  --bg-base:        #f0fdfa;
+  /* === Sage Green — badge / tag / progress === */
+  --sage-400: #4caf50;
+  --sage-500: #388e3c;
+  --sage-700: #2a6e2d;
+  --sage-900: #1b5e20;
+
+  /* === Mint — bg hover / subtle fill === */
+  --mint-50:  #f4faf9;
+  --mint-100: #daf1ef;
+  --mint-200: #b8e6e3;
+  --mint-400: #8FD3CD;
+
+  /* === Neutrals === */
+  --gray-100: #f4f4f4;
+  --gray-200: #e8e8e8;
+  --gray-400: #a0a0a0;
+  --gray-500: #707070;
+  --gray-600: #4a4a4a;
+
+  /* === Semantic (ตรงกับ index.css) === */
+  --bg-base:        var(--mint-50);
   --bg-card:        #ffffff;
-  --bg-subtle:      #f0fdf4;
-  --bg-muted:       #ccfbf1;
+  --bg-subtle:      var(--teal-50);
+  --bg-muted:       var(--mint-100);
 
-  --border:         #d1faf4;
-  --border-strong:  #5eead4;
+  --border:         #cde8e5;
+  --border-strong:  var(--teal-200);
 
-  --text-primary:   #134e4a;
-  --text-secondary: #0f766e;
-  --text-muted:     #6b7280;
-  --text-light:     #9ca3af;
+  --text-primary:   #0f3330;
+  --text-secondary: #3d6e6a;
+  --text-muted:     #7aaba7;
+  --text-light:     #a0bfbc;
 
-  --shadow-sm:      0 1px 4px rgba(13,148,136,0.06);
-  --shadow-md:      0 4px 20px rgba(13,148,136,0.10);
-  --shadow-lg:      0 8px 40px rgba(13,148,136,0.14);
-  --shadow-inset:   inset 0 1px 2px rgba(0,0,0,0.04);
+  /* === สีที่ยังคงไว้เพราะมี role ชัด === */
+  --accent:         #e8a020;   /* draft / warning — amber อุ่น ไม่สดเกิน */
+  --accent-light:   #f5d98a;
+  --danger:         #d95b5b;
+  --danger-dark:    #b83c3c;
+  --success:        #3a9e6a;
 
-  --radius-sm:      8px;
-  --radius-md:      14px;
-  --radius-lg:      18px;
-  --radius-xl:      24px;
+  /* === Shadow === */
+  --shadow-sm:      0 1px 4px rgba(47,163,154,0.07);
+  --shadow-md:      0 4px 20px rgba(47,163,154,0.10);
+  --shadow-lg:      0 8px 40px rgba(47,163,154,0.14);
+  --shadow-inset:   inset 0 1px 2px rgba(0,0,0,0.03);
 
+  /* === Radius === */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  20px;
+
+  /* === Font scale === */
   --font-xs:    12px;
   --font-sm:    13px;
   --font-base:  14px;
@@ -48,7 +76,7 @@
   --font-xl:    21px;
   --font-2xl:   27px;
 
-  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+  --transition: 0.20s ease;
 }
 
 /* =====================================================
@@ -65,17 +93,17 @@ body {
 }
 
 /* =====================================================
-   PAGE HEADER BANNER
+   PAGE HEADER BANNER — teal gradient (เหมือน sidebar desktop)
    ===================================================== */
 .page-header {
-  background: linear-gradient(135deg, var(--primary-xdark) 0%, var(--primary) 55%, var(--primary-light) 100%);
+  background: linear-gradient(135deg, var(--teal-900) 0%, var(--teal-500) 55%, var(--teal-400) 100%);
   border-radius: var(--radius-xl);
   padding: 32px 36px 28px;
   margin-bottom: 28px;
   color: #fff;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 6px 28px rgba(13,148,136,0.3);
+  box-shadow: 0 6px 28px rgba(47,163,154,0.28);
 }
 
 .page-header::before {
@@ -116,7 +144,30 @@ body {
 }
 
 /* =====================================================
-   CARD + SECTION — shared look
+   LOGOUT BTN
+   ===================================================== */
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Kanit', sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.logout-btn:hover {
+  border-color: #e07070;
+  color: var(--danger-dark);
+  background: #fff5f5;
+}
+
+/* =====================================================
+   CARD + SECTION
    ===================================================== */
 .card,
 .section {
@@ -128,7 +179,6 @@ body {
   border: 1px solid var(--border);
   transition: box-shadow var(--transition);
 }
-
 .card:hover,
 .section:hover {
   box-shadow: var(--shadow-lg);
@@ -156,16 +206,8 @@ body {
   grid-template-columns: repeat(2, 1fr);
   gap: 16px 20px;
 }
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.form-group.full {
-  grid-column: 1 / -1;
-}
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group.full { grid-column: 1 / -1; }
 
 label {
   font-size: var(--font-xs);
@@ -176,11 +218,9 @@ label {
 }
 
 /* =====================================================
-   INPUTS, SELECT, TEXTAREA
+   INPUTS / SELECT / TEXTAREA
    ===================================================== */
-input,
-select,
-textarea {
+input, select, textarea {
   padding: 11px 14px;
   font-family: 'IBM Plex Sans Thai', 'Kanit', sans-serif;
   font-size: var(--font-md);
@@ -189,30 +229,27 @@ textarea {
   border-radius: var(--radius-sm);
   width: 100%;
   background: #fafffe;
-  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+  transition: border-color var(--transition), box-shadow var(--transition);
   box-shadow: var(--shadow-inset);
   appearance: none;
   -webkit-appearance: none;
 }
 
 select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230f766e' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%232FA39A' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 36px;
 }
 
-input:focus,
-select:focus,
-textarea:focus {
+input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--teal-400);
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(13,148,136,0.12), var(--shadow-inset);
+  box-shadow: 0 0 0 3px rgba(63,183,174,0.14), var(--shadow-inset);
 }
 
-input::placeholder,
-textarea::placeholder {
+input::placeholder, textarea::placeholder {
   color: var(--text-light);
   font-size: var(--font-sm);
 }
@@ -224,7 +261,7 @@ textarea {
 }
 
 /* =====================================================
-   DYNAMIC ATTRIBUTES AREA
+   DYNAMIC ATTRIBUTES
    ===================================================== */
 #dynamicAttributes {
   grid-column: 1 / -1;
@@ -257,28 +294,25 @@ button {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 44px;
   letter-spacing: 0.2px;
 }
-
 button:active { transform: scale(0.97); }
 
-/* Draft */
+/* Draft — amber อุ่น คงไว้เพราะ contrast กับ teal ดี */
 .btn-draft {
-  background: linear-gradient(135deg, #f59e0b, #fbbf24);
-  color: #78350f;
-  box-shadow: 0 2px 10px rgba(245,158,11,0.28);
+  background: linear-gradient(135deg, #e8a020, #f5c842);
+  color: #5a3200;
+  box-shadow: 0 2px 10px rgba(232,160,32,0.25);
   position: relative;
 }
 .btn-draft:hover {
-  background: linear-gradient(135deg, #d97706, #f59e0b);
-  box-shadow: 0 4px 16px rgba(245,158,11,0.38);
+  background: linear-gradient(135deg, #c8880c, #e8a020);
+  box-shadow: 0 4px 16px rgba(232,160,32,0.35);
   transform: translateY(-1px);
 }
 
-/* Draft badge */
 .draft-badge {
-  background: #78350f;
+  background: #5a3200;
   color: #fef3c7;
   font-size: 11px;
   font-weight: 700;
@@ -288,16 +322,16 @@ button:active { transform: scale(0.97); }
   text-align: center;
 }
 
-/* Submit all */
+/* Submit all — teal gradient */
 .btn-submit-all {
-  background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+  background: linear-gradient(135deg, var(--teal-700), var(--teal-400));
   color: #fff;
-  box-shadow: 0 2px 12px rgba(13,148,136,0.30);
+  box-shadow: 0 2px 12px rgba(47,163,154,0.28);
   padding: 12px 28px;
 }
 .btn-submit-all:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(13,148,136,0.42);
+  box-shadow: 0 4px 20px rgba(47,163,154,0.40);
 }
 .btn-submit-all:disabled {
   opacity: 0.45;
@@ -308,15 +342,15 @@ button:active { transform: scale(0.97); }
 /* Export buttons */
 .section .actions button {
   flex: 1;
-  background: #f8fffe;
+  background: var(--bg-card);
   color: var(--text-secondary);
   border: 1.5px solid var(--border-strong);
   font-size: var(--font-sm);
 }
 .section .actions button:hover {
-  background: var(--bg-muted);
-  border-color: var(--primary);
-  color: var(--primary-dark);
+  background: var(--mint-100);
+  border-color: var(--teal-400);
+  color: var(--teal-700);
   transform: translateY(-1px);
 }
 
@@ -327,30 +361,28 @@ button:active { transform: scale(0.97); }
   margin-top: 12px;
   font-size: var(--font-xs);
   color: var(--text-muted);
-  background: var(--bg-subtle);
-  border-left: 3px solid var(--primary-light);
+  background: var(--teal-50);
+  border-left: 3px solid var(--teal-400);
   padding: 8px 12px;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 /* =====================================================
-   DRAFT SECTION
+   DRAFT SECTION — amber ยังคงไว้ (role = warning)
    ===================================================== */
 .draft-section {
-  border: 1.5px solid #fde68a;
-  background: #fffbeb;
+  border: 1.5px solid #f0d080;
+  background: #fffdf0;
 }
-
 .draft-section h2 {
-  color: #92400e;
-  border-bottom-color: #fde68a;
+  color: #7a5000;
+  border-bottom-color: #f0d080;
 }
-
 .draft-hint {
   font-size: var(--font-xs);
-  color: #b45309;
-  background: #fef3c7;
-  border: 1px solid #fde68a;
+  color: #8a5a00;
+  background: #fef8e0;
+  border: 1px solid #f0d080;
   border-radius: var(--radius-sm);
   padding: 10px 14px;
   margin-bottom: 16px;
@@ -383,7 +415,7 @@ table {
 }
 
 thead tr {
-  background: linear-gradient(to right, var(--bg-subtle), var(--bg-muted));
+  background: linear-gradient(to right, var(--teal-50), var(--mint-100));
 }
 
 th {
@@ -406,15 +438,9 @@ td {
   vertical-align: middle;
 }
 
-tbody tr {
-  transition: background var(--transition);
-}
-tbody tr:hover {
-  background: #f0fdf8;
-}
-tbody tr:last-child td {
-  border-bottom: none;
-}
+tbody tr { transition: background var(--transition); }
+tbody tr:hover { background: var(--teal-50); }
+tbody tr:last-child td { border-bottom: none; }
 
 .detail-text {
   max-width: 160px;
@@ -429,13 +455,14 @@ tbody tr:last-child td {
    ===================================================== */
 .badge-submitted {
   display: inline-block;
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--mint-100);
+  color: var(--teal-700);
   font-size: 11px;
   font-weight: 600;
   padding: 3px 9px;
   border-radius: 100px;
   margin-right: 4px;
+  border: 1px solid var(--teal-200);
 }
 
 .badge-ack {
@@ -470,9 +497,9 @@ tbody tr:last-child td {
   line-height: 1;
 }
 
-.btn-action-edit   { background: #fef9c3 !important; }
-.btn-action-submit { background: #d1fae5 !important; }
-.btn-action-del    { background: #fee2e2 !important; }
+.btn-action-edit   { background: var(--teal-50)   !important; }
+.btn-action-submit { background: var(--mint-100)  !important; }
+.btn-action-del    { background: #fee2e2           !important; }
 
 .action-buttons button:hover {
   transform: scale(1.12);
@@ -487,7 +514,7 @@ tbody tr:last-child td {
   position: fixed;
   z-index: 999;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(15,50,48,0.40);
   backdrop-filter: blur(3px);
   justify-content: center;
   align-items: center;
@@ -503,7 +530,7 @@ tbody tr:last-child td {
   animation: popIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
   max-height: 92vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  box-shadow: 0 20px 60px rgba(15,50,48,0.18);
   border: 1px solid var(--border);
 }
 
@@ -526,7 +553,7 @@ tbody tr:last-child td {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #f3f4f6;
+  background: var(--gray-100);
   color: var(--text-muted);
   transition: all var(--transition);
   margin-top: -4px;
@@ -545,7 +572,7 @@ tbody tr:last-child td {
 }
 
 #saveEditBtn {
-  background: linear-gradient(135deg, var(--success), #34d399);
+  background: linear-gradient(135deg, var(--teal-500), var(--teal-400));
   color: white;
   border: none;
   padding: 10px 20px;
@@ -559,7 +586,7 @@ tbody tr:last-child td {
 
 @keyframes popIn {
   from { transform: scale(0.9) translateY(10px); opacity: 0; }
-  to   { transform: scale(1) translateY(0);     opacity: 1; }
+  to   { transform: scale(1)   translateY(0);    opacity: 1; }
 }
 
 /* =====================================================
@@ -592,7 +619,7 @@ tbody tr:last-child td {
   gap: 8px;
   align-items: baseline;
   padding: 8px 12px;
-  background: var(--bg-subtle);
+  background: var(--teal-50);
   border-radius: var(--radius-sm);
   font-size: var(--font-sm);
 }
@@ -617,8 +644,8 @@ tbody tr:last-child td {
   bottom: 28px;
   left: 50%;
   transform: translateX(-50%) translateY(80px);
-  background: #1c1c1e;
-  color: #fff;
+  background: var(--teal-900);
+  color: var(--mint-100);
   padding: 12px 24px;
   border-radius: 100px;
   font-size: var(--font-sm);
@@ -627,7 +654,7 @@ tbody tr:last-child td {
   opacity: 0;
   transition: all 0.32s cubic-bezier(0.34,1.56,0.64,1);
   white-space: nowrap;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  box-shadow: 0 4px 20px rgba(15,50,48,0.25);
 }
 .toast.show {
   opacity: 1;
@@ -648,15 +675,12 @@ tbody tr:last-child td {
 /* =====================================================
    RESPONSIVE
    ===================================================== */
-
-/* Tablet */
 @media (min-width: 768px) and (max-width: 1024px) {
   .form-grid { grid-template-columns: repeat(2, 1fr); }
   #dynamicAttributes { grid-template-columns: repeat(2, 1fr); }
   .card, .section { padding: 24px 22px; }
 }
 
-/* Mobile */
 @media (max-width: 767px) {
   .page-header { padding: 22px 20px; border-radius: var(--radius-lg); }
   .page-header h1 { font-size: 20px; }
@@ -689,12 +713,9 @@ tbody tr:last-child td {
 
 @media (max-width: 480px) {
   :root { --font-2xl: 22px; }
-
   .page-header { padding: 18px 16px; }
   .page-header h1 { font-size: 18px; }
-
   input, select, textarea { font-size: 16px; }
-
   th { font-size: 10px; padding: 10px 8px; }
   td { padding: 10px 8px; }
 }
@@ -709,8 +730,7 @@ tbody tr:last-child td {
   .container { max-width: 100%; padding: 0; }
   .card, .section {
     box-shadow: none;
-    border: 1px solid #e5e7eb;
-    animation: none;
+    border: 1px solid var(--border);
     break-inside: avoid;
   }
 }

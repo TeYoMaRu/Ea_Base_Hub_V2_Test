@@ -1,29 +1,50 @@
 /* =====================================================
    shopDetail.css — หน้าข้อมูลร้านค้า
+   Palette: Teal / Sage / Mint — ตรงกับ index + report + formClaim + formPlan
    ===================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;500&display=swap');
 
 :root {
-  --teal-50:  #E1F5EE;
-  --teal-100: #9FE1CB;
-  --teal-400: #1D9E75;
-  --teal-600: #0F6E56;
-  --teal-800: #085041;
-  --gray-50:  #F7F8FA;
-  --gray-100: #F0F0F0;
-  --gray-200: #E8E8E8;
-  --gray-300: #DDE1E7;
-  --gray-400: #BBBEC5;
-  --gray-600: #888;
-  --gray-900: #1a1a1a;
-  --border:        1px solid #ECEEF2;
-  --border-subtle: 1px solid #F0F0F0;
+  /* === Teal === */
+  --teal-50:  #e8f8f7;
+  --teal-100: #b8ece9;
+  --teal-200: #7fd6d0;
+  --teal-400: #3FB7AE;
+  --teal-500: #2FA39A;
+  --teal-700: #1f7a73;
+  --teal-900: #0f524e;
+
+  /* === Mint === */
+  --mint-50:  #f4faf9;
+  --mint-100: #daf1ef;
+  --mint-200: #b8e6e3;
+
+  /* === Neutrals === */
+  --gray-50:  #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-600: #475569;
+  --gray-900: #1e293b;
+
+  /* === Semantic === */
+  --bg-base:   var(--mint-50);
+  --bg-card:   #ffffff;
+  --border:        1px solid #cde8e5;
+  --border-subtle: 1px solid #e2ecea;
+
+  --text-primary:   #0f3330;
+  --text-secondary: #3d6e6a;
+  --text-muted:     #7aaba7;
+
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-xl: 18px;
-  --focus-ring: 0 0 0 3px rgba(29,158,117,0.10);
+  --focus-ring: 0 0 0 3px rgba(63,183,174,0.14);
   --font: 'Kanit', 'Segoe UI', sans-serif;
+  --transition: 0.18s ease;
 }
 
 /* =====================================================
@@ -40,14 +61,14 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: #ECEEF2;
+  background: #cde8e5;
 }
 .section-divider-label {
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--gray-400);
+  color: var(--text-muted);
   white-space: nowrap;
 }
 
@@ -64,17 +85,17 @@
 
 .back-btn {
   font-size: 13px;
-  color: var(--teal-600);
+  color: var(--teal-700);
   text-decoration: none;
   padding: 7px 14px;
-  border: 1px solid var(--teal-100);
+  border: 1px solid var(--teal-200);
   border-radius: var(--radius-md);
   background: var(--teal-50);
-  transition: background 0.15s;
+  transition: background var(--transition);
   white-space: nowrap;
   font-family: var(--font);
 }
-.back-btn:hover { background: var(--teal-100); }
+.back-btn:hover { background: var(--mint-100); border-color: var(--teal-400); }
 
 .detail-title-wrap {
   display: flex;
@@ -87,7 +108,7 @@
 .detail-title-wrap h1 {
   font-size: 22px;
   font-weight: 500;
-  color: var(--gray-900);
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -95,18 +116,19 @@
 
 .detail-code {
   font-size: 11px;
-  background: var(--gray-100);
-  color: var(--gray-600);
+  background: var(--mint-100);
+  color: var(--teal-700);
   padding: 3px 8px;
   border-radius: 5px;
   font-family: monospace;
   flex-shrink: 0;
+  border: 1px solid var(--teal-100);
 }
 
 .detail-province {
   font-size: 13px;
-  color: var(--gray-600);
-  background: var(--gray-50);
+  color: var(--text-secondary);
+  background: var(--mint-50);
   padding: 5px 12px;
   border-radius: 20px;
   border: var(--border);
@@ -114,7 +136,7 @@
 }
 
 /* =====================================================
-   DETAIL GRID (2 คอลัมน์)
+   DETAIL GRID
    ===================================================== */
 .detail-grid {
   display: grid;
@@ -124,11 +146,7 @@
   margin-bottom: 16px;
 }
 
-.detail-col {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+.detail-col { display: flex; flex-direction: column; gap: 16px; }
 
 @media (max-width: 700px) {
   .detail-grid { grid-template-columns: 1fr; }
@@ -139,7 +157,7 @@
    CARD
    ===================================================== */
 .card {
-  background: #fff;
+  background: var(--bg-card);
   border: var(--border);
   border-radius: var(--radius-lg);
   padding: 18px 20px;
@@ -147,10 +165,10 @@
 
 .card-label {
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--gray-400);
+  color: var(--text-muted);
   margin-bottom: 14px;
 }
 
@@ -162,7 +180,7 @@
 
 .field label {
   font-size: 11px;
-  color: var(--gray-600);
+  color: var(--text-muted);
   margin-bottom: 5px;
   display: block;
 }
@@ -175,16 +193,16 @@
   border-radius: var(--radius-md);
   font-size: 13px;
   font-family: var(--font);
-  background: var(--gray-50);
-  color: var(--gray-900);
+  background: var(--mint-50);
+  color: var(--text-primary);
   outline: none;
-  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
   resize: vertical;
 }
 .field input:focus,
 .field textarea:focus {
   border-color: var(--teal-400);
-  background: #fff;
+  background: var(--bg-card);
   box-shadow: var(--focus-ring);
 }
 
@@ -199,17 +217,17 @@
   font-size: 12px;
   font-family: var(--font);
   font-weight: 500;
-  color: var(--teal-600);
+  color: var(--teal-700);
   background: var(--teal-50);
-  border: 1px solid var(--teal-100);
+  border: 1px solid var(--teal-200);
   border-radius: var(--radius-md);
   text-decoration: none;
   white-space: nowrap;
   display: flex;
   align-items: center;
-  transition: background 0.15s;
+  transition: background var(--transition);
 }
-.input-action-btn:hover { background: var(--teal-100); }
+.input-action-btn:hover { background: var(--mint-100); border-color: var(--teal-400); }
 
 /* =====================================================
    ALIAS
@@ -226,20 +244,21 @@
   border-radius: var(--radius-md);
   font-size: 13px;
   font-family: var(--font);
-  background: var(--gray-50);
-  color: var(--gray-900);
+  background: var(--mint-50);
+  color: var(--text-primary);
   outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color var(--transition), box-shadow var(--transition);
 }
 .alias-row input:focus {
   border-color: var(--teal-400);
-  background: #fff;
+  background: var(--bg-card);
   box-shadow: var(--focus-ring);
 }
+
 .alias-row button,
 #addAliasBtn {
   padding: 9px 16px;
-  background: var(--teal-400);
+  background: var(--teal-500);
   color: #fff;
   border: none;
   border-radius: var(--radius-md);
@@ -248,42 +267,49 @@
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.15s, transform 0.1s;
+  transition: background var(--transition), transform 0.1s;
 }
-#addAliasBtn:hover { background: var(--teal-600); }
+#addAliasBtn:hover  { background: var(--teal-700); }
 #addAliasBtn:active { transform: scale(0.97); }
 
 .alias-list { display: flex; flex-wrap: wrap; gap: 7px; min-height: 24px; }
+
 .alias-chip {
   font-size: 12px;
   background: var(--teal-50);
-  color: var(--teal-600);
+  color: var(--teal-700);
   padding: 4px 12px;
   border-radius: 20px;
   border: 1px solid var(--teal-100);
 }
-.no-data { font-size: 12px; color: var(--gray-400); }
+
+.no-data { font-size: 12px; color: var(--text-muted); }
 
 /* =====================================================
    SHIPPING CHIPS
    ===================================================== */
 .shipping-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
 .shipping-chip {
   padding: 6px 14px;
   font-size: 12px;
   font-family: var(--font);
-  background: #fff;
-  color: var(--gray-600);
+  background: var(--bg-card);
+  color: var(--text-muted);
   border: var(--border);
   border-radius: 20px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--transition);
 }
-.shipping-chip:hover { border-color: var(--teal-400); color: var(--teal-600); }
-.shipping-chip.active {
-  background: var(--teal-400);
-  color: #fff;
+.shipping-chip:hover {
   border-color: var(--teal-400);
+  color: var(--teal-700);
+  background: var(--teal-50);
+}
+.shipping-chip.active {
+  background: var(--teal-500);
+  color: #fff;
+  border-color: var(--teal-500);
   font-weight: 500;
 }
 
@@ -299,14 +325,15 @@
   border-top: var(--border-subtle);
   margin-top: 4px;
 }
-.save-status { font-size: 12px; color: var(--gray-400); }
-.save-status.saving { color: var(--gray-600); }
-.save-status.saved  { color: var(--teal-600); }
-.save-status.error  { color: #dc2626; }
+
+.save-status { font-size: 12px; color: var(--text-muted); }
+.save-status.saving { color: var(--text-secondary); }
+.save-status.saved  { color: var(--teal-500); }
+.save-status.error  { color: #d95b5b; }
 
 .btn-save {
   padding: 10px 28px;
-  background: var(--teal-400);
+  background: linear-gradient(135deg, var(--teal-500), var(--teal-700));
   color: #fff;
   border: none;
   border-radius: var(--radius-md);
@@ -314,51 +341,49 @@
   font-family: var(--font);
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
+  transition: all var(--transition);
+  box-shadow: 0 2px 8px rgba(47,163,154,0.25);
 }
-.btn-save:hover   { background: var(--teal-600); }
+.btn-save:hover   { background: linear-gradient(135deg, var(--teal-600), var(--teal-900)); box-shadow: 0 4px 14px rgba(47,163,154,0.35); }
 .btn-save:active  { transform: scale(0.97); }
 .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn-cancel {
   padding: 10px 24px;
-  background: #fff;
-  color: var(--gray-600);
+  background: var(--bg-card);
+  color: var(--text-secondary);
   border: var(--border);
   border-radius: var(--radius-md);
   font-size: 14px;
   font-family: var(--font);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background var(--transition);
 }
-.btn-cancel:hover {
-  background: var(--gray-50);
-}
-
+.btn-cancel:hover { background: var(--mint-50); border-color: var(--teal-200); }
 
 /* =====================================================
    IMAGE UPLOAD
    ===================================================== */
 .upload-area {
-  border: 1.5px dashed var(--gray-300);
+  border: 1.5px dashed var(--teal-200);
   border-radius: var(--radius-lg);
   padding: 28px 16px;
   text-align: center;
   cursor: pointer;
-  color: var(--gray-400);
+  color: var(--text-muted);
   font-size: 13px;
   line-height: 2;
   margin-bottom: 16px;
-  transition: border-color 0.15s, background 0.15s;
+  transition: border-color var(--transition), background var(--transition);
 }
 .upload-area:hover,
 .upload-area.drag-over {
   border-color: var(--teal-400);
   background: var(--teal-50);
-  color: var(--teal-600);
+  color: var(--teal-700);
 }
-.upload-icon { font-size: 26px; margin-bottom: 6px; display: block; }
-.upload-hint { font-size: 11px; color: var(--gray-400); margin-top: 4px; }
+.upload-icon  { font-size: 26px; margin-bottom: 6px; display: block; }
+.upload-hint  { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
 
 .image-grid {
   display: grid;
@@ -371,15 +396,21 @@
   overflow: hidden;
   aspect-ratio: 1/1;
   border: var(--border);
-  background: var(--gray-100);
+  background: var(--mint-50);
 }
-.image-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.2s; }
+.image-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.2s;
+}
 .image-card:hover img { opacity: 0.85; }
+
 .image-delete-btn {
   position: absolute;
   top: 6px; right: 6px;
   width: 24px; height: 24px;
-  background: rgba(0,0,0,0.55);
+  background: rgba(15,50,48,0.60);
   color: #fff;
   border: none;
   border-radius: 50%;
@@ -389,7 +420,7 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.15s;
+  transition: opacity var(--transition);
 }
 .image-card:hover .image-delete-btn { opacity: 1; }
 
@@ -400,7 +431,7 @@
   padding: 16px 24px;
   text-align: center;
   font-size: 11px;
-  color: var(--gray-400);
+  color: var(--text-muted);
   letter-spacing: 0.03em;
   margin-top: 32px;
 }

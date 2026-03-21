@@ -257,11 +257,11 @@ function restoreCell(input, saleId, field, value) {
 // goManage / goHome
 // -------------------------------------------------------
 function goManage(id) {
-  window.location.href = `admin-shops.html?sale=${id}`;
+  window.location.href = `adminShops.html?sale=${id}`;
 }
 
 function goHome() {
-  window.location.href = "index.html";
+  window.location.href = "/pages/admin/adminDashboard.html";
 }
 
 // -------------------------------------------------------
