@@ -4,6 +4,7 @@
 let transformedData = null;
 let filteredData = null;
 let fileName = null;
+let reportDate = null; // ✅ เพิ่ม: เก็บวันที่ของข้อมูล
 let visibleColumns = new Set();
 
 // ========================================
@@ -171,6 +172,10 @@ async function handleFile(file) {
         console.log('✅ File read successfully, rows:', rawData.length);
         showProcessLog('success', '✅ อ่านไฟล์สำเร็จ: ' + rawData.length + ' แถว');
 
+        // ✅ ดึงวันที่ของข้อมูลจากไฟล์
+        reportDate = extractReportDate(rawData);
+        console.log('📅 Report date extracted:', reportDate);
+
         // แปลงข้อมูล
         console.log('🔄 Transforming data...');
         transformedData = transformSalesReport(rawData);
@@ -268,6 +273,96 @@ async function readCSV(file) {
 // Data Transformation
 // ========================================
 
+/**
+ * ดึงวันที่ของข้อมูลจากไฟล์รายงาน
+ * รูปแบบ: "กันตรา 20 ก.พ. 2569 ถึง 20 ก.พ. 2569"
+ * ไม่ใช่: "วันที่: 21/02/69" (วันที่สร้างไฟล์)
+ */
+function extractReportDate(rows) {
+    console.log('🗓️ Extracting report date from file...');
+    
+    // ลอง parsing จาก 10 แถวแรก
+    for (let i = 0; i < Math.min(10, rows.length); i++) {
+        const row = rows[i];
+        if (!row || row.length === 0) continue;
+        
+        // ตรวจสอบทุกคอลัมน์ในแถว
+        for (let colIndex = 0; colIndex < Math.min(5, row.length); colIndex++) {
+            const cellValue = String(row[colIndex] || '').trim();
+            
+            // ข้ามคอลัมน์ที่มี "วันที่:" (นี่คือวันที่สร้างไฟล์ ไม่ต้องการ)
+            if (cellValue.includes('วันที่:') || cellValue.includes('วันที่ :')) {
+                console.log(`⏭️ Skipping file creation date: "${cellValue}"`);
+                continue;
+            }
+            
+            // รูปแบบที่ต้องการ: "20 ก.พ. 2569" หรือ "ถึง 20 ก.พ. 2569"
+            // Pattern: ตัวเลข 1-2 หลัก + เดือนไทย + ปี พ.ศ. 4 หลัก
+            const dateMatch = cellValue.match(/(\d{1,2})\s*([ก-ฮ]\s*\.?\s*[ก-ฮ]\s*\.?)\s*(\d{4})/);
+            
+            if (dateMatch) {
+                const day = dateMatch[1].padStart(2, '0');
+                const thaiMonth = dateMatch[2].replace(/\s/g, '').replace(/\./g, '');
+                const buddhistYear = dateMatch[3];
+                
+                // ตรวจสอบว่าเป็นปี พ.ศ. จริง (2500-2600)
+                const yearInt = parseInt(buddhistYear);
+                if (yearInt < 2500 || yearInt > 2600) {
+                    continue;
+                }
+                
+                // แปลงเดือนไทยเป็นตัวเลข
+                const monthMap = {
+                    'มค': '01', 'กพ': '02', 'มีค': '03', 'เมย': '04',
+                    'พค': '05', 'มิย': '06', 'กค': '07', 'สค': '08',
+                    'กย': '09', 'ตค': '10', 'พย': '11', 'ธค': '12',
+                    // รองรับเต็ม
+                    'มกราคม': '01', 'กุมภาพันธ์': '02', 'มีนาคม': '03',
+                    'เมษายน': '04', 'พฤษภาคม': '05', 'มิถุนายน': '06',
+                    'กรกฎาคม': '07', 'สิงหาคม': '08', 'กันยายน': '09',
+                    'ตุลาคม': '10', 'พฤศจิกายน': '11', 'ธันวาคม': '12'
+                };
+                
+                const month = monthMap[thaiMonth];
+                if (!month) {
+                    console.log(`⚠️ Unknown month: "${thaiMonth}"`);
+                    continue;
+                }
+                
+                // แปลง พ.ศ. เป็น ค.ศ.
+                const year = String(yearInt - 543);
+                
+                const reportDate = `${year}-${month}-${day}`;
+                console.log(`✅ Found report date: ${reportDate} (from "${cellValue}" at row ${i+1}, col ${colIndex+1})`);
+                showProcessLog('success', `📅 วันที่ของข้อมูล: ${day}/${month}/${year}`);
+                
+                return reportDate;
+            }
+        }
+    }
+    
+    // ถ้าหาไม่เจอ ใช้วันที่ปัจจุบัน
+    const today = new Date().toISOString().split('T')[0];
+    console.log(`⚠️ Could not extract report date from file, using today: ${today}`);
+    showProcessLog('warning', `⚠️ ไม่พบวันที่ในไฟล์ ใช้วันที่ปัจจุบัน: ${today}`);
+    
+    return today;
+}
+
+/**
+ * ฟังก์ชันทำความสะอาดชื่อ - ตัดคำที่ไม่เกี่ยวข้องออก
+ */
+function cleanCellName(name) {
+    if (!name) return name;
+    
+    return name
+        .replace(/^รวมยอดของ\s+/g, '')   // ตัด "รวมยอดของ "
+        .replace(/^ยอดรวมของ\s+/g, '')   // ตัด "ยอดรวมของ "
+        .replace(/^รวมของ\s+/g, '')      // ตัด "รวมของ "
+        .replace(/^ของ\s+/g, '')         // ตัด "ของ "
+        .trim();
+}
+
 function transformSalesReport(rows) {
     const transformed = [];
     let currentSales = { name: null, phone: null, code: null };
@@ -291,13 +386,18 @@ function transformSalesReport(rows) {
         }
 
         // ตรวจจับ พนักงานขาย - แยกชื่อ เบอร์ รหัส
-        // รูปแบบ: "คุณกิตติพงษ์0818093946 /ก-02" หรือ "  บริษัท 02-4497756-8 /A-01"
+        // รูปแบบ: "คุณกิตติพงษ์0818093946 /ก-02" หรือ "  บริษัท 02-4497756-8 /A-01" หรือ "รวมยอดของ คุณฐาปนี0999145651 /ง-01"
         const salesMatch = firstCol.match(/^[\s]*(.*?)(\d{10})[\s]*\/([A-Z0-9ก-ฮอ\-]+)$/);
         if (salesMatch) {
+            let rawName = salesMatch[1].trim()
+                .replace(/^บริษัท\s*/, '')
+                .replace(/^\d{2}-\d{7}-\d\s*/, '');
+            
+            // ✅ ทำความสะอาดชื่อ - ตัดคำที่ไม่เกี่ยวข้อง
+            rawName = cleanCellName(rawName);
+            
             currentSales = {
-                name: salesMatch[1].trim()
-                    .replace(/^บริษัท\s*/, '')
-                    .replace(/^\d{2}-\d{7}-\d\s*/, ''),
+                name: rawName,
                 phone: salesMatch[2],
                 code: salesMatch[3]
             };
@@ -309,8 +409,13 @@ function transformSalesReport(rows) {
         // ตรวจจับ ลูกค้า - มีช่องว่างข้างหน้า
         const customerMatch = firstCol.match(/^[\s]{2,}(.+?)\/([ก-ฮ\w0-9]+)$/);
         if (customerMatch) {
+            let rawCustomerName = customerMatch[1].trim();
+            
+            // ✅ ทำความสะอาดชื่อลูกค้าด้วย
+            rawCustomerName = cleanCellName(rawCustomerName);
+            
             currentCustomer = {
-                name: customerMatch[1].trim(),
+                name: rawCustomerName,
                 code: customerMatch[2]
             };
             showProcessLog('info', `    🏪 ลูกค้า: ${currentCustomer.name} [${currentCustomer.code}]`);
@@ -506,6 +611,148 @@ function showPreview() {
 // Import to Supabase
 // ========================================
 
+/**
+ * ตรวจสอบข้อมูลซ้ำในฐานข้อมูล (ตาม report_date)
+ */
+async function checkDuplicateData(date) {
+    try {
+        const { data, error, count } = await window.supabaseClient
+            .from('sales_data')
+            .select('id', { count: 'exact', head: true })
+            .eq('report_date', date);
+
+        if (error) throw error;
+        
+        return count || 0;
+    } catch (error) {
+        console.error('Error checking duplicates:', error);
+        return 0;
+    }
+}
+
+/**
+ * แสดง Dialog เลือกวิธีการ Import
+ */
+async function showImportOptionsDialog() {
+    return new Promise((resolve) => {
+        // สร้าง modal
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            font-family: 'Kanit', sans-serif;
+        `;
+
+        modal.innerHTML = `
+            <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 500px; width: 90%;">
+                <h2 style="margin: 0 0 1rem 0; color: #3a7d44; display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="material-icons">help_outline</span>
+                    เลือกวิธีการนำเข้าข้อมูล
+                </h2>
+                <p style="color: #666; margin-bottom: 1.5rem;">
+                    พบข้อมูลในฐานข้อมูลแล้ว กรุณาเลือกวิธีการที่ต้องการ:
+                </p>
+                
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <button id="optionAdd" style="
+                        padding: 1rem;
+                        border: 2px solid #3a7d44;
+                        background: white;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        text-align: left;
+                        transition: all 0.2s;
+                    " onmouseover="this.style.background='#f0f8f0'" onmouseout="this.style.background='white'">
+                        <div style="font-weight: 600; color: #3a7d44; margin-bottom: 0.3rem;">
+                            ➕ เพิ่มข้อมูลใหม่
+                        </div>
+                        <div style="font-size: 0.9rem; color: #666;">
+                            เก็บข้อมูลเก่าไว้ทั้งหมด + เพิ่มข้อมูลใหม่เข้าไป (อาจซ้ำได้)
+                        </div>
+                    </button>
+
+                    <button id="optionReplace" style="
+                        padding: 1rem;
+                        border: 2px solid #ff9800;
+                        background: white;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        text-align: left;
+                        transition: all 0.2s;
+                    " onmouseover="this.style.background='#fff8f0'" onmouseout="this.style.background='white'">
+                        <div style="font-weight: 600; color: #ff9800; margin-bottom: 0.3rem;">
+                            🔄 แทนที่ข้อมูลวันนี้
+                        </div>
+                        <div style="font-size: 0.9rem; color: #666;">
+                            ลบข้อมูลเก่าวันที่ "<b>${reportDate || 'ไม่ระบุ'}</b>" + เพิ่มข้อมูลใหม่
+                        </div>
+                    </button>
+
+                    <button id="optionDeleteAll" style="
+                        padding: 1rem;
+                        border: 2px solid #f44336;
+                        background: white;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        text-align: left;
+                        transition: all 0.2s;
+                    " onmouseover="this.style.background='#fff0f0'" onmouseout="this.style.background='white'">
+                        <div style="font-weight: 600; color: #f44336; margin-bottom: 0.3rem;">
+                            🗑️ ลบทั้งหมดแล้วเริ่มใหม่
+                        </div>
+                        <div style="font-size: 0.9rem; color: #666;">
+                            ลบข้อมูลทั้งหมดในตาราง sales_data + เพิ่มข้อมูลใหม่ (ระวัง!)
+                        </div>
+                    </button>
+
+                    <button id="optionCancel" style="
+                        padding: 0.8rem;
+                        border: 1px solid #ccc;
+                        background: white;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        color: #666;
+                        margin-top: 0.5rem;
+                    ">
+                        ❌ ยกเลิก
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Event listeners
+        document.getElementById('optionAdd').onclick = () => {
+            document.body.removeChild(modal);
+            resolve('add');
+        };
+        document.getElementById('optionReplace').onclick = () => {
+            document.body.removeChild(modal);
+            resolve('replace');
+        };
+        document.getElementById('optionDeleteAll').onclick = () => {
+            const confirmDelete = confirm('⚠️ คุณแน่ใจหรือไม่? การลบข้อมูลทั้งหมดไม่สามารถกู้คืนได้!');
+            if (confirmDelete) {
+                document.body.removeChild(modal);
+                resolve('deleteAll');
+            }
+        };
+        document.getElementById('optionCancel').onclick = () => {
+            document.body.removeChild(modal);
+            resolve('cancel');
+        };
+    });
+}
+
 async function importToSupabase() {
     console.log('🔵 importToSupabase() called');
     
@@ -519,7 +766,7 @@ async function importToSupabase() {
         return;
     }
 
-    // ✅ แก้ไข: ตรวจสอบ supabaseClient แทน supabase
+    // ✅ ตรวจสอบ supabaseClient
     console.log('🔍 Checking Supabase client...');
     console.log('window.supabaseClient:', window.supabaseClient);
     
@@ -531,16 +778,44 @@ async function importToSupabase() {
 
     console.log('✅ Supabase client is available');
 
-    // ยืนยันการบันทึก
-    const confirmMsg = `ต้องการบันทึกข้อมูล ${transformedData.length} รายการ ลง Supabase ใช่หรือไม่?`;
-    console.log('❓ Asking for confirmation...');
+    // ✅ ใช้วันที่ของข้อมูล (reportDate) แทนวันที่อัพโหลด
+    let finalFileName = fileName;
     
-    if (!confirm(confirmMsg)) {
-        console.log('⏹️ User cancelled');
-        return;
+    if (reportDate) {
+        const ext = fileName.split('.').pop();
+        const nameWithoutExt = fileName.replace(`.${ext}`, '');
+        finalFileName = `${nameWithoutExt}_${reportDate}.${ext}`;
+        console.log('📅 Using report date in filename:', finalFileName);
+        showProcessLog('info', `📅 ชื่อไฟล์: ${finalFileName}`);
+    } else {
+        // fallback: ใช้วันที่อัพโหลด
+        const today = new Date().toISOString().split('T')[0];
+        const ext = fileName.split('.').pop();
+        const nameWithoutExt = fileName.replace(`.${ext}`, '');
+        finalFileName = `${nameWithoutExt}_${today}.${ext}`;
+        console.log('📅 Using upload date in filename:', finalFileName);
     }
 
-    console.log('✅ User confirmed');
+    // ✅ ตรวจสอบข้อมูลซ้ำ
+    showAlert('🔍 กำลังตรวจสอบข้อมูลซ้ำ...', 'info');
+    const existingCount = await checkDuplicateData(reportDate);
+    
+    let importMode = 'add'; // default
+    
+    if (existingCount > 0) {
+        console.log(`⚠️ Found ${existingCount} existing records for date ${reportDate}`);
+        showAlert(`⚠️ พบข้อมูลเดิมวันที่ ${reportDate} จำนวน ${existingCount} รายการ กรุณาเลือกวิธีการ`, 'warning');
+        
+        importMode = await showImportOptionsDialog();
+        
+        if (importMode === 'cancel') {
+            console.log('⏹️ User cancelled');
+            showAlert('ยกเลิกการนำเข้าข้อมูล', 'info');
+            return;
+        }
+    }
+
+    console.log('✅ Import mode:', importMode);
 
     // ปิดปุ่ม
     const importBtn = document.getElementById('importToSupabaseBtn');
@@ -557,6 +832,34 @@ async function importToSupabase() {
     console.log('📤 Starting import process...');
 
     try {
+        // ✅ จัดการข้อมูลเก่าตาม mode
+        if (importMode === 'replace') {
+            showProcessLog('info', `🗑️ กำลังลบข้อมูลเก่าวันที่ "${reportDate}"...`);
+            const { error: deleteError } = await window.supabaseClient
+                .from('sales_data')
+                .delete()
+                .eq('report_date', reportDate); // ✅ ลบตามวันที่ของข้อมูล
+            
+            if (deleteError) {
+                console.error('❌ Delete error:', deleteError);
+                throw new Error(`ลบข้อมูลเก่าล้มเหลว: ${deleteError.message}`);
+            }
+            showProcessLog('success', '✅ ลบข้อมูลเก่าสำเร็จ');
+            
+        } else if (importMode === 'deleteAll') {
+            showProcessLog('info', '🗑️ กำลังลบข้อมูลทั้งหมดในตาราง...');
+            const { error: deleteError } = await window.supabaseClient
+                .from('sales_data')
+                .delete()
+                .neq('id', 0); // ลบทั้งหมด
+            
+            if (deleteError) {
+                console.error('❌ Delete all error:', deleteError);
+                throw new Error(`ลบข้อมูลทั้งหมดล้มเหลว: ${deleteError.message}`);
+            }
+            showProcessLog('success', '✅ ลบข้อมูลทั้งหมดสำเร็จ');
+        }
+
         // เตรียมข้อมูล
         console.log('📦 Preparing data...');
         
@@ -585,57 +888,209 @@ async function importToSupabase() {
                 cost: row.cost || 0,
                 profit: row.profit || 0,
                 profit_percent: row.profit_percent || 0,
+                report_date: reportDate || new Date().toISOString().split('T')[0], // ✅ เพิ่ม: วันที่ของข้อมูล
                 import_by: window.currentUser?.display_name || window.currentUser?.email || 'Unknown',
-                import_filename: fileName || 'unknown.csv'
+                import_filename: finalFileName // ✅ ใช้ชื่อไฟล์ที่มีวันที่
             };
         });
 
         console.log('✅ Data prepared:', dataToInsert.length, 'records');
         console.log('📝 First record to insert:', dataToInsert[0]);
 
+        // ✅ ตรวจจับและกรองข้อมูลซ้ำภายในไฟล์ก่อนส่ง
+        showProcessLog('info', '🔍 กำลังตรวจสอบข้อมูลซ้ำภายในไฟล์...');
+        const uniqueDataMap = new Map();
+        
+        dataToInsert.forEach((record, index) => {
+            // ✅ ใช้ report_date แทน import_filename ใน unique key
+            const key = `${record.sales_code}|${record.customer_code}|${record.product_code}|${record.report_date}`;
+            
+            if (!uniqueDataMap.has(key)) {
+                uniqueDataMap.set(key, record);
+            } else {
+                console.log(`⚠️ พบข้อมูลซ้ำภายในไฟล์ที่แถว ${index + 1}:`, record.product_name);
+            }
+        });
+
+        const uniqueData = Array.from(uniqueDataMap.values());
+        const duplicateCount = dataToInsert.length - uniqueData.length;
+        
+        if (duplicateCount > 0) {
+            console.log(`⚠️ พบข้อมูลซ้ำ ${duplicateCount} รายการภายในไฟล์`);
+            showProcessLog('warning', `⚠️ กรองข้อมูลซ้ำออก ${duplicateCount} รายการ`);
+        }
+        
+        showProcessLog('success', `✅ เตรียมข้อมูลพร้อมส่ง ${uniqueData.length} รายการ`);
+
         // แบ่งเป็น batch
         const batchSize = 100;
         let totalInserted = 0;
+        let totalUpdated = 0;
 
-        console.log('🔢 Total batches:', Math.ceil(dataToInsert.length / batchSize));
+        console.log('🔢 Total batches:', Math.ceil(uniqueData.length / batchSize));
 
-        for (let i = 0; i < dataToInsert.length; i += batchSize) {
-            const batch = dataToInsert.slice(i, i + batchSize);
+        for (let i = 0; i < uniqueData.length; i += batchSize) {
+            const batch = uniqueData.slice(i, i + batchSize);
             const batchNumber = Math.floor(i / batchSize) + 1;
-            const totalBatches = Math.ceil(dataToInsert.length / batchSize);
+            const totalBatches = Math.ceil(uniqueData.length / batchSize);
             
             console.log(`📤 Batch ${batchNumber}/${totalBatches}: Inserting ${batch.length} records...`);
-            showProcessLog('info', `📤 กำลังบันทึก ${i + 1}-${Math.min(i + batchSize, dataToInsert.length)} จาก ${dataToInsert.length}...`);
+            showProcessLog('info', `📤 กำลังบันทึก ${i + 1}-${Math.min(i + batchSize, uniqueData.length)} จาก ${uniqueData.length}...`);
 
             try {
-                // ✅ แก้ไข: ใช้ window.supabaseClient แทน window.supabase
-                const { data, error } = await window.supabaseClient
+                // ✅ ใช้ upsert แทน insert เพื่อป้องกันข้อมูลซ้ำ
+                const { data, error, count } = await window.supabaseClient
                     .from('sales_data')
-                    .insert(batch);
+                    .upsert(batch, {
+                        onConflict: 'sales_code,customer_code,product_code,report_date', // ✅ ใช้ report_date แทน import_filename
+                        ignoreDuplicates: false, // อัพเดทถ้าซ้ำ
+                        count: 'exact'
+                    });
 
                 if (error) {
-                    console.error('❌ Supabase insert error:', error);
+                    console.error('❌ Supabase upsert error:', error);
                     console.error('Error details:', {
                         message: error.message,
                         details: error.details,
                         hint: error.hint,
                         code: error.code
                     });
-                    throw new Error(`บันทึกล้มเหลว: ${error.message}`);
+                    
+                    // ✅ แสดง error ที่เข้าใจง่าย
+                    let errorMsg = error.message;
+                    
+                    if (error.message.includes('unique constraint')) {
+                        errorMsg = '⚠️ ตรวจพบ Unique Constraint Error\n\n' +
+                                   'กรุณาตรวจสอบ:\n' +
+                                   '1. Constraint ถูกสร้างแล้วหรือยัง?\n' +
+                                   '2. มีข้อมูลซ้ำในฐานข้อมูลหรือไม่?\n\n' +
+                                   'รายละเอียด: ' + error.message;
+                    } else if (error.message.includes('ON CONFLICT')) {
+                        errorMsg = '⚠️ ไม่สามารถบันทึกข้อมูลได้\n\n' +
+                                   'สาเหตุที่เป็นไปได้:\n' +
+                                   '1. ยังไม่ได้สร้าง Unique Constraint ในตาราง sales_data\n' +
+                                   '2. มีข้อมูลซ้ำหลายรายการในไฟล์\n\n' +
+                                   'แนะนำ: ให้รัน SQL ในไฟล์ setup_sales_data_constraints.sql ก่อน\n\n' +
+                                   'รายละเอียด: ' + error.message;
+                    }
+                    
+                    throw new Error(errorMsg);
                 }
 
                 totalInserted += batch.length;
-                console.log(`✅ Batch ${batchNumber} inserted successfully`);
+                console.log(`✅ Batch ${batchNumber} inserted/updated successfully`);
                 showProcessLog('success', `✅ บันทึกสำเร็จ ${totalInserted} รายการ`);
                 
             } catch (batchError) {
                 console.error('❌ Batch error:', batchError);
+                
+                // ✅ แสดง Alert Popup ที่ชัดเจน
+                const errorAlert = document.createElement('div');
+                errorAlert.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: white;
+                    padding: 2rem;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                    z-index: 10001;
+                    max-width: 600px;
+                    width: 90%;
+                    font-family: 'Kanit', sans-serif;
+                `;
+                
+                errorAlert.innerHTML = `
+                    <h2 style="color: #f44336; margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="material-icons" style="font-size: 2rem;">error</span>
+                        เกิดข้อผิดพลาดในการบันทึก
+                    </h2>
+                    <div style="background: #fff3f3; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; white-space: pre-wrap; font-size: 0.9rem; color: #333;">
+${batchError.message}
+                    </div>
+                    <button onclick="this.parentElement.remove()" style="
+                        width: 100%;
+                        padding: 0.8rem;
+                        background: #f44336;
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 1rem;
+                        font-family: 'Kanit', sans-serif;
+                    ">
+                        ปิด
+                    </button>
+                `;
+                
+                document.body.appendChild(errorAlert);
+                
                 throw batchError;
             }
         }
 
         console.log('🎉 Import completed:', totalInserted, 'records');
         showProcessLog('success', `🎉 บันทึกข้อมูลทั้งหมดสำเร็จ! (${totalInserted} รายการ)`);
+        
+        // ✅ แสดง Success Popup
+        const successAlert = document.createElement('div');
+        successAlert.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 10001;
+            max-width: 500px;
+            width: 90%;
+            font-family: 'Kanit', sans-serif;
+            text-align: center;
+        `;
+        
+        successAlert.innerHTML = `
+            <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+            <h2 style="color: #3a7d44; margin: 0 0 1rem 0;">
+                บันทึกข้อมูลสำเร็จ!
+            </h2>
+            <div style="background: #f0f8f0; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <div style="font-size: 1.2rem; font-weight: 600; color: #3a7d44;">
+                    ${totalInserted.toLocaleString()} รายการ
+                </div>
+                <div style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">
+                    ${duplicateCount > 0 ? `(กรองข้อมูลซ้ำออก ${duplicateCount} รายการ)` : ''}
+                </div>
+            </div>
+            <div style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+                ไฟล์: <strong>${finalFileName}</strong>
+            </div>
+            <button onclick="this.parentElement.remove()" style="
+                width: 100%;
+                padding: 0.8rem;
+                background: #3a7d44;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 1rem;
+                font-family: 'Kanit', sans-serif;
+            ">
+                ปิด
+            </button>
+        `;
+        
+        document.body.appendChild(successAlert);
+        
+        // ปิดอัตโนมัติหลัง 5 วินาที
+        setTimeout(() => {
+            if (successAlert.parentElement) {
+                successAlert.remove();
+            }
+        }, 5000);
+        
         showAlert(`✅ บันทึกข้อมูลลง Supabase สำเร็จ! (${totalInserted} รายการ)`, 'success');
 
         // รีเซ็ตปุ่ม

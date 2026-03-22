@@ -1,219 +1,330 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EABaseHub · Executive Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-  <link rel="stylesheet" href="/css/pages/dashboard/executiveDashboard.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive Sales Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <link rel="stylesheet" href="/css/pages/dashboard/executiveDashboard.css" />
 </head>
 <body>
 
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <div class="bg-grid"></div>
+  <div class="noise-overlay"></div>
 
-<!-- ── Sidebar ── -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-box"><span>EA</span></div>
-    <div class="logo-text">EABaseHub <small>EXECUTIVE</small></div>
-    <button class="sidebar-close" onclick="closeSidebar()">
-      <span class="material-icons-round">close</span>
-    </button>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-box">
+      <div class="loading-logo">EX</div>
+      <div class="loading-title">EXECVIEW</div>
+      <div class="loading-bar-wrap">
+        <div class="loading-bar" id="loadingBar"></div>
+      </div>
+      <div class="loading-status" id="loadingStatus">กำลังเชื่อมต่อ Supabase...</div>
+    </div>
   </div>
-  <nav class="nav">
-    <div class="nav-group-label">ภาพรวม</div>
-    <a class="nav-item active" href="#"><span class="material-icons-round">dashboard</span> Executive Overview</a>
-    <a class="nav-item" href="#"><span class="material-icons-round">bar_chart</span> Sales Dashboard</a>
 
-    <div class="nav-group-label">รายละเอียด</div>
-    <a class="nav-item" href="#"><span class="material-icons-round">store</span> ร้านค้า</a>
-    <a class="nav-item" href="#"><span class="material-icons-round">inventory_2</span> Claim & QC</a>
-    <a class="nav-item" href="#"><span class="material-icons-round">map</span> แผนเดินทาง</a>
-    <a class="nav-item" href="#"><span class="material-icons-round">attach_money</span> ค่าใช้จ่าย</a>
-
-    <div class="nav-group-label">ระบบ</div>
-    <a class="nav-item" href="#"><span class="material-icons-round">manage_accounts</span> จัดการผู้ใช้</a>
-    <a class="nav-item" href="#"><span class="material-icons-round">settings</span> ตั้งค่า</a>
-  </nav>
-  <div class="sidebar-footer">
-    <div class="user-info">
-      <div class="avatar">TN</div>
-      <div>
-        <div class="user-name">Tontoey N.</div>
-        <div class="user-role">Executive</div>
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo-mark">EX</div>
+      <div class="brand-text">
+        <span class="brand-name">EXECVIEW</span>
+        <span class="brand-sub">Sales Intelligence</span>
       </div>
     </div>
-  </div>
-</aside>
-
-<!-- ── Main ── -->
-<div class="main">
-
-  <header class="topbar">
-    <button class="hamburger" onclick="openSidebar()">
-      <span class="material-icons-round">menu</span>
-    </button>
-    <div class="topbar-brand">
-      <div class="topbar-title">Executive Overview</div>
-      <div class="topbar-sub">ภาพรวมธุรกิจ · มีนาคม 2569</div>
+    <div class="topbar-center">
+      <nav class="tab-nav">
+        <button class="tab-btn active" data-tab="overview">Overview</button>
+        <button class="tab-btn" data-tab="products">Products</button>
+        <button class="tab-btn" data-tab="daily">Daily</button>
+        <button class="tab-btn" data-tab="monthly">Monthly</button>
+      </nav>
     </div>
-    <div class="period-group">
-      <button class="period-btn" onclick="setPeriod('month',this)">เดือน</button>
-      <button class="period-btn active" onclick="setPeriod('quarter',this)">ไตรมาส</button>
-      <button class="period-btn" onclick="setPeriod('year',this)">ปี</button>
-    </div>
-    <div class="topbar-actions">
-      <div class="live-badge"><span class="live-dot"></span>Live</div>
-      <button class="icon-btn" title="รีเฟรช"><span class="material-icons-round">refresh</span></button>
-      <button class="icon-btn" title="ดาวน์โหลด"><span class="material-icons-round">download</span></button>
+    <div class="topbar-right">
+      <button class="refresh-btn" id="refreshBtn" title="Refresh data">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+      </button>
+      <div class="live-badge">
+        <span class="pulse-dot"></span>
+        LIVE
+      </div>
+      <div class="date-display" id="dateDisplay"></div>
+
+      <!-- Logout Button -->
+      <div class="topbar-divider"></div>
+      <button class="logout-btn" id="logoutBtn" title="ออกจากระบบ">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span>ออกจากระบบ</span>
+      </button>
     </div>
   </header>
 
-  <div class="content">
+  <!-- ═══ TAB: OVERVIEW ═══ -->
+  <main class="main-content tab-content active" id="tabOverview">
 
-    <!-- ══ KPI Strip ══ -->
-    <div class="kpi-grid">
-      <div class="kpi-card accent-green">
-        <div class="kpi-top">
-          <span class="kpi-label">รายได้รวม</span>
-          <span class="kpi-icon material-icons-round">payments</span>
-        </div>
-        <div class="kpi-val" id="kv-revenue">฿11.9M</div>
-        <div class="kpi-sub">
-          <span class="chip up"><span class="material-icons-round">arrow_upward</span>+18.4%</span>
-          <span class="kpi-vs">vs ไตรมาสก่อน</span>
-        </div>
-        <canvas class="spark-canvas" id="ks-revenue" height="36"></canvas>
+    <section class="kpi-row">
+      <div class="kpi-card kpi-primary" data-animate>
+        <div class="kpi-label">Total Revenue</div>
+        <div class="kpi-value" id="kpiTotalRevenue">—</div>
+        <div class="kpi-delta neutral" id="kpiRevenueDelta">กำลังโหลด...</div>
+        <div class="kpi-sparkline"><canvas id="sparkRevenue"></canvas></div>
       </div>
-      <div class="kpi-card accent-blue">
-        <div class="kpi-top">
-          <span class="kpi-label">Claim รออนุมัติ</span>
-          <span class="kpi-icon material-icons-round">pending_actions</span>
-        </div>
-        <div class="kpi-val" id="kv-claim">47</div>
-        <div class="kpi-sub">
-          <span class="chip dn"><span class="material-icons-round">arrow_downward</span>-12</span>
-          <span class="kpi-vs">จากเดือนก่อน</span>
-        </div>
-        <canvas class="spark-canvas" id="ks-claim" height="36"></canvas>
+      <div class="kpi-card" data-animate style="--delay:0.1s">
+        <div class="kpi-label">Total Transactions</div>
+        <div class="kpi-value" id="kpiTotalTxn">—</div>
+        <div class="kpi-delta neutral" id="kpiTxnDelta">กำลังโหลด...</div>
+        <div class="kpi-sparkline"><canvas id="sparkOrders"></canvas></div>
       </div>
-      <div class="kpi-card accent-amber">
-        <div class="kpi-top">
-          <span class="kpi-label">ทีมขายทั้งหมด</span>
-          <span class="kpi-icon material-icons-round">group</span>
-        </div>
-        <div class="kpi-val" id="kv-team">34</div>
-        <div class="kpi-sub">
-          <span class="chip up"><span class="material-icons-round">arrow_upward</span>+3 คน</span>
-          <span class="kpi-vs">ไตรมาสนี้</span>
-        </div>
-        <canvas class="spark-canvas" id="ks-team" height="36"></canvas>
+      <div class="kpi-card" data-animate style="--delay:0.2s">
+        <div class="kpi-label">Total Qty Sold</div>
+        <div class="kpi-value" id="kpiTotalQty">—</div>
+        <div class="kpi-delta neutral">จากข้อมูลจริง</div>
+        <div class="kpi-sparkline"><canvas id="sparkDeal"></canvas></div>
       </div>
-      <div class="kpi-card accent-red">
-        <div class="kpi-top">
-          <span class="kpi-label">ร้านค้าใช้งาน</span>
-          <span class="kpi-icon material-icons-round">store</span>
-        </div>
-        <div class="kpi-val" id="kv-shops">238</div>
-        <div class="kpi-sub">
-          <span class="chip dn"><span class="material-icons-round">arrow_downward</span>-2 ร้าน</span>
-          <span class="kpi-vs">จากเดือนก่อน</span>
-        </div>
-        <canvas class="spark-canvas" id="ks-shops" height="36"></canvas>
+      <div class="kpi-card" data-animate style="--delay:0.3s">
+        <div class="kpi-label">Avg Revenue / Product</div>
+        <div class="kpi-value" id="kpiAvgRevenue">—</div>
+        <div class="kpi-delta neutral">กำลังโหลด...</div>
+        <div class="kpi-sparkline"><canvas id="sparkWin"></canvas></div>
       </div>
-    </div>
+      <div class="kpi-card" data-animate style="--delay:0.4s">
+        <div class="kpi-label">Active SKUs</div>
+        <div class="kpi-value" id="kpiUniqueProducts">—</div>
+        <div class="kpi-delta neutral">Unique Products</div>
+        <div class="kpi-sparkline"><canvas id="sparkPipeline"></canvas></div>
+      </div>
+    </section>
 
-    <!-- ══ Row 1: Revenue + Claim donut ══ -->
-    <div class="row-2col wide">
-      <div class="chart-card">
-        <div class="card-head">
-          <div class="card-title">แนวโน้มรายได้ (฿M)</div>
-          <div class="legend-row">
-            <span><span class="leg-dot" style="background:#33913f"></span>รายได้จริง</span>
-            <span><span class="leg-dot" style="background:#c8e6c9"></span>เป้าหมาย</span>
+    <section class="charts-grid">
+      <div class="chart-card chart-wide" data-animate style="--delay:0.5s">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Monthly Revenue Trend</div>
+            <div class="chart-sub">จาก sales_summary_monthly</div>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-dot" style="--c:#E8FF47"></span>Revenue
+            <span class="legend-dot" style="--c:#4DA8FF"></span>Transactions
           </div>
         </div>
-        <div class="chart-wrap h220"><canvas id="revenueChart"></canvas></div>
+        <div class="chart-wrap"><canvas id="chartRevenueTrend"></canvas></div>
+      </div>
+
+      <div class="chart-card chart-narrow" data-animate style="--delay:0.6s">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Top Products</div>
+            <div class="chart-sub">by Revenue (Top 5)</div>
+          </div>
+        </div>
+        <div class="chart-wrap donut-wrap">
+          <canvas id="chartCategory"></canvas>
+          <div class="donut-center">
+            <div class="donut-val" id="donutTotal">—</div>
+            <div class="donut-lbl">Total</div>
+          </div>
+        </div>
+        <div class="donut-legend" id="categoryLegend"></div>
+      </div>
+
+      <div class="chart-card chart-mid" data-animate style="--delay:0.7s">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Daily Revenue</div>
+            <div class="chart-sub">30 วันล่าสุด จาก sales_summary_daily</div>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="chartDaily"></canvas></div>
+      </div>
+
+      <div class="chart-card chart-mid" data-animate style="--delay:0.8s">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Top Products by Qty Sold</div>
+            <div class="chart-sub">10 อันดับแรก</div>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="chartQtyTop"></canvas></div>
+      </div>
+    </section>
+
+    <section class="bottom-row">
+      <div class="chart-card leaderboard-card" data-animate style="--delay:0.9s">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Top Products by Revenue</div>
+            <div class="chart-sub">sales_summary_by_product</div>
+          </div>
+          <div class="rank-label">RANK</div>
+        </div>
+        <div class="leaderboard" id="leaderboard"></div>
+      </div>
+
+      <div class="chart-card alerts-card" data-animate style="--delay:1s">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Data Source Status</div>
+            <div class="chart-sub">Supabase tables</div>
+          </div>
+          <span class="badge-count" id="alertCount">3</span>
+        </div>
+        <div class="alerts-list" id="alertsList"></div>
+      </div>
+
+      <div class="chart-card target-card" data-animate style="--delay:1.1s">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Revenue by Unit</div>
+            <div class="chart-sub">Top unit type distribution</div>
+          </div>
+        </div>
+        <div class="gauge-wrap">
+          <canvas id="chartGauge"></canvas>
+          <div class="gauge-center">
+            <div class="gauge-pct" id="gaugePct">—</div>
+            <div class="gauge-lbl">Top Unit</div>
+          </div>
+        </div>
+        <div class="quota-stats">
+          <div class="quota-stat">
+            <div class="qs-val" id="qsActual">—</div>
+            <div class="qs-lbl">Revenue</div>
+          </div>
+          <div class="quota-divider"></div>
+          <div class="quota-stat">
+            <div class="qs-val" id="qsOrders">—</div>
+            <div class="qs-lbl">Txn</div>
+          </div>
+          <div class="quota-divider"></div>
+          <div class="quota-stat">
+            <div class="qs-val" id="qsProducts">—</div>
+            <div class="qs-lbl">SKUs</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══ TAB: PRODUCTS ═══ -->
+  <main class="main-content tab-content" id="tabProducts" style="display:none">
+    <section class="charts-grid" style="grid-template-columns:1fr 1fr">
+      <div class="chart-card" style="grid-column:1/3">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">All Products — Revenue Ranking</div>
+            <div class="chart-sub">sales_summary_by_product (Top 20)</div>
+          </div>
+        </div>
+        <div class="chart-wrap" style="min-height:400px"><canvas id="chartAllProducts"></canvas></div>
       </div>
       <div class="chart-card">
-        <div class="card-head">
-          <div class="card-title">สถานะ Claim & QC</div>
-          <span class="badge-info" id="claim-total">รวม 182 รายการ</span>
+        <div class="chart-header">
+          <div><div class="chart-title">Revenue vs Qty Correlation</div><div class="chart-sub">Scatter plot</div></div>
         </div>
-        <div class="claim-layout">
-          <div class="chart-wrap h160"><canvas id="claimChart"></canvas></div>
-          <div class="claim-legend" id="claim-legend"></div>
-        </div>
-        <div class="claim-stats" id="claim-stats"></div>
-      </div>
-    </div>
-
-    <!-- ══ Row 2: Team performance + QC approval rate ══ -->
-    <div class="row-2col equal">
-      <div class="chart-card">
-        <div class="card-head">
-          <div class="card-title">ประสิทธิภาพทีมขาย</div>
-          <span class="card-sub">ยอดขาย vs เป้า (฿M) · ไตรมาสนี้</span>
-        </div>
-        <div class="team-list" id="team-list"></div>
+        <div class="chart-wrap"><canvas id="chartScatter"></canvas></div>
       </div>
       <div class="chart-card">
-        <div class="card-head">
-          <div class="card-title">ยอดขายรายเดือน (฿M)</div>
-          <span class="card-sub">6 เดือนล่าสุด</span>
+        <div class="chart-header">
+          <div><div class="chart-title">Unit Type Breakdown</div><div class="chart-sub">Revenue by unit</div></div>
         </div>
-        <div class="chart-wrap h200"><canvas id="salesMonthChart"></canvas></div>
+        <div class="chart-wrap donut-wrap">
+          <canvas id="chartUnitDonut"></canvas>
+          <div class="donut-center"><div class="donut-val" id="unitDonutTotal">—</div><div class="donut-lbl">Total</div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══ TAB: DAILY ═══ -->
+  <main class="main-content tab-content" id="tabDaily" style="display:none">
+    <section class="charts-grid" style="grid-template-columns:1fr">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div><div class="chart-title">Daily Revenue — Full History</div><div class="chart-sub">sales_summary_daily</div></div>
+          <div class="chart-legend">
+            <span class="legend-dot" style="--c:#E8FF47"></span>Revenue
+          </div>
+        </div>
+        <div class="chart-wrap" style="min-height:300px"><canvas id="chartDailyFull"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div><div class="chart-title">Daily Transactions</div><div class="chart-sub">จำนวน orders ต่อวัน</div></div>
+        </div>
+        <div class="chart-wrap" style="min-height:250px"><canvas id="chartDailyTxn"></canvas></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══ TAB: MONTHLY ═══ -->
+  <main class="main-content tab-content" id="tabMonthly" style="display:none">
+    <section class="charts-grid" style="grid-template-columns:1fr 1fr">
+      <div class="chart-card" style="grid-column:1/3">
+        <div class="chart-header">
+          <div><div class="chart-title">Monthly Revenue — All Time</div><div class="chart-sub">sales_summary_monthly</div></div>
+        </div>
+        <div class="chart-wrap" style="min-height:320px"><canvas id="chartMonthlyFull"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div><div class="chart-title">Month-over-Month Growth</div><div class="chart-sub">% เปลี่ยนแปลง</div></div>
+        </div>
+        <div class="chart-wrap"><canvas id="chartMoMGrowth"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div><div class="chart-title">Cumulative Revenue</div><div class="chart-sub">ยอดสะสมรายเดือน</div></div>
+        </div>
+        <div class="chart-wrap"><canvas id="chartCumulative"></canvas></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Logout Confirm Modal -->
+  <div class="logout-modal-backdrop" id="logoutModalBackdrop">
+    <div class="logout-modal">
+      <div class="logout-modal-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </div>
+      <div class="logout-modal-title">ออกจากระบบ</div>
+      <div class="logout-modal-desc">
+        คุณต้องการออกจากระบบใช่ไหม?<br/>
+        Session ปัจจุบันจะถูกยกเลิก
+      </div>
+      <div class="logout-modal-actions">
+        <button class="logout-modal-cancel" id="logoutCancel">ยกเลิก</button>
+        <button class="logout-modal-confirm" id="logoutConfirm">
+          <svg viewBox="0 0 24 24">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          ออกจากระบบ
+        </button>
       </div>
     </div>
-
-    <!-- ══ Alert table ══ -->
-    <div class="chart-card">
-      <div class="card-head">
-        <div class="card-title">รายการที่ต้องติดตาม</div>
-        <span class="badge-alert">3 รายการด่วน</span>
-      </div>
-      <div class="alert-table">
-        <div class="at-head">
-          <span>รายการ</span><span>หมวด</span><span>สถานะ</span><span>ผู้รับผิดชอบ</span><span>วันที่</span>
-        </div>
-        <div class="at-row">
-          <span class="at-name"><span class="dot red"></span>Claim #C-0482 เกินกำหนด 5 วัน</span>
-          <span><span class="tag red">Claim</span></span>
-          <span class="st red">รอ QC</span>
-          <span>สมชาย ก.</span><span class="at-date">12 มี.ค.</span>
-        </div>
-        <div class="at-row">
-          <span class="at-name"><span class="dot amber"></span>Claim #C-0491 ส่งกลับแก้ไข</span>
-          <span><span class="tag amber">Claim</span></span>
-          <span class="st amber">แก้ไข</span>
-          <span>มานี ร.</span><span class="at-date">14 มี.ค.</span>
-        </div>
-        <div class="at-row">
-          <span class="at-name"><span class="dot red"></span>ทีมใต้ยอดขายต่ำกว่าเป้า 24%</span>
-          <span><span class="tag red">Sales</span></span>
-          <span class="st red">ต่ำกว่าเป้า</span>
-          <span>วิไล ส.</span><span class="at-date">15 มี.ค.</span>
-        </div>
-        <div class="at-row">
-          <span class="at-name"><span class="dot green"></span>ทีมเหนือยอดขายทะลุเป้า Q1</span>
-          <span><span class="tag green">Sales</span></span>
-          <span class="st green">บรรลุเป้า</span>
-          <span>สุรีย์ พ.</span><span class="at-date">18 มี.ค.</span>
-        </div>
-        <div class="at-row">
-          <span class="at-name"><span class="dot blue"></span>พนักงานใหม่ 3 คนรอ onboard</span>
-          <span><span class="tag blue">HR</span></span>
-          <span class="st blue">ดำเนินการ</span>
-          <span>HR Team</span><span class="at-date">18 มี.ค.</span>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /content -->
-</div><!-- /main -->
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script src="/js/pages/dashboard/executiveDashboard.js"></script>
+  </div>
+  <!-- Core Scripts -->
+    <script src="/js/core/supabaseClient.js"></script>
+    <script src="/js/core/userService.js"></script>
+    <script src="/js/core/auth.js"></script>
+  
+  <script src="/js/pages/dashboard/executiveDashboard.js"></script>
 </body>
 </html>
