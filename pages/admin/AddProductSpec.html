@@ -7,9 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/core/supabaseClient.js"></script>
-  <script src="/js/core/auth.js"></script>
   <script src="/js/core/userService.js"></script>
-  <link rel="stylesheet" href="/css/base/layout.css"/>
+  <script src="/js/core/auth.js"></script>
   <link rel="stylesheet" href="/css/pages/admin/AddProductSpec.css"/>
 </head>
 <body>
@@ -32,7 +31,7 @@
     <a href="/index.html">หน้าแรก</a>
     <a href="/pages/reports/report.html">รายงาน</a>
     <a href="/pages/forms/formClaim.html">เคลม</a>
-    <a href="/pages/admin/adminMaster.html" class="active">จัดการสินค้า</a>
+    <a href="/pages/admin/AddProductSpec.html" class="active">จัดการสินค้า</a>
   </nav>
 
   <!-- MODAL OVERLAY -->
@@ -65,8 +64,8 @@
     <div class="am-tabs">
       <button class="am-tab active" data-tab="cat">📂 หมวดหมู่</button>
       <button class="am-tab" data-tab="prod">📦 สินค้า</button>
-      <button class="am-tab" data-tab="var">🔩 Variants</button>
       <button class="am-tab" data-tab="attr">🏷️ Attributes</button>
+      <button class="am-tab" data-tab="var">🔩 Variants</button>
       <button class="am-tab" data-tab="opt">⚙️ Options</button>
     </div>
 
@@ -117,6 +116,34 @@
       </div>
     </div>
 
+    <!-- ═══ TAB: ATTRIBUTES ═══ -->
+    <!-- FIX #1/#2: เปลี่ยน header คอลัมน์ 2 จาก "หมวดหมู่" → "สินค้า" ให้ตรงกับ JS -->
+    <div class="am-panel" id="tab-attr">
+      <div class="am-toolbar">
+        <div class="am-filters">
+          <select id="attr-filter-cat" onchange="loadAttributes()">
+            <option value="">ทุกหมวดหมู่</option>
+          </select>
+        </div>
+        <span class="am-count" id="attr-count">0 รายการ</span>
+        <button class="btn-add" onclick="openAdd('attr')">+ เพิ่ม Attribute</button>
+      </div>
+      <div class="am-table-wrap">
+        <table class="am-table">
+          <thead><tr>
+            <th>ชื่อ Attribute</th>
+            <th>สินค้า</th><!-- แก้จาก "หมวดหมู่" → "สินค้า" -->
+            <th>ประเภท Input</th>
+            <th>ลำดับ</th>
+            <th style="width:120px">จัดการ</th>
+          </tr></thead>
+          <tbody id="attr-body">
+            <tr><td colspan="5" class="am-empty">⏳ กำลังโหลด...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- ═══ TAB: VARIANTS ═══ -->
     <div class="am-panel" id="tab-var">
       <div class="am-toolbar">
@@ -147,33 +174,6 @@
           </tr></thead>
           <tbody id="var-body">
             <tr><td colspan="10" class="am-empty">⏳ กำลังโหลด...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ═══ TAB: ATTRIBUTES ═══ -->
-    <div class="am-panel" id="tab-attr">
-      <div class="am-toolbar">
-        <div class="am-filters">
-          <select id="attr-filter-cat" onchange="loadAttributes()">
-            <option value="">ทุกหมวดหมู่</option>
-          </select>
-        </div>
-        <span class="am-count" id="attr-count">0 รายการ</span>
-        <button class="btn-add" onclick="openAdd('attr')">+ เพิ่ม Attribute</button>
-      </div>
-      <div class="am-table-wrap">
-        <table class="am-table">
-          <thead><tr>
-            <th>ชื่อ Attribute</th>
-            <th>หมวดหมู่</th>
-            <th>ประเภท Input</th>
-            <th>ลำดับ</th>
-            <th style="width:120px">จัดการ</th>
-          </tr></thead>
-          <tbody id="attr-body">
-            <tr><td colspan="5" class="am-empty">⏳ กำลังโหลด...</td></tr>
           </tbody>
         </table>
       </div>
