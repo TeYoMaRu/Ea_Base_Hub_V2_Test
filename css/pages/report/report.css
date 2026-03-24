@@ -1,12 +1,10 @@
 /* =====================================================
-   REPORT PAGE — รีแมป palette ให้ตรง index.css
-   Teal / Sage / Mint — Flat Minimal
+   REPORT PAGE — FIXED LAYOUT & RESPONSIVE
    ===================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap');
 
 :root {
-  /* === Teal — primary / sidebar / action === */
   --teal-50:  #e8f8f7;
   --teal-100: #b8ece9;
   --teal-200: #7fd6d0;
@@ -15,26 +13,20 @@
   --teal-700: #1f7a73;
   --teal-900: #0f524e;
 
-  /* === Sage Green — badge / tag / progress === */
   --sage-400: #4caf50;
   --sage-500: #388e3c;
-  --sage-700: #2a6e2d;
-  --sage-900: #1b5e20;
 
-  /* === Mint — bg hover / subtle fill === */
   --mint-50:  #f4faf9;
   --mint-100: #daf1ef;
   --mint-200: #b8e6e3;
   --mint-400: #8FD3CD;
 
-  /* === Neutrals === */
   --gray-100: #f4f4f4;
   --gray-200: #e8e8e8;
   --gray-400: #a0a0a0;
   --gray-500: #707070;
   --gray-600: #4a4a4a;
 
-  /* === Semantic (ตรงกับ index.css) === */
   --bg-base:        var(--mint-50);
   --bg-card:        #ffffff;
   --bg-subtle:      var(--teal-50);
@@ -48,40 +40,33 @@
   --text-muted:     #7aaba7;
   --text-light:     #a0bfbc;
 
-  /* === สีที่ยังคงไว้เพราะมี role ชัด === */
-  --accent:         #e8a020;   /* draft / warning — amber อุ่น ไม่สดเกิน */
+  --accent:         #e8a020;
   --accent-light:   #f5d98a;
   --danger:         #d95b5b;
   --danger-dark:    #b83c3c;
   --success:        #3a9e6a;
 
-  /* === Shadow === */
-  --shadow-sm:      0 1px 4px rgba(47,163,154,0.07);
-  --shadow-md:      0 4px 20px rgba(47,163,154,0.10);
-  --shadow-lg:      0 8px 40px rgba(47,163,154,0.14);
-  --shadow-inset:   inset 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-sm:  0 1px 4px rgba(47,163,154,0.07);
+  --shadow-md:  0 4px 20px rgba(47,163,154,0.10);
+  --shadow-lg:  0 8px 40px rgba(47,163,154,0.14);
+  --shadow-inset: inset 0 1px 2px rgba(0,0,0,0.03);
 
-  /* === Radius === */
   --radius-sm:  8px;
   --radius-md:  12px;
   --radius-lg:  16px;
   --radius-xl:  20px;
 
-  /* === Font scale === */
-  --font-xs:    12px;
-  --font-sm:    13px;
-  --font-base:  14px;
-  --font-md:    15px;
-  --font-lg:    17px;
-  --font-xl:    21px;
-  --font-2xl:   27px;
+  --font-xs:   12px;
+  --font-sm:   13px;
+  --font-base: 14px;
+  --font-md:   15px;
+  --font-lg:   17px;
+  --font-xl:   21px;
+  --font-2xl:  27px;
 
   --transition: 0.20s ease;
 }
 
-/* =====================================================
-   BASE
-   ===================================================== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -93,7 +78,7 @@ body {
 }
 
 /* =====================================================
-   PAGE HEADER BANNER — teal gradient (เหมือน sidebar desktop)
+   PAGE HEADER
    ===================================================== */
 .page-header {
   background: linear-gradient(135deg, var(--teal-900) 0%, var(--teal-500) 55%, var(--teal-400) 100%);
@@ -105,7 +90,6 @@ body {
   overflow: hidden;
   box-shadow: 0 6px 28px rgba(47,163,154,0.28);
 }
-
 .page-header::before {
   content: '';
   position: absolute;
@@ -124,7 +108,6 @@ body {
   border-radius: 50%;
   pointer-events: none;
 }
-
 .page-header h1 {
   font-family: 'Kanit', sans-serif;
   font-size: var(--font-2xl);
@@ -135,7 +118,6 @@ body {
   z-index: 1;
   letter-spacing: -0.3px;
 }
-
 .page-header p {
   font-size: var(--font-base);
   color: rgba(255,255,255,0.78);
@@ -180,9 +162,7 @@ body {
   transition: box-shadow var(--transition);
 }
 .card:hover,
-.section:hover {
-  box-shadow: var(--shadow-lg);
-}
+.section:hover { box-shadow: var(--shadow-lg); }
 
 .card h2,
 .section h2 {
@@ -234,26 +214,22 @@ input, select, textarea {
   appearance: none;
   -webkit-appearance: none;
 }
-
 select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%232FA39A' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 36px;
 }
-
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--teal-400);
   background: #fff;
   box-shadow: 0 0 0 3px rgba(63,183,174,0.14), var(--shadow-inset);
 }
-
 input::placeholder, textarea::placeholder {
   color: var(--text-light);
   font-size: var(--font-sm);
 }
-
 textarea {
   resize: vertical;
   min-height: 100px;
@@ -280,7 +256,6 @@ textarea {
   margin-top: 20px;
   flex-wrap: wrap;
 }
-
 button {
   padding: 12px 24px;
   border-radius: var(--radius-sm);
@@ -298,7 +273,6 @@ button {
 }
 button:active { transform: scale(0.97); }
 
-/* Draft — amber อุ่น คงไว้เพราะ contrast กับ teal ดี */
 .btn-draft {
   background: linear-gradient(135deg, #e8a020, #f5c842);
   color: #5a3200;
@@ -310,7 +284,6 @@ button:active { transform: scale(0.97); }
   box-shadow: 0 4px 16px rgba(232,160,32,0.35);
   transform: translateY(-1px);
 }
-
 .draft-badge {
   background: #5a3200;
   color: #fef3c7;
@@ -322,7 +295,6 @@ button:active { transform: scale(0.97); }
   text-align: center;
 }
 
-/* Submit all — teal gradient */
 .btn-submit-all {
   background: linear-gradient(135deg, var(--teal-700), var(--teal-400));
   color: #fff;
@@ -339,7 +311,6 @@ button:active { transform: scale(0.97); }
   transform: none;
 }
 
-/* Export buttons */
 .section .actions button {
   flex: 1;
   background: var(--bg-card);
@@ -368,7 +339,7 @@ button:active { transform: scale(0.97); }
 }
 
 /* =====================================================
-   DRAFT SECTION — amber ยังคงไว้ (role = warning)
+   DRAFT SECTION
    ===================================================== */
 .draft-section {
   border: 1.5px solid #f0d080;
@@ -388,7 +359,6 @@ button:active { transform: scale(0.97); }
   margin-bottom: 16px;
   line-height: 1.6;
 }
-
 .section-header-row {
   display: flex;
   justify-content: flex-end;
@@ -398,28 +368,29 @@ button:active { transform: scale(0.97); }
 }
 
 /* =====================================================
-   TABLE
+   TABLE — FIXED
    ===================================================== */
 .table-wrapper {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
+  width: 100%;
 }
 
 table {
-  width: 100%;
-  min-width: 520px;
-  border-collapse: collapse;
+  width: 100% !important;
+  border-collapse: collapse !important;
   font-size: var(--font-sm);
+  table-layout: fixed !important; /* ✅ บังคับ fixed — ป้องกันตารางล้น */
+  min-width: 0 !important;        /* ✅ ยกเลิก min-width เดิม */
 }
 
 thead tr {
   background: linear-gradient(to right, var(--teal-50), var(--mint-100));
 }
-
 th {
-  padding: 12px 14px;
+  padding: 12px 10px;
   font-family: 'Kanit', sans-serif;
   font-size: 11px;
   font-weight: 700;
@@ -429,78 +400,172 @@ th {
   white-space: nowrap;
   border-bottom: 2px solid var(--border);
   text-align: left;
+  overflow: hidden;
 }
-
 td {
-  padding: 12px 14px;
+  padding: 10px 10px;
   border-bottom: 1px solid var(--border);
   color: var(--text-primary);
   vertical-align: middle;
+  /* ✅ ตัดข้อความยาวไม่ให้ล้น — enforce ทุก td */
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: 0; /* ✅ เทคนิค: ทำให้ text-overflow ทำงานกับ table-layout:fixed */
 }
-
 tbody tr { transition: background var(--transition); }
 tbody tr:hover { background: var(--teal-50); }
 tbody tr:last-child td { border-bottom: none; }
 
+/* =====================================================
+   COLUMN WIDTHS — % based เพื่อ balance ทุก viewport
+   รวม 100%: วันที่(10) + ร้านค้า(14) + สินค้า/สถานะ(16) + รายละเอียด(35) + บันทึก/สินค้า(17) + จัดการ(8)
+   ===================================================== */
+
+/* ✅ ตาราง "รายงานที่ส่งแล้ว" — 6 คอลัมน์ */
+/* วันที่ส่ง | ร้านค้า | สถานะ | รายละเอียด | สินค้า | จัดการ */
+.section table { table-layout: fixed !important; }
+.section table th:nth-child(1),
+.section table td:nth-child(1) { width: 10%; }
+.section table th:nth-child(2),
+.section table td:nth-child(2) { width: 14%; }
+.section table th:nth-child(3),
+.section table td:nth-child(3) { width: 12%; white-space: normal; }
+.section table th:nth-child(4),
+.section table td:nth-child(4) { width: 30%; }
+.section table th:nth-child(5),
+.section table td:nth-child(5) { width: 26%; }
+.section table th:nth-child(6),
+.section table td:nth-child(6) { width: 8%;  text-align: center; }
+
+/* ✅ ตาราง Draft — 6 คอลัมน์ */
+/* วันที่ | ร้านค้า | สินค้า | รายละเอียด | บันทึกเมื่อ | จัดการ */
+.draft-section table { table-layout: fixed !important; }
+.draft-section table th:nth-child(1),
+.draft-section table td:nth-child(1) { width: 10%; }
+.draft-section table th:nth-child(2),
+.draft-section table td:nth-child(2) { width: 14%; }
+.draft-section table th:nth-child(3),
+.draft-section table td:nth-child(3) { width: 20%; white-space: normal; }
+.draft-section table th:nth-child(4),
+.draft-section table td:nth-child(4) { width: 26%; }
+.draft-section table th:nth-child(5),
+.draft-section table td:nth-child(5) { width: 20%; }
+.draft-section table th:nth-child(6),
+.draft-section table td:nth-child(6) { width: 10%; text-align: center; }
+
+/* ✅ ข้อความใน td ที่ยาวมาก ให้ตัด + tooltip แทน */
 .detail-text {
-  max-width: 160px;
+  display: block;
+  max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--text-muted);
+  font-size: var(--font-xs);
+  cursor: default;
+}
+
+/* ✅ สินค้า — จัดแถว pill */
+.product-pills {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+/* ✅ attribute sub-text ใต้ชื่อสินค้า */
+.attr-sub {
+  color: #0f766e;
+  font-size: 11px;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
+}
+
+.product-pill {
+  display: inline-block;
+  background: var(--mint-100);
+  color: var(--teal-700);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 100px;
+  border: 1px solid var(--teal-200);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 130px;
 }
 
 /* =====================================================
    BADGES
    ===================================================== */
 .badge-submitted {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: var(--mint-100);
   color: var(--teal-700);
   font-size: 11px;
   font-weight: 600;
-  padding: 3px 9px;
+  padding: 4px 10px;
   border-radius: 100px;
-  margin-right: 4px;
   border: 1px solid var(--teal-200);
+  white-space: nowrap;
 }
-
 .badge-ack {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   background: #dbeafe;
   color: #1e40af;
   font-size: 11px;
   font-weight: 600;
-  padding: 3px 9px;
+  padding: 4px 10px;
   border-radius: 100px;
+  white-space: nowrap;
+}
+.badge-pending {
+  display: inline-flex;
+  align-items: center;
+  background: #fef9c3;
+  color: #854d0e;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid #fde68a;
+  white-space: nowrap;
 }
 
 /* =====================================================
-   ACTION BUTTONS (in table)
+   ACTION BUTTONS (in table) — FIXED ให้แสดงผลถูก
    ===================================================== */
 .action-buttons {
   display: flex;
-  gap: 5px;
+  gap: 3px;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;    /* ✅ wrap ได้ ไม่ถูกบีบออกนอก */
 }
-
 .action-buttons button {
   border: none;
-  padding: 6px 10px;
+  padding: 5px 7px;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: 15px;
-  min-height: auto;
+  font-size: 14px;
+  min-height: unset;
+  min-width: 28px;   /* ✅ ขนาดต่ำสุดให้กดได้ */
   flex: none;
   transition: all var(--transition);
-  background: transparent;
   line-height: 1;
+  background: transparent;
 }
-
 .btn-action-edit   { background: var(--teal-50)   !important; }
 .btn-action-submit { background: var(--mint-100)  !important; }
 .btn-action-del    { background: #fee2e2           !important; }
-
+.btn-action-view   { background: #ede9fe           !important; } /* violet อ่อน */
 .action-buttons button:hover {
   transform: scale(1.12);
   filter: brightness(0.93);
@@ -520,7 +585,6 @@ tbody tr:last-child td { border-bottom: none; }
   align-items: center;
   padding: 20px;
 }
-
 .modal-content {
   background: var(--bg-card);
   width: 100%;
@@ -533,7 +597,6 @@ tbody tr:last-child td { border-bottom: none; }
   box-shadow: 0 20px 60px rgba(15,50,48,0.18);
   border: 1px solid var(--border);
 }
-
 .modal-content h3 {
   font-family: 'Kanit', sans-serif;
   font-size: var(--font-lg);
@@ -543,7 +606,6 @@ tbody tr:last-child td { border-bottom: none; }
   padding-bottom: 12px;
   border-bottom: 2px solid var(--border);
 }
-
 .close-btn {
   float: right;
   font-size: 16px;
@@ -559,18 +621,13 @@ tbody tr:last-child td { border-bottom: none; }
   margin-top: -4px;
   margin-right: -4px;
 }
-.close-btn:hover {
-  background: #fee2e2;
-  color: var(--danger);
-}
-
+.close-btn:hover { background: #fee2e2; color: var(--danger); }
 .modal-footer {
   text-align: right;
   margin-top: 18px;
   padding-top: 14px;
   border-top: 1px solid var(--border);
 }
-
 #saveEditBtn {
   background: linear-gradient(135deg, var(--teal-500), var(--teal-400));
   color: white;
@@ -583,7 +640,6 @@ tbody tr:last-child td { border-bottom: none; }
   font-weight: 600;
   flex: none;
 }
-
 @keyframes popIn {
   from { transform: scale(0.9) translateY(10px); opacity: 0; }
   to   { transform: scale(1)   translateY(0);    opacity: 1; }
@@ -634,6 +690,9 @@ tbody tr:last-child td { border-bottom: none; }
 .modal-row span {
   color: var(--text-primary);
   font-weight: 500;
+  /* ✅ ให้ wrap ได้ใน modal */
+  word-break: break-word;
+  white-space: normal;
 }
 
 /* =====================================================
@@ -673,20 +732,50 @@ tbody tr:last-child td { border-bottom: none; }
 }
 
 /* =====================================================
-   RESPONSIVE
+   RESPONSIVE — DESKTOP (≥1024px)
    ===================================================== */
-@media (min-width: 768px) and (max-width: 1024px) {
+@media (min-width: 1024px) {
+  .section table th:nth-child(4),
+  .section table td:nth-child(4) { min-width: 160px; }
+}
+
+/* =====================================================
+   RESPONSIVE — TABLET (768–1023px)
+   ===================================================== */
+@media (min-width: 768px) and (max-width: 1023px) {
   .form-grid { grid-template-columns: repeat(2, 1fr); }
   #dynamicAttributes { grid-template-columns: repeat(2, 1fr); }
   .card, .section { padding: 24px 22px; }
+
+  /* ตารางบน iPad — ปรับความกว้างคอลัมน์ให้พอดี */
+  .section table th:nth-child(1),
+  .section table td:nth-child(1) { width: 80px; }
+  .section table th:nth-child(2),
+  .section table td:nth-child(2) { width: 100px; }
+  .section table th:nth-child(3),
+  .section table td:nth-child(3) { width: 80px; }
+  .section table th:nth-child(5),
+  .section table td:nth-child(5) { width: 120px; }
+  .section table th:nth-child(6),
+  .section table td:nth-child(6) { width: 64px; }
 }
 
+/* =====================================================
+   RESPONSIVE — MOBILE (≤767px)
+   ===================================================== */
 @media (max-width: 767px) {
   .page-header { padding: 22px 20px; border-radius: var(--radius-lg); }
   .page-header h1 { font-size: 20px; }
 
-  .card, .section { padding: 18px 16px; border-radius: var(--radius-md); margin-bottom: 14px; }
-  .card h2, .section h2 { font-size: var(--font-md); margin-bottom: 16px; }
+  .card, .section {
+    padding: 18px 16px;
+    border-radius: var(--radius-md);
+    margin-bottom: 14px;
+  }
+  .card h2, .section h2 {
+    font-size: var(--font-md);
+    margin-bottom: 16px;
+  }
 
   .form-grid { grid-template-columns: 1fr; gap: 12px; }
   #dynamicAttributes { grid-template-columns: 1fr; }
@@ -698,9 +787,59 @@ tbody tr:last-child td { border-bottom: none; }
   .section-header-row { justify-content: stretch; }
   .btn-submit-all { width: 100%; }
 
-  table { font-size: 12px; }
-  th, td { padding: 10px 10px; }
-  .detail-text { max-width: 90px; }
+  /* ✅ Mobile table — แสดงแบบ card แทนตาราง */
+  .table-wrapper {
+    border: none;
+    overflow-x: unset;
+  }
+
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead tr { display: none; } /* ซ่อน header บน mobile */
+
+  tbody tr {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: 10px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  tbody tr:hover { background: var(--teal-50); }
+
+  td {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 5px 0;
+    border: none;
+    font-size: var(--font-sm);
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    word-break: break-word;
+  }
+
+  /* ✅ label เทียม ก่อน td ด้วย data-label */
+  td::before {
+    content: attr(data-label);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.4px;
+    min-width: 72px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  /* คอลัมน์จัดการ — ซ่อน label */
+  td:last-child::before { content: ''; min-width: 0; }
+  td:last-child { justify-content: flex-end; }
+
+  .action-buttons { justify-content: flex-end; }
 
   .modal { padding: 0; align-items: flex-end; }
   .modal-content {
@@ -711,13 +850,14 @@ tbody tr:last-child td { border-bottom: none; }
   }
 }
 
+/* =====================================================
+   RESPONSIVE — SMALL MOBILE (≤480px)
+   ===================================================== */
 @media (max-width: 480px) {
   :root { --font-2xl: 22px; }
   .page-header { padding: 18px 16px; }
   .page-header h1 { font-size: 18px; }
-  input, select, textarea { font-size: 16px; }
-  th { font-size: 10px; padding: 10px 8px; }
-  td { padding: 10px 8px; }
+  input, select, textarea { font-size: 16px; } /* ป้องกัน iOS zoom */
 }
 
 /* =====================================================

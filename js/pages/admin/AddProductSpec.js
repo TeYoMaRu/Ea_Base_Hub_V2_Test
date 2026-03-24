@@ -7,7 +7,7 @@
 // ── Cache ──
 let _cats  = [];   // { id, name }
 let _prods = [];   // { id, name, category_id, sku, description }
-let _attrs = [];   // { id, name, product_id, input_type, order_no }
+let _attrs = [];   // { id, name, product_id, category_id, input_type, order_no }
 let _vars  = [];   // product_variants
 let _opts  = [];   // attribute_options
 
@@ -25,7 +25,7 @@ function generateSKU(categoryName) {
 let modalMode   = null;   // 'add' | 'edit'
 let modalTable  = null;   // 'cat'|'prod'|'var'|'attr'|'opt'
 let modalEditId = null;
-let pendingOpts = [];     // สำหรับ option chips ใน modal
+let pendingOpts = [];     // { id, value, existing, deleted }
 
 // =====================================================
 // INIT
@@ -35,9 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
-
     if (sessionError || !session) {
-      console.log("ไม่มี session - redirect to login");
       location.href = "/pages/auth/login.html";
       return;
     }
@@ -49,7 +47,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       .single();
 
     if (profileError) {
-      console.error("ไม่สามารถดึงข้อมูล profile:", profileError);
       showToast("ไม่สามารถตรวจสอบสิทธิ์", "err");
       setTimeout(() => location.href = "/pages/auth/login.html", 1500);
       return;
@@ -62,9 +59,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const displayName = profile.display_name || session.user.email;
-    const userNameEl  = document.getElementById("userName");
+    const userNameEl   = document.getElementById("userName");
     const userAvatarEl = document.getElementById("userAvatar");
-    if (userNameEl)   userNameEl.textContent  = displayName;
+    if (userNameEl)   userNameEl.textContent   = displayName;
     if (userAvatarEl) userAvatarEl.textContent = displayName.charAt(0).toUpperCase();
 
   } catch (e) {
@@ -87,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // FIX #8: bind chip Enter key with event delegation (ไม่ใช้ setTimeout)
+  // Chip Enter key
   document.addEventListener("keydown", e => {
     if (e.key === "Enter" && document.getElementById("mf-optval") === document.activeElement) {
       e.preventDefault();
@@ -95,7 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // FIX #8: Auto SKU ด้วย event delegation บน document
+  // Auto SKU เมื่อเปลี่ยน category ใน form prod
   document.addEventListener("change", e => {
     if (e.target.id === "mf-cat" && modalTable === "prod" && !_skuManual) {
       const catName = e.target.options[e.target.selectedIndex].text;
@@ -108,6 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   await refreshCache();
+  await backfillCategoryId();
   await Promise.all([
     loadCategories(),
     loadProducts(),
@@ -118,24 +116,47 @@ document.addEventListener("DOMContentLoaded", async () => {
   populateAllFilters();
 });
 
-// flag สำหรับ auto SKU
 let _skuManual = false;
 
-// ── รอ Supabase client ──
 async function waitForSupabase() {
   let attempts = 0;
   while (!window.supabaseClient && attempts < 50) {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(r => setTimeout(r, 100));
     attempts++;
   }
-  if (!window.supabaseClient) {
-    throw new Error("Supabase client ไม่พร้อม");
-  }
+  if (!window.supabaseClient) throw new Error("Supabase client ไม่พร้อม");
 }
 
 // =====================================================
-// SWITCH TAB
+// BACKFILL category_id ใน attributes ที่เป็น NULL
 // =====================================================
+async function backfillCategoryId() {
+  try {
+    const { data: nullAttrs, error } = await supabaseClient
+      .from("attributes")
+      .select("id,product_id")
+      .is("category_id", null);
+
+    if (error || !nullAttrs?.length) return;
+
+    const updates = nullAttrs
+      .map(a => ({ id: a.id, category_id: getCatIdByProd(a.product_id) }))
+      .filter(a => a.category_id);
+
+    if (!updates.length) return;
+
+    await Promise.all(updates.map(u =>
+      supabaseClient.from("attributes").update({ category_id: u.category_id }).eq("id", u.id)
+    ));
+
+    console.log(`✅ backfill category_id สำเร็จ ${updates.length} records`);
+    await refreshCache();
+  } catch (e) {
+    console.warn("backfillCategoryId:", e);
+  }
+}
+
+
 function switchTab(tab) {
   document.querySelectorAll(".am-tab").forEach(b =>
     b.classList.toggle("active", b.dataset.tab === tab));
@@ -151,8 +172,7 @@ async function refreshCache() {
     const [c, p, a] = await Promise.all([
       supabaseClient.from("categories").select("id,name").order("name"),
       supabaseClient.from("products").select("id,name,category_id").order("name"),
-      // FIX #1/#4: ดึง product_id แทน category_id เพราะ attributes ผูกกับ products
-      supabaseClient.from("attributes").select("id,name,product_id,input_type,order_no").order("name"),
+      supabaseClient.from("attributes").select("id,name,product_id,category_id,input_type,order_no").order("name"),
     ]);
     _cats  = c.data || [];
     _prods = p.data || [];
@@ -166,7 +186,6 @@ function getCatName(id)  { return _cats.find(c => c.id === id)?.name  || "—"; 
 function getProdName(id) { return _prods.find(p => p.id === id)?.name || "—"; }
 function getAttrName(id) { return _attrs.find(a => a.id === id)?.name || "—"; }
 
-// FIX #1: หา category_id ของ product แทน
 function getCatIdByProd(prodId) {
   return _prods.find(p => p.id === prodId)?.category_id || null;
 }
@@ -175,20 +194,21 @@ function getCatIdByProd(prodId) {
 // POPULATE ALL FILTER SELECTS
 // =====================================================
 function populateAllFilters() {
-  const ids = ["prod-filter-cat","var-filter-cat","attr-filter-cat","opt-filter-cat"];
-  ids.forEach(id => {
-    const sel = document.getElementById(id); if (!sel) return;
+  ["prod-filter-cat","var-filter-cat","attr-filter-cat","opt-filter-cat"].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
     const cur = sel.value;
-    sel.innerHTML = `<option value="">${id.includes("var")||id.includes("opt") ? "ทุกหมวด" : "ทุกหมวดหมู่"}</option>`;
+    const label = (id.includes("var") || id.includes("opt")) ? "ทุกหมวด" : "ทุกหมวดหมู่";
+    sel.innerHTML = `<option value="">${label}</option>`;
     _cats.forEach(c => {
       const o = document.createElement("option");
-      o.value = c.id; o.textContent = c.name; sel.appendChild(o);
+      o.value = c.id; o.textContent = c.name;
+      sel.appendChild(o);
     });
     if (cur) sel.value = cur;
   });
 }
 
-// ── variant: filter by cat → load products ──
 async function onVarFilterCat() {
   const catId = document.getElementById("var-filter-cat").value;
   const sel   = document.getElementById("var-filter-prod");
@@ -196,25 +216,23 @@ async function onVarFilterCat() {
   const prods = catId ? _prods.filter(p => p.category_id === catId) : _prods;
   prods.forEach(p => {
     const o = document.createElement("option");
-    o.value = p.id; o.textContent = p.name; sel.appendChild(o);
+    o.value = p.id; o.textContent = p.name;
+    sel.appendChild(o);
   });
   await loadVariants();
 }
 
-// FIX #4: options filter by cat → หา attrs ผ่าน product_id
 async function onOptFilterCat() {
   const catId = document.getElementById("opt-filter-cat").value;
   const sel   = document.getElementById("opt-filter-attr");
   sel.innerHTML = `<option value="">ทุก Attribute</option>`;
 
-  let attrs;
-  if (catId) {
-    // หา product ids ของ category นี้ก่อน แล้วหา attrs
-    const prodIds = _prods.filter(p => p.category_id === catId).map(p => p.id);
-    attrs = _attrs.filter(a => prodIds.includes(a.product_id));
-  } else {
-    attrs = _attrs;
-  }
+  const attrs = catId
+    ? _attrs.filter(a => {
+        const prod = _prods.find(p => p.id === a.product_id);
+        return prod?.category_id === catId;
+      })
+    : _attrs;
 
   attrs.forEach(a => {
     const o = document.createElement("option");
@@ -251,7 +269,7 @@ async function loadCategories() {
         </td>
       </tr>`).join("");
   } catch (e) {
-    console.error("loadCategories error:", e);
+    console.error("loadCategories:", e);
     tbody.innerHTML = `<tr><td colspan="3" class="am-empty">โหลดไม่สำเร็จ</td></tr>`;
   }
 }
@@ -260,10 +278,11 @@ async function loadCategories() {
 // ── PRODUCTS ──
 // =====================================================
 async function loadProducts() {
-  const tbody  = document.getElementById("prod-body");
-  const catId  = document.getElementById("prod-filter-cat")?.value || "";
+  const tbody = document.getElementById("prod-body");
+  const catId = document.getElementById("prod-filter-cat")?.value || "";
   try {
-    let q = supabaseClient.from("products").select("id,name,category_id,sku,description,created_at").order("name");
+    let q = supabaseClient.from("products")
+      .select("id,name,category_id,sku,description,created_at").order("name");
     if (catId) q = q.eq("category_id", catId);
     const { data, error } = await q;
     if (error) throw error;
@@ -285,7 +304,7 @@ async function loadProducts() {
         </td>
       </tr>`).join("");
   } catch (e) {
-    console.error("loadProducts error:", e);
+    console.error("loadProducts:", e);
     tbody.innerHTML = `<tr><td colspan="5" class="am-empty">โหลดไม่สำเร็จ</td></tr>`;
   }
 }
@@ -301,13 +320,19 @@ async function loadVariants() {
     let q = supabaseClient.from("product_variants")
       .select("id,product_id,sku,color,brand,length,width,thickness,feature,status,created_at")
       .order("created_at", { ascending: false });
+
     if (prodId) {
       q = q.eq("product_id", prodId);
     } else if (catId) {
       const pids = _prods.filter(p => p.category_id === catId).map(p => p.id);
-      if (pids.length) q = q.in("product_id", pids);
-      else { tbody.innerHTML = `<tr><td colspan="10" class="am-empty">ไม่มีสินค้าในหมวดนี้</td></tr>`; return; }
+      if (!pids.length) {
+        tbody.innerHTML = `<tr><td colspan="10" class="am-empty">ไม่มีสินค้าในหมวดนี้</td></tr>`;
+        document.getElementById("var-count").textContent = "0 รายการ";
+        return;
+      }
+      q = q.in("product_id", pids);
     }
+
     const { data, error } = await q.limit(200);
     if (error) throw error;
     _vars = data || [];
@@ -333,7 +358,7 @@ async function loadVariants() {
         </td>
       </tr>`).join("");
   } catch (e) {
-    console.error("loadVariants error:", e);
+    console.error("loadVariants:", e);
     tbody.innerHTML = `<tr><td colspan="10" class="am-empty">โหลดไม่สำเร็จ</td></tr>`;
   }
 }
@@ -343,16 +368,13 @@ async function loadVariants() {
 // =====================================================
 async function loadAttributes() {
   const tbody = document.getElementById("attr-body");
-  // FIX #2: อ่านค่า filter จริงๆ
   const catId = document.getElementById("attr-filter-cat")?.value || "";
-
   try {
     let q = supabaseClient
       .from("attributes")
       .select("id,name,product_id,input_type,order_no")
       .order("order_no", { ascending: true, nullsFirst: false });
 
-    // FIX #2: filter ผ่าน product_id ที่อยู่ใน category นั้น
     if (catId) {
       const prodIds = _prods.filter(p => p.category_id === catId).map(p => p.id);
       if (!prodIds.length) {
@@ -366,7 +388,6 @@ async function loadAttributes() {
 
     const { data, error } = await q;
     if (error) throw error;
-
     _attrs = data || [];
     document.getElementById("attr-count").textContent = `${_attrs.length} รายการ`;
 
@@ -378,18 +399,19 @@ async function loadAttributes() {
     tbody.innerHTML = _attrs.map(a => `
       <tr>
         <td data-label="ชื่อ Attribute"><strong>${esc(a.name)}</strong></td>
-        <td data-label="สินค้า"><span class="badge badge-teal">${esc(getProdName(a.product_id))}</span></td>
+        <td data-label="สินค้า">
+          <span class="badge badge-teal">${esc(getProdName(a.product_id))}</span>
+          <span class="badge badge-gray" style="margin-left:4px">${esc(getCatName(getCatIdByProd(a.product_id)))}</span>
+        </td>
         <td data-label="ประเภท Input"><code>${esc(a.input_type || "—")}</code></td>
         <td data-label="ลำดับ">${a.order_no ?? "—"}</td>
         <td data-label="จัดการ">
           <button class="act-btn act-edit" onclick="openEdit('attr','${a.id}')">✏️ แก้ไข</button>
           <button class="act-btn act-del"  onclick="delRow('attr','${a.id}','${esc(a.name)}')">🗑️</button>
         </td>
-      </tr>
-    `).join("");
-
+      </tr>`).join("");
   } catch (e) {
-    console.error("loadAttributes error:", e);
+    console.error("loadAttributes:", e);
     tbody.innerHTML = `<tr><td colspan="5" class="am-empty">โหลดไม่สำเร็จ</td></tr>`;
   }
 }
@@ -402,27 +424,33 @@ async function loadOptions() {
   const attrId = document.getElementById("opt-filter-attr")?.value || "";
   const catId  = document.getElementById("opt-filter-cat")?.value  || "";
   try {
-    let q = supabaseClient.from("attribute_options").select("id,attribute_id,value,created_at").order("value");
+    let q = supabaseClient.from("attribute_options")
+      .select("id,attribute_id,value,created_at").order("value");
+
     if (attrId) {
       q = q.eq("attribute_id", attrId);
     } else if (catId) {
-      // FIX #4: หา attrs ผ่าน product_id ที่อยู่ใน category นั้น
       const prodIds = _prods.filter(p => p.category_id === catId).map(p => p.id);
       const aids    = _attrs.filter(a => prodIds.includes(a.product_id)).map(a => a.id);
-      if (aids.length) q = q.in("attribute_id", aids);
-      else { tbody.innerHTML = `<tr><td colspan="4" class="am-empty">ไม่มี Attribute ในหมวดนี้</td></tr>`; return; }
+      if (!aids.length) {
+        tbody.innerHTML = `<tr><td colspan="4" class="am-empty">ไม่มี Attribute ในหมวดนี้</td></tr>`;
+        document.getElementById("opt-count").textContent = "0 รายการ";
+        return;
+      }
+      q = q.in("attribute_id", aids);
     }
+
     const { data, error } = await q.limit(300);
     if (error) throw error;
     _opts = data || [];
     document.getElementById("opt-count").textContent = `${_opts.length} รายการ`;
+
     if (!_opts.length) {
       tbody.innerHTML = `<tr><td colspan="4" class="am-empty">ยังไม่มี Option</td></tr>`;
       return;
     }
 
     tbody.innerHTML = _opts.map(o => {
-      // FIX #1: หา category ผ่าน product_id ของ attr
       const attr    = _attrs.find(a => a.id === o.attribute_id);
       const catName = attr ? getCatName(getCatIdByProd(attr.product_id)) : "—";
       return `
@@ -436,7 +464,7 @@ async function loadOptions() {
         </tr>`;
     }).join("");
   } catch (e) {
-    console.error("loadOptions error:", e);
+    console.error("loadOptions:", e);
     tbody.innerHTML = `<tr><td colspan="4" class="am-empty">โหลดไม่สำเร็จ</td></tr>`;
   }
 }
@@ -449,11 +477,10 @@ function openAdd(table) {
   modalTable  = table;
   modalEditId = null;
   pendingOpts = [];
-  _skuManual  = false;  // FIX #8: reset flag
+  _skuManual  = false;
 
   document.getElementById("modalTitle").textContent = addTitle(table);
   document.getElementById("modalBody").innerHTML    = buildForm(table, null);
-
   openModal();
 }
 
@@ -465,22 +492,20 @@ async function openEdit(table, id) {
   modalTable  = table;
   modalEditId = id;
   pendingOpts = [];
-  _skuManual  = true;   // edit mode ไม่ auto-generate SKU
+  _skuManual  = true;
 
   let row = null;
   try {
-    const tbl = tableOf(table);
-    const { data } = await supabaseClient.from(tbl).select("*").eq("id", id).single();
+    const { data } = await supabaseClient.from(tableOf(table)).select("*").eq("id", id).single();
     row = data;
   } catch (e) {
-    showToast("โหลดข้อมูลไม่สำเร็จ","err");
+    showToast("โหลดข้อมูลไม่สำเร็จ", "err");
     return;
   }
 
   document.getElementById("modalTitle").textContent = editTitle(table);
   document.getElementById("modalBody").innerHTML    = buildForm(table, row);
 
-  // FIX #3: set ค่า input_type และ order_no หลัง render form
   if (table === "attr" && row) {
     const typeEl  = document.getElementById("mf-type");
     const orderEl = document.getElementById("mf-order");
@@ -499,12 +524,13 @@ async function openEdit(table, id) {
 // =====================================================
 function buildForm(table, row) {
   const v = row || {};
+
   const catOpts  = _cats.map(c =>
     `<option value="${c.id}" ${v.category_id===c.id?"selected":""}>${esc(c.name)}</option>`).join("");
   const prodOpts = _prods.map(p =>
     `<option value="${p.id}" ${v.product_id===p.id?"selected":""}>${esc(p.name)} (${esc(getCatName(p.category_id))})</option>`).join("");
   const attrOpts = _attrs.map(a =>
-    `<option value="${a.id}" ${v.attribute_id===a.id?"selected":""}>${esc(a.name)} (${esc(getProdName(a.product_id))})</option>`).join("");
+    `<option value="${a.id}" ${v.attribute_id===a.id?"selected":""}>${esc(a.name)} — ${esc(getProdName(a.product_id))}</option>`).join("");
 
   if (table === "cat") return `
     <div class="mf">
@@ -578,8 +604,6 @@ function buildForm(table, row) {
       </div>
     </div>`;
 
-  // FIX #3: ไม่ set ค่า input_type/order_no ใน HTML เพราะ openEdit() จะ set ทีหลัง
-  // FIX #6: ปุ่มใช้ class chip-add-btn (ตรงกับ CSS)
   if (table === "attr") return `
     <div class="mf">
       <label>สินค้า <span class="req">*</span></label>
@@ -629,16 +653,16 @@ function buildForm(table, row) {
 }
 
 // =====================================================
-// OPTION CHIPS (in attr form)
+// OPTION CHIPS
 // =====================================================
 async function loadExistingOpts(attrId) {
   try {
     const { data } = await supabaseClient.from("attribute_options")
       .select("id,value").eq("attribute_id", attrId).order("value");
-    pendingOpts = (data||[]).map(o => ({ id: o.id, value: o.value, existing: true }));
+    pendingOpts = (data||[]).map(o => ({ id: o.id, value: o.value, existing: true, deleted: false }));
     renderChips();
   } catch (e) {
-    console.error("loadExistingOpts error:", e);
+    console.error("loadExistingOpts:", e);
   }
 }
 
@@ -646,32 +670,38 @@ function addChip() {
   const inp = document.getElementById("mf-optval");
   const val = inp?.value?.trim();
   if (!val) return;
-  // ป้องกัน duplicate
-  if (pendingOpts.some(o => o.value === val)) {
+  if (pendingOpts.some(o => o.value === val && !o.deleted)) {
     showToast("มีตัวเลือกนี้อยู่แล้ว", "err");
     return;
   }
-  pendingOpts.push({ id: null, value: val, existing: false });
+  pendingOpts.push({ id: null, value: val, existing: false, deleted: false });
   inp.value = "";
   inp.focus();
   renderChips();
 }
 
 function removeChip(idx) {
-  pendingOpts.splice(idx, 1);
+  const opt = pendingOpts[idx];
+  if (opt.existing) {
+    pendingOpts[idx].deleted = true;
+  } else {
+    pendingOpts.splice(idx, 1);
+  }
   renderChips();
 }
 
 function renderChips() {
   const el = document.getElementById("optChips");
   if (!el) return;
-  if (!pendingOpts.length) {
+  const visible = pendingOpts.filter(o => !o.deleted);
+  if (!visible.length) {
     el.innerHTML = `<span style="font-size:12px;color:#94a3b8">ยังไม่มีตัวเลือก</span>`;
     return;
   }
-  el.innerHTML = pendingOpts.map((o, i) =>
-    `<span class="chip">${esc(o.value)}<button class="chip-del" onclick="removeChip(${i})">×</button></span>`
-  ).join("");
+  el.innerHTML = pendingOpts.map((o, i) => {
+    if (o.deleted) return "";
+    return `<span class="chip">${esc(o.value)}<button class="chip-del" onclick="removeChip(${i})">×</button></span>`;
+  }).join("");
 }
 
 // =====================================================
@@ -681,7 +711,6 @@ async function modalSave() {
   const btn = document.getElementById("modalSaveBtn");
   btn.disabled = true;
   btn.textContent = "⏳ กำลังบันทึก...";
-
   try {
     if (modalTable === "cat")  await saveCat();
     if (modalTable === "prod") await saveProd();
@@ -689,7 +718,7 @@ async function modalSave() {
     if (modalTable === "attr") await saveAttr();
     if (modalTable === "opt")  await saveOpt();
   } catch (e) {
-    console.error("modalSave error:", e);
+    console.error("modalSave:", e);
     showToast("บันทึกไม่สำเร็จ: " + (e.message || "unknown"), "err");
   } finally {
     btn.disabled = false;
@@ -697,7 +726,6 @@ async function modalSave() {
   }
 }
 
-// ── save helpers ──
 function gv(id) { return document.getElementById(id)?.value?.trim() || null; }
 
 async function saveCat() {
@@ -713,26 +741,12 @@ async function saveCat() {
 async function saveProd() {
   const name  = gv("mf-name");
   const catId = gv("mf-cat");
-
-  if (!name || !catId) {
-    showToast("กรุณากรอกข้อมูลให้ครบ", "err");
-    return;
-  }
+  if (!name || !catId) { showToast("กรุณากรอกข้อมูลให้ครบ", "err"); return; }
 
   let sku = gv("mf-sku");
-  if (!sku) {
-    const catName = getCatName(catId);
-    sku = generateSKU(catName);
-  }
+  if (!sku) sku = generateSKU(getCatName(catId));
 
-  const payload = {
-    name,
-    category_id: catId,
-    sku,
-    description: gv("mf-desc") || null,
-  };
-
-  await upsert("products", payload, modalEditId);
+  await upsert("products", { name, category_id: catId, sku, description: gv("mf-desc") || null }, modalEditId);
   showToast(`✅ ${modalMode==="add"?"เพิ่ม":"แก้ไข"}สินค้าสำเร็จ`, "ok");
   closeModal();
   await refreshCache();
@@ -742,7 +756,7 @@ async function saveProd() {
 async function saveVar() {
   const prodId = gv("mf-prod");
   if (!prodId) { showToast("กรุณาเลือกสินค้า", "err"); return; }
-  const payload = {
+  await upsert("product_variants", {
     product_id: prodId,
     sku:        gv("mf-sku"),
     color:      gv("mf-color"),
@@ -752,8 +766,7 @@ async function saveVar() {
     thickness:  gv("mf-thick"),
     feature:    gv("mf-feat"),
     status:     gv("mf-status") || "active",
-  };
-  await upsert("product_variants", payload, modalEditId);
+  }, modalEditId);
   showToast(`✅ ${modalMode==="add"?"เพิ่ม":"แก้ไข"} Variant สำเร็จ`, "ok");
   closeModal();
   await loadVariants();
@@ -762,41 +775,38 @@ async function saveVar() {
 async function saveAttr() {
   const name   = gv("mf-name");
   const prodId = gv("mf-prod");
+  if (!name || !prodId) { showToast("กรุณากรอกข้อมูลให้ครบ", "err"); return; }
 
-  if (!name || !prodId) {
-    showToast("กรุณากรอกข้อมูลให้ครบ", "err");
-    return;
-  }
+  const catId = getCatIdByProd(prodId);
+  if (!catId) { showToast("ไม่พบ category ของสินค้านี้", "err"); return; }
 
   const orderVal = document.getElementById("mf-order")?.value;
   const orderNo  = orderVal ? parseInt(orderVal) : null;
 
-  const payload = {
+  const attrId = await upsert("attributes", {
     name,
-    product_id: prodId,
-    input_type: gv("mf-type") || "select",
-    order_no:   isNaN(orderNo) ? null : orderNo,
-  };
+    product_id:  prodId,
+    category_id: catId,
+    input_type:  gv("mf-type") || "select",
+    order_no:    isNaN(orderNo) ? null : orderNo,
+  }, modalEditId);
 
-  // FIX #7: upsert คืน id เสมอ
-  const attrId   = await upsert("attributes", payload, modalEditId);
   const targetId = modalEditId || attrId;
+  if (!targetId) { showToast("บันทึก Attribute ไม่สำเร็จ (ไม่ได้รับ ID)", "err"); return; }
 
-  if (!targetId) {
-    showToast("บันทึก Attribute ไม่สำเร็จ (ไม่ได้รับ ID)", "err");
-    return;
+  const toDelete = pendingOpts.filter(o => o.existing && o.deleted && o.id);
+  if (toDelete.length) {
+    const delIds = toDelete.map(o => o.id);
+    const { error: delErr } = await supabaseClient.from("attribute_options").delete().in("id", delIds);
+    if (delErr) throw delErr;
   }
 
-  // บันทึก options ใหม่เท่านั้น (existing ไม่แตะ)
-  const newOpts = pendingOpts.filter(o => !o.existing);
-  if (newOpts.length) {
-    const rows = newOpts.map(o => ({ attribute_id: targetId, value: o.value }));
-    const { error: optErr } = await supabaseClient.from("attribute_options").insert(rows);
-    if (optErr) throw optErr;
+  const toInsert = pendingOpts.filter(o => !o.existing && !o.deleted);
+  if (toInsert.length) {
+    const rows = toInsert.map(o => ({ attribute_id: targetId, value: o.value }));
+    const { error: insErr } = await supabaseClient.from("attribute_options").insert(rows);
+    if (insErr) throw insErr;
   }
-
-  // ลบ options ที่ถูก remove ออกจาก chips (existing แต่ไม่อยู่ใน pendingOpts)
-  // (ข้าม feature นี้ไว้ก่อน — การลบ chip ที่ existing ยังไม่ได้ลบจาก DB)
 
   showToast("✅ บันทึก Attribute สำเร็จ", "ok");
   closeModal();
@@ -816,7 +826,7 @@ async function saveOpt() {
   await loadOptions();
 }
 
-// FIX #7: generic upsert — return id เสมอ
+// generic upsert — return id เสมอ
 async function upsert(tbl, payload, editId) {
   let data, error;
   if (editId) {
@@ -832,11 +842,17 @@ async function upsert(tbl, payload, editId) {
 // DELETE
 // =====================================================
 async function delRow(table, id, label) {
-  if (!confirm(`ลบ "${label}"?\n${table==="cat"?"(products และ variants ใน category นี้จะ orphan)":table==="attr"?"(attribute_options ทั้งหมดจะถูกลบด้วย)":""}`)) return;
-  try {
-    const tbl = tableOf(table);
+  const warnings = {
+    cat:  "(products, variants, attributes และ options ทั้งหมดในหมวดนี้จะถูกลบด้วย)",
+    prod: "(variants, attributes และ options ของสินค้านี้จะถูกลบด้วย)",
+    attr: "(attribute_options ทั้งหมดจะถูกลบด้วย)",
+    var:  "",
+    opt:  "",
+  };
+  if (!confirm(`ลบ "${label}"?\n${warnings[table] || ""}`)) return;
 
-    // FIX #5: cascade delete ผ่าน product_id แทน category_id
+  try {
+    // ── Cascade: categories ──
     if (table === "cat") {
       const prodIds = _prods.filter(p => p.category_id === id).map(p => p.id);
       if (prodIds.length) {
@@ -845,32 +861,56 @@ async function delRow(table, id, label) {
           await supabaseClient.from("attribute_options").delete().in("attribute_id", attrIds);
           await supabaseClient.from("attributes").delete().in("id", attrIds);
         }
+        await supabaseClient.from("product_variants").delete().in("product_id", prodIds);
+        await supabaseClient.from("products").delete().in("id", prodIds);
       }
+      // ลบ category หลัก
+      const { error: catErr } = await supabaseClient.from("categories").delete().eq("id", id);
+      if (catErr) throw catErr;
     }
-    if (table === "attr") {
-      await supabaseClient.from("attribute_options").delete().eq("attribute_id", id);
-    }
-    if (table === "prod") {
-      // ลบ attributes + options ของสินค้านี้ด้วย
+
+    // ── Cascade: products ──
+    else if (table === "prod") {
       const attrIds = _attrs.filter(a => a.product_id === id).map(a => a.id);
       if (attrIds.length) {
         await supabaseClient.from("attribute_options").delete().in("attribute_id", attrIds);
         await supabaseClient.from("attributes").delete().in("id", attrIds);
       }
       await supabaseClient.from("product_variants").delete().eq("product_id", id);
+      // ลบ product หลัก
+      const { error: prodErr } = await supabaseClient.from("products").delete().eq("id", id);
+      if (prodErr) throw prodErr;
     }
 
-    const { error } = await supabaseClient.from(tbl).delete().eq("id", id);
-    if (error) throw error;
+    // ── Cascade: attributes ──
+    else if (table === "attr") {
+      await supabaseClient.from("attribute_options").delete().eq("attribute_id", id);
+      const { error } = await supabaseClient.from("attributes").delete().eq("id", id);
+      if (error) throw error;
+    }
+
+    // ── var / opt — ลบตรงๆ ──
+    else {
+      const { error } = await supabaseClient.from(tableOf(table)).delete().eq("id", id);
+      if (error) throw error;
+    }
+
     showToast("ลบสำเร็จ", "info");
     await refreshCache();
-    if (table === "cat")  { populateAllFilters(); await loadCategories(); }
-    if (table === "prod") await loadProducts();
+
+    if (table === "cat") {
+  await loadCategories();   // loadCategories จะ set _cats ใหม่และเรียก populateAllFilters() เองอยู่แล้ว
+  await loadProducts();
+  await loadAttributes();
+  await loadOptions();
+}
+    if (table === "prod") { await loadProducts(); await loadVariants(); await loadAttributes(); await loadOptions(); }
     if (table === "var")  await loadVariants();
     if (table === "attr") { await loadAttributes(); await loadOptions(); }
     if (table === "opt")  await loadOptions();
+
   } catch (e) {
-    console.error("delRow error:", e);
+    console.error("delRow:", e);
     showToast("ลบไม่สำเร็จ: " + e.message, "err");
   }
 }
@@ -898,30 +938,22 @@ function closeModal() {
 function tableOf(t) {
   return { cat:"categories", prod:"products", var:"product_variants", attr:"attributes", opt:"attribute_options" }[t];
 }
-
 function addTitle(t) {
   return { cat:"➕ เพิ่มหมวดหมู่", prod:"➕ เพิ่มสินค้า", var:"➕ เพิ่ม Variant", attr:"➕ เพิ่ม Attribute", opt:"➕ เพิ่ม Option" }[t] || "เพิ่ม";
 }
-
 function editTitle(t) {
   return { cat:"✏️ แก้ไขหมวดหมู่", prod:"✏️ แก้ไขสินค้า", var:"✏️ แก้ไข Variant", attr:"✏️ แก้ไข Attribute", opt:"✏️ แก้ไข Option" }[t] || "แก้ไข";
 }
-
 function badge(v, cls) {
   return v ? `<span class="badge ${cls}">${esc(v)}</span>` : "—";
 }
-
 function esc(s) {
   return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
-
 function fmtDate(s) {
   if (!s) return "—";
-  try {
-    return new Date(s).toLocaleDateString("th-TH",{year:"numeric",month:"short",day:"numeric"});
-  } catch {
-    return "—";
-  }
+  try { return new Date(s).toLocaleDateString("th-TH",{year:"numeric",month:"short",day:"numeric"}); }
+  catch { return "—"; }
 }
 
 let _toastTimer;
@@ -931,9 +963,7 @@ function showToast(msg, type="ok") {
   t.textContent = msg;
   t.className   = `am-toast show ${type}`;
   clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => {
-    t.className = `am-toast ${type}`;
-  }, 3000);
+  _toastTimer = setTimeout(() => { t.className = `am-toast ${type}`; }, 3000);
 }
 
 console.log("✅ AddProductSpec.js loaded");

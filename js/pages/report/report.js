@@ -1,5 +1,5 @@
 // =====================================================
-// report.js  v5
+// report.js  v5.1  — FIXED layout & responsive
 // Draft  → localStorage  (ไม่ขึ้น Supabase)
 // Submit → Supabase (status = 'submitted')
 // =====================================================
@@ -58,7 +58,7 @@ function genDraftId() {
 }
 
 // =====================================================
-// 🏪 RESOLVE SHOP NAMES (โหลดชื่อร้านที่ยังไม่มีใน map)
+// 🏪 RESOLVE SHOP NAMES
 // =====================================================
 async function resolveShopNames(ids) {
   const missing = [...new Set(ids.filter(id => id && !shopsMap[id]))];
@@ -71,7 +71,7 @@ async function resolveShopNames(ids) {
 }
 
 // =====================================================
-// 🏷️ RESOLVE ATTRIBUTE NAMES (โหลดชื่อ attribute key)
+// 🏷️ RESOLVE ATTRIBUTE NAMES
 // =====================================================
 async function resolveAttrNames(attrIds) {
   const missing = [...new Set(attrIds.filter(id => id))];
@@ -111,7 +111,7 @@ function saveDraft() {
 }
 
 // =====================================================
-// ✏️ EDIT DRAFT → โหลดกลับขึ้น form
+// ✏️ EDIT DRAFT
 // =====================================================
 async function editDraftToForm(draftId) {
   const drafts = getDrafts();
@@ -135,7 +135,10 @@ async function editDraftToForm(draftId) {
   if (d.category_id) {
     document.getElementById("categorySelect").value = d.category_id;
     await loadProducts(d.category_id);
-    if (d.product_id) document.getElementById("productSelect").value = d.product_id;
+    if (d.product_id) {
+      document.getElementById("productSelect").value = d.product_id;
+      await loadAttributesByProduct(d.product_id, d.attributes);
+    }
   }
 
   renderDraftList();
@@ -154,7 +157,7 @@ function deleteDraft(draftId) {
 }
 
 // =====================================================
-// 🎨 RENDER DRAFT LIST
+// 🎨 RENDER DRAFT LIST — FIXED data-label
 // =====================================================
 async function renderDraftList() {
   const drafts       = getDrafts();
@@ -171,7 +174,6 @@ async function renderDraftList() {
 
   section.style.display = drafts.length > 0 ? "block" : "none";
 
-  // โหลดชื่อร้านที่ยังไม่มีใน map
   await resolveShopNames(drafts.map(d => d.shop_id));
 
   tbody.innerHTML = "";
@@ -184,20 +186,24 @@ async function renderDraftList() {
       day:"numeric", month:"short", hour:"2-digit", minute:"2-digit"
     });
 
+    // ✅ เพิ่ม data-label ทุก td เพื่อ mobile card layout
+    const attrShort = truncate(attrText, 36);
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${d.report_date || "—"}</td>
-      <td>${shopName}</td>
-      <td>
-        <div>${prodName}</div>
-        ${attrText ? `<div style="color:#0f766e;font-size:11px;margin-top:2px;">${escapeHtml(attrText)}</div>` : ""}
+      <td data-label="วันที่">${d.report_date || "—"}</td>
+      <td data-label="ร้านค้า" title="${escapeHtml(shopName)}">${escapeHtml(truncate(shopName, 10))}</td>
+      <td data-label="สินค้า" title="${escapeHtml(prodName + (attrText ? ' · ' + attrText : ''))}">
+        <div style="font-weight:500;">${escapeHtml(truncate(prodName, 16))}</div>
+        ${attrShort && attrShort !== "—" ? `<div class="attr-sub">${escapeHtml(attrShort)}</div>` : ""}
       </td>
-      <td class="detail-text" title="${escapeHtml(d.note||"")}">${escapeHtml(d.note||"—")}</td>
-      <td style="color:#888;font-size:12px;">${savedAt}</td>
-      <td class="action-buttons">
-        <button onclick="editDraftToForm('${d.id}')" title="แก้ไข" class="btn-action-edit">✏️</button>
-        <button onclick="submitOneDraft('${d.id}')" title="ส่งรายการนี้" class="btn-action-submit">📤</button>
-        <button onclick="deleteDraft('${d.id}')" title="ลบ" class="btn-action-del">🗑️</button>
+      <td data-label="รายละเอียด" title="${escapeHtml(d.note||"")}">${escapeHtml(truncate(d.note||"—", 28))}</td>
+      <td data-label="บันทึกเมื่อ" style="color:#888;font-size:11px;">${savedAt}</td>
+      <td>
+        <div class="action-buttons">
+          <button onclick="editDraftToForm('${d.id}')" title="แก้ไข" class="btn-action-edit">✏️</button>
+          <button onclick="submitOneDraft('${d.id}')" title="ส่งรายการนี้" class="btn-action-submit">📤</button>
+          <button onclick="deleteDraft('${d.id}')" title="ลบ" class="btn-action-del">🗑️</button>
+        </div>
       </td>`;
     tbody.appendChild(tr);
   }
@@ -300,22 +306,25 @@ async function loadSubmittedReports() {
     if (!session) return;
 
     const { data, error } = await supabaseClient
-      .from("reports").select("*")
-      .eq("sale_id", session.user.id).eq("status","submitted")
+      .from("reports")
+      .select("*")
+      .eq("sale_id", session.user.id)
+      .eq("status", "submitted")
       .order("submitted_at", { ascending: false });
     if (error) throw error;
+
     submittedReports = data || [];
 
-    // โหลดชื่อสินค้าที่ยังไม่มีใน map
-    const missingProds = [...new Set(submittedReports.map(r=>r.product_id).filter(id=>id&&!productsMap[id]))];
+    const missingProds = [...new Set(
+      submittedReports.map(r => r.product_id).filter(id => id && !productsMap[id])
+    )];
     if (missingProds.length) {
-      const { data:prods } = await supabaseClient.from("products").select("id,name").in("id",missingProds);
-      prods?.forEach(p=>{ productsMap[p.id]=p.name; });
+      const { data: prods } = await supabaseClient
+        .from("products").select("id,name").in("id", missingProds);
+      prods?.forEach(p => { productsMap[p.id] = p.name; });
     }
 
-    // โหลดชื่อร้านที่ยังไม่มีใน map
     await resolveShopNames(submittedReports.map(r => r.shop_id));
-
     await renderSubmittedTable();
   } catch(e) {
     console.error("loadSubmittedReports", e);
@@ -323,30 +332,59 @@ async function loadSubmittedReports() {
   }
 }
 
+// =====================================================
+// 🎨 RENDER SUBMITTED TABLE — truncated cells, no UUID bleed
+// =====================================================
+
+// ตัดข้อความให้สั้น
+function truncate(str, maxLen) {
+  if (!str || str === "—") return str || "—";
+  return str.length > maxLen ? str.slice(0, maxLen) + "…" : str;
+}
+
+// วันที่สั้น เช่น "24 มี.ค."
+function formatDateShort(s) {
+  if (!s) return "—";
+  try { return new Date(s).toLocaleDateString("th-TH", { day: "numeric", month: "short" }); }
+  catch(e) { return "—"; }
+}
+
 async function renderSubmittedTable() {
   const tbody = document.getElementById("reportBody");
   if (!tbody) return;
   tbody.innerHTML = "";
+
   if (!submittedReports.length) {
     tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#888;padding:24px;">ยังไม่มีรายงานที่ส่ง</td></tr>`;
     return;
   }
+
   for (const r of submittedReports) {
-    const attrText = await formatAttrInline(r.attributes);
-    const ackBadge = r.manager_acknowledged
-      ? `<span class="badge-ack" title="ผู้บริหารอ่านแล้ว">👁️ อ่านแล้ว</span>` : "";
+    const shopName  = shopsMap[r.shop_id]       || "—";
+    const prodName  = productsMap[r.product_id] || "—";
+
+    // formatAttrInline คืน "key: val, key: val" — ถ้าข้อมูลดีจะได้ชื่อ ถ้า UUID = ยังไม่ resolve
+    // ป้องกัน UUID โผล่โดยตัดให้สั้นและใส่ title เต็มไว้แทน
+    const attrText  = await formatAttrInline(r.attributes);
+    const attrShort = truncate(attrText, 36);
+
+    const ackBadge  = r.manager_acknowledged
+      ? `<span class="badge-ack">👁️ อ่านแล้ว</span>` : "";
+
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${formatDate(r.submitted_at || r.report_date)}</td>
-      <td>${shopsMap[r.shop_id] || "—"}</td>
-      <td><span class="badge-submitted">✅ ส่งแล้ว</span>${ackBadge}</td>
-      <td class="detail-text" title="${escapeHtml(r.note||"")}">${escapeHtml(r.note||"—")}</td>
-      <td>
-        <div>${productsMap[r.product_id] || "—"}</div>
-        ${attrText ? `<div style="color:#0f766e;font-size:11px;margin-top:2px;">${escapeHtml(attrText)}</div>` : ""}
+      <td data-label="วันที่ส่ง">${formatDateShort(r.submitted_at || r.report_date)}</td>
+      <td data-label="ร้านค้า"   title="${escapeHtml(shopName)}">${escapeHtml(truncate(shopName, 10))}</td>
+      <td data-label="สถานะ"><span class="badge-submitted">✅ ส่งแล้ว</span>${ackBadge}</td>
+      <td data-label="รายละเอียด" title="${escapeHtml(r.note||"")}">${escapeHtml(truncate(r.note||"—", 22))}</td>
+      <td data-label="สินค้า"    title="${escapeHtml(prodName + (attrText ? ' · ' + attrText : ''))}">
+        <div style="font-weight:500;">${escapeHtml(truncate(prodName, 16))}</div>
+        ${attrShort && attrShort !== "—" ? `<div class="attr-sub">${escapeHtml(attrShort)}</div>` : ""}
       </td>
-      <td class="action-buttons">
-        <button onclick="handleView('${r.id}')" title="ดูรายละเอียด">👁️</button>
+      <td>
+        <div class="action-buttons">
+          <button onclick="handleView('${r.id}')" title="ดูรายละเอียด" class="btn-action-view">👁️</button>
+        </div>
       </td>`;
     tbody.appendChild(tr);
   }
@@ -363,7 +401,7 @@ async function handleView(id) {
   const set = (eid, v) => { const el=document.getElementById(eid); if(el) el.innerText=v||"—"; };
   set("m-date",    formatDate(r.submitted_at||r.report_date));
   set("m-store",   shopsMap[r.shop_id]||"—");
-  set("m-product", productsMap[r.product_id]||"—");
+  set("m-product", productsMap[r.product_id] || "—");
   set("m-source",  r.source||"—");
   set("m-status",  "✅ ส่งแล้ว" + (r.manager_acknowledged ? " • 👁️ ผู้บริหารอ่านแล้ว" : ""));
 
@@ -396,7 +434,7 @@ async function loadManagerComments(reportId) {
     container.innerHTML = data.map(c => `
       <div style="background:#f0fdf4;border-left:3px solid #10b981;border-radius:6px;padding:8px 10px;margin-bottom:6px;">
         <div style="font-size:11px;color:#888;margin-bottom:3px;">
-          <strong>${c.profiles?.display_name||"ผู้บริหาร"}</strong> · ${formatDate(c.created_at)}
+          <strong>${escapeHtml(c.profiles?.display_name||"ผู้บริหาร")}</strong> · ${formatDate(c.created_at)}
         </div>
         <div style="font-size:13px;">${escapeHtml(c.comment)}</div>
       </div>`).join("");
@@ -503,6 +541,7 @@ async function loadCategories() {
 async function loadProducts(categoryId) {
   const sel = document.getElementById("productSelect"); if(!sel) return;
   sel.innerHTML = `<option value="">-- เลือกสินค้า --</option>`;
+  clearDynamicAttributes();
   if (!categoryId) return;
   try {
     const { data } = await supabaseClient.from("products")
@@ -515,42 +554,71 @@ async function loadProducts(categoryId) {
   } catch(e) {}
 }
 
-async function handleProductChange() {
-  const productId = this.value;
-  const container = document.getElementById("dynamicAttributes"); if(!container) return;
-  container.innerHTML = ""; if(!productId) return;
+// =====================================================
+// 🔑 LOAD ATTRIBUTES
+// =====================================================
+async function loadAttributesByProduct(productId, savedValues = {}) {
+  const container = document.getElementById("dynamicAttributes");
+  if (!container) return;
+  container.innerHTML = "";
+  if (!productId) return;
+
   try {
-    const { data:prod } = await supabaseClient.from("products")
-      .select("category_id").eq("id",productId).single();
-    if (!prod) return;
-    const { data:attrs } = await supabaseClient.from("attributes")
-      .select("*").eq("category_id",prod.category_id).order("order_no",{ascending:true});
+    const { data: attrs } = await supabaseClient
+      .from("attributes")
+      .select("*")
+      .eq("product_id", productId)
+      .order("order_no", { ascending: true });
+
     if (!attrs?.length) return;
+
     for (const attr of attrs) {
-      const wrap = document.createElement("div"); wrap.classList.add("form-group");
-      const lbl  = document.createElement("label"); lbl.innerText = attr.name;
+      const wrap = document.createElement("div");
+      wrap.classList.add("form-group");
+
+      const lbl = document.createElement("label");
+      lbl.innerText = attr.name;
       if (attr.is_required) lbl.innerHTML += ' <span style="color:red">*</span>';
       wrap.appendChild(lbl);
+
       if (attr.input_type === "select") {
         const s = document.createElement("select");
-        s.dataset.attributeId = attr.id; s.classList.add("dynamic-field");
-        const { data:opts } = await supabaseClient.from("attribute_options")
-          .select("value").eq("attribute_id",attr.id).order("value");
+        s.dataset.attributeId = attr.id;
+        s.classList.add("dynamic-field");
+
+        const { data: opts } = await supabaseClient
+          .from("attribute_options")
+          .select("value")
+          .eq("attribute_id", attr.id)
+          .order("value");
+
         s.innerHTML = `<option value="">-- เลือก --</option>`;
         opts?.forEach(o => {
           const op = document.createElement("option");
-          op.value = o.value; op.textContent = o.value; s.appendChild(op);
+          op.value = o.value;
+          op.textContent = o.value;
+          if (savedValues[attr.id] === o.value) op.selected = true;
+          s.appendChild(op);
         });
         wrap.appendChild(s);
       } else {
         const inp = document.createElement("input");
         inp.type = attr.input_type === "number" ? "number" : "text";
-        inp.dataset.attributeId = attr.id; inp.classList.add("dynamic-field");
+        inp.dataset.attributeId = attr.id;
+        inp.classList.add("dynamic-field");
+        inp.value = savedValues[attr.id] || "";
         wrap.appendChild(inp);
       }
+
       container.appendChild(wrap);
     }
-  } catch(e) {}
+  } catch(e) {
+    console.error("loadAttributesByProduct", e);
+  }
+}
+
+async function handleProductChange() {
+  await loadAttributesByProduct(this.value);
 }
 
 function collectDynamicAttributes() {
@@ -560,8 +628,10 @@ function collectDynamicAttributes() {
   });
   return attrs;
 }
+
 function clearDynamicAttributes() {
-  const c = document.getElementById("dynamicAttributes"); if(c) c.innerHTML = "";
+  const c = document.getElementById("dynamicAttributes");
+  if (c) c.innerHTML = "";
 }
 
 // =====================================================
@@ -596,7 +666,7 @@ function exportData(type) {
   const rows = submittedReports.map(r => [
     formatDate(r.submitted_at||r.report_date),
     shopsMap[r.shop_id]||"—",
-    productsMap[r.product_id]||"—",
+    productsMap[r.product_id] || "—",
     (r.note||"—").replace(/,/g," "),
     r.manager_acknowledged?"ใช่":"ยังไม่"
   ]);
@@ -624,7 +694,7 @@ async function formatAttributesBlock(attrs) {
       .select("id,name").in("id",Object.keys(attrs));
     const am = Object.fromEntries((ad||[]).map(a=>[a.id,a.name]));
     return `<div style="background:#f8fafc;border-radius:6px;padding:8px;font-size:13px;">` +
-      Object.entries(attrs).map(([k,v])=>`<strong>${am[k]||k}:</strong> ${v}`).join("<br>") +
+      Object.entries(attrs).map(([k,v])=>`<strong>${escapeHtml(am[k]||k)}:</strong> ${escapeHtml(v)}`).join("<br>") +
       `</div>`;
   } catch(e) { return ""; }
 }
