@@ -1,18 +1,15 @@
 // ============================================================
-// admin-shops.js
-// จัดการสิทธิ์ร้านค้า — pattern เดียวกับ admin-sales.js
+// adminShops.js — จัดการสิทธิ์ร้านค้า
+// ★ เพิ่ม: Bulk Select / Bulk Transfer / Bulk Unlink / Bulk Delete
+// ★ เพิ่ม: Filter จังหวัด (ยกเขต)
 // ============================================================
 
 // -------------------------------------------------------
-// protectAdmin — wrap protectPage + init userService
+// protectAdmin
 // -------------------------------------------------------
 async function protectAdmin() {
   await protectPage(["admin"]);
-
-  if (typeof initUserService === "function") {
-    await initUserService();
-  }
-
+  if (typeof initUserService === "function") await initUserService();
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) logoutBtn.addEventListener("click", logout);
 }
@@ -26,7 +23,6 @@ function goHome() {
 
 // -------------------------------------------------------
 // loadSalesForPermissions
-// โหลด Sales เข้า Dropdown
 // -------------------------------------------------------
 async function loadSalesForPermissions() {
   const { data, error } = await supabaseClient
@@ -35,14 +31,10 @@ async function loadSalesForPermissions() {
     .eq("role", "sales")
     .order("display_name", { ascending: true });
 
-  if (error) {
-    console.error("Load sales error:", error);
-    return;
-  }
+  if (error) { console.error("Load sales error:", error); return; }
 
   const select = document.getElementById("selectSaleForPerm");
   select.innerHTML = `<option value="">-- เลือก Sales --</option>`;
-
   data.forEach(sale => {
     const option = document.createElement("option");
     option.value = sale.id;
@@ -50,7 +42,6 @@ async function loadSalesForPermissions() {
     select.appendChild(option);
   });
 
-  // ถ้า URL มี ?sale=xxx ให้เลือกอัตโนมัติ
   const params = new URLSearchParams(window.location.search);
   const saleParam = params.get("sale");
   if (saleParam) {
@@ -61,17 +52,18 @@ async function loadSalesForPermissions() {
 
 // -------------------------------------------------------
 // loadSaleShops
-// โหลดร้านค้าของ Sales ที่เลือก แล้ว render เป็น table
 // -------------------------------------------------------
 async function loadSaleShops() {
   const saleId = document.getElementById("selectSaleForPerm").value;
   const container = document.getElementById("permissionsContainer");
   const toolbar = document.getElementById("shopToolbar");
   const countBar = document.getElementById("shopCountBar");
+  const bulkBar = document.getElementById("bulkBar");
 
   if (!saleId) {
     toolbar.style.display = "none";
     countBar.style.display = "none";
+    bulkBar.style.display = "none";
     container.innerHTML = `
       <div class="empty-state">
         <span class="material-symbols-outlined empty-icon">storefront</span>
@@ -80,9 +72,9 @@ async function loadSaleShops() {
     return;
   }
 
-  // เก็บ saleId ไว้ใช้ตอนเพิ่มร้าน
   window.currentSaleId = saleId;
-  
+  // เก็บข้อมูลทั้งหมดไว้ใน memory เพื่อ filter / select
+  window.allShops = [];
 
   container.innerHTML = `<div class="empty-state"><div>⏳ กำลังโหลด...</div></div>`;
 
@@ -98,16 +90,21 @@ async function loadSaleShops() {
     return;
   }
 
-  // แสดง toolbar + count bar
+  window.allShops = data;
   toolbar.style.display = "flex";
   countBar.style.display = "flex";
   document.getElementById("shopCountText").textContent = `${data.length} ร้านค้า`;
+
+  // รีเซ็ต filter + bulk bar
+  document.getElementById("filterProvince").value = "";
+  document.getElementById("searchShop").value = "";
+  bulkBar.style.display = "none";
 
   renderShops(data);
 }
 
 // -------------------------------------------------------
-// renderShops — render เป็น table เหมือน adminSales
+// renderShops — เพิ่ม checkbox column
 // -------------------------------------------------------
 function renderShops(shops) {
   const container = document.getElementById("permissionsContainer");
@@ -125,8 +122,13 @@ function renderShops(shops) {
   }
 
   const tbody = shops.map((shop, i) => `
-    <tr class="fade-row" style="animation-delay:${i * 0.04}s">
-    <td><span class="shop-code-badge">${escapeHtml(shop.shop_code || "-")}</span></td>
+    <tr class="fade-row" style="animation-delay:${i * 0.04}s" data-id="${shop.id}">
+      <td style="width:40px;text-align:center">
+        <input type="checkbox" class="shop-cb" value="${shop.id}"
+               onchange="updateBulkBar()"
+               style="width:16px;height:16px;cursor:pointer;accent-color:#2563eb">
+      </td>
+      <td><span class="shop-code-badge">${escapeHtml(shop.shop_code || "-")}</span></td>
       <td><span class="shop-name-text">${escapeHtml(shop.shop_name)}</span></td>
       <td>
         ${shop.province
@@ -161,8 +163,14 @@ function renderShops(shops) {
       <table class="data-table">
         <thead>
           <tr>
-          <th>รหัสร้าน</th>
-          <th>ชื่อร้านค้า</th>
+            <th style="width:40px;text-align:center">
+              <input type="checkbox" id="selectAllCb"
+                     onchange="toggleSelectAll(this)"
+                     style="width:16px;height:16px;cursor:pointer;accent-color:#2563eb"
+                     title="เลือกทั้งหมดที่แสดง">
+            </th>
+            <th>รหัสร้าน</th>
+            <th>ชื่อร้านค้า</th>
             <th>จังหวัด</th>
             <th>ดำเนินการ</th>
           </tr>
@@ -173,20 +181,190 @@ function renderShops(shops) {
 }
 
 // -------------------------------------------------------
-// filterShops — กรองจาก search input
+// filterShops — รองรับทั้ง text search + province filter
 // -------------------------------------------------------
 function filterShops() {
-  const keyword = document.getElementById("searchShop").value.toLowerCase();
-  const rows = document.querySelectorAll(".data-table tbody tr");
+  const keyword  = document.getElementById("searchShop").value.toLowerCase();
+  const province = document.getElementById("filterProvince").value;
+  const rows     = document.querySelectorAll(".data-table tbody tr");
 
   rows.forEach(row => {
-    const text = row.textContent.toLowerCase();
-    row.style.display = text.includes(keyword) ? "" : "none";
+    const text      = row.textContent.toLowerCase();
+    const provCell  = row.cells[3]?.textContent.trim() || "";
+    const textMatch = !keyword  || text.includes(keyword);
+    const provMatch = !province || provCell.includes(province);
+    row.style.display = (textMatch && provMatch) ? "" : "none";
   });
+
+  // รีเซ็ต select-all checkbox เมื่อ filter เปลี่ยน
+  const selectAllCb = document.getElementById("selectAllCb");
+  if (selectAllCb) selectAllCb.checked = false;
+  updateBulkBar();
 }
 
 // -------------------------------------------------------
-// Modal เพิ่ม/แก้ไขร้านค้า
+// ★ Bulk Select helpers
+// -------------------------------------------------------
+
+/** เลือก/ยกเลิกทั้งหมดที่ "มองเห็น" (ไม่ถูก filter ซ่อน) */
+function toggleSelectAll(masterCb) {
+  const cbs = getVisibleCheckboxes();
+  cbs.forEach(cb => cb.checked = masterCb.checked);
+  updateBulkBar();
+}
+
+/** คืน array ของ checkbox ที่แถวไม่ถูก filter ซ่อน */
+function getVisibleCheckboxes() {
+  return [...document.querySelectorAll(".shop-cb")].filter(cb => {
+    const row = cb.closest("tr");
+    return row && row.style.display !== "none";
+  });
+}
+
+/** คืน array ของ shop id ที่ถูกติ๊ก */
+function getSelectedIds() {
+  return [...document.querySelectorAll(".shop-cb:checked")].map(cb => cb.value);
+}
+
+/** อัพเดต Bulk Bar */
+function updateBulkBar() {
+  const ids    = getSelectedIds();
+  const bar    = document.getElementById("bulkBar");
+  const countEl = document.getElementById("bulkCount");
+
+  if (ids.length > 0) {
+    bar.style.display = "flex";
+    countEl.textContent = `เลือก ${ids.length} ร้าน`;
+  } else {
+    bar.style.display = "none";
+  }
+}
+
+/** ยกเลิกการเลือกทั้งหมด */
+function clearSelection() {
+  document.querySelectorAll(".shop-cb").forEach(cb => cb.checked = false);
+  const masterCb = document.getElementById("selectAllCb");
+  if (masterCb) masterCb.checked = false;
+  updateBulkBar();
+}
+
+// -------------------------------------------------------
+// ★ Bulk Actions
+// -------------------------------------------------------
+
+async function bulkUnlink() {
+  const ids = getSelectedIds();
+  if (ids.length === 0) return;
+  if (!confirm(`ต้องการยกเลิกสิทธิ์ร้านค้า ${ids.length} ร้านหรือไม่?`)) return;
+
+  const { error } = await supabaseClient
+    .from("shops")
+    .update({ sale_id: null })
+    .in("id", ids);
+
+  if (error) { alert("ไม่สำเร็จ"); console.error(error); return; }
+  await loadSaleShops();
+}
+
+async function bulkDelete() {
+  const ids = getSelectedIds();
+  if (ids.length === 0) return;
+  if (!confirm(`ต้องการลบร้านค้า ${ids.length} ร้านออกจากระบบหรือไม่?\n⚠️ ไม่สามารถกู้คืนได้`)) return;
+
+  const { error } = await supabaseClient
+    .from("shops")
+    .delete()
+    .in("id", ids);
+
+  if (error) { alert("ลบไม่สำเร็จ"); console.error(error); return; }
+  await loadSaleShops();
+}
+
+/** เปิด Transfer Modal แบบ Bulk */
+async function bulkTransfer() {
+  const ids = getSelectedIds();
+  if (ids.length === 0) return;
+
+  // ตั้ง mode เป็น bulk
+  document.getElementById("transferMode").value = "bulk";
+  document.getElementById("transferShopId").value = "";
+
+  // แสดง info
+  const info = document.getElementById("transferBulkInfo");
+  info.style.display = "block";
+  document.getElementById("transferBulkCount").textContent = `กำลังจะโอน ${ids.length} ร้านค้าไปยัง Sales ใหม่`;
+
+  await _openTransferSaleSelector();
+  document.getElementById("transferModal").style.display = "flex";
+}
+
+// -------------------------------------------------------
+// Transfer Modal (รวม single + bulk)
+// -------------------------------------------------------
+
+/** เปิด Transfer Modal แบบ Single */
+async function openTransferModal(shopId) {
+  document.getElementById("transferMode").value = "single";
+  document.getElementById("transferShopId").value = shopId;
+
+  // ซ่อน bulk info
+  document.getElementById("transferBulkInfo").style.display = "none";
+
+  await _openTransferSaleSelector();
+  document.getElementById("transferModal").style.display = "flex";
+}
+
+/** โหลดรายการ Sales เข้า dropdown */
+async function _openTransferSaleSelector() {
+  const select = document.getElementById("transferSaleSelect");
+  select.innerHTML = `<option value="">-- เลือก Sales --</option>`;
+
+  const { data, error } = await supabaseClient
+    .from("profiles")
+    .select("id, display_name, username")
+    .eq("role", "sales")
+    .order("display_name", { ascending: true });
+
+  if (error) { console.error(error); return; }
+  data.forEach(sale => {
+    const opt = document.createElement("option");
+    opt.value = sale.id;
+    opt.textContent = sale.display_name || sale.username;
+    select.appendChild(opt);
+  });
+}
+
+function closeTransferModal() {
+  document.getElementById("transferModal").style.display = "none";
+}
+
+async function confirmTransfer() {
+  const mode      = document.getElementById("transferMode").value;
+  const newSaleId = document.getElementById("transferSaleSelect").value;
+  if (!newSaleId) { alert("กรุณาเลือก Sales"); return; }
+
+  let ids = [];
+  if (mode === "bulk") {
+    ids = getSelectedIds();
+  } else {
+    ids = [document.getElementById("transferShopId").value];
+  }
+
+  if (ids.length === 0) return;
+
+  const { error } = await supabaseClient
+    .from("shops")
+    .update({ sale_id: newSaleId })
+    .in("id", ids);
+
+  if (error) { alert("โอนไม่สำเร็จ"); console.error(error); return; }
+
+  closeTransferModal();
+  await loadSaleShops();
+}
+
+// -------------------------------------------------------
+// Modal เพิ่ม/แก้ไขร้านค้า (ไม่เปลี่ยนแปลง)
 // -------------------------------------------------------
 function openAddModal(saleId) {
   window.currentSaleId = saleId;
@@ -213,13 +391,10 @@ function closeModal() {
   document.getElementById("shopModal").style.display = "none";
 }
 
-// -------------------------------------------------------
-// saveShop — เพิ่ม หรือ แก้ไข อัตโนมัติ
-// -------------------------------------------------------
 async function saveShop() {
-  const id = document.getElementById("shopId").value;
-  const name = document.getElementById("shopName").value.trim();
-  const code = document.getElementById("shopCode").value.trim();
+  const id       = document.getElementById("shopId").value;
+  const name     = document.getElementById("shopName").value.trim();
+  const code     = document.getElementById("shopCode").value.trim();
   const province = document.getElementById("shopProvince").value.trim();
 
   if (!name) {
@@ -229,8 +404,7 @@ async function saveShop() {
   }
 
   const btn = document.querySelector("#shopModal .btn-save");
-  btn.disabled = true;
-  btn.style.opacity = "0.7";
+  btn.disabled = true; btn.style.opacity = "0.7";
 
   if (id) {
     const { error } = await supabaseClient
@@ -250,72 +424,20 @@ async function saveShop() {
 }
 
 // -------------------------------------------------------
-// unlinkShop / deleteShop
+// unlinkShop / deleteShop (single)
 // -------------------------------------------------------
 async function unlinkShop(id) {
   if (!confirm("ต้องการยกเลิกสิทธิ์ร้านค้านี้หรือไม่?")) return;
-
-  const { error } = await supabaseClient
-    .from("shops").update({ sale_id: null }).eq("id", id);
-
+  const { error } = await supabaseClient.from("shops").update({ sale_id: null }).eq("id", id);
   if (error) { alert("ไม่สำเร็จ"); console.error(error); }
   else await loadSaleShops();
 }
 
 async function deleteShop(id) {
   if (!confirm("ต้องการลบร้านค้านี้ออกจากระบบ?")) return;
-
-  const { error } = await supabaseClient
-    .from("shops").delete().eq("id", id);
-
+  const { error } = await supabaseClient.from("shops").delete().eq("id", id);
   if (error) { alert("ลบไม่สำเร็จ"); console.error(error); }
   else await loadSaleShops();
-}
-
-// -------------------------------------------------------
-// Transfer Modal
-// -------------------------------------------------------
-async function openTransferModal(shopId) {
-  document.getElementById("transferShopId").value = shopId;
-
-  const select = document.getElementById("transferSaleSelect");
-  select.innerHTML = `<option value="">-- เลือก Sales --</option>`;
-
-  const { data, error } = await supabaseClient
-    .from("profiles")
-    .select("id, display_name, username")
-    .eq("role", "sales")
-    .order("display_name", { ascending: true });
-
-  if (error) { console.error(error); return; }
-
-  data.forEach(sale => {
-    const opt = document.createElement("option");
-    opt.value = sale.id;
-    opt.textContent = sale.display_name || sale.username;
-    select.appendChild(opt);
-  });
-
-  document.getElementById("transferModal").style.display = "flex";
-}
-
-function closeTransferModal() {
-  document.getElementById("transferModal").style.display = "none";
-}
-
-async function confirmTransfer() {
-  const shopId = document.getElementById("transferShopId").value;
-  const newSaleId = document.getElementById("transferSaleSelect").value;
-
-  if (!newSaleId) { alert("กรุณาเลือก Sales"); return; }
-
-  const { error } = await supabaseClient
-    .from("shops").update({ sale_id: newSaleId }).eq("id", shopId);
-
-  if (error) { alert("โอนไม่สำเร็จ"); console.error(error); return; }
-
-  closeTransferModal();
-  await loadSaleShops();
 }
 
 // -------------------------------------------------------
@@ -326,7 +448,6 @@ function escapeHtml(str) {
     .replace(/&/g, "&amp;").replace(/</g, "&lt;")
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
-
 function escapeAttr(str) {
   return String(str).replace(/'/g, "\\'").replace(/"/g, "&quot;");
 }

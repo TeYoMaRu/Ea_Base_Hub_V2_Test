@@ -144,15 +144,33 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-1); mi
   border-bottom: 1px solid var(--border); background: var(--bg-card); overflow-x: auto;
 }
 .app-nav a {
-  display: inline-flex; align-items: center; gap: 6px; padding: 12px 14px;
-  font-size: 0.8rem; font-weight: 500; color: var(--text-2); text-decoration: none;
-  border-bottom: 2px solid transparent; white-space: nowrap; transition: color .15s, border-color .15s;
+  display: inline-flex; 
+  align-items: center; 
+  gap: 6px; 
+  padding: 12px 14px;
+  font-size: 0.8rem; 
+  font-weight: 500; 
+  color: var(--accent); 
+  text-decoration: none;
+  border-bottom: 2px solid transparent; 
+  white-space: nowrap; 
+  transition: color .15s, border-color .15s;
 }
-.app-nav a:hover  { color: var(--text-1); }
-.app-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+.app-nav a:hover  { color: var(--accent); }
+.app-nav a.active { 
+  color: var(--bg); 
+  border-bottom-color: var(--accent); 
+}
 
 /* ── PAGE WRAPPER ── */
-.page-wrapper { max-width: 1180px; margin: 0 auto; padding: 28px 24px 60px; display: flex; flex-direction: column; gap: 20px; }
+.page-wrapper { 
+  max-width: 1180px; 
+  margin: 0 auto; 
+  padding: 28px 24px 60px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 20px; 
+}
 
 /* ── KPI GRID ── */
 .kpi-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 10px; }
@@ -216,6 +234,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-1); mi
 
 /* ── ROW 3 ── */
 .row3 { display: grid; grid-template-columns: 3fr 2fr; gap: 14px; }
+.chart-wrap--tall { height: 320px; }
 .chart-legend { display: flex; gap: 16px; margin-bottom: 14px; }
 .chart-legend span { display: inline-flex; align-items: center; gap: 5px; font-size: .73rem; color: var(--text-2); }
 .legend-sq { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
@@ -258,6 +277,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-1); mi
 .score-bar   { height: 4px; border-radius: var(--r-full); background: var(--bg-elevated); overflow: hidden; width: 70px; }
 .score-fill  { height: 100%; border-radius: var(--r-full); transition: width .5s ease; }
 
+
 /* ── RESPONSIVE ── */
 @media (max-width: 1000px) { .kpi-grid { grid-template-columns: repeat(3,1fr); } }
 @media (max-width: 760px) {
@@ -269,5 +289,5 @@ body { font-family: var(--font); background: var(--bg); color: var(--text-1); mi
 }
 @media (max-width: 480px) {
   .kpi-card { padding: 14px 12px; } .kpi-val { font-size: 1.4rem; }
-  .date-label, .badge-live { display: none; }
+  .date-label, .badge-live { display: none; }  
 }

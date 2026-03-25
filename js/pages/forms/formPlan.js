@@ -553,13 +553,13 @@ function openPreview() {
 
     /* ลายเซ็น */
     .doc-sign {
-      margin-top: 60px;
+      margin-top: 80px;
       display: grid; grid-template-columns: repeat(4, 1fr);
       gap: 24px; text-align: center;
     }
     .doc-sign-box { font-size: 12px; line-height: 1.8; }
     .doc-sign-line {
-      border-top: 1px solid #555; padding-top: 6px; margin-top: 36px;
+      border-top: 1px solid #555; padding-top: 6px; margin-top: 100px;
     }
     .doc-sign-name { font-weight: 600; color: #1a1a1a; }
     .doc-sign-role { color: #555; }
@@ -644,19 +644,19 @@ function openPreview() {
       </div>
       <div class="doc-sign-box">
         <div class="doc-sign-line">
-          <div class="doc-sign-name">(.........................................................)</div>
+          <div class="doc-sign-name">(...................................................................)</div>
           <div class="doc-sign-role">ผู้จัดการฝ่ายขาย</div>
         </div>
       </div>
       <div class="doc-sign-box">
         <div class="doc-sign-line">
-          <div class="doc-sign-name">(.........................................................)</div>
+          <div class="doc-sign-name">(...................................................................)</div>
           <div class="doc-sign-role">ฝ่ายบัญชี</div>
         </div>
       </div>
       <div class="doc-sign-box">
         <div class="doc-sign-line">
-          <div class="doc-sign-name">(.........................................................)</div>
+          <div class="doc-sign-name">(...................................................................)</div>
           <div class="doc-sign-role">ผู้อนุมัติ</div>
         </div>
       </div>
@@ -672,12 +672,36 @@ function closePreview() {
 }
 
 function printPreview() {
-  window.print();
+  const content = document.getElementById("previewContent").innerHTML;
+  const win = window.open("", "_blank", "width=900,height=700");
+  win.document.write(`<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>แผนการเดินทาง</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 15mm 12mm; font-family: 'Kanit', sans-serif; background: #fff; }
+    @media print {
+      body { margin: 0; padding: 10mm; }
+      @page { size: A4 portrait; margin: 0; }
+    }
+  </style>
+</head>
+<body>${content}</body>
+</html>`);
+  win.document.close();
+  // รอ font โหลดก่อนพิมพ์
+  win.onload = () => { win.focus(); win.print(); win.close(); };
 }
 
 function exportPDF() {
-  window.print();
+  printPreview(); // ใช้ฟังก์ชันเดียวกัน
 }
+
+// function exportPDF() {
+//   window.print();
+// }
 
 // =====================================================
 // 📤 EXPORT CSV
@@ -764,20 +788,17 @@ console.log("✅ formPlan.js loaded successfully");
 // =====================================================
 async function logout() {
   try {
-
-    // logout supabase
     const { error } = await supabaseClient.auth.signOut();
     if (error) throw error;
 
-    showToast("ออกจากระบบแล้ว", "info");
+    if (typeof showToast === "function") showToast("ออกจากระบบแล้ว", "info");
 
-    // redirect ไปหน้า login
     setTimeout(() => {
       window.location.href = "/pages/auth/login.html";
     }, 500);
 
   } catch (err) {
     console.error("❌ Logout error:", err);
-    showToast("ออกจากระบบไม่สำเร็จ", "error");
+    alert("ออกจากระบบไม่สำเร็จ: " + err.message);
   }
 }

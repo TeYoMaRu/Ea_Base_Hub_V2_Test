@@ -1,17 +1,13 @@
 /* ============================================================
-   adminSales.css  —  Sales Management Page
-   
-   ⚠️  style พื้นฐานทั้งหมด (layout, table, tab, modal ฯลฯ)
-       อยู่ใน admintor.css แล้ว
-       ไฟล์นี้มีแค่ style ที่ unique ของหน้า Sales เท่านั้น
+   adminSales.css  —  Dark Theme
+   ธีม: Dark Navy  ตาม managerDashboard.css
+   ⚠️  style พื้นฐาน (layout, table, modal ฯลฯ) อยู่ใน admintor.css
+       ไฟล์นี้มีแค่ style unique ของหน้า Sales เท่านั้น
    ============================================================ */
-
 
 
 /* ============================================================
    SEARCH ROW
-   หน้า Sales ใช้ .search-row (มี edit-tip ด้วย)
-   ต่างจาก admintor ที่ใช้ .toolbar-row
    ============================================================ */
 
 .search-row {
@@ -24,7 +20,7 @@
 
 .edit-tip {
   font-size:   0.8rem;
-  color:       #9ca3af;
+  color:       #7a9cc0;
   white-space: nowrap;
   display:     flex;
   align-items: center;
@@ -32,27 +28,25 @@
 }
 
 
-
 /* ============================================================
    USERNAME CHIP
-   หน้า Sales ใช้สีเขียว (ต่างจาก admintor ที่ใช้สีเทา)
+   สีเขียว accent ตาม dark theme
    ============================================================ */
 
 .username-chip {
   display:       inline-block;
-  background:    #dcfce7;
-  color:         #166534;
+  background:    rgba(0,212,170,0.12);
+  color:         #00d4aa;
   font-weight:   600;
   padding:       4px 12px;
   border-radius: 20px;
   font-size:     0.85rem;
+  border:        1px solid rgba(0,212,170,0.25);
 }
-
 
 
 /* ============================================================
    EDITABLE CELLS
-   คลิกเพื่อแก้ชื่อ / พื้นที่ inline
    ============================================================ */
 
 .editable-cell {
@@ -65,7 +59,6 @@
   position:      relative;
 }
 
-/* icon ดินสอ แสดงเมื่อ hover */
 .editable-cell::after {
   content:    " ✏️";
   font-size:  11px;
@@ -73,58 +66,48 @@
   transition: opacity 0.15s;
 }
 
-.editable-cell:hover::after {
-  opacity: 1;
-}
+.editable-cell:hover::after { opacity: 1; }
 
 .editable-cell:hover {
-  box-shadow: 0 0 0 2px var(--blue-400, #60a5fa);
+  box-shadow: 0 0 0 2px rgba(0,212,170,0.4);
 }
-
 
 /* ชื่อ Sales */
 .editable-name {
-  color:       #1e40af;
+  color:       #4d9fff;
   font-weight: 500;
   background:  transparent;
 }
 
-.editable-name:hover {
-  background: #eff6ff;
-}
+.editable-name:hover { background: rgba(77,159,255,0.1); }
 
-
-/* พื้นที่ — badge สีฟ้าอ่อน */
+/* พื้นที่ */
 .badge-area {
-  background:  #dbeafe;
-  color:       #1e40af;
+  background:  rgba(77,159,255,0.12);
+  color:       #4d9fff;
   font-weight: 500;
   font-size:   0.87rem;
 }
 
-.badge-area:hover {
-  background: #bfdbfe;
-}
-
+.badge-area:hover { background: rgba(77,159,255,0.2); }
 
 
 /* ============================================================
    INLINE INPUT
-   input ที่โผล่มาแทน editable cell เมื่อคลิก
    ============================================================ */
 
 .inline-input {
-  border:      2px solid var(--blue-400, #60a5fa);
+  border:        2px solid rgba(0,212,170,0.5);
   border-radius: 6px;
-  padding:     5px 10px;
-  font-family: 'Kanit', sans-serif;
-  font-size:   0.92rem;
-  color:       #1e293b;
-  background:  #fff;
-  outline:     none;
-  box-shadow:  0 0 0 3px rgba(59, 130, 246, 0.14);
-  min-width:   120px;
-  max-width:   200px;
+  padding:       5px 10px;
+  font-family:   'Kanit', 'Sarabun', sans-serif;
+  font-size:     0.92rem;
+  color:         #e8f0fe;
+  background:    #1e2d42;
+  outline:       none;
+  box-shadow:    0 0 0 3px rgba(0,212,170,0.12);
+  min-width:     120px;
+  max-width:     200px;
 }
 
 .inline-input:disabled {
@@ -133,17 +116,15 @@
 }
 
 
-
 /* ============================================================
    SHOP COUNT BADGE
-   badge แสดงจำนวนร้านค้า
    ============================================================ */
 
 .badge-count {
   display:       inline-block;
-  background:    #f0fdf4;
-  color:         #166534;
-  border:        1px solid #bbf7d0;
+  background:    rgba(0,212,170,0.1);
+  color:         #00d4aa;
+  border:        1px solid rgba(0,212,170,0.25);
   padding:       4px 14px;
   border-radius: 20px;
   font-weight:   600;
@@ -152,29 +133,22 @@
 }
 
 
-
 /* ============================================================
    RESPONSIVE
    ============================================================ */
 
 @media (max-width: 680px) {
-
   .card-header-row {
     flex-direction: column;
     align-items:    flex-start;
     gap:            10px;
   }
 
-  /* ซ่อน column จำนวนร้านค้า บนมือถือ */
   .data-table th:nth-child(4),
-  .data-table td:nth-child(4) {
-    display: none;
-  }
+  .data-table td:nth-child(4) { display: none; }
 
   .edit-tip { display: none; }
-
 }
-
 
 
 /* ============================================================

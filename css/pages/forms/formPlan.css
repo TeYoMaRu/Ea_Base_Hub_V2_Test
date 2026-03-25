@@ -197,8 +197,6 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   gap: 8px;
   padding-top: 14px;
-  border-top: 1px solid rgba(255,255,255,0.18);
-  margin-top: 8px;
 }
 
 .sidebar-email {
@@ -755,24 +753,33 @@ button:active { transform: scale(0.97); }
   border-top: 4px solid var(--teal-500);
 }
 
+
 /* =====================================================
    17. PRINT
    ===================================================== */
 @media print {
-  body * { visibility: hidden; }
+  * { visibility: hidden !important; }
 
   #previewContent,
-  #previewContent * { visibility: visible; }
+  #previewContent * { visibility: visible !important; }
 
   #previewContent {
-    position: absolute;
-    left: 0; top: 0;
-    width: 100%;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 10mm !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    border: none !important;
   }
 
-  .a4-page { box-shadow: none; }
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
 }
-
 /* =====================================================
    18. RESPONSIVE — Tablet (iPad landscape ~1180px)
    ===================================================== */

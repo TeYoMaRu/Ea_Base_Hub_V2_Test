@@ -73,7 +73,7 @@
 
 body {
   font-family: 'Kanit', sans-serif;
-  background: var(--bg-base);
+  background: #faf3de;
   color: var(--text-primary);
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
@@ -108,7 +108,7 @@ a { text-decoration: none; color: inherit; }
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.15);
+  background: var(--bg-card);
   border: 1.5px solid rgba(255,255,255,0.25);
   display: flex;
   align-items: center;
@@ -221,7 +221,7 @@ a { text-decoration: none; color: inherit; }
 .app-nav a:hover { background: var(--teal-50); color: var(--teal-700); }
 
 .app-nav a.active {
-  background: var(--teal-500);
+  background: var(--accent);
   color: #fff;
   font-weight: 500;
 }
@@ -499,7 +499,7 @@ select {
   cursor: pointer;
   font-size: var(--font-base);
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--text-primary);
   background: var(--bg-card);
   transition: all var(--transition);
   user-select: none;

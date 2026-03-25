@@ -53,6 +53,7 @@ async function loadDashboardData() {
     renderTable(allClaims);
     renderClaimSummary(allClaims);
     renderTrendChart(allClaims);
+    renderTopProductsChart(allClaims);
   } catch (err) {
     console.error(err);
     showLoadingError();
@@ -229,4 +230,61 @@ function formatDate(dateStr) {
   const d = new Date(dateStr);
   if (isNaN(d)) return '—';
   return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+}
+
+function renderTopProductsChart(claims) {
+  const canvas = document.getElementById('topProductChart');
+  if (!canvas || typeof Chart === 'undefined') return;
+
+  // นับจำนวนตามชื่อสินค้า
+  const map = {};
+  claims.forEach(c => {
+    if (!c.product) return;
+    if (!map[c.product]) map[c.product] = { total: 0, approved: 0, rejected: 0 };
+    map[c.product].total++;
+    if (c.status === 'approved') map[c.product].approved++;
+    if (c.status === 'rejected') map[c.product].rejected++;
+  });
+
+  const sorted = Object.entries(map)
+    .sort((a, b) => b[1].total - a[1].total)
+    .slice(0, 8);
+
+  const labels   = sorted.map(([name]) => name);
+  const passData = sorted.map(([, v]) => v.approved);
+  const failData = sorted.map(([, v]) => v.rejected);
+  const pendData = sorted.map(([, v]) => v.total - v.approved - v.rejected);
+
+  if (window._topProductChart) window._topProductChart.destroy();
+  window._topProductChart = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'อนุมัติ',      data: passData, backgroundColor: '#3fb950', borderRadius: 4, stack: 'stack', borderSkipped: false },
+        { label: 'ปฏิเสธ',      data: failData, backgroundColor: '#f85149', borderRadius: 4, stack: 'stack', borderSkipped: false },
+        { label: 'รอตรวจสอบ',   data: pendData, backgroundColor: '#d29922', borderRadius: 4, stack: 'stack', borderSkipped: false },
+      ],
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#21262d',
+          borderColor: 'rgba(255,255,255,.1)',
+          borderWidth: 1,
+          titleColor: '#8b949e',
+          bodyColor: '#e6edf3',
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.x} ราย` },
+        },
+      },
+      scales: {
+        x: { stacked: true, grid: { color: 'rgba(255,255,255,.05)' }, border: { display: false }, ticks: { color: '#484f58', font: { size: 11, family: "'IBM Plex Sans Thai',sans-serif" }, stepSize: 1, callback: v => Number.isInteger(v) ? v : null } },
+        y: { stacked: true, grid: { display: false }, border: { display: false }, ticks: { color: '#8b949e', font: { size: 11, family: "'IBM Plex Sans Thai',sans-serif" } } },
+      },
+    },
+  });
 }

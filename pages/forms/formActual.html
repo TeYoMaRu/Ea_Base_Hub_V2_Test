@@ -76,45 +76,68 @@
         </div>
 
         <!-- SECTION: ตารางค่าใช้จ่าย -->
-        <div class="section">
-          <h3>รายการค่าใช้จ่ายจริง</h3>
+<div class="section">
+  <h3>รายการค่าใช้จ่ายจริง</h3>
 
-          <div class="import-hint" id="importHint" style="display:none">
-            <span class="material-symbols-outlined">lightbulb</span>
-            นำข้อมูลจากแผนการเดินทางมาแล้ว — แก้ไข เพิ่ม หรือลบแถวได้อิสระค่ะ
-          </div>
+  <div class="import-hint" id="importHint" style="display:none">
+    <span class="material-symbols-outlined">lightbulb</span>
+    นำข้อมูลจากแผนการเดินทางมาแล้ว — แก้ไข เพิ่ม หรือลบแถวได้อิสระค่ะ
+  </div>
 
-          <table>
-            <thead>
-              <tr>
-                <th style="width:115px">ว/ด/ป</th>
-                <th>เส้นทางจริง</th>
-                <th style="width:95px">เบี้ยเลี้ยง</th>
-                <th style="width:95px">โรงแรม</th>
-                <th style="width:95px">น้ำมัน</th>
-                <th style="width:95px">อื่นๆ</th>
-                <th style="width:100px">หมายเหตุ</th>
-              </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-          </table>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:130px">ว/ด/ป</th>
+        <th>เส้นทางจริง</th>
+        <th style="width:120px">หมายเหตุ</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
 
-          <div class="btn-group">
-            <button class="btn-add"    onclick="addRow()">➕ เพิ่มแถว</button>
-            <button class="btn-delete" onclick="deleteRow()">➖ ลบแถว</button>
-          </div>
+  <div class="btn-group">
+    <button class="btn-add"    onclick="addRow()">➕ เพิ่มแถว</button>
+    <button class="btn-delete" onclick="deleteRow()">➖ ลบแถว</button>
+  </div>
+</div>
 
-          <div class="summary-box">
-            รวม <strong id="days">0</strong> วัน &nbsp;|&nbsp;
-            รวมเงิน <strong id="total">0.00</strong> บาท
-          </div>
+<!-- SECTION: สรุปค่าใช้จ่าย -->
+<div class="section summary-section">
+  <h3>สรุปแผนการเดินทางและเบิกจ่าย</h3>
 
-          <div class="btn-group" style="margin-top:20px">
-            <button class="btn-save"    onclick="saveDraft()">💾 Save Draft</button>
-            <button class="btn-preview" onclick="openPreview()">🔍 บันทึกและดูตัวอย่าง</button>
-            <button class="btn-export"  onclick="exportCSV()">📤 Export CSV</button>
-          </div>
-        </div>
+  <div class="summary-grid">
+    <div class="summary-item">
+      <label>เบี้ยเลี้ยง</label>
+      <input type="number" id="allowanceRate" placeholder="บาท/วัน">
+    </div>
+    <div class="summary-item">
+      <label>ค่าที่พัก(ราคา)</label>
+      <input type="number" id="hotelRate" placeholder="บาท/คืน">
+    </div>
+    <div class="summary-item">
+      <label>ค่าใช้จ่ายอื่นๆ</label>
+      <input type="number" id="otherCost" placeholder="บาท">
+    </div>
+    <div class="summary-item">
+      <label>จำนวน(วัน)</label>
+      <input type="number" id="allowanceDays" placeholder="จำนวน(วัน)">
+    </div>
+    <div class="summary-item">
+      <label>รวมพัก(คืน)</label>
+      <input type="number" id="hotelNights" placeholder="จำนวน(คืน)">
+    </div>
+    <div class="summary-item total">
+      <label>รวมเบิกทั้งหมด</label>
+      <input type="text" id="grandTotal" placeholder="บาท" readonly>
+    </div>
+  </div>
+
+  <div class="btn-group" style="margin-top:20px">
+    <button class="btn-save"    onclick="saveDraft()">💾 Save Draft</button>
+    <button class="btn-preview" onclick="openPreview()">🔍 บันทึกและดูตัวอย่าง</button>
+    <button class="btn-export"  onclick="exportCSV()">📤 Export CSV</button>
+  </div>
+</div>
 
       <!-- </div>      CLASS PEPER -->
     </div>

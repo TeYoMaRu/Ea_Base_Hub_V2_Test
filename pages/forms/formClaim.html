@@ -17,6 +17,7 @@
   <!-- เพิ่มบรรทัดนี้ใน <head> ต่อจาก formClaim.css -->  
   <link rel="stylesheet" href="/css/base/layout.css">
   <link rel="stylesheet" href="/css/pages/forms/formClaim.css">
+  <link rel="stylesheet" href="/css/pages/forms/formClaim_warning.css">
 </head>
 
 <body>
@@ -46,15 +47,19 @@
   <!-- NAVIGATION                                            -->
   <!-- ===================================================== -->
   <nav class="app-nav">
-    <a href="/pages/index.html">หน้าแรก</a>
+    <a href="/index.html">หน้าแรก</a>
     <a href="/pages/reports/report.html">รายงานเยี่ยมร้านค้า</a>
     <a href="/pages/forms/formClaim.html" class="active">แจ้งเคลมสินค้า</a>
     <a href="/pages/forms/formHub.html">แบบฟอร์ม</a>
+    <a href="/pages/forms/shopUser.html">ร้านค้าของฉัน</a> 
   </nav>
 
   <!-- ===================================================== -->
   <!-- PAGE HEADER                                           -->
   <!-- ===================================================== -->
+   <div class="claim-scope">
+
+
   <div class="container">
     <div class="page-header">
       <h1>⚠️ แจ้งเคลมสินค้า</h1>
@@ -184,7 +189,7 @@
 
     <div class="claim-grid" id="claimTypes">
       <div class="claim-item">ชำรุดจากขนส่ง</div>
-      <div class="claim-item">พลาสติกแตกร้าว</div>
+      <div class="claim-item">ฉีกขาด สภาพไม่สมบูรณ์</div>
       <div class="claim-item">ซีลไม่ติด</div>
       <div class="claim-item">อุปกรณ์ไม่ครบ</div>
       <div class="claim-item">สภาพสินค้า</div>
@@ -271,7 +276,7 @@
   </div>
 
   </div><!-- /.container -->
-
+   </div><!--claim-scope-->
   <!-- ===================================================== -->
   <!-- PRODUCT MODAL                                         -->
   <!-- ===================================================== -->

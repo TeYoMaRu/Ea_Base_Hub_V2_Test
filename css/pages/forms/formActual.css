@@ -253,9 +253,29 @@
 }
 
 /* Print */
+/* =====================================================
+   17. PRINT
+   ===================================================== */
 @media print {
-  body * { visibility: hidden; }
-  #previewContent, #previewContent * { visibility: visible; }
-  #previewContent { position: absolute; left: 0; top: 0; width: 100%; }
-  .a4-page { box-shadow: none; border-top: none; }
+  * { visibility: hidden !important; }
+
+  #previewContent,
+  #previewContent * { visibility: visible !important; }
+
+  #previewContent {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 10mm !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
 }
