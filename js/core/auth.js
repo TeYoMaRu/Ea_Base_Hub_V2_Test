@@ -1,5 +1,5 @@
 // ======================================================
-// auth.js
+// auth.js (FIXED VERSION)
 // ไฟล์นี้ใช้สำหรับจัดการระบบ Authentication ของระบบ
 // เช่น Login / Register / Protect Page / Logout
 // โดยใช้ Supabase Authentication
@@ -150,7 +150,7 @@ if (registerForm) {
 }
 
 // ======================================================
-// PROTECT PAGE BY ROLE
+// PROTECT PAGE BY ROLE (🔥 FIXED VERSION)
 // ======================================================
 // ฟังก์ชันนี้ใช้สำหรับป้องกันหน้าเว็บ
 // เช่น dashboard / admin page
@@ -185,9 +185,9 @@ async function protectPage(allowedRoles = []) {
     // โดยใช้ user id จาก session
     const { data: profile, error: profileError } = await supabaseClient
       .from("profiles")
-      .select("role, status") // ดึงเฉพาะ role และ status
-      .eq("id", session.user.id) // หา record ที่ id = user.id
-      .single(); // คาดว่าจะมีเพียง 1 record
+      .select("*") // 🔥 FIX: ดึงทุก column เพื่อเก็บใน window.currentUser
+      .eq("id", session.user.id)
+      .single();
 
     // ถ้า query error หรือไม่พบ profile
     if (profileError) {
@@ -203,6 +203,26 @@ async function protectPage(allowedRoles = []) {
     }
 
     console.log("✅ Profile found:", profile);
+
+    // 🔥 FIX: Set window.currentUser ก่อน!
+    window.currentUser = {
+      id: session.user.id,
+      email: session.user.email,
+      full_name: profile?.full_name || null,
+      display_name: profile?.display_name || profile?.full_name || session.user.email,
+      area: profile?.area || null,
+      position: profile?.position || null,
+      department: profile?.department || null,
+      phone: profile?.phone || null,
+      role: profile?.role || "user",
+      created_at: profile?.created_at || null,
+      updated_at: profile?.updated_at || null,
+      address: profile?.address || null,
+      manager_id: profile?.manager_id || null,
+      status: profile?.status || "active"
+    };
+
+    console.log("✅ window.currentUser set:", window.currentUser);
 
     // ตรวจสอบสถานะ user
     // ถ้า user ไม่ใช่ Active (ตรวจสอบทั้ง "Active" และ "active")
@@ -238,9 +258,17 @@ async function protectPage(allowedRoles = []) {
 
     console.log("✅ Page protection passed");
 
-    // ถ้ามี userService ให้ init ด้วย
-    if (typeof initUserService === 'function') {
-      await initUserService();
+    // 🔥 FIX: เรียก userService functions แยกกัน แทนที่จะเรียก initUserService
+    if (typeof updateUserNameDisplay === 'function') {
+      updateUserNameDisplay();
+    }
+
+    if (typeof applyPermissionBasedUI === 'function') {
+      applyPermissionBasedUI();
+    }
+
+    if (typeof autoFillUserAttributes === 'function') {
+      autoFillUserAttributes();
     }
 
   } catch (error) {

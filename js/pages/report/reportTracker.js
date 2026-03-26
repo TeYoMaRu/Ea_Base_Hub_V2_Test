@@ -1,579 +1,813 @@
 // =====================================================
-// reportTracker.js  — Report Tracker Page
-// อิงจาก dashboard.js v2 เดิม:
-//   - admin   : เห็นทุกคน
-//   - manager : เห็นเฉพาะทีมตัวเอง (team_id match)
-// Schema: reports, profiles, shops, products, report_comments
+// reportManager.js - Manager Report Review Page
+// ใช้ area แทน team_id
 // =====================================================
 
-let allReports    = [];
-let filtered      = [];
-let shopsMap      = {};
-let productsMap   = {};
-let profilesMap   = {};   // uid → { display_name, role, team_id }
-let currentUser   = null;
-let currentModalId = null;
+let currentUser = null;
+let allReports = [];
+let filteredReports = [];
+let profilesMap = {};
+let shopsMap = {};
+let productsMap = {};
 
-const PAGE_SIZE = 20;
+let weekOffset = 0;
 let currentPage = 1;
-let weekOffset  = 0;
+const PAGE_SIZE = 20;
 
-let activeTeamFilter = null; // sale_id ที่กรองจาก team grid
+let activeSalesFilter = null;
+let currentReportId = null;
 
 // =====================================================
 // 🚀 INIT
 // =====================================================
-document.addEventListener("DOMContentLoaded", async () => {
-  try { await protectPage(["admin", "manager"]); } catch (e) { return; }
+document.addEventListener('DOMContentLoaded', async () => {
+  console.log('🚀 Report Manager initializing...');
 
-  currentUser = await loadCurrentUser();
-  if (!currentUser) return;
+  try {
+    await protectPage(['admin', 'manager']);
+  } catch (e) {
+    console.error('❌ protectPage failed:', e);
+    return;
+  }
 
-  await Promise.all([loadProfiles(), loadShops(), loadProducts()]);
+  // รอให้ window.currentUser พร้อม (จาก userService)
+  if (window.currentUser && window.currentUser.id) {
+    currentUser = window.currentUser;
+    console.log('✅ Using currentUser from window:', currentUser);
+  } else {
+    // ถ้ายังไม่มี ให้โหลดใหม่
+    currentUser = await loadCurrentUser();
+    if (!currentUser) {
+      console.error('❌ No current user');
+      return;
+    }
+    console.log('✅ Current user loaded:', currentUser);
+  }
+
+  // โหลดข้อมูลสนับสนุน
+  await Promise.all([
+    loadProfiles(),
+    loadShops(),
+    loadProducts()
+  ]);
+
+  // โหลดรายงาน
   await loadReports();
-  setupModal();
+
+  // Setup event listeners
+  setupEventListeners();
   setupLogout();
 
-  document.getElementById("filterSearch")?.addEventListener("keydown", e => {
-    if (e.key === "Enter") applyFilter();
-  });
+  console.log('✅ Report Manager ready');
 });
 
 // =====================================================
-// 👤 CURRENT USER  (เหมือนเดิม)
+// 👤 LOAD CURRENT USER
 // =====================================================
 async function loadCurrentUser() {
   try {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) return null;
-    const { data: p } = await supabaseClient
-      .from("profiles")
-      .select("id, display_name, role, team_id")
-      .eq("id", session.user.id)
+
+    const { data: profile } = await supabaseClient
+      .from('profiles')
+      .select('id, display_name, role, area')
+      .eq('id', session.user.id)
       .single();
 
-    const name = p?.display_name || session.user.email;
-    setEl("userName",   name);
-    setEl("userRole",   p?.role || "");
-    setEl("userAvatar", name.charAt(0).toUpperCase());
+    const name = profile?.display_name || session.user.email;
+    document.getElementById('userName').textContent = name;
+    document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
 
-    return { id: session.user.id, role: p?.role, team_id: p?.team_id, name };
-  } catch (e) { console.error(e); return null; }
+    return {
+      id: session.user.id,
+      role: profile?.role,
+      area: profile?.area,
+      name
+    };
+  } catch (e) {
+    console.error('❌ loadCurrentUser error:', e);
+    return null;
+  }
 }
 
 // =====================================================
-// 👥 PROFILES  (เหมือนเดิม)
+// 👥 LOAD PROFILES (เซลล์ใน area เดียวกัน)
 // =====================================================
 async function loadProfiles() {
   try {
-    let query = supabaseClient
-      .from("profiles")
-      .select("id, display_name, role, team_id")
-      .in("role", ["sales", "user"]);
-
-    if (currentUser.role === "manager" && currentUser.team_id) {
-      query = query.eq("team_id", currentUser.team_id);
-    }
-
-    const { data } = await query;
-    profilesMap = Object.fromEntries((data || []).map(p => [p.id, p]));
-
-    // Populate filter dropdown
-    const sel = document.getElementById("filterSales");
-    if (sel) {
-      sel.innerHTML = `<option value="">— ทั้งหมด —</option>`;
-      (data || []).forEach(p => {
-        const o = document.createElement("option");
-        o.value = p.id; o.textContent = p.display_name;
-        sel.appendChild(o);
-      });
-    }
-  } catch (e) { console.error("loadProfiles", e); }
-}
-
-// =====================================================
-// 🏪 SHOPS / PRODUCTS  (เหมือนเดิม)
-// =====================================================
-async function loadShops() {
-  try {
-    const { data } = await supabaseClient.from("shops").select("id, shop_name").order("shop_name");
-    shopsMap = Object.fromEntries((data || []).map(s => [s.id, s.shop_name]));
-    const sel = document.getElementById("filterShop");
-    if (sel) {
-      sel.innerHTML = `<option value="">— ทั้งหมด —</option>`;
-      (data || []).forEach(s => {
-        const o = document.createElement("option");
-        o.value = s.id; o.textContent = s.shop_name;
-        sel.appendChild(o);
-      });
-    }
-  } catch (e) {}
-}
-
-async function loadProducts() {
-  try {
-    const { data } = await supabaseClient.from("products").select("id, name");
-    if (data) data.forEach(p => { productsMap[p.id] = p.name; });
-  } catch (e) {}
-}
-
-// =====================================================
-// 📊 LOAD REPORTS  (อิง loadReports เดิม)
-// =====================================================
-async function loadReports() {
-  const tbody = document.getElementById("reportBody");
-  if (tbody) tbody.innerHTML = `<tr><td colspan="8" class="td-empty">กำลังโหลด...</td></tr>`;
-
-  try {
-    const { start, end } = getWeekRange(weekOffset);
-    updateWeekLabel(start, end);
+    console.log('📥 Loading profiles...');
 
     let query = supabaseClient
-      .from("reports")
-      .select("*")
-      .eq("status", "submitted")
-      .gte("submitted_at", start.toISOString())
-      .lte("submitted_at", end.toISOString())
-      .order("submitted_at", { ascending: false });
+      .from('profiles')
+      .select('id, display_name, role, area')
+      .in('role', ['sales', 'user']);
 
-    // manager กรองเฉพาะทีม
-    if (currentUser.role === "manager" && currentUser.team_id) {
-      const ids = Object.keys(profilesMap);
-      if (ids.length) query = query.in("sale_id", ids);
+    // Manager ดูเฉพาะ area ตัวเอง
+    if (currentUser.role === 'manager' && currentUser.area) {
+      console.log('👔 Filtering by area:', currentUser.area);
+      query = query.eq('area', currentUser.area);
     }
 
     const { data, error } = await query;
     if (error) throw error;
 
-    allReports   = data || [];
-    activeTeamFilter = null;
-    filtered     = [...allReports];
+    console.log('✅ Profiles loaded:', data?.length || 0);
 
-    updateStatusStrip();
+    profilesMap = Object.fromEntries((data || []).map(p => [p.id, p]));
+
+    // Populate filter dropdown
+    const select = document.getElementById('filterSales');
+    if (select) {
+      select.innerHTML = '<option value="">— ทั้งหมด —</option>';
+      (data || []).forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.display_name;
+        select.appendChild(opt);
+      });
+    }
+  } catch (e) {
+    console.error('❌ loadProfiles error:', e);
+  }
+}
+
+// =====================================================
+// 🏪 LOAD SHOPS
+// =====================================================
+async function loadShops() {
+  try {
+    console.log('📥 Loading shops...');
+    const { data, error } = await supabaseClient
+      .from('shops')
+      .select('id, shop_name')
+      .order('shop_name');
+
+    if (error) throw error;
+    console.log('✅ Shops loaded:', data?.length || 0);
+
+    shopsMap = Object.fromEntries((data || []).map(s => [s.id, s.shop_name]));
+  } catch (e) {
+    console.error('❌ loadShops error:', e);
+  }
+}
+
+// =====================================================
+// 📦 LOAD PRODUCTS
+// =====================================================
+async function loadProducts() {
+  try {
+    console.log('📥 Loading products...');
+    const { data, error } = await supabaseClient
+      .from('products')
+      .select('id, name');
+
+    if (error) throw error;
+    console.log('✅ Products loaded:', data?.length || 0);
+
+    if (data) {
+      data.forEach(p => { productsMap[p.id] = p.name; });
+    }
+  } catch (e) {
+    console.error('❌ loadProducts error:', e);
+  }
+}
+
+// =====================================================
+// 📊 LOAD REPORTS
+// =====================================================
+async function loadReports() {
+  const container = document.getElementById('reportsContainer');
+  if (container) {
+    container.innerHTML = '<div class="loading">กำลังโหลดรายงาน...</div>';
+  }
+
+  try {
+    console.log('=== 📊 LOADING REPORTS ===');
+
+    const { start, end } = getWeekRange(weekOffset);
+    updateWeekDisplay(start, end);
+
+    console.log('📅 Week range:', start.toISOString(), 'to', end.toISOString());
+
+    // 🔥 FIX: Query ทั้ง submitted_at และ report_date
+    let query = supabaseClient
+      .from('reports')
+      .select('*')
+      .order('submitted_at', { ascending: false, nullsLast: true })
+      .order('report_date', { ascending: false, nullsLast: true });
+
+    // 🔥 ไม่ filter วันที่ก่อน เพื่อดูว่ามีข้อมูลไหม
+    // แล้วค่อย filter ใน JavaScript
+
+    // Manager กรองเฉพาะ area
+    if (currentUser.role === 'manager' && currentUser.area) {
+      const saleIds = Object.keys(profilesMap);
+      console.log('👔 Manager filter - sale IDs:', saleIds);
+
+      if (saleIds.length) {
+        query = query.in('sale_id', saleIds);
+      } else {
+        console.warn('⚠️ No sales in manager area');
+        query = query.eq('sale_id', '00000000-0000-0000-0000-000000000000');
+      }
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+
+    console.log('✅ Raw reports from DB:', data?.length || 0);
+
+    // 🔥 Filter วันที่ใน JavaScript
+    const startTime = start.getTime();
+    const endTime = end.getTime();
+
+    const filtered = (data || []).filter(r => {
+      const date = r.submitted_at || r.report_date || r.created_at;
+      if (!date) return false;
+
+      const reportTime = new Date(date).getTime();
+      return reportTime >= startTime && reportTime <= endTime;
+    });
+
+    console.log('✅ Reports in week range:', filtered.length);
+
+    allReports = filtered;
+    filteredReports = [...allReports];
+    activeSalesFilter = null;
+
+    updateSummaryCards();
     updateSalesGrid();
     currentPage = 1;
-    renderTable();
+    renderReports();
 
+    console.log('=== ✅ LOADING COMPLETE ===');
   } catch (e) {
-    console.error("loadReports", e);
-    if (tbody) tbody.innerHTML = `<tr><td colspan="8" class="td-empty">เกิดข้อผิดพลาด: ${e.message}</td></tr>`;
+    console.error('❌ loadReports error:', e);
+    if (container) {
+      container.innerHTML = `
+        <div class="loading">
+          เกิดข้อผิดพลาด: ${e.message}<br>
+          <small>กรุณาเปิด Console เพื่อดู log</small>
+        </div>`;
+    }
   }
 }
 
 // =====================================================
-// 📅 WEEK HELPERS  (เหมือนเดิม)
+// 📅 WEEK HELPERS
 // =====================================================
 function getWeekRange(offset = 0) {
-  const now  = new Date();
-  const diff = now.getDay() === 0 ? -6 : 1 - now.getDay();
-  const mon  = new Date(now);
-  mon.setDate(now.getDate() + diff + offset * 7);
-  mon.setHours(0, 0, 0, 0);
-  const sun = new Date(mon);
-  sun.setDate(mon.getDate() + 6);
-  sun.setHours(23, 59, 59, 999);
-  return { start: mon, end: sun };
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Monday
+
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + diff + (offset * 7));
+  monday.setHours(0, 0, 0, 0);
+
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  sunday.setHours(23, 59, 59, 999);
+
+  return { start: monday, end: sunday };
 }
 
-function updateWeekLabel(start, end) {
-  const fmt = d => d.toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "numeric" });
-  setEl("weekLabel", `${fmt(start)} – ${fmt(end)}`);
-  const wkEl = document.getElementById("weekOffsetLabel");
-  if (wkEl) {
-    if      (weekOffset ===  0) wkEl.textContent = "สัปดาห์นี้";
-    else if (weekOffset === -1) wkEl.textContent = "สัปดาห์ที่แล้ว";
-    else                        wkEl.textContent = `${Math.abs(weekOffset)} สัปดาห์ก่อน`;
-  }
+function updateWeekDisplay(start, end) {
+  const fmt = d => d.toLocaleDateString('th-TH', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
+
+  let label = '';
+  if (weekOffset === 0) label = 'สัปดาห์นี้';
+  else if (weekOffset === -1) label = 'สัปดาห์ที่แล้ว';
+  else if (weekOffset < -1) label = `${Math.abs(weekOffset)} สัปดาห์ก่อน`;
+  else label = `อีก ${weekOffset} สัปดาห์`;
+
+  document.getElementById('weekLabel').textContent = label;
+  document.getElementById('weekRange').textContent = `${fmt(start)} – ${fmt(end)}`;
 }
 
-async function changeWeek(dir) {
-  weekOffset += dir;
+async function changeWeek(direction) {
+  weekOffset += direction;
   await loadReports();
 }
 
 // =====================================================
-// 📈 STATUS STRIP
+// 📈 UPDATE SUMMARY CARDS
 // =====================================================
-function updateStatusStrip() {
-  const total    = allReports.length;
-  const unread   = allReports.filter(r => !r.manager_acknowledged).length;
-  const acked    = allReports.filter(r =>  r.manager_acknowledged).length;
-  const withCmt  = allReports.filter(r =>  r.manager_comment).length;
-  const salesCnt = new Set(allReports.map(r => r.sale_id).filter(Boolean)).size;
+function updateSummaryCards() {
+  const total = allReports.length;
+  const unread = allReports.filter(r => !r.manager_acknowledged).length;
+  const read = allReports.filter(r => r.manager_acknowledged).length;
+  const activeSales = new Set(allReports.map(r => r.sale_id).filter(Boolean)).size;
 
-  setEl("stTotal",    total.toString());
-  setEl("stUnread",   unread.toString());
-  setEl("stAcked",    acked.toString());
-  setEl("stComments", withCmt.toString());
-  setEl("stSales",    salesCnt.toString());
+  document.getElementById('totalReports').textContent = total;
+  document.getElementById('unreadReports').textContent = unread;
+  document.getElementById('readReports').textContent = read;
+  document.getElementById('activeSales').textContent = activeSales;
 }
 
 // =====================================================
-// 👥 SALES GRID  (อิง updateSalesGrid เดิม)
+// 👥 UPDATE SALES GRID
 // =====================================================
 function updateSalesGrid() {
-  const grid = document.getElementById("salesGrid"); if (!grid) return;
+  const grid = document.getElementById('salesGrid');
+  if (!grid) return;
 
-  const sentIds = new Set(allReports.map(r => r.sale_id));
   const entries = Object.entries(profilesMap);
 
   if (!entries.length) {
-    grid.innerHTML = `<div class="loading-text">ไม่มีข้อมูล</div>`;
+    grid.innerHTML = '<div class="loading">ไม่มีข้อมูลเซลล์</div>';
     return;
   }
 
-  grid.innerHTML = entries.map(([id, p]) => {
-    const count    = allReports.filter(r => r.sale_id === id).length;
-    const unread   = allReports.filter(r => r.sale_id === id && !r.manager_acknowledged).length;
-    const sent     = sentIds.has(id);
-    const isActive = activeTeamFilter === id;
+  grid.innerHTML = entries.map(([id, profile]) => {
+    const reports = allReports.filter(r => r.sale_id === id);
+    const total = reports.length;
+    const unread = reports.filter(r => !r.manager_acknowledged).length;
+    const isActive = activeSalesFilter === id;
+    const hasUnread = unread > 0;
 
     return `
-      <div class="sales-card ${sent ? "sent" : "not-sent"} ${isActive ? "filter-active" : ""}"
-           onclick="filterBySales('${id}')">
-        <div class="sales-avatar">${(p.display_name || "?").charAt(0).toUpperCase()}</div>
-        <div class="sales-info">
-          <div class="sales-name">${p.display_name}</div>
-          <div class="sales-count">${count} รายการ${unread ? ` · <span style="color:var(--accent3)">${unread} ยังไม่อ่าน</span>` : ""}</div>
+      <div class="sales-card ${isActive ? 'active' : ''} ${hasUnread ? 'has-unread' : ''}"
+           onclick="filterBySale('${id}')">
+        <div class="sales-avatar">${profile.display_name.charAt(0).toUpperCase()}</div>
+        <div class="sales-name">${profile.display_name}</div>
+        <div class="sales-stats">
+          <div class="stat-item">
+            <span class="stat-value">${total}</span>
+            <span class="stat-label">รายงาน</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" style="color: ${unread > 0 ? 'var(--accent3)' : 'var(--accent2)'}">
+              ${unread}
+            </span>
+            <span class="stat-label">ยังไม่อ่าน</span>
+          </div>
         </div>
-        <div class="sales-status-icon">${sent ? "✅" : "⏳"}</div>
-      </div>`;
-  }).join("");
+      </div>
+    `;
+  }).join('');
 }
 
-// คลิกการ์ด → กรอง (toggle)
-function filterBySales(saleId) {
-  if (activeTeamFilter === saleId) {
-    activeTeamFilter = null;
-    document.getElementById("filterSales").value = "";
+// =====================================================
+// 🔍 FILTER BY SALE
+// =====================================================
+function filterBySale(saleId) {
+  if (activeSalesFilter === saleId) {
+    activeSalesFilter = null;
+    document.getElementById('filterSales').value = '';
   } else {
-    activeTeamFilter = saleId;
-    document.getElementById("filterSales").value = saleId;
+    activeSalesFilter = saleId;
+    document.getElementById('filterSales').value = saleId;
   }
+
   updateSalesGrid();
   applyFilter();
 }
 
 // =====================================================
-// 🔍 FILTER  (อิง applyFilter เดิม + เพิ่ม search)
+// 🔍 APPLY FILTER
 // =====================================================
 function applyFilter() {
-  const salesId = document.getElementById("filterSales")?.value;
-  const shopId  = document.getElementById("filterShop")?.value;
-  const ack     = document.getElementById("filterAck")?.value;
-  const search  = document.getElementById("filterSearch")?.value.toLowerCase() || "";
+  console.log('🔍 Applying filter...');
 
-  filtered = allReports.filter(r => {
-    if (salesId && r.sale_id !== salesId)        return false;
-    if (shopId  && r.shop_id !== shopId)         return false;
-    if (ack === "yes" && !r.manager_acknowledged) return false;
-    if (ack === "no"  &&  r.manager_acknowledged) return false;
+  const salesId = document.getElementById('filterSales').value;
+  const status = document.getElementById('filterStatus').value;
+  const search = document.getElementById('searchInput').value.toLowerCase();
+
+  filteredReports = allReports.filter(r => {
+    // Filter by sales
+    if (salesId && r.sale_id !== salesId) return false;
+
+    // Filter by status
+    if (status === 'unread' && r.manager_acknowledged) return false;
+    if (status === 'read' && !r.manager_acknowledged) return false;
+
+    // Filter by search
     if (search) {
-      const hay = [
-        shopsMap[r.shop_id],
-        productsMap[r.product_id],
-        r.note,
-        profilesMap[r.sale_id]?.display_name,
-      ].filter(Boolean).join(" ").toLowerCase();
-      if (!hay.includes(search)) return false;
+      const shopName = shopsMap[r.shop_id] || '';
+      const productName = productsMap[r.product_id] || '';
+      const salesName = profilesMap[r.sale_id]?.display_name || '';
+      const note = r.note || '';
+
+      const searchText = [shopName, productName, salesName, note]
+        .join(' ')
+        .toLowerCase();
+
+      if (!searchText.includes(search)) return false;
     }
+
     return true;
   });
 
+  console.log('✅ Filtered:', filteredReports.length, '/', allReports.length);
+
   currentPage = 1;
-  renderTable();
-  updateTableCount();
+  renderReports();
 }
 
+// =====================================================
+// ↺ RESET FILTER
+// =====================================================
 function resetFilter() {
-  ["filterSales", "filterShop", "filterAck"].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value = "";
-  });
-  const s = document.getElementById("filterSearch"); if (s) s.value = "";
-  activeTeamFilter = null;
-  updateSalesGrid();
-  filtered = [...allReports];
+  document.getElementById('filterSales').value = '';
+  document.getElementById('filterStatus').value = '';
+  document.getElementById('searchInput').value = '';
+
+  activeSalesFilter = null;
+  filteredReports = [...allReports];
   currentPage = 1;
-  renderTable();
-  updateTableCount();
-}
 
-function updateTableCount() {
-  setEl("tableCount", filtered.length !== allReports.length
-    ? `(${filtered.length} / ${allReports.length} รายการ)`
-    : `(${allReports.length} รายการ)`
-  );
+  updateSalesGrid();
+  renderReports();
 }
 
 // =====================================================
-// 🎨 RENDER TABLE  (อิง renderTable เดิม)
+// 🎨 RENDER REPORTS
 // =====================================================
-function renderTable() {
-  const tbody = document.getElementById("reportBody"); if (!tbody) return;
+function renderReports() {
+  const container = document.getElementById('reportsContainer');
+  if (!container) return;
+
   const start = (currentPage - 1) * PAGE_SIZE;
-  const page  = filtered.slice(start, start + PAGE_SIZE);
+  const pageReports = filteredReports.slice(start, start + PAGE_SIZE);
 
-  tbody.innerHTML = "";
+  // Update count
+  const countEl = document.getElementById('reportCount');
+  if (countEl) {
+    countEl.textContent = filteredReports.length !== allReports.length
+      ? `(${filteredReports.length} / ${allReports.length} รายการ)`
+      : `(${allReports.length} รายการ)`;
+  }
 
-  if (!page.length) {
-    tbody.innerHTML = `<tr><td colspan="8" class="td-empty">ไม่มีข้อมูล</td></tr>`;
+  // Render reports
+  if (!pageReports.length) {
+    container.innerHTML = '<div class="loading">ไม่มีรายงาน</div>';
     renderPagination();
     return;
   }
 
-  page.forEach(r => {
-    const p    = profilesMap[r.sale_id];
-    const name = p?.display_name || "—";
-    const ack  = r.manager_acknowledged
-      ? `<span class="badge-ack">✅ รับทราบแล้ว</span>`
-      : `<span class="badge-pending">🕐 รอ</span>`;
-    const tr = document.createElement("tr");
-    if (!r.manager_acknowledged) tr.classList.add("row-unread");
+  container.innerHTML = pageReports.map(report => {
+    const profile = profilesMap[report.sale_id];
+    const salesName = profile?.display_name || '—';
+    const shopName = shopsMap[report.shop_id] || '—';
+    const productName = productsMap[report.product_id] || '—';
+    const isUnread = !report.manager_acknowledged;
 
-    tr.innerHTML = `
-      <td>${formatDate(r.submitted_at || r.report_date)}</td>
-      <td><div class="sales-chip"><span class="chip-av">${name.charAt(0)}</span>${name}</div></td>
-      <td>${shopsMap[r.shop_id] || "—"}</td>
-      <td><span class="badge-submitted">✅ ส่งแล้ว</span></td>
-      <td>${productsMap[r.product_id] || "—"}</td>
-      <td style="text-align:right">${(r.quantity || 0).toLocaleString("th-TH")}</td>
-      <td>${ack}</td>
-      <td><button class="btn-view-detail" onclick="event.stopPropagation();openReportModal('${r.id}')">🔍 ดู / Comment</button></td>
+    return `
+      <div class="report-item ${isUnread ? 'unread' : ''}" 
+           onclick="openReportModal('${report.id}')">
+        <div class="report-icon">${salesName.charAt(0).toUpperCase()}</div>
+        <div class="report-info">
+          <div class="report-header">
+            <span class="report-sales">${salesName}</span>
+            <span class="report-date">${formatDate(report.submitted_at || report.report_date)}</span>
+          </div>
+          <div class="report-details">
+            <div class="report-detail-item">
+              🏪 ${shopName}
+            </div>
+            <div class="report-detail-item">
+              📦 ${productName}
+            </div>
+          </div>
+        </div>
+        <div class="report-status">
+          <span class="badge ${isUnread ? 'badge-unread' : 'badge-read'}">
+            ${isUnread ? '🕐 ยังไม่อ่าน' : '✅ อ่านแล้ว'}
+          </span>
+        </div>
+      </div>
     `;
-    tr.addEventListener("click", () => openReportModal(r.id));
-    tbody.appendChild(tr);
-  });
+  }).join('');
 
   renderPagination();
-  updateTableCount();
 }
 
+// =====================================================
+// 📄 PAGINATION
+// =====================================================
 function renderPagination() {
-  const el    = document.getElementById("pagination"); if (!el) return;
-  const total = Math.ceil(filtered.length / PAGE_SIZE);
-  if (total <= 1) { el.innerHTML = ""; return; }
+  const el = document.getElementById('pagination');
+  if (!el) return;
 
-  let html = `<span style="font-size:12px;color:var(--text-muted)">หน้า ${currentPage}/${total}</span> `;
-  for (let i = 1; i <= total; i++) {
-    html += `<button class="page-btn${i === currentPage ? " active" : ""}" onclick="goPage(${i})">${i}</button>`;
+  const totalPages = Math.ceil(filteredReports.length / PAGE_SIZE);
+  if (totalPages <= 1) {
+    el.innerHTML = '';
+    return;
   }
+
+  let html = '';
+  for (let i = 1; i <= totalPages; i++) {
+    html += `
+      <button class="page-btn ${i === currentPage ? 'active' : ''}"
+              onclick="goToPage(${i})">
+        ${i}
+      </button>
+    `;
+  }
+
   el.innerHTML = html;
 }
 
-function goPage(n) { currentPage = n; renderTable(); window.scrollTo(0, 0); }
-
-// =====================================================
-// 📋 MODAL  (อิง openReportModal เดิม)
-// =====================================================
-async function openReportModal(id) {
-  const r = allReports.find(x => x.id === id); if (!r) return;
-  currentModalId = id;
-
-  const salesName = profilesMap[r.sale_id]?.display_name || "—";
-  setEl("modalTitle", `รายงาน — ${salesName}`);
-
-  const set = (eid, v) => setEl(eid, v || "—");
-  set("m-date",    formatDate(r.submitted_at || r.report_date));
-  set("m-sales",   salesName);
-  set("m-store",   shopsMap[r.shop_id] || "—");
-  set("m-product", productsMap[r.product_id] || "—");
-  set("m-source",  r.source || "—");
-  set("m-qty",     (r.quantity || 0).toLocaleString("th-TH"));
-  set("m-followup", formatDate(r.followup_date));
-
-  const statusEl = document.getElementById("m-status");
-  if (statusEl) statusEl.innerHTML = r.manager_acknowledged
-    ? `✅ ส่งแล้ว &nbsp;<span class="badge-ack">✅ รับทราบแล้ว</span>`
-    : `✅ ส่งแล้ว &nbsp;<span class="badge-pending">🕐 รอผู้บริหารอ่าน</span>`;
-
-  const attrEl = document.getElementById("m-attributes");
-  if (attrEl) attrEl.innerHTML = await formatAttributes(r.attributes);
-
-  const noteEl = document.getElementById("m-note-text");
-  if (noteEl) noteEl.textContent = r.note || "—";
-
-  const cmtInput = document.getElementById("managerComment");
-  if (cmtInput) cmtInput.value = "";
-
-  await loadComments(id);
-  openModal();
+function goToPage(page) {
+  currentPage = page;
+  renderReports();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-async function loadComments(reportId) {
-  const container = document.getElementById("existingComments"); if (!container) return;
-  try {
-    const { data } = await supabaseClient
-      .from("report_comments")
-      .select("comment, created_at, profiles(display_name)")
-      .eq("report_id", reportId)
-      .order("created_at", { ascending: true });
+// =====================================================
+// 📋 OPEN REPORT MODAL
+// =====================================================
+async function openReportModal(reportId) {
+  console.log('📋 Opening report:', reportId);
 
-    if (!data?.length) {
-      container.innerHTML = `<div style="color:var(--text-muted);font-size:12px;padding:4px 0">ยังไม่มี comment</div>`;
+  const report = allReports.find(r => r.id === reportId);
+  if (!report) {
+    console.error('❌ Report not found:', reportId);
+    return;
+  }
+
+  currentReportId = reportId;
+
+  // Populate modal
+  const profile = profilesMap[report.sale_id];
+  const salesName = profile?.display_name || '—';
+
+  document.getElementById('modalTitle').textContent = `รายงานของ ${salesName}`;
+
+  const statusBadge = document.getElementById('modalStatus');
+  if (statusBadge) {
+    statusBadge.className = `badge ${report.manager_acknowledged ? 'badge-read' : 'badge-unread'}`;
+    statusBadge.textContent = report.manager_acknowledged ? '✅ อ่านแล้ว' : '🕐 ยังไม่อ่าน';
+  }
+
+  document.getElementById('mReportDate').textContent = formatDate(report.submitted_at || report.report_date);
+  document.getElementById('mSalesName').textContent = salesName;
+  document.getElementById('mShopName').textContent = shopsMap[report.shop_id] || '—';
+  document.getElementById('mProduct').textContent = productsMap[report.product_id] || '—';
+  document.getElementById('mSource').textContent = report.source || '—';
+  document.getElementById('mNote').textContent = report.note || 'ไม่มีหมายเหตุ';
+
+  // Hide quantity field if not exists
+  const qtyEl = document.getElementById('mQty');
+  if (qtyEl) {
+    if (report.quantity !== undefined) {
+      qtyEl.textContent = (report.quantity || 0).toLocaleString('th-TH') + ' ชิ้น';
+    } else {
+      // Hide the qty row if column doesn't exist
+      const qtyRow = qtyEl.closest('.info-item');
+      if (qtyRow) qtyRow.style.display = 'none';
+    }
+  }
+
+  // Load comments
+  await loadComments(reportId);
+
+  // Clear comment input
+  document.getElementById('commentInput').value = '';
+
+  // Show modal
+  const modal = document.getElementById('reportModal');
+  if (modal) {
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+// =====================================================
+// 💬 LOAD COMMENTS
+// =====================================================
+async function loadComments(reportId) {
+  const container = document.getElementById('commentsHistory');
+  if (!container) return;
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('report_comments')
+      .select('comment, created_at, profiles(display_name)')
+      .eq('report_id', reportId)
+      .order('created_at', { ascending: true });
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<div class="loading">ยังไม่มีความคิดเห็น</div>';
       return;
     }
+
     container.innerHTML = data.map(c => `
       <div class="comment-item">
         <div class="comment-meta">
-          <strong>${c.profiles?.display_name || "ผู้บริหาร"}</strong>
-          <span>${formatDate(c.created_at)}</span>
+          <span class="comment-author">${c.profiles?.display_name || 'ผู้จัดการ'}</span>
+          <span class="comment-date">${formatDate(c.created_at)}</span>
         </div>
         <div class="comment-text">${escapeHtml(c.comment)}</div>
       </div>
-    `).join("");
-  } catch (e) { container.innerHTML = ""; }
+    `).join('');
+  } catch (e) {
+    console.error('❌ loadComments error:', e);
+    container.innerHTML = '<div class="loading">เกิดข้อผิดพลาด</div>';
+  }
 }
 
 // =====================================================
-// ✅ ACKNOWLEDGE  (เหมือนเดิม)
-// =====================================================
-async function acknowledgeReport() {
-  if (!currentModalId) return;
-  try {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-
-    // บันทึก comment ก่อนถ้ามี
-    const text = document.getElementById("managerComment")?.value.trim();
-    if (text) await saveComment();
-
-    const { error } = await supabaseClient
-      .from("reports")
-      .update({
-        manager_acknowledged: true,
-        acknowledged_by:      session.user.id,
-        acknowledged_at:      new Date().toISOString()
-      })
-      .eq("id", currentModalId);
-    if (error) throw error;
-
-    // อัปเดต local state
-    const idx = allReports.findIndex(r => r.id === currentModalId);
-    if (idx !== -1) allReports[idx].manager_acknowledged = true;
-    filtered = filtered.map(r => r.id === currentModalId ? { ...r, manager_acknowledged: true } : r);
-
-    showToast("✅ รับทราบรายงานแล้ว");
-    updateStatusStrip();
-    updateSalesGrid();
-    renderTable();
-    closeModal();
-  } catch (e) { alert("❌ เกิดข้อผิดพลาด: " + e.message); }
-}
-
-// =====================================================
-// 💬 SAVE COMMENT  (เหมือนเดิม)
+// 💬 SAVE COMMENT
 // =====================================================
 async function saveComment() {
-  if (!currentModalId) return;
-  const text = document.getElementById("managerComment")?.value.trim();
-  if (!text) { showToast("⚠️ กรุณาพิมพ์ comment", false); return; }
+  if (!currentReportId) return;
+
+  const text = document.getElementById('commentInput').value.trim();
+  if (!text) {
+    showToast('⚠️ กรุณาพิมพ์ความคิดเห็น');
+    return;
+  }
 
   try {
     const { data: { session } } = await supabaseClient.auth.getSession();
-    const { error } = await supabaseClient.from("report_comments").insert([{
-      report_id:  currentModalId,
-      manager_id: session.user.id,
-      comment:    text,
-      created_at: new Date().toISOString()
-    }]);
+
+    const { error } = await supabaseClient
+      .from('report_comments')
+      .insert([{
+        report_id: currentReportId,
+        manager_id: session.user.id,
+        comment: text,
+        created_at: new Date().toISOString()
+      }]);
+
     if (error) throw error;
 
-    // อัปเดต local flag
-    const r = allReports.find(x => x.id === currentModalId);
-    if (r) r.manager_comment = text;
-
-    document.getElementById("managerComment").value = "";
-    await loadComments(currentModalId);
-    showToast("💬 บันทึก Comment แล้ว");
-  } catch (e) { alert("❌ บันทึกไม่สำเร็จ: " + e.message); }
+    showToast('💬 บันทึกความคิดเห็นแล้ว');
+    document.getElementById('commentInput').value = '';
+    await loadComments(currentReportId);
+  } catch (e) {
+    console.error('❌ saveComment error:', e);
+    showToast('❌ เกิดข้อผิดพลาด: ' + e.message);
+  }
 }
 
 // =====================================================
-// 📤 EXPORT CSV  (เหมือนเดิม)
+// ✅ MARK AS READ
 // =====================================================
-function exportData(type) {
-  if (type !== "csv") { alert("🚧 กำลังพัฒนา"); return; }
-  if (!filtered.length) { alert("ไม่มีข้อมูล"); return; }
+async function markAsRead() {
+  if (!currentReportId) return;
 
-  const headers = ["วันที่ส่ง", "เซลล์", "ร้านค้า", "สินค้า", "ยอด", "หมายเหตุ", "รับทราบแล้ว"];
-  const rows = filtered.map(r => [
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+
+    // Save comment if exists
+    const text = document.getElementById('commentInput').value.trim();
+    if (text) {
+      await saveComment();
+    }
+
+    const { error } = await supabaseClient
+      .from('reports')
+      .update({
+        manager_acknowledged: true,
+        acknowledged_by: session.user.id,
+        acknowledged_at: new Date().toISOString()
+      })
+      .eq('id', currentReportId);
+
+    if (error) throw error;
+
+    // Update local state
+    const idx = allReports.findIndex(r => r.id === currentReportId);
+    if (idx !== -1) {
+      allReports[idx].manager_acknowledged = true;
+    }
+
+    const fidx = filteredReports.findIndex(r => r.id === currentReportId);
+    if (fidx !== -1) {
+      filteredReports[fidx].manager_acknowledged = true;
+    }
+
+    showToast('✅ ทำเครื่องหมายว่าอ่านแล้ว');
+
+    updateSummaryCards();
+    updateSalesGrid();
+    renderReports();
+    closeModal();
+  } catch (e) {
+    console.error('❌ markAsRead error:', e);
+    showToast('❌ เกิดข้อผิดพลาด: ' + e.message);
+  }
+}
+
+// =====================================================
+// ✕ CLOSE MODAL
+// =====================================================
+function closeModal() {
+  const modal = document.getElementById('reportModal');
+  if (modal) {
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  currentReportId = null;
+}
+
+// =====================================================
+// 📥 EXPORT CSV
+// =====================================================
+function exportCSV() {
+  if (!filteredReports.length) {
+    showToast('⚠️ ไม่มีข้อมูลสำหรับ export');
+    return;
+  }
+
+  const headers = ['วันที่', 'เซลล์', 'ร้านค้า', 'สินค้า', 'สถานะ'];
+
+  const rows = filteredReports.map(r => [
     formatDate(r.submitted_at || r.report_date),
-    profilesMap[r.sale_id]?.display_name || "—",
-    shopsMap[r.shop_id]    || "—",
-    productsMap[r.product_id] || "—",
-    r.quantity || 0,
-    (r.note || "—").replace(/,/g, " "),
-    r.manager_acknowledged ? "ใช่" : "ยังไม่"
+    profilesMap[r.sale_id]?.display_name || '—',
+    shopsMap[r.shop_id] || '—',
+    productsMap[r.product_id] || '—',
+    r.manager_acknowledged ? 'อ่านแล้ว' : 'ยังไม่อ่าน'
   ]);
 
-  const csv  = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(",")).join("\n");
-  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
-  const a    = document.createElement("a");
-  a.href     = URL.createObjectURL(blob);
-  a.download = `team_reports_week${weekOffset}_${new Date().toISOString().split("T")[0]}.csv`;
+  const csv = [
+    headers.join(','),
+    ...rows.map(r => r.map(v => `"${v}"`).join(','))
+  ].join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `reports_${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
-  showToast("📄 Export สำเร็จ");
+  URL.revokeObjectURL(url);
+
+  showToast('📥 Export สำเร็จ');
 }
 
 // =====================================================
-// MODAL SETUP  (เหมือนเดิม)
+// 🔧 SETUP EVENT LISTENERS
 // =====================================================
-function setupModal() {
-  document.getElementById("closeModalBtn")?.addEventListener("click", closeModal);
-  document.getElementById("reportModal")?.addEventListener("click", e => {
-    if (e.target === document.getElementById("reportModal")) closeModal();
-  });
-}
+function setupEventListeners() {
+  // Search on Enter
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') applyFilter();
+    });
+  }
 
-function openModal() {
-  const m = document.getElementById("reportModal");
-  if (m) { m.style.display = "flex"; document.body.style.overflow = "hidden"; }
-}
-function closeModal() {
-  const m = document.getElementById("reportModal");
-  if (m) { m.style.display = "none"; document.body.style.overflow = ""; }
-  currentModalId = null;
+  // Close modal on outside click
+  const modal = document.getElementById('reportModal');
+  if (modal) {
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeModal();
+    });
+  }
 }
 
 // =====================================================
-// HELPERS
+// 🚪 SETUP LOGOUT
 // =====================================================
-function formatDate(s) {
-  if (!s) return "—";
-  try { return new Date(s).toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" }); }
-  catch (e) { return "—"; }
-}
-
-async function formatAttributes(attrs) {
-  if (!attrs || !Object.keys(attrs).length) return "";
-  try {
-    const { data: ad } = await supabaseClient
-      .from("attributes").select("id, name").in("id", Object.keys(attrs));
-    const am = Object.fromEntries((ad || []).map(a => [a.id, a.name]));
-    return `<div class="note-display" style="margin:8px 0;font-size:13px;">` +
-      Object.entries(attrs).map(([k, v]) => `<strong>${am[k] || k}:</strong> ${v}`).join("<br>") +
-      `</div>`;
-  } catch (e) { return ""; }
-}
-
-function escapeHtml(t) {
-  if (!t) return "";
-  const d = document.createElement("div"); d.textContent = t; return d.innerHTML;
-}
-
-function setEl(id, val) {
-  const el = document.getElementById(id); if (el) el.textContent = val;
-}
-
-function showToast(msg) {
-  const t = document.getElementById("toast"); if (!t) return;
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 3000);
-}
-
 function setupLogout() {
-  document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+  document.getElementById('logoutBtn')?.addEventListener('click', async () => {
     await supabaseClient.auth.signOut();
-    window.location.href = "/pages/auth/login.html";
+    window.location.href = '/pages/auth/login.html';
   });
+}
+
+// =====================================================
+// 🔧 HELPERS
+// =====================================================
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  try {
+    return new Date(dateStr).toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  } catch (e) {
+    return '—';
+  }
+}
+
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+
+  toast.textContent = message;
+  toast.classList.add('show');
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
 }
