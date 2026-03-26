@@ -123,30 +123,7 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="reg-phone">เบอร์โทรศัพท์</label>
-        <div class="input-box">
-          <i class="fa-solid fa-phone icon-left"></i>
-          <input type="tel" id="reg-phone" placeholder="กรอกเบอร์โทร" maxlength="10">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="reg-department">แผนก</label>
-        <div class="input-box select-box">
-          <i class="fa-solid fa-building icon-left"></i>
-          <select id="reg-department">
-            <option value="">-- เลือกแผนก --</option>
-            <option value="sales">Sales</option>
-            <option value="qc">QC</option>
-            <option value="admin">Admin</option>
-            <option value="manager">Manager</option>
-            <option value="executive">Executive</option>
-            <option value="other">อื่นๆ</option>
-          </select>
-          <i class="fa-solid fa-chevron-down icon-right"></i>
-        </div>
-      </div>
+      
 
       <div class="btn-group">
         <button type="button" class="btn-secondary" onclick="goToStep1()">
@@ -168,6 +145,8 @@
 </div>
 
 <script src="/js/core/supabaseClient.js"></script>
+<script src="/js/core/userService.js"></script>
+<script src="/js/core/auth.js"></script>
 <script src="/js/pages/auth/register.js"></script>
 
 <script>
@@ -216,8 +195,8 @@
     if (!email || !username || !password || !confirm) {
       showError("กรุณากรอกข้อมูลให้ครบทุกช่อง"); return;
     }
-    if (!/^[a-z0-9_]+$/.test(username)) {
-      showError("Username ใช้ได้เฉพาะตัวเล็ก a-z, 0-9 และ _ เท่านั้น"); return;
+    if (!/^[A-Za-z0-9_]+$/.test(username)) {
+      showError("Username ใช้ได้เฉพาะตัวเล็ก A-Z, a-z, 0-9 และ _ เท่านั้น"); return;
     }
     if (password.length < 8) {
       showError("รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร"); return;

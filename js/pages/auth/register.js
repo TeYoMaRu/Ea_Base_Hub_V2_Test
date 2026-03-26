@@ -7,8 +7,6 @@ async function handleRegister() {
   const username = document.getElementById("reg-username").value.trim();
   const password = document.getElementById("reg-password").value;
   const fullname = document.getElementById("reg-fullname").value.trim();
-  const phone    = document.getElementById("reg-phone").value.trim();
-  const dept     = document.getElementById("reg-department").value;
 
   if (!fullname) {
     showError("กรุณากรอกชื่อ-นามสกุล");
@@ -35,23 +33,39 @@ async function handleRegister() {
 
     if (signUpError) throw signUpError;
 
-    // 3. Insert profile (status = Pending รอ admin approve)
+    // 3. Handle กรณี email confirmation required (userId จะเป็น null)
+    const userId = authData?.user?.id;
+    if (!userId) {
+      const overlay = document.getElementById("register-overlay");
+      const overlayTitle = overlay.querySelector("h3");
+      const overlayDesc  = overlay.querySelector("p");
+      if (overlayTitle) overlayTitle.textContent = "กรุณายืนยันอีเมล!";
+      if (overlayDesc)  overlayDesc.textContent  = "เราส่งลิงก์ยืนยันไปที่ " + email;
+      overlay.classList.add("show");
+      setTimeout(() => {
+        window.location.href = "/pages/auth/login.html";
+      }, 3000);
+      return;
+    }
+
+    // 4. Insert profile
     const { error: profileError } = await supabaseClient
       .from("profiles")
       .upsert({
-        id: authData.user.id,
-        email,
-        username,
-        full_name: fullname,
-        phone: phone || null,
-        department: dept || null,
-        role: "sales",          // default role
-        status: "Pending",      // รอ admin อนุมัติ
+        id:        userId,
+        email:     email,
+        username:  username,
+         display_name: fullname,
+        role:      "sales",    // default role
+        status:    "Pending",  // รอ admin อนุมัติ
       });
 
-    if (profileError) throw profileError;
+    if (profileError) {
+      console.error("Profile error:", profileError);
+      throw new Error("บันทึกข้อมูลไม่สำเร็จ: " + profileError.message);
+    }
 
-    // 4. Show success overlay → redirect
+    // 5. Show success overlay → redirect
     const overlay = document.getElementById("register-overlay");
     overlay.classList.add("show");
 
@@ -61,9 +75,16 @@ async function handleRegister() {
 
   } catch (err) {
     let msg = err.message;
-    if (msg.includes("already registered") || msg.includes("already been registered")) {
-      msg = "อีเมลนี้ถูกใช้สมัครไปแล้ว";
+
+    if (
+      msg.includes("already registered") ||
+      msg.includes("already been registered") ||
+      msg.includes("User already registered") ||
+      msg.includes("email address is already")
+    ) {
+      msg = "อีเมลนี้มีบัญชีอยู่แล้ว กรุณาเข้าสู่ระบบ หรือกด 'ลืมรหัสผ่าน'";
     }
+
     showError("สมัครสมาชิกไม่สำเร็จ: " + msg);
     btn.disabled = false;
     btn.classList.remove("loading");

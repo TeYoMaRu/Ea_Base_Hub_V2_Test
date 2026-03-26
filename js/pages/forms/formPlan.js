@@ -178,6 +178,7 @@ async function loadMyShops() {
 async function initializePageData() {
   try {
     await loadExistingTrips();
+    await loadDraftList();
     console.log("✅ All page data loaded");
   } catch (error) {
     console.error("❌ initializePageData error:", error);
@@ -242,19 +243,51 @@ async function loadExistingTrips() {
     const plan = data[0];
     currentPlanId = plan.id;
 
+    // โหลดวันที่
     if (plan.start_date) document.getElementById("startDate").value = plan.start_date;
     if (plan.end_date)   document.getElementById("endDate").value   = plan.end_date;
 
-    // ✅ แก้: เดิมอ้าง id="zone" → แก้เป็น id="area"
+    // โหลดเขต
     const areaInput = document.getElementById("area");
     if (areaInput && plan.area) areaInput.value = plan.area;
+
+    // ✅ โหลดแถวตารางกลับมา
+    if (plan.trips && Array.isArray(plan.trips) && plan.trips.length > 0) {
+      const tbody = document.getElementById("tripTableBody");
+      tbody.innerHTML = ""; // ล้างก่อน
+
+      plan.trips.forEach((t) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><input type="date" class="trip-date" value="${t.date || ""}"></td>
+          <td>
+            <select class="from-province">
+              ${generateProvinceOptions(t.from)}
+            </select>
+          </td>
+          <td>
+            <select class="to-province" onchange="handleProvinceChange(this)">
+              ${generateProvinceOptions(t.to)}
+            </select>
+          </td>
+          <td><select class="shop1">${generateShopOptions(t.to, t.shop1Id, t.shop1)}</select></td>
+          <td><select class="shop2">${generateShopOptions(t.to, t.shop2Id, t.shop2)}</select></td>
+          <td><select class="shop3">${generateShopOptions(t.to, t.shop3Id, t.shop3)}</select></td>
+          <td><input type="text" class="note" value="${t.note || ""}" placeholder="หมายเหตุ"></td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      // sync trips array
+      trips = plan.trips;
+      console.log(`✅ Restored ${trips.length} trip rows`);
+    }
 
     console.log("✅ Loaded existing plan:", currentPlanId);
   } catch (error) {
     console.error("❌ loadExistingTrips error:", error);
   }
 }
-
 // =====================================================
 // ➕ TABLE ROW MANAGEMENT
 // =====================================================
@@ -295,6 +328,38 @@ function generateProvinceOptions() {
   provinces.forEach((p) => {
     html += `<option value="${p}">${p}</option>`;
   });
+  return html;
+}
+
+// ✅ generate province options พร้อม pre-select ค่าที่บันทึกไว้
+function generateProvinceOptions(selectedValue = "") {
+  const provinces = [...new Set(myShops.map((s) => s.province))].sort();
+  let html = `<option value="">จังหวัด</option>`;
+  provinces.forEach((p) => {
+    const selected = p === selectedValue ? 'selected' : '';
+    html += `<option value="${p}" ${selected}>${p}</option>`;
+  });
+  return html;
+}
+
+// ✅ generate shop options พร้อม pre-select ร้านที่บันทึกไว้
+function generateShopOptions(province = "", selectedId = "", selectedName = "") {
+  let html = `<option value="">ชื่อร้าน</option>`;
+
+  const shops = province
+    ? myShops.filter((s) => s.province === province)
+    : [];
+
+  if (shops.length > 0) {
+    shops.forEach((s) => {
+      const selected = s.id === selectedId ? 'selected' : '';
+      html += `<option value="${s.id}" ${selected}>${s.shop_name}</option>`;
+    });
+  } else if (selectedId && selectedName) {
+    // ✅ กรณี province ไม่ตรง แต่ยังมีค่าเดิม — แสดงชื่อร้านไว้ก่อน
+    html += `<option value="${selectedId}" selected>${selectedName}</option>`;
+  }
+
   return html;
 }
 
@@ -510,29 +575,36 @@ function openPreview() {
       font-size: 12px;
     }
     .doc-trip-table th {
-      background: #1a6b64; color: #fff;
+      background: #e8f5f4; color: #1a5550;
       padding: 8px 7px; text-align: center;
-      font-weight: 600; font-size: 12px;
-      border: 1px solid #1a6b64;
+      font-weight: 700; font-size: 12px;
+      border: 1px solid #b2d8d5;
     }
     .doc-trip-table td {
-      padding: 7px 7px; text-align: center;
+      padding: 5px 6px; text-align: center;
       border: 1px solid #ccc; vertical-align: middle;
-      font-size: 12px;
+      font-size: 11px;
+      /* ✅ ชื่อร้านพอดี 1 บรรทัด */
+      max-width: 100px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+
+
     .doc-trip-table tbody tr:last-child td { border-bottom: 1px solid #ccc; }
 
     /* หัวสรุป */
     .doc-summary-title {
       font-size: 13px; font-weight: 700; color: #1a1a1a;
       margin-bottom: 6px; padding-bottom: 4px;
-      border-bottom: 1.5px solid #1a6b64;
+      border-bottom: 1.5px solid #b2d8d5;
       display: flex; align-items: center; gap: 6px;
     }
     .doc-summary-title::before {
       content: ''; display: inline-block;
       width: 3px; height: 14px;
-      background: #3FB7AE; border-radius: 2px;
+      background: #7ec8c3; border-radius: 2px;
     }
 
     /* ตารางสรุปค่าใช้จ่าย */
@@ -546,24 +618,34 @@ function openPreview() {
     .doc-cost-table td:first-child { font-weight: 600; color: #333; }
     .doc-cost-table td:nth-child(2) { text-align: center; color: #555; }
     .doc-cost-table td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+
     .doc-cost-table .total-row th {
-      background: #1a6b64; color: #fff;
+      background: #e8f5f4; color: #1a5550;
       text-align: right; padding: 7px 10px; font-size: 13px;
+      border: 1px solid #b2d8d5; font-weight: 700;
     }
 
     /* ลายเซ็น */
-    .doc-sign {
-      margin-top: 80px;
+        .doc-sign {
+      margin-top: 40px;
       display: grid; grid-template-columns: repeat(4, 1fr);
       gap: 24px; text-align: center;
     }
     .doc-sign-box { font-size: 12px; line-height: 1.8; }
     .doc-sign-line {
-      border-top: 1px solid #555; padding-top: 6px; margin-top: 100px;
+      border-top: 1px solid #555;
+      padding-top: 20px;
+      margin-top: 60px;      /* ✅ เพิ่มระยะห่างเส้น-ชื่อ */
     }
-    .doc-sign-name { font-weight: 600; color: #1a1a1a; }
-    .doc-sign-role { color: #555; }
-
+    .doc-sign-name {
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 2px;    /* ✅ ระยะห่างชื่อ-ตำแหน่ง */
+    }
+    .doc-sign-role {
+      color: #555;
+      margin-top: 2px;
+    }
     /* วันที่พิมพ์ */
     .doc-print-date {
       text-align: right; font-size: 11px; color: #777; margin-bottom: 10px;
@@ -674,6 +756,7 @@ function closePreview() {
 function printPreview() {
   const content = document.getElementById("previewContent").innerHTML;
   const win = window.open("", "_blank", "width=900,height=700");
+
   win.document.write(`<!DOCTYPE html>
 <html lang="th">
 <head>
@@ -681,18 +764,123 @@ function printPreview() {
   <title>แผนการเดินทาง</title>
   <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
   <style>
-    body { margin: 0; padding: 15mm 12mm; font-family: 'Kanit', sans-serif; background: #fff; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 210mm;
+      margin: 0 auto;
+      background: #fff;
+      font-family: 'Kanit', sans-serif;
+    }
+
+    #print-wrap {
+      width: 100%;
+      padding: 6mm 8mm;
+    }
+
+    /* ✅ บังคับทุกอย่างอยู่หน้าเดียว ไม่ตัดหน้า */
+    * {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
     @media print {
-      body { margin: 0; padding: 10mm; }
-      @page { size: A4 portrait; margin: 0; }
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+
+      html, body {
+        width: 210mm;
+        height: 297mm;
+        overflow: hidden;
+        margin: 0;
+      }
+
+      #print-wrap {
+        /* ✅ zoom แทน transform — Chrome print รองรับได้จริง */
+        zoom: var(--zoom-level, 0.78);
+        width: calc(210mm / var(--zoom-level, 0.78));
+        padding: 5mm 7mm;
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+
+      /* ✅ ห้ามตัดหน้าทุก element */
+      table, thead, tbody, tr, td, th,
+      .doc-sign, .doc-cost-table, .doc-trip-table {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      /* ซ่อน signature section ถ้าเกิน — optional */
+      .doc-sign { margin-top: 20px !important; }
+    }
+
+    /* preview (ก่อนกด print) จัดกลาง */
+    @media screen {
+      body { padding: 10mm; background: #e0e0e0; }
+      #print-wrap {
+        background: #fff;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        max-width: 190mm;
+        margin: 0 auto;
+      }
+    }
+
+    /* ✅ ชื่อร้านพอดี 1 บรรทัด */
+    .doc-trip-table td {
+      max-width: 90px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    .doc-trip-table th { white-space: nowrap !important; }
+
+    /* สีอ่อนลง */
+    .doc-trip-table th {
+      background: #e8f5f4 !important;
+      color: #1a5550 !important;
+      border: 1px solid #b2d8d5 !important;
+    }
+    .doc-cost-table .total-row th {
+      background: #e8f5f4 !important;
+      color: #1a5550 !important;
     }
   </style>
 </head>
-<body>${content}</body>
+<body>
+  <div id="print-wrap">${content}</div>
+
+  <script>
+    document.fonts.ready.then(() => {
+      // คำนวณ zoom จากความสูงจริงของ content
+      const wrap = document.getElementById('print-wrap');
+      const A4_H_PX = 297 * 3.7795;   // 297mm → px
+      const A4_W_PX = 210 * 3.7795;
+      const contentH = wrap.scrollHeight;
+      const contentW = wrap.scrollWidth;
+
+      const zoomH = (A4_H_PX - 20) / contentH;
+      const zoomW = A4_W_PX / contentW;
+      const zoom  = Math.min(zoomH, zoomW, 1).toFixed(3); // ไม่ขยาย ถ้าเล็กกว่า A4
+
+      wrap.style.setProperty('--zoom-level', zoom);
+      wrap.style.zoom = zoom;
+
+      console.log('zoom:', zoom, 'contentH:', contentH);
+
+      setTimeout(() => {
+        window.focus();
+        window.print();
+        window.close();
+      }, 400);
+    });
+  <\/script>
+</body>
 </html>`);
+
   win.document.close();
-  // รอ font โหลดก่อนพิมพ์
-  win.onload = () => { win.focus(); win.print(); win.close(); };
 }
 
 function exportPDF() {
@@ -782,6 +970,244 @@ function escapeCsv(text) {
 
 console.log("✅ formPlan.js loaded successfully");
 
+
+// =====================================================
+// 📋 DRAFT MANAGER
+// =====================================================
+
+async function loadDraftList() {
+  const container = document.getElementById("draftList");
+  const badge     = document.getElementById("draftCountBadge");
+  if (!container) return;
+
+  container.innerHTML = `<p style="text-align:center;color:#aaa;padding:20px 0;font-size:13px;">กำลังโหลด...</p>`;
+
+  try {
+    const userId = await getCurrentUserId();
+    if (!userId) return;
+
+    const { data, error } = await supabaseClient
+      .from("trips")
+      .select("id, user_name, area, start_date, end_date, status, trips, created_at, updated_at")
+      .eq("user_id", userId)
+      .order("updated_at", { ascending: false });
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      badge.textContent = "0 รายการ";
+      container.innerHTML = `
+        <div style="text-align:center;padding:32px;color:#aaa;font-size:13px;
+          border:1px dashed #ddd;border-radius:12px;">
+          ยังไม่มีแผนที่บันทึกไว้
+        </div>`;
+      return;
+    }
+
+    badge.textContent = `${data.length} รายการ`;
+
+    container.innerHTML = data.map(plan => {
+      const rowCount  = Array.isArray(plan.trips) ? plan.trips.length : 0;
+      const startFmt  = formatDateTH(plan.start_date);
+      const endFmt    = formatDateTH(plan.end_date);
+      const updFmt    = formatDateTimeTH(plan.updated_at);
+      const isDraft   = plan.status === "draft";
+
+      const statusBadge = isDraft
+        ? `<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;
+            padding:2px 8px;border-radius:999px;background:#FAEEDA;
+            color:#633806;border:1px solid #EF9F27;">
+            <span style="width:6px;height:6px;border-radius:50%;background:#EF9F27;display:inline-block;"></span>
+            Draft</span>`
+        : `<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;
+            padding:2px 8px;border-radius:999px;background:#E1F5EE;
+            color:#085041;border:1px solid #1D9E75;">
+            <span style="width:6px;height:6px;border-radius:50%;background:#1D9E75;display:inline-block;"></span>
+            Completed</span>`;
+
+      return `
+        <div id="draft-${plan.id}" style="
+          background:#fff; border:1px solid #e2e8f0; border-radius:12px;
+          padding:14px 16px; margin-bottom:8px;
+          display:grid; grid-template-columns:1fr auto;
+          gap:10px; align-items:center;
+          cursor:pointer; transition:border-color 0.15s, background 0.15s;"
+          onclick="selectDraftCard('${plan.id}')"
+          onmouseenter="this.style.borderColor='#5DCAA5'; this.style.background='#f4fcfa';"
+          onmouseleave="this.style.borderColor='#e2e8f0'; this.style.background='#fff';">
+
+          <div>
+            <div style="font-weight:700;font-size:14px;color:#1e293b;margin-bottom:3px;">
+              ${plan.user_name || "ไม่ระบุชื่อ"} — ${plan.area || "ไม่ระบุเขต"}
+            </div>
+            <div style="font-size:12px;color:#64748b;margin-bottom:6px;display:flex;gap:12px;flex-wrap:wrap;">
+              <span>📅 ${startFmt} – ${endFmt}</span>
+              <span>·</span>
+              <span>${rowCount} แถว</span>
+              <span>·</span>
+              <span>อัปเดต: ${updFmt}</span>
+            </div>
+            <div>${statusBadge}</div>
+          </div>
+
+          <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
+            <button type="button"
+              onclick="event.stopPropagation(); loadDraftById('${plan.id}')"
+              style="background:#e8f5f4;color:#0f6e56;border:1px solid #5DCAA5;
+                border-radius:8px;padding:7px 14px;font-size:13px;
+                cursor:pointer;font-weight:600;white-space:nowrap;
+                font-family:inherit;">
+              ✏️ โหลดแก้ไข
+            </button>
+            <button type="button"
+              onclick="event.stopPropagation(); deleteDraftById('${plan.id}')"
+              style="background:none;border:1px solid #fca5a5;border-radius:8px;
+                padding:7px 10px;font-size:13px;cursor:pointer;color:#dc2626;
+                font-family:inherit;" title="ลบ">
+              🗑
+            </button>
+          </div>
+        </div>`;
+    }).join("");
+
+  } catch (err) {
+    console.error("❌ loadDraftList error:", err);
+    container.innerHTML = `<p style="color:red;text-align:center;">โหลดไม่สำเร็จ: ${err.message}</p>`;
+  }
+}
+
+// ── ไฮไลต์การ์ดที่เลือก ──
+function selectDraftCard(id) {
+  document.querySelectorAll('[id^="draft-"]').forEach(el => {
+    el.style.borderColor = "#e2e8f0";
+    el.style.background  = "#fff";
+    el.style.borderWidth = "1px";
+  });
+  const card = document.getElementById(`draft-${id}`);
+  if (card) {
+    card.style.borderColor = "#1D9E75";
+    card.style.borderWidth = "1.5px";
+    card.style.background  = "#f0fbf7";
+  }
+}
+
+// ── โหลดแผนมาใส่ฟอร์ม ──
+async function loadDraftById(id) {
+  try {
+    const { data, error } = await supabaseClient
+      .from("trips")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) { alert("ไม่พบข้อมูล"); return; }
+
+    currentPlanId = data.id;
+
+    // โหลดวันที่
+    if (data.start_date) document.getElementById("startDate").value = data.start_date;
+    if (data.end_date)   document.getElementById("endDate").value   = data.end_date;
+
+    // โหลดเขต
+    const areaInput = document.getElementById("area");
+    if (areaInput && data.area) areaInput.value = data.area;
+
+    // โหลดค่าใช้จ่าย (ถ้าบันทึกไว้)
+    if (data.allowance_rate)  document.getElementById("allowanceRate").value  = data.allowance_rate;
+    if (data.allowance_days)  document.getElementById("allowanceDays").value  = data.allowance_days;
+    if (data.hotel_rate)      document.getElementById("hotelRate").value       = data.hotel_rate;
+    if (data.hotel_nights)    document.getElementById("hotelNights").value     = data.hotel_nights;
+    if (data.other_cost)      document.getElementById("otherCost").value       = data.other_cost;
+    calculateSummary();
+
+    // โหลดแถวตาราง
+    if (Array.isArray(data.trips) && data.trips.length > 0) {
+      const tbody = document.getElementById("tripTableBody");
+      tbody.innerHTML = "";
+
+      data.trips.forEach((t) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><input type="date" class="trip-date" value="${t.date || ""}"></td>
+          <td><select class="from-province">${generateProvinceOptions(t.from)}</select></td>
+          <td><select class="to-province" onchange="handleProvinceChange(this)">${generateProvinceOptions(t.to)}</select></td>
+          <td><select class="shop1">${generateShopOptions(t.to, t.shop1Id, t.shop1)}</select></td>
+          <td><select class="shop2">${generateShopOptions(t.to, t.shop2Id, t.shop2)}</select></td>
+          <td><select class="shop3">${generateShopOptions(t.to, t.shop3Id, t.shop3)}</select></td>
+          <td><input type="text" class="note" value="${t.note || ""}" placeholder="หมายเหตุ"></td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      trips = data.trips;
+    }
+
+    // ไฮไลต์การ์ดที่โหลด
+    selectDraftCard(id);
+
+    // เลื่อนขึ้นไปที่ฟอร์ม
+    document.querySelector(".section")?.scrollIntoView({ behavior: "smooth" });
+    alert(`✅ โหลดแผนเรียบร้อย (ID: ${id.slice(0,8)}...)`);
+
+  } catch (err) {
+    console.error("❌ loadDraftById error:", err);
+    alert("❌ โหลดไม่สำเร็จ: " + err.message);
+  }
+}
+
+// ── ลบแผน ──
+async function deleteDraftById(id) {
+  if (!confirm("ต้องการลบแผนนี้?")) return;
+  try {
+    const { error } = await supabaseClient
+      .from("trips")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
+
+    // ลบการ์ดออกจาก UI
+    document.getElementById(`draft-${id}`)?.remove();
+
+    // อัปเดต badge
+    const remaining = document.querySelectorAll('[id^="draft-"]').length;
+    const badge = document.getElementById("draftCountBadge");
+    if (badge) badge.textContent = `${remaining} รายการ`;
+
+    if (remaining === 0) {
+      document.getElementById("draftList").innerHTML = `
+        <div style="text-align:center;padding:32px;color:#aaa;font-size:13px;
+          border:1px dashed #ddd;border-radius:12px;">
+          ยังไม่มีแผนที่บันทึกไว้
+        </div>`;
+    }
+
+    // ถ้าลบแผนที่กำลังแก้อยู่ — reset
+    if (currentPlanId === id) currentPlanId = null;
+
+    alert("✅ ลบเรียบร้อย");
+  } catch (err) {
+    console.error("❌ deleteDraftById error:", err);
+    alert("❌ ลบไม่สำเร็จ: " + err.message);
+  }
+}
+
+// ── helper: แปลงวันที่ ──
+function formatDateTH(dateStr) {
+  if (!dateStr) return "-";
+  const [y, m, d] = dateStr.split("-");
+  return `${d}/${m}/${y}`;
+}
+
+function formatDateTimeTH(isoStr) {
+  if (!isoStr) return "-";
+  const d = new Date(isoStr);
+  return d.toLocaleString("th-TH", {
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit"
+  });
+}
 
 // =====================================================
 // 🚪 LOGOUT

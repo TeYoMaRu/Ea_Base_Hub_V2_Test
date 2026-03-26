@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!ready) { showLoadingError(); return; }
 
   if (typeof protectPage === 'function')
-    await protectPage(['admin','adminQC','adminqc','manager','executive']);
-
+    await protectPage(['admin','adminQc','manager','executive']);
+  
   await loadDashboardData();
 
   const filterEl = document.getElementById('filterStatus');

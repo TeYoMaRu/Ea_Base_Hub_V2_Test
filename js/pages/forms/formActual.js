@@ -580,7 +580,7 @@ hr.dd{border:none;border-top:2px solid #1a1a1a;margin:8px 0 12px}
 .dmc:first-child{border-right:1px solid #bbb}
 .dm-label{font-weight:700;color:#444;margin-right:4px}
 .dmt{width:100%;border-collapse:collapse;margin-bottom:18px;font-size:12px}
-.dmt th{background:#1a6b64;color:#fff;padding:8px 7px;text-align:center;border:1px solid #1a6b64;font-size:12px}
+.dmt th{background:#e8f5f4;color:#1a5550;padding:8px 7px;text-align:center;border:1px solid #b2d8d5;font-size:12px}
 .dmt td{padding:7px 6px;border:1px solid #ccc;text-align:center;vertical-align:middle}
 .dst{font-size:13px;font-weight:700;margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid #1a6b64;display:flex;align-items:center;gap:6px}
 .dst::before{content:'';display:inline-block;width:3px;height:14px;background:#3FB7AE;border-radius:2px}
@@ -589,10 +589,10 @@ hr.dd{border:none;border-top:2px solid #1a1a1a;margin:8px 0 12px}
 .dct td:first-child{font-weight:600;color:#333}
 .dct td:nth-child(2){text-align:center;color:#555}
 .dct td:last-child{text-align:right;font-variant-numeric:tabular-nums}
-.dct .tr th{background:#1a6b64;color:#fff;text-align:right;padding:7px 10px;font-size:13px}
-.ds{margin-top:80px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
+.dct .tr th{background:#e8f5f4;color:#1a5550;text-align:right;padding:7px 10px;font-size:13px;border:1px solid #b2d8d5}
+.ds{margin-top:40px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
 .dsb{font-size:12px;line-height:1.8}
-.dsl{border-top:1px solid #555;padding-top:6px;margin-top:100px}
+.dsl{border-top:1px solid #555;padding-top:20px;margin-top:60px}
 .dsn{font-weight:600}.dsr{color:#555}
 </style>
 <div class="dw">
@@ -650,29 +650,97 @@ function closePreview() {
 function printPreview() {
   const content = document.getElementById("previewContent").innerHTML;
   const win = window.open("", "_blank", "width=900,height=700");
+
   win.document.write(`<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>แผนการเดินทาง</title>
+  <title>ใบเดินทางจริง</title>
   <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
   <style>
-    body { margin: 0; padding: 15mm 12mm; font-family: 'Kanit', sans-serif; background: #fff; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 210mm;
+      margin: 0 auto;
+      background: #fff;
+      font-family: 'Kanit', sans-serif;
+    }
+    #print-wrap {
+      width: 100%;
+      padding: 6mm 8mm;
+    }
     @media print {
-      body { margin: 0; padding: 10mm; }
       @page { size: A4 portrait; margin: 0; }
+      html, body { width: 210mm; height: 297mm; overflow: hidden; margin: 0; }
+      #print-wrap {
+        zoom: var(--zoom-level, 0.82);
+        width: calc(210mm / var(--zoom-level, 0.82));
+        padding: 5mm 7mm;
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+      table, thead, tbody, tr, td, th,
+      .ds, .dct, .dmt {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      /* ✅ ลายเซ็น margin ลดลงตอนพิมพ์ */
+      .ds { margin-top: 20px !important; }
+    }
+    @media screen {
+      body { padding: 10mm; background: #e0e0e0; }
+      #print-wrap {
+        background: #fff;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        max-width: 190mm;
+        margin: 0 auto;
+      }
+    }
+    /* ✅ ชื่อร้านพอดี 1 บรรทัด */
+    .dmt td {
+      max-width: 120px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    .dmt th { white-space: nowrap !important; }
+    /* ✅ สีอ่อนลง */
+    .dmt th {
+      background: #e8f5f4 !important;
+      color: #1a5550 !important;
+      border: 1px solid #b2d8d5 !important;
+    }
+    .dct .tr th {
+      background: #e8f5f4 !important;
+      color: #1a5550 !important;
+    }
+    /* ✅ ระยะห่างลายเซ็น */
+    .dsl {
+      border-top: 1px solid #555;
+      padding-top: 10px !important;
+      margin-top: 60px !important;
     }
   </style>
 </head>
-<body>${content}</body>
+<body>
+  <div id="print-wrap">${content}</div>
+  <script>
+    document.fonts.ready.then(() => {
+      const wrap = document.getElementById('print-wrap');
+      const A4_H_PX = 297 * 3.7795;
+      const A4_W_PX = 210 * 3.7795;
+      const zoomH = (A4_H_PX - 20) / wrap.scrollHeight;
+      const zoomW = A4_W_PX / wrap.scrollWidth;
+      const zoom  = Math.min(zoomH, zoomW, 1).toFixed(3);
+      wrap.style.setProperty('--zoom-level', zoom);
+      wrap.style.zoom = zoom;
+      setTimeout(() => { window.focus(); window.print(); window.close(); }, 400);
+    });
+  <\/script>
+</body>
 </html>`);
+
   win.document.close();
-  // รอ font โหลดก่อนพิมพ์
-  win.onload = () => {
-    win.focus();
-    win.print();
-    win.close();
-  };
 }
 
 function exportPDF() {
