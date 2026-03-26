@@ -5,7 +5,6 @@
   <title>Coming Soon</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -16,10 +15,10 @@
       font-family: 'Kanit', sans-serif;
     }
 
-   body {
+    body {
       height: 100vh;
-      background: linear-gradient(270deg, #667eea, #764ba2, #6b8cff);
-      background-size: 600% 600%;
+      background: linear-gradient(160deg, #b8e0bb, #9ed1a2, #7bcb81, #5ab860);
+      background-size: 400% 400%;
       animation: gradientBG 12s ease infinite;
       display: flex;
       align-items: center;
@@ -29,10 +28,9 @@
       overflow: hidden;
     }
 
-    /* Background animation */
     @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
 
@@ -40,17 +38,17 @@
     .circle {
       position: absolute;
       border-radius: 50%;
-      background: rgba(255,255,255,0.08);
+      background: rgba(255, 255, 255, 0.12);
       animation: float 10s infinite ease-in-out;
     }
 
     .circle:nth-child(1) { width: 200px; height: 200px; top: 10%; left: 20%; }
-    .circle:nth-child(2) { width: 150px; height: 150px; top: 70%; left: 80%; animation-delay: 2s;}
-    .circle:nth-child(3) { width: 100px; height: 100px; top: 50%; left: 10%; animation-delay: 4s;}
+    .circle:nth-child(2) { width: 150px; height: 150px; top: 70%; left: 80%; animation-delay: 2s; }
+    .circle:nth-child(3) { width: 100px; height: 100px; top: 50%; left: 10%; animation-delay: 4s; }
 
     @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-30px); }
+      0%   { transform: translateY(0px); }
+      50%  { transform: translateY(-30px); }
       100% { transform: translateY(0px); }
     }
 
@@ -62,146 +60,122 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px);}
-      to { opacity: 1; transform: translateY(0);}
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     /* LOGO */
-    .logo {
-      width: 120px;
+    .logo-wrapper {
+      position: relative;
+      display: inline-block;
       margin-bottom: 20px;
+    }
+
+    .logo-wrapper::before {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.35), transparent 70%);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulseGlow 3s infinite ease-in-out;
+      z-index: 0;
+    }
+
+    .logo {
+      width: 110px;
+      position: relative;
+      z-index: 1;
       animation: logoFloat 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.5));
     }
 
     @keyframes logoFloat {
-      0%,100% { transform: translateY(0);}
-      50% { transform: translateY(-10px);}
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: translate(-50%, -50%) scale(1);   opacity: 0.6; }
+      50%       { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
     }
 
     h1 {
       font-size: 48px;
       margin-bottom: 10px;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
     }
 
     p {
       font-size: 18px;
       margin-bottom: 30px;
-      opacity: 0.9;
+      opacity: 0.92;
     }
 
+    /* COUNTDOWN */
     .countdown {
       display: flex;
       justify-content: space-between;
       margin-bottom: 30px;
+      gap: 10px;
     }
 
     .time-box {
-      background: rgba(255,255,255,0.12);
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       padding: 15px;
-      border-radius: 12px;
+      border-radius: 14px;
       width: 22%;
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     }
 
     .time-box h2 {
       font-size: 28px;
+      font-weight: 600;
     }
 
     .time-box span {
-      font-size: 14px;
-      opacity: 0.8;
+      font-size: 13px;
+      opacity: 0.85;
     }
 
-    .logo-wrapper {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 20px;
-}
-
-/* วงกลมเรืองแสง */
-.logo-wrapper::before {
-  content: "";
-  position: absolute;
-  width: 260px;
-  height: 260px;
-  
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.4), transparent 70%);
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation: pulseGlow 3s infinite ease-in-out;
-  z-index: 0;
-}
-
-.logo {
-  width: 110px;
-  position: relative;
-  z-index: 1;
-  animation: logoFloat 3s ease-in-out infinite;
-  filter: drop-shadow(0 0 10px rgba(240, 243, 242, 0.6));
-}
-
-.back-btn {
-  margin-top: 20px;
-  display: inline-block;
-  padding: 10px 18px;
-  background: rgba(255,255,255,0.6);
-  color: #0f2f2f;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: 0.3s;
-  backdrop-filter: blur(10px);
-}
-
-.back-btn:hover {
-  background: #ffffff;
-  transform: translateY(-2px);
-}
-
-/* glow animation */
-@keyframes pulseGlow {
-  0%,100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6;}
-  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1;}
-}
-
-    input {
-      padding: 10px;
-      width: 65%;
-      border: none;
-      border-radius: 6px;
-      outline: none;
-    }
-
-    button {
-      padding: 10px 15px;
-      border: none;
-      background: #fff;
-      color: #333;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-left: 5px;
-      font-weight: bold;
+    /* BACK BUTTON */
+    .back-btn {
+      margin-top: 20px;
+      display: inline-block;
+      padding: 11px 22px;
+      background: rgba(255, 255, 255, 0.65);
+      color: #1b5e20;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
       transition: 0.3s;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
     }
 
-    button:hover {
-      background: #ddd;
-      transform: scale(1.05);
+    .back-btn:hover {
+      background: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
     }
 
     .footer {
-      margin-top: 20px;
-      font-size: 14px;
+      margin-top: 22px;
+      font-size: 13px;
       opacity: 0.7;
     }
-
   </style>
 </head>
 <body>
 
-  <!-- Background floating shapes -->
   <div class="circle"></div>
   <div class="circle"></div>
   <div class="circle"></div>
@@ -209,10 +183,8 @@
   <div class="container">
 
     <div class="logo-wrapper">
-        <!-- 🔥 โลโก้ (เปลี่ยน path ได้เลย) -->
-        <img src="/assets/icons/icon-512.png" class="logo">
-        
-      </div>
+      <img src="/assets/icons/icon-512.png" class="logo">
+    </div>
 
     <h1>Coming Soon</h1>
     <p>เว็บไซต์กำลังอยู่ระหว่างพัฒนา 🚀</p>
@@ -237,8 +209,6 @@
     </div>
 
     <div>
-      <!-- <input type="email" placeholder="กรอกอีเมลของคุณ">
-      <button>แจ้งเตือน</button> -->
       <a href="/pages/reports/reportTracker.html" class="back-btn">← กลับหน้าแรก</a>
     </div>
 
@@ -255,18 +225,14 @@
       const now = new Date().getTime();
       const diff = launchDate - now;
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-
-      document.getElementById("days").innerText = days;
-      document.getElementById("hours").innerText = hours;
-      document.getElementById("minutes").innerText = minutes;
-      document.getElementById("seconds").innerText = seconds;
+      document.getElementById("days").innerText    = Math.floor(diff / (1000 * 60 * 60 * 24));
+      document.getElementById("hours").innerText   = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      document.getElementById("minutes").innerText = Math.floor((diff / (1000 * 60)) % 60);
+      document.getElementById("seconds").innerText = Math.floor((diff / 1000) % 60);
     };
 
     setInterval(countdown, 1000);
+    countdown();
   </script>
 
 </body>

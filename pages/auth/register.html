@@ -1,239 +1,256 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="th">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EABaseHub - สมัครสมาชิก</title>
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EABaseHub - สมัครสมาชิก</title>
 
-    <link rel="stylesheet" href="/css/pages/auth/register.css" />
-  </head>
-  <!-- <a href="login.html">เข้าสู่ระบบ</a> -->
-  <body>
-    <div class="container">
-      <!-- Brand Panel -->
-      <div class="brand-panel">
-        <div class="brand-content">
-          <div class="brand-logo">EA</div>
-          <h1>EABaseHub</h1>
-          <p>ระบบจัดการ</p>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/pages/auth/register.css">
+</head>
 
-          <div class="features-list">
-            <div class="feature-item">
-              <div class="feature-icon">📊</div>
-              <div class="feature-text">
-                <h4>Dashboard ทันสมัย</h4>
-                <p>ดูภาพรวมยอดขายแบบ Real-time</p>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">📋</div>
-              <div class="feature-text">
-                <h4>จัดการรายงานง่าย</h4>
-                <p>บันทึกและติดตามการเยี่ยมลูกค้า</p>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-icon">👥</div>
-              <div class="feature-text">
-                <h4>ส่วนต่อประสาน</h4>
-                <p>แชร์ข้อมูล</p>
-              </div>
-            </div>
-          </div>
-        </div>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash-screen">
+  <div class="splash-logo">
+    <img src="/assets/icons/icon-192.png" alt="logo">
+  </div>
+  <div class="splash-title">EABaseHub</div>
+  <div class="splash-sub">ศูนย์รวมข้อมูลและระบบงาน</div>
+  <div class="splash-dots">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div id="register-overlay">
+  <div class="overlay-box">
+    <div class="overlay-icon">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <h3>สมัครสมาชิกสำเร็จ!</h3>
+    <p>กำลังนำคุณไปยังหน้า Login</p>
+  </div>
+</div>
+
+<!-- REGISTER CARD -->
+<div class="register-wrapper">
+  <div class="register-card">
+
+    <!-- Logo -->
+    <div class="logo">
+      <img src="/assets/icons/icon-192.png" alt="logo">
+      <h1>EABaseHub</h1>
+      <p>สมัครสมาชิกใหม่</p>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="steps">
+      <div class="step active" id="step-dot-1">
+        <div class="step-circle">1</div>
+        <span>ข้อมูลบัญชี</span>
       </div>
-
-      <!-- Register Panel -->
-      <div class="register-panel">
-        <div class="register-card">
-          <div class="register-header">
-            <h2>สมัครสมาชิก</h2>
-            <p>สร้างบัญชีใหม่เพื่อเริ่มใช้งาน EABaseHub</p>
-          </div>
-
-          <!-- Alert -->
-          <div class="alert" id="alert">
-            <span class="alert-icon" id="alertIcon">✓</span>
-            <span id="alertMessage">สมัครสมาชิกสำเร็จ!</span>
-          </div>
-
-          <form id="registerForm" onsubmit="handleRegister(event)">
-            <!-- Email -->
-            <div class="form-group">
-              <label>อีเมล <span class="required">*</span></label>
-              <div class="input-wrapper">
-                <span class="input-icon"
-                  ><i class="material-icons">mail</i></span
-                >
-                <input
-                  type="email"
-                  id="email"
-                  placeholder="example@email.com"
-                  required
-                  oninput="validateEmail()"
-                />
-                <span class="validation-icon" id="emailIcon"></span>
-              </div>
-              <div class="error-message" id="emailError">
-                กรุณากรอกอีเมลให้ถูกต้อง
-              </div>
-            </div>
-
-            <!-- Username & Display Name -->
-            <div class="form-row">
-              <div class="form-group">
-                <label>Username <span class="required">*</span></label>
-                <div class="input-wrapper">
-                  <span class="input-icon"
-                    ><i class="material-icons">person</i></span
-                  >
-                  <input
-                    type="text"
-                    id="username"
-                    placeholder="username"
-                    required
-                    oninput="validateUsername()"
-                  />
-                  <span class="validation-icon" id="usernameIcon"></span>
-                </div>
-                <div class="error-message" id="usernameError">
-                  Username ซ้ำหรือไม่ถูกต้อง
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label>ชื่อที่แสดง <span class="required">*</span></label>
-                <div class="input-wrapper">
-                  <span class="input-icon"
-                    ><i class="material-icons">sell</i></span
-                  >
-                  <input
-                    type="text"
-                    id="displayName"
-                    placeholder="ชื่อ-นามสกุล"
-                    required
-                    oninput="validateDisplayName()"
-                  />
-                  <span class="validation-icon" id="displayNameIcon"></span>
-                </div>
-                <div class="error-message" id="displayNameError">
-                  กรุณากรอกชื่อที่แสดง
-                </div>
-              </div>
-            </div>
-
-            <!-- Password -->
-            <div class="form-group">
-              <label>รหัสผ่าน <span class="required">*</span></label>
-              <div class="input-wrapper has-toggle">
-                <span class="input-icon"
-                  ><i class="material-icons">lock</i></span
-                >
-                <input
-                  type="password"
-                  id="password"
-                  placeholder="••••••••"
-                  required
-                  oninput="validatePassword()"
-                />
-                <span class="validation-icon" id="passwordIcon"></span>
-                <button
-                  type="button"
-                  class="toggle-password"
-                  onclick="togglePassword('password')"
-                >
-                  <span class="material-icons">visibility_off</span>
-                </button>
-              </div>
-
-              <!-- Password Strength -->
-              <div class="password-strength">
-                <div class="strength-bar">
-                  <div class="strength-fill" id="strengthFill"></div>
-                </div>
-                <span class="strength-text" id="strengthText"
-                  >กรอกรหัสผ่าน</span
-                >
-              </div>
-
-              <!-- Password Rules -->
-              <div class="password-rules">
-                <h5>กฎรหัสผ่าน:</h5>
-                <div class="rule-item" id="rule-length">
-                  <span class="rule-icon">✓</span>
-                  <span>อย่างน้อย 8 ตัวอักษร</span>
-                </div>
-                <div class="rule-item" id="rule-number">
-                  <span class="rule-icon">✓</span>
-                  <span>มีตัวเลขอย่างน้อย 1 ตัว</span>
-                </div>
-                <div class="rule-item" id="rule-lowercase">
-                  <span class="rule-icon">✓</span>
-                  <span>มีตัวพิมพ์เล็กอย่างน้อย 1 ตัว</span>
-                </div>
-                <div class="rule-item" id="rule-uppercase">
-                  <span class="rule-icon">✓</span>
-                  <span>มีตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว</span>
-                </div>
-                <div class="rule-item" id="rule-notcommon">
-                  <span class="rule-icon">✓</span>
-                  <span>ไม่ใช่รหัสที่คาดเดาง่าย</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="form-group">
-              <label>ยืนยันรหัสผ่าน <span class="required">*</span></label>
-              <div class="input-wrapper has-toggle">
-                <span class="input-icon"
-                  ><i class="material-icons">lock</i></span
-                >
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  placeholder="••••••••"
-                  required
-                  oninput="validateConfirmPassword()"
-                />
-                <span class="validation-icon" id="confirmPasswordIcon"></span>
-                <button
-                  type="button"
-                  class="toggle-password"
-                  onclick="togglePassword('confirmPassword')"
-                >
-                  <span class="material-icons">visibility_off</span>
-                </button>
-              </div>
-              <div class="error-message" id="confirmPasswordError">
-                รหัสผ่านไม่ตรงกัน
-              </div>
-            </div>
-
-            <!-- Submit -->
-            <button type="submit" class="btn-register" id="submitBtn" disabled>
-              <span class="spinner"></span>
-              <span class="btn-text">สมัครสมาชิก</span>
-            </button>
-          </form>
-
-          <div class="login-link">
-            มีบัญชีอยู่แล้ว? <a href="login.html">เข้าสู่ระบบ</a>
-          </div>
-        </div>
+      <div class="step-line"></div>
+      <div class="step" id="step-dot-2">
+        <div class="step-circle">2</div>
+        <span>ข้อมูลส่วนตัว</span>
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/core/auth.js"></script>
-    <script src="/js/pages/auth/register.js"></script>
-  </body>
+    <!-- STEP 1: Account Info -->
+    <div id="step-1" class="step-content active">
+      <div class="form-group">
+        <label for="reg-email">อีเมล</label>
+        <div class="input-box">
+          <i class="fa-regular fa-envelope icon-left"></i>
+          <input type="email" id="reg-email" placeholder="กรอกอีเมล" autocomplete="email" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="reg-username">Username</label>
+        <div class="input-box">
+          <i class="fa-regular fa-user icon-left"></i>
+          <input type="text" id="reg-username" placeholder="ตั้ง Username (ภาษาอังกฤษ, ตัวเลข)" autocomplete="off" required>
+        </div>
+        <div class="field-hint">ใช้ตัวอักษร a-z, 0-9 และ _ ได้เท่านั้น</div>
+      </div>
+
+      <div class="form-group">
+        <label for="reg-password">รหัสผ่าน</label>
+        <div class="input-box">
+          <i class="fa-solid fa-lock icon-left"></i>
+          <input type="password" id="reg-password" placeholder="ตั้งรหัสผ่าน (อย่างน้อย 8 ตัว)" autocomplete="new-password" required>
+          <button type="button" class="icon-btn" onclick="togglePass('reg-password', this)">
+            <i class="fa-regular fa-eye"></i>
+          </button>
+        </div>
+
+        <!-- Password strength bar -->
+        <div class="strength-bar">
+          <div class="strength-fill" id="strength-fill"></div>
+        </div>
+        <div class="strength-label" id="strength-label"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="reg-confirm">ยืนยันรหัสผ่าน</label>
+        <div class="input-box">
+          <i class="fa-solid fa-lock icon-left"></i>
+          <input type="password" id="reg-confirm" placeholder="กรอกรหัสผ่านอีกครั้ง" autocomplete="new-password" required>
+          <button type="button" class="icon-btn" onclick="togglePass('reg-confirm', this)">
+            <i class="fa-regular fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="button" id="nextBtn" class="btn-primary" onclick="goToStep2()">
+        <span>ถัดไป</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+
+    <!-- STEP 2: Personal Info -->
+    <div id="step-2" class="step-content">
+      <div class="form-group">
+        <label for="reg-fullname">ชื่อ - นามสกุล</label>
+        <div class="input-box">
+          <i class="fa-regular fa-id-card icon-left"></i>
+          <input type="text" id="reg-fullname" placeholder="กรอกชื่อ-นามสกุล" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="reg-phone">เบอร์โทรศัพท์</label>
+        <div class="input-box">
+          <i class="fa-solid fa-phone icon-left"></i>
+          <input type="tel" id="reg-phone" placeholder="กรอกเบอร์โทร" maxlength="10">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="reg-department">แผนก</label>
+        <div class="input-box select-box">
+          <i class="fa-solid fa-building icon-left"></i>
+          <select id="reg-department">
+            <option value="">-- เลือกแผนก --</option>
+            <option value="sales">Sales</option>
+            <option value="qc">QC</option>
+            <option value="admin">Admin</option>
+            <option value="manager">Manager</option>
+            <option value="executive">Executive</option>
+            <option value="other">อื่นๆ</option>
+          </select>
+          <i class="fa-solid fa-chevron-down icon-right"></i>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn-secondary" onclick="goToStep1()">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>ย้อนกลับ</span>
+        </button>
+        <button type="button" id="registerBtn" class="btn-primary" onclick="handleRegister()">
+          <span class="btn-text">สมัครสมาชิก</span>
+          <span class="spinner"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="login-link">
+      มีบัญชีแล้ว? <a href="/pages/auth/login.html">เข้าสู่ระบบ</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="/js/core/supabaseClient.js"></script>
+<script src="/js/pages/auth/register.js"></script>
+
+<script>
+  // Toggle password visibility
+  function togglePass(fieldId, btn) {
+    const field = document.getElementById(fieldId);
+    const type = field.type === "password" ? "text" : "password";
+    field.type = type;
+    btn.innerHTML = type === "password"
+      ? '<i class="fa-regular fa-eye"></i>'
+      : '<i class="fa-regular fa-eye-slash"></i>';
+  }
+
+  // Password strength
+  document.getElementById("reg-password").addEventListener("input", function () {
+    const val = this.value;
+    const fill = document.getElementById("strength-fill");
+    const label = document.getElementById("strength-label");
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+    const levels = [
+      { text: "", color: "#eee", width: "0%" },
+      { text: "อ่อนมาก", color: "#ef5350", width: "25%" },
+      { text: "อ่อน", color: "#ffa726", width: "50%" },
+      { text: "ปานกลาง", color: "#ffee58", width: "75%" },
+      { text: "แข็งแรง", color: "#66bb6a", width: "100%" },
+    ];
+
+    fill.style.width = levels[score].width;
+    fill.style.background = levels[score].color;
+    label.textContent = val.length === 0 ? "" : levels[score].text;
+    label.style.color = levels[score].color;
+  });
+
+  // Step navigation
+  function goToStep2() {
+    const email = document.getElementById("reg-email").value.trim();
+    const username = document.getElementById("reg-username").value.trim();
+    const password = document.getElementById("reg-password").value;
+    const confirm = document.getElementById("reg-confirm").value;
+
+    if (!email || !username || !password || !confirm) {
+      showError("กรุณากรอกข้อมูลให้ครบทุกช่อง"); return;
+    }
+    if (!/^[a-z0-9_]+$/.test(username)) {
+      showError("Username ใช้ได้เฉพาะตัวเล็ก a-z, 0-9 และ _ เท่านั้น"); return;
+    }
+    if (password.length < 8) {
+      showError("รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร"); return;
+    }
+    if (password !== confirm) {
+      showError("รหัสผ่านไม่ตรงกัน"); return;
+    }
+
+    document.getElementById("step-1").classList.remove("active");
+    document.getElementById("step-2").classList.add("active");
+    document.getElementById("step-dot-1").classList.remove("active");
+    document.getElementById("step-dot-1").classList.add("done");
+    document.getElementById("step-dot-2").classList.add("active");
+  }
+
+  function goToStep1() {
+    document.getElementById("step-2").classList.remove("active");
+    document.getElementById("step-1").classList.add("active");
+    document.getElementById("step-dot-2").classList.remove("active");
+    document.getElementById("step-dot-1").classList.remove("done");
+    document.getElementById("step-dot-1").classList.add("active");
+  }
+
+  function showError(msg) {
+    // Remove old toast
+    document.querySelectorAll(".toast-error").forEach(e => e.remove());
+    const toast = document.createElement("div");
+    toast.className = "toast-error";
+    toast.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${msg}`;
+    document.querySelector(".register-card").prepend(toast);
+    setTimeout(() => toast.remove(), 3500);
+  }
+</script>
+
+</body>
 </html>
