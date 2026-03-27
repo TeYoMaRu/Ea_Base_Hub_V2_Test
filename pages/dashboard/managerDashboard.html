@@ -9,6 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="/css/base/layout.css">
   <link rel="stylesheet" href="/css/pages/dashboard/managerDashboard.css">
 </head>
@@ -224,8 +225,10 @@
 
   <div id="toast" class="toast"></div>
   <footer class="footer">© 2026 EABaseHub | Sales Intelligence Dashboard</footer>
-
+  
+  
   <script src="/js/core/supabaseClient.js"></script>
+  <script src="/js/core/roleConfig.js"></script>   ← เพิ่มอันนี้ก่อน auth.js
   <script src="/js/core/auth.js"></script>
   <script src="/js/core/userService.js"></script>
   <script src="/js/services/shopService.js"></script>
