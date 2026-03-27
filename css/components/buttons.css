@@ -130,27 +130,16 @@ BUTTON SYSTEM
 
 .btn {
   display: inline-flex;
-
   align-items: center;
-
   justify-content: center;
-
   gap: 6px;
-
   padding: 8px 16px;
-
   font-family: "Kanit", sans-serif;
-
   font-size: 14px;
-
   border-radius: 8px;
-
   border: none;
-
   cursor: pointer;
-
   transition: all 0.18s ease;
-
   white-space: nowrap;
 }
 
@@ -414,6 +403,28 @@ BUTTON SYSTEM
   transform: none;
 }
 
+
+
+/* =====================================================
+12. LOGOUT BUTTON
+===================================================== */
+
+
+.btn-logout {
+  background: #a6d5f3;  
+  color: var(--header-blue3);
+  padding: 6px 14px;
+  font-weight: 600;
+  border-radius: 7px;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-logout:hover {
+  background: #d5e9f5;
+}
 /* =====================================================
 END
 ===================================================== */

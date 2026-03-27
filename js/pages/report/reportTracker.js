@@ -1,9 +1,12 @@
 // =====================================================
-// reportManager.js - Manager Report Review Page
+// reportTracker.js - Manager Report Review Page
 // ใช้ area แทน team_id
 // =====================================================
 
-let currentUser = null;
+// ⚠️ ไม่ประกาศ let currentUser ซ้ำ เพราะ userService.js
+// ใช้ window.currentUser แทน — เก็บ reference ไว้ใน localUser
+let localUser = null;
+
 let allReports = [];
 let filteredReports = [];
 let profilesMap = {};
@@ -30,19 +33,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // รอให้ window.currentUser พร้อม (จาก userService)
+  // ใช้ window.currentUser จาก userService (โหลดโดย protectPage → initUserService)
   if (window.currentUser && window.currentUser.id) {
-    currentUser = window.currentUser;
-    console.log('✅ Using currentUser from window:', currentUser);
+    localUser = {
+      id:   window.currentUser.id,
+      role: window.currentUser.role,
+      area: window.currentUser.area,
+      name: window.currentUser.display_name
+             || window.currentUser.username
+             || window.currentUser.email
+             || 'Manager'
+    };
+    console.log('✅ Using window.currentUser:', localUser);
   } else {
-    // ถ้ายังไม่มี ให้โหลดใหม่
-    currentUser = await loadCurrentUser();
-    if (!currentUser) {
+    // fallback — ดึงจาก DB ตรงๆ
+    localUser = await loadCurrentUserFallback();
+    if (!localUser) {
       console.error('❌ No current user');
       return;
     }
-    console.log('✅ Current user loaded:', currentUser);
+    console.log('✅ Fallback user loaded:', localUser);
   }
+
+  // อัปเดต header
+  const nameEl = document.getElementById('userName');
+  if (nameEl) nameEl.textContent = localUser.name;
+
+  const avatarEl = document.getElementById('userAvatar');
+  if (avatarEl) avatarEl.textContent = localUser.name.charAt(0).toUpperCase();
 
   // โหลดข้อมูลสนับสนุน
   await Promise.all([
@@ -62,9 +80,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // =====================================================
-// 👤 LOAD CURRENT USER
+// 👤 LOAD CURRENT USER (fallback)
+// ใช้เมื่อ window.currentUser ยังไม่พร้อม
 // =====================================================
-async function loadCurrentUser() {
+async function loadCurrentUserFallback() {
   try {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) return null;
@@ -75,39 +94,30 @@ async function loadCurrentUser() {
       .eq('id', session.user.id)
       .single();
 
-    const name = profile?.display_name || session.user.email;
-    document.getElementById('userName').textContent = name;
-    document.getElementById('userAvatar').textContent = name.charAt(0).toUpperCase();
-
     return {
-      id: session.user.id,
+      id:   session.user.id,
       role: profile?.role,
       area: profile?.area,
-      name
+      name: profile?.display_name || session.user.email
     };
   } catch (e) {
-    console.error('❌ loadCurrentUser error:', e);
+    console.error('❌ loadCurrentUserFallback error:', e);
     return null;
   }
 }
 
 // =====================================================
-// 👥 LOAD PROFILES (เซลล์ใน area เดียวกัน)
+// 👥 LOAD PROFILES (sales ทั้งหมด)
+// Manager + Admin ดู sales ทุกคนได้ ไม่ filter area
 // =====================================================
 async function loadProfiles() {
   try {
     console.log('📥 Loading profiles...');
 
-    let query = supabaseClient
+    const query = supabaseClient
       .from('profiles')
       .select('id, display_name, role, area')
       .in('role', ['sales', 'user']);
-
-    // Manager ดูเฉพาะ area ตัวเอง
-    if (currentUser.role === 'manager' && currentUser.area) {
-      console.log('👔 Filtering by area:', currentUser.area);
-      query = query.eq('area', currentUser.area);
-    }
 
     const { data, error } = await query;
     if (error) throw error;
@@ -123,7 +133,7 @@ async function loadProfiles() {
       (data || []).forEach(p => {
         const opt = document.createElement('option');
         opt.value = p.id;
-        opt.textContent = p.display_name;
+        opt.textContent = p.display_name || p.id;
         select.appendChild(opt);
       });
     }
@@ -143,8 +153,17 @@ async function loadShops() {
       .select('id, shop_name')
       .order('shop_name');
 
-    if (error) throw error;
+    if (error) {
+      console.error('❌ loadShops error:', error);
+      console.warn('⚠️ อาจเป็นปัญหา RLS — ตรวจสอบว่า manager มีสิทธิ์ SELECT จาก shops');
+      return;
+    }
+
     console.log('✅ Shops loaded:', data?.length || 0);
+
+    if (!data || data.length === 0) {
+      console.warn('⚠️ Shops = 0 — ตรวจสอบ RLS policy ของตาราง shops');
+    }
 
     shopsMap = Object.fromEntries((data || []).map(s => [s.id, s.shop_name]));
   } catch (e) {
@@ -190,35 +209,26 @@ async function loadReports() {
 
     console.log('📅 Week range:', start.toISOString(), 'to', end.toISOString());
 
-    // 🔥 FIX: Query ทั้ง submitted_at และ report_date
     let query = supabaseClient
       .from('reports')
       .select('*')
       .order('submitted_at', { ascending: false, nullsLast: true })
       .order('report_date', { ascending: false, nullsLast: true });
 
-    // 🔥 ไม่ filter วันที่ก่อน เพื่อดูว่ามีข้อมูลไหม
-    // แล้วค่อย filter ใน JavaScript
-
-    // Manager กรองเฉพาะ area
-    if (currentUser.role === 'manager' && currentUser.area) {
-      const saleIds = Object.keys(profilesMap);
-      console.log('👔 Manager filter - sale IDs:', saleIds);
-
-      if (saleIds.length) {
-        query = query.in('sale_id', saleIds);
-      } else {
-        console.warn('⚠️ No sales in manager area');
-        query = query.eq('sale_id', '00000000-0000-0000-0000-000000000000');
-      }
-    }
+    // Admin + Manager ดู report ทั้งหมด (ไม่ filter by sale_id)
+    // ถ้าอนาคตต้องการจำกัด → เพิ่ม filter ตรงนี้
 
     const { data, error } = await query;
-    if (error) throw error;
+
+    if (error) {
+      console.error('❌ reports query error:', error);
+      console.warn('⚠️ ตรวจสอบ RLS policy ของตาราง reports');
+      throw error;
+    }
 
     console.log('✅ Raw reports from DB:', data?.length || 0);
 
-    // 🔥 Filter วันที่ใน JavaScript
+    // Filter วันที่ใน JavaScript
     const startTime = start.getTime();
     const endTime = end.getTime();
 
@@ -231,6 +241,11 @@ async function loadReports() {
     });
 
     console.log('✅ Reports in week range:', filtered.length);
+
+    // ถ้า raw > 0 แต่ filtered = 0 → อาจอยู่สัปดาห์อื่น
+    if ((data?.length || 0) > 0 && filtered.length === 0) {
+      console.log('ℹ️ มี report ใน DB แต่ไม่อยู่ในสัปดาห์นี้ — ลองเลื่อนสัปดาห์ดู');
+    }
 
     allReports = filtered;
     filteredReports = [...allReports];
@@ -302,12 +317,12 @@ function updateSummaryCards() {
   const total = allReports.length;
   const unread = allReports.filter(r => !r.manager_acknowledged).length;
   const read = allReports.filter(r => r.manager_acknowledged).length;
-  const activeSales = new Set(allReports.map(r => r.sale_id).filter(Boolean)).size;
+  const activeSalesCount = new Set(allReports.map(r => r.sale_id).filter(Boolean)).size;
 
   document.getElementById('totalReports').textContent = total;
   document.getElementById('unreadReports').textContent = unread;
   document.getElementById('readReports').textContent = read;
-  document.getElementById('activeSales').textContent = activeSales;
+  document.getElementById('activeSales').textContent = activeSalesCount;
 }
 
 // =====================================================
@@ -330,12 +345,13 @@ function updateSalesGrid() {
     const unread = reports.filter(r => !r.manager_acknowledged).length;
     const isActive = activeSalesFilter === id;
     const hasUnread = unread > 0;
+    const displayName = profile.display_name || '—';
 
     return `
       <div class="sales-card ${isActive ? 'active' : ''} ${hasUnread ? 'has-unread' : ''}"
            onclick="filterBySale('${id}')">
-        <div class="sales-avatar">${profile.display_name.charAt(0).toUpperCase()}</div>
-        <div class="sales-name">${profile.display_name}</div>
+        <div class="sales-avatar">${displayName.charAt(0).toUpperCase()}</div>
+        <div class="sales-name">${escapeHtml(displayName)}</div>
         <div class="sales-stats">
           <div class="stat-item">
             <span class="stat-value">${total}</span>
@@ -380,14 +396,10 @@ function applyFilter() {
   const search = document.getElementById('searchInput').value.toLowerCase();
 
   filteredReports = allReports.filter(r => {
-    // Filter by sales
     if (salesId && r.sale_id !== salesId) return false;
-
-    // Filter by status
     if (status === 'unread' && r.manager_acknowledged) return false;
     if (status === 'read' && !r.manager_acknowledged) return false;
 
-    // Filter by search
     if (search) {
       const shopName = shopsMap[r.shop_id] || '';
       const productName = productsMap[r.product_id] || '';
@@ -436,7 +448,6 @@ function renderReports() {
   const start = (currentPage - 1) * PAGE_SIZE;
   const pageReports = filteredReports.slice(start, start + PAGE_SIZE);
 
-  // Update count
   const countEl = document.getElementById('reportCount');
   if (countEl) {
     countEl.textContent = filteredReports.length !== allReports.length
@@ -444,7 +455,6 @@ function renderReports() {
       : `(${allReports.length} รายการ)`;
   }
 
-  // Render reports
   if (!pageReports.length) {
     container.innerHTML = '<div class="loading">ไม่มีรายงาน</div>';
     renderPagination();
@@ -464,15 +474,15 @@ function renderReports() {
         <div class="report-icon">${salesName.charAt(0).toUpperCase()}</div>
         <div class="report-info">
           <div class="report-header">
-            <span class="report-sales">${salesName}</span>
+            <span class="report-sales">${escapeHtml(salesName)}</span>
             <span class="report-date">${formatDate(report.submitted_at || report.report_date)}</span>
           </div>
           <div class="report-details">
             <div class="report-detail-item">
-              🏪 ${shopName}
+              🏪 ${escapeHtml(shopName)}
             </div>
             <div class="report-detail-item">
-              📦 ${productName}
+              📦 ${escapeHtml(productName)}
             </div>
           </div>
         </div>
@@ -534,7 +544,6 @@ async function openReportModal(reportId) {
 
   currentReportId = reportId;
 
-  // Populate modal
   const profile = profilesMap[report.sale_id];
   const salesName = profile?.display_name || '—';
 
@@ -553,25 +562,21 @@ async function openReportModal(reportId) {
   document.getElementById('mSource').textContent = report.source || '—';
   document.getElementById('mNote').textContent = report.note || 'ไม่มีหมายเหตุ';
 
-  // Hide quantity field if not exists
   const qtyEl = document.getElementById('mQty');
   if (qtyEl) {
-    if (report.quantity !== undefined) {
+    if (report.quantity !== undefined && report.quantity !== null) {
       qtyEl.textContent = (report.quantity || 0).toLocaleString('th-TH') + ' ชิ้น';
+      const qtyRow = qtyEl.closest('.info-item');
+      if (qtyRow) qtyRow.style.display = '';
     } else {
-      // Hide the qty row if column doesn't exist
       const qtyRow = qtyEl.closest('.info-item');
       if (qtyRow) qtyRow.style.display = 'none';
     }
   }
 
-  // Load comments
   await loadComments(reportId);
-
-  // Clear comment input
   document.getElementById('commentInput').value = '';
 
-  // Show modal
   const modal = document.getElementById('reportModal');
   if (modal) {
     modal.classList.add('show');
@@ -603,7 +608,7 @@ async function loadComments(reportId) {
     container.innerHTML = data.map(c => `
       <div class="comment-item">
         <div class="comment-meta">
-          <span class="comment-author">${c.profiles?.display_name || 'ผู้จัดการ'}</span>
+          <span class="comment-author">${escapeHtml(c.profiles?.display_name || 'ผู้จัดการ')}</span>
           <span class="comment-date">${formatDate(c.created_at)}</span>
         </div>
         <div class="comment-text">${escapeHtml(c.comment)}</div>
@@ -659,7 +664,6 @@ async function markAsRead() {
   try {
     const { data: { session } } = await supabaseClient.auth.getSession();
 
-    // Save comment if exists
     const text = document.getElementById('commentInput').value.trim();
     if (text) {
       await saveComment();
@@ -730,7 +734,7 @@ function exportCSV() {
     r.manager_acknowledged ? 'อ่านแล้ว' : 'ยังไม่อ่าน'
   ]);
 
-  const csv = [
+  const csv = '\uFEFF' + [
     headers.join(','),
     ...rows.map(r => r.map(v => `"${v}"`).join(','))
   ].join('\n');
@@ -750,7 +754,6 @@ function exportCSV() {
 // 🔧 SETUP EVENT LISTENERS
 // =====================================================
 function setupEventListeners() {
-  // Search on Enter
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
     searchInput.addEventListener('keydown', e => {
@@ -758,7 +761,6 @@ function setupEventListeners() {
     });
   }
 
-  // Close modal on outside click
   const modal = document.getElementById('reportModal');
   if (modal) {
     modal.addEventListener('click', e => {

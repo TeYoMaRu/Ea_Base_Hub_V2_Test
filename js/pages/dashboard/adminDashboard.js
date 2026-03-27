@@ -44,7 +44,7 @@ const ROLE_CONFIG = {
   user:      { label: 'User',    icon: '👤', cls: 'user'    },
   sales:     { label: 'Sales',   icon: '🏬', cls: 'sales'   },
   admin:     { label: 'Admin',   icon: '🛡️', cls: 'admin'   },
-  adminqc:   { label: 'AdminQC', icon: '🛡️', cls: 'adminqc' },
+  adminqc:   { label: 'AdminQC', icon: '🛡️', cls: 'adminQc' },
   manager:   { label: 'Manager', icon: '⭐', cls: 'manager'  },
   executive: { label: 'Exec',    icon: '⭐', cls: 'exec'    },
 };
@@ -72,7 +72,7 @@ function renderStats(profiles, shopCountBySaleId) {
   const inactive   = profiles.filter(u => u.status?.toLowerCase() !== 'active').length;
   const totalShops = Object.values(shopCountBySaleId).reduce((s, c) => s + c, 0);
   const totalSales = profiles.filter(u => roleKey(u.role) === 'sales').length;
-  const totalAdmin = profiles.filter(u => ['admin','adminqc'].includes(roleKey(u.role))).length;
+  const totalAdmin = profiles.filter(u => ['admin','adminQc'].includes(roleKey(u.role))).length;
 
   animateCounter(document.getElementById('statTotalUsers'),    total);
   animateCounter(document.getElementById('statActiveUsers'),   active);

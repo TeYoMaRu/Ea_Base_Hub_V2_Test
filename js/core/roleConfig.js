@@ -53,6 +53,7 @@ const ROLE_CONFIG = {
     allowedPages: [
       '/pages/dashboard/managerDashboard.html',
       '/pages/reports/reportTracker.html',
+      '/pages/reports/reportManager.html',
       // ✅ เพิ่มหน้าใหม่ตรงนี้
     ]
   },

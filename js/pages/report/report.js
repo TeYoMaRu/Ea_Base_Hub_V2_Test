@@ -1,5 +1,5 @@
 // =====================================================
-// report.js  v5.1  — FIXED layout & responsive
+// report.js  v6.0  — Product Picker + List Pattern
 // Draft  → localStorage  (ไม่ขึ้น Supabase)
 // Submit → Supabase (status = 'submitted')
 // =====================================================
@@ -9,7 +9,11 @@ const DRAFT_KEY = "ea_report_drafts";
 let submittedReports = [];
 let shopsMap         = {};
 let productsMap      = {};
+let categoriesCache  = [];
 let currentViewReportId = null;
+
+// รายการสินค้าที่เลือกแล้ว (in-memory)
+let selectedProducts = [];
 
 // =====================================================
 // 🚀 INIT
@@ -19,11 +23,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   catch(e) { return; }
 
   await loadUserHeader();
-  await Promise.all([loadProvinces(), loadCategories(), loadSubmittedReports()]);
+  await Promise.all([loadProvinces(), loadPickerCategories(), loadSubmittedReports()]);
   setDefaultDate();
   setupEventListeners();
   setupLogout();
   await renderDraftList();
+  renderSelectedProducts();
 });
 
 // =====================================================
@@ -95,6 +100,172 @@ async function formatAttrInline(attributes) {
 }
 
 // =====================================================
+// 📦 PRODUCT PICKER — โหลด Categories / Products / Attributes
+// =====================================================
+async function loadPickerCategories() {
+  try {
+    const { data } = await supabaseClient.from("categories").select("id,name").order("name");
+    categoriesCache = data || [];
+    const sel = document.getElementById("pickerCategory");
+    if (!sel) return;
+    sel.innerHTML = `<option value="">-- เลือกหมวดสินค้า --</option>`;
+    categoriesCache.forEach(c => {
+      const o = document.createElement("option");
+      o.value = c.id; o.textContent = c.name; sel.appendChild(o);
+    });
+  } catch(e) { console.error("loadPickerCategories", e); }
+}
+
+async function onPickerCategoryChange(categoryId) {
+  const sel = document.getElementById("pickerProduct");
+  const attrBox = document.getElementById("pickerAttributes");
+  if (sel) sel.innerHTML = `<option value="">-- เลือกสินค้า --</option>`;
+  if (attrBox) attrBox.innerHTML = "";
+  if (!categoryId) return;
+
+  try {
+    const { data } = await supabaseClient.from("products")
+      .select("id,name").eq("category_id", categoryId).order("name");
+    data?.forEach(p => {
+      productsMap[p.id] = p.name;
+      const o = document.createElement("option");
+      o.value = p.id; o.textContent = p.name; sel.appendChild(o);
+    });
+  } catch(e) { console.error("onPickerCategoryChange", e); }
+}
+
+async function onPickerProductChange(productId) {
+  const attrBox = document.getElementById("pickerAttributes");
+  if (attrBox) attrBox.innerHTML = "";
+  if (!productId) return;
+
+  try {
+    const { data: attrs } = await supabaseClient
+      .from("attributes")
+      .select("*")
+      .eq("product_id", productId)
+      .order("order_no", { ascending: true });
+
+    if (!attrs?.length) return;
+
+    for (const attr of attrs) {
+      const wrap = document.createElement("div");
+      wrap.classList.add("form-group");
+
+      const lbl = document.createElement("label");
+      lbl.innerText = attr.name;
+      if (attr.is_required) lbl.innerHTML += ' <span style="color:red">*</span>';
+      wrap.appendChild(lbl);
+
+      if (attr.input_type === "select") {
+        const s = document.createElement("select");
+        s.dataset.attributeId = attr.id;
+        s.classList.add("picker-attr-field");
+
+        const { data: opts } = await supabaseClient
+          .from("attribute_options")
+          .select("value")
+          .eq("attribute_id", attr.id)
+          .order("value");
+
+        s.innerHTML = `<option value="">-- เลือก --</option>`;
+        opts?.forEach(o => {
+          const op = document.createElement("option");
+          op.value = o.value; op.textContent = o.value; s.appendChild(op);
+        });
+        wrap.appendChild(s);
+      } else {
+        const inp = document.createElement("input");
+        inp.type = attr.input_type === "number" ? "number" : "text";
+        inp.dataset.attributeId = attr.id;
+        inp.classList.add("picker-attr-field");
+        wrap.appendChild(inp);
+      }
+
+      attrBox.appendChild(wrap);
+    }
+  } catch(e) { console.error("onPickerProductChange", e); }
+}
+
+// =====================================================
+// ➕ ADD PRODUCT — เก็บลง selectedProducts[] แล้ว render
+// =====================================================
+function addSelectedProduct() {
+  const productId = document.getElementById("pickerProduct")?.value;
+  if (!productId) {
+    showToast("⚠️ กรุณาเลือกสินค้าก่อน");
+    return;
+  }
+
+  // เก็บ attributes
+  const attrs = {};
+  document.querySelectorAll(".picker-attr-field").forEach(f => {
+    if (f.value) attrs[f.dataset.attributeId] = f.value;
+  });
+
+  const productName = productsMap[productId] || productId;
+
+  // เพิ่มลง list (อนุญาตสินค้าซ้ำได้ เพราะอาจเลือก attribute ต่างกัน)
+  selectedProducts.push({
+    _uid: Date.now() + "_" + Math.random().toString(36).slice(2,5),
+    product_id: productId,
+    product_name: productName,
+    attributes: attrs
+  });
+
+  renderSelectedProducts();
+  resetPicker();
+  showToast(`✅ เพิ่ม "${truncate(productName, 20)}" แล้ว`);
+}
+
+function removeSelectedProduct(uid) {
+  selectedProducts = selectedProducts.filter(p => p._uid !== uid);
+  renderSelectedProducts();
+}
+
+function resetPicker() {
+  const catSel  = document.getElementById("pickerCategory");
+  const prodSel = document.getElementById("pickerProduct");
+  const attrBox = document.getElementById("pickerAttributes");
+  // รีเซ็ตเฉพาะ product + attributes — ไม่ reset category เผื่อเลือกหลายตัวในหมวดเดียว
+  if (prodSel) {
+    prodSel.value = "";
+    // ไม่ clear options — ยังอยู่ในหมวดเดิม
+  }
+  if (attrBox) attrBox.innerHTML = "";
+}
+
+// =====================================================
+// 🎨 RENDER SELECTED PRODUCTS LIST
+// =====================================================
+async function renderSelectedProducts() {
+  const container = document.getElementById("selectedProductList");
+  const countEl   = document.getElementById("selectedProductCount");
+  if (!container) return;
+
+  if (countEl) countEl.textContent = selectedProducts.length;
+
+  if (!selectedProducts.length) {
+    container.innerHTML = `<div class="empty-product-list">ยังไม่มีสินค้าที่เลือก — เลือกจาก dropdown ด้านบนแล้วกด "เพิ่มสินค้า"</div>`;
+    return;
+  }
+
+  let html = "";
+  for (const item of selectedProducts) {
+    const attrText = await formatAttrInline(item.attributes);
+    html += `
+      <div class="selected-product-item" data-uid="${item._uid}">
+        <div class="product-item-info">
+          <span class="product-item-name">${escapeHtml(item.product_name)}</span>
+          ${attrText ? `<span class="product-item-attr">${escapeHtml(attrText)}</span>` : ""}
+        </div>
+        <button class="btn-remove-product" onclick="removeSelectedProduct('${item._uid}')" title="ลบ">✕</button>
+      </div>`;
+  }
+  container.innerHTML = html;
+}
+
+// =====================================================
 // 💾 SAVE DRAFT → localStorage
 // =====================================================
 function saveDraft() {
@@ -121,9 +292,8 @@ async function editDraftToForm(draftId) {
   saveDraftsToStorage(drafts.filter(x => x.id !== draftId));
 
   if (d.report_date) document.getElementById("reportDate").value = d.report_date;
-  if (d.source)      document.getElementById("source").value     = d.source;
-  if (d.status)      document.getElementById("status").value     = d.status;
-  if (d.note)        document.getElementById("note").value       = d.note;
+  if (d.status_visit) document.getElementById("status").value = d.status_visit;
+  if (d.note) document.getElementById("note").value = d.note;
 
   if (d.province) {
     const provSel = document.getElementById("provinceSelect");
@@ -132,15 +302,26 @@ async function editDraftToForm(draftId) {
     if (d.shop_id) document.getElementById("shopSelect").value = d.shop_id;
   }
 
-  if (d.category_id) {
-    document.getElementById("categorySelect").value = d.category_id;
-    await loadProducts(d.category_id);
-    if (d.product_id) {
-      document.getElementById("productSelect").value = d.product_id;
-      await loadAttributesByProduct(d.product_id, d.attributes);
+  // โหลด products list กลับมา
+  if (d.products && d.products.length) {
+    // resolve ชื่อสินค้าที่ยังไม่มี
+    const missingIds = d.products.map(p => p.product_id).filter(id => !productsMap[id]);
+    if (missingIds.length) {
+      const { data: prods } = await supabaseClient
+        .from("products").select("id,name").in("id", missingIds);
+      prods?.forEach(p => { productsMap[p.id] = p.name; });
     }
+    selectedProducts = d.products.map(p => ({
+      _uid: Date.now() + "_" + Math.random().toString(36).slice(2,5),
+      product_id: p.product_id,
+      product_name: productsMap[p.product_id] || p.product_id,
+      attributes: p.attributes || {}
+    }));
+  } else {
+    selectedProducts = [];
   }
 
+  renderSelectedProducts();
   renderDraftList();
   window.scrollTo({ top: 0, behavior: "smooth" });
   showToast("✏️ โหลด Draft ขึ้น form แล้ว");
@@ -157,7 +338,7 @@ function deleteDraft(draftId) {
 }
 
 // =====================================================
-// 🎨 RENDER DRAFT LIST — FIXED data-label
+// 🎨 RENDER DRAFT LIST
 // =====================================================
 async function renderDraftList() {
   const drafts       = getDrafts();
@@ -180,21 +361,19 @@ async function renderDraftList() {
 
   for (const d of drafts) {
     const shopName = shopsMap[d.shop_id] || "—";
-    const prodName = productsMap[d.product_id] || "—";
-    const attrText = await formatAttrInline(d.attributes);
-    const savedAt  = new Date(d.saved_at).toLocaleString("th-TH", {
+    // สรุปสินค้า
+    const prodSummary = (d.products || []).map(p => productsMap[p.product_id] || "—").join(", ") || "—";
+    const savedAt = new Date(d.saved_at).toLocaleString("th-TH", {
       day:"numeric", month:"short", hour:"2-digit", minute:"2-digit"
     });
 
-    // ✅ เพิ่ม data-label ทุก td เพื่อ mobile card layout
-    const attrShort = truncate(attrText, 36);
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td data-label="วันที่">${d.report_date || "—"}</td>
       <td data-label="ร้านค้า" title="${escapeHtml(shopName)}">${escapeHtml(truncate(shopName, 10))}</td>
-      <td data-label="สินค้า" title="${escapeHtml(prodName + (attrText ? ' · ' + attrText : ''))}">
-        <div style="font-weight:500;">${escapeHtml(truncate(prodName, 16))}</div>
-        ${attrShort && attrShort !== "—" ? `<div class="attr-sub">${escapeHtml(attrShort)}</div>` : ""}
+      <td data-label="สินค้า" title="${escapeHtml(prodSummary)}">
+        <div style="font-weight:500;">${escapeHtml(truncate(prodSummary, 24))}</div>
+        <div class="attr-sub">${(d.products||[]).length} รายการ</div>
       </td>
       <td data-label="รายละเอียด" title="${escapeHtml(d.note||"")}">${escapeHtml(truncate(d.note||"—", 28))}</td>
       <td data-label="บันทึกเมื่อ" style="color:#888;font-size:11px;">${savedAt}</td>
@@ -217,26 +396,31 @@ async function submitOneDraft(draftId) {
   const d = drafts.find(x => x.id === draftId);
   if (!d) return;
 
-  if (!d.shop_id || !d.product_id) {
-    alert("❌ ข้อมูลไม่ครบ — กรุณาแก้ไขก่อนส่ง (ต้องมีร้านค้าและสินค้า)");
+  if (!d.shop_id || !d.products?.length) {
+    alert("❌ ข้อมูลไม่ครบ — ต้องมีร้านค้าและสินค้าอย่างน้อย 1 รายการ");
     return;
   }
   try {
     const { data:{ session } } = await supabaseClient.auth.getSession();
     if (!session) { alert("❌ Session หมดอายุ กรุณาล็อกอินใหม่"); return; }
 
-    const { error } = await supabaseClient.from("reports").insert([{
+    const now = new Date().toISOString();
+    // insert 1 row ต่อ 1 product
+    const rows = d.products.map(p => ({
       report_date:  d.report_date,
       shop_id:      d.shop_id,
-      product_id:   d.product_id,
-      source:       d.source,
+      product_id:   p.product_id,
+      source:       d.source || null,
       status:       "submitted",
+      status_visit: d.status_visit || null,
       note:         d.note,
-      attributes:   d.attributes || {},
+      attributes:   p.attributes || {},
       sale_id:      session.user.id,
-      submitted_at: new Date().toISOString(),
-      created_at:   d.saved_at || new Date().toISOString()
-    }]);
+      submitted_at: now,
+      created_at:   d.saved_at || now
+    }));
+
+    const { error } = await supabaseClient.from("reports").insert(rows);
     if (error) throw error;
 
     saveDraftsToStorage(drafts.filter(x => x.id !== draftId));
@@ -256,7 +440,7 @@ async function submitAllDrafts() {
   const drafts = getDrafts();
   if (!drafts.length) { alert("ℹ️ ไม่มี Draft ที่รอส่ง"); return; }
 
-  const incomplete = drafts.filter(d => !d.shop_id || !d.product_id);
+  const incomplete = drafts.filter(d => !d.shop_id || !d.products?.length);
   if (incomplete.length) {
     alert(`❌ มี ${incomplete.length} รายการที่ข้อมูลยังไม่ครบ\nกรุณาแก้ไขก่อน`);
     return;
@@ -268,18 +452,24 @@ async function submitAllDrafts() {
     if (!session) { alert("❌ Session หมดอายุ"); return; }
 
     const now = new Date().toISOString();
-    const rows = drafts.map(d => ({
-      report_date:  d.report_date,
-      shop_id:      d.shop_id,
-      product_id:   d.product_id,
-      source:       d.source,
-      status:       "submitted",
-      note:         d.note,
-      attributes:   d.attributes || {},
-      sale_id:      session.user.id,
-      submitted_at: now,
-      created_at:   d.saved_at || now
-    }));
+    const rows = [];
+    for (const d of drafts) {
+      for (const p of (d.products || [])) {
+        rows.push({
+          report_date:  d.report_date,
+          shop_id:      d.shop_id,
+          product_id:   p.product_id,
+          source:       d.source || null,
+          status:       "submitted",
+          status_visit: d.status_visit || null,
+          note:         d.note,
+          attributes:   p.attributes || {},
+          sale_id:      session.user.id,
+          submitted_at: now,
+          created_at:   d.saved_at || now
+        });
+      }
+    }
 
     const { error } = await supabaseClient.from("reports").insert(rows);
     if (error) throw error;
@@ -333,16 +523,13 @@ async function loadSubmittedReports() {
 }
 
 // =====================================================
-// 🎨 RENDER SUBMITTED TABLE — truncated cells, no UUID bleed
+// 🎨 RENDER SUBMITTED TABLE
 // =====================================================
-
-// ตัดข้อความให้สั้น
 function truncate(str, maxLen) {
   if (!str || str === "—") return str || "—";
   return str.length > maxLen ? str.slice(0, maxLen) + "…" : str;
 }
 
-// วันที่สั้น เช่น "24 มี.ค."
 function formatDateShort(s) {
   if (!s) return "—";
   try { return new Date(s).toLocaleDateString("th-TH", { day: "numeric", month: "short" }); }
@@ -360,24 +547,21 @@ async function renderSubmittedTable() {
   }
 
   for (const r of submittedReports) {
-    const shopName  = shopsMap[r.shop_id]       || "—";
-    const prodName  = productsMap[r.product_id] || "—";
-
-    // formatAttrInline คืน "key: val, key: val" — ถ้าข้อมูลดีจะได้ชื่อ ถ้า UUID = ยังไม่ resolve
-    // ป้องกัน UUID โผล่โดยตัดให้สั้นและใส่ title เต็มไว้แทน
-    const attrText  = await formatAttrInline(r.attributes);
+    const shopName = shopsMap[r.shop_id] || "—";
+    const prodName = productsMap[r.product_id] || "—";
+    const attrText = await formatAttrInline(r.attributes);
     const attrShort = truncate(attrText, 36);
 
-    const ackBadge  = r.manager_acknowledged
+    const ackBadge = r.manager_acknowledged
       ? `<span class="badge-ack">👁️ อ่านแล้ว</span>` : "";
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td data-label="วันที่ส่ง">${formatDateShort(r.submitted_at || r.report_date)}</td>
-      <td data-label="ร้านค้า"   title="${escapeHtml(shopName)}">${escapeHtml(truncate(shopName, 10))}</td>
+      <td data-label="ร้านค้า" title="${escapeHtml(shopName)}">${escapeHtml(truncate(shopName, 10))}</td>
       <td data-label="สถานะ"><span class="badge-submitted">✅ ส่งแล้ว</span>${ackBadge}</td>
       <td data-label="รายละเอียด" title="${escapeHtml(r.note||"")}">${escapeHtml(truncate(r.note||"—", 22))}</td>
-      <td data-label="สินค้า"    title="${escapeHtml(prodName + (attrText ? ' · ' + attrText : ''))}">
+      <td data-label="สินค้า" title="${escapeHtml(prodName + (attrText ? ' · ' + attrText : ''))}">
         <div style="font-weight:500;">${escapeHtml(truncate(prodName, 16))}</div>
         ${attrShort && attrShort !== "—" ? `<div class="attr-sub">${escapeHtml(attrShort)}</div>` : ""}
       </td>
@@ -452,12 +636,12 @@ function collectFormData() {
     report_date:  document.getElementById("reportDate")?.value      || null,
     province:     document.getElementById("provinceSelect")?.value  || null,
     shop_id:      document.getElementById("shopSelect")?.value      || null,
-    category_id:  document.getElementById("categorySelect")?.value  || null,
-    product_id:   document.getElementById("productSelect")?.value   || null,
-    source:       document.getElementById("source")?.value          || null,
     status_visit: document.getElementById("status")?.value          || null,
     note:         document.getElementById("note")?.value            || null,
-    attributes:   collectDynamicAttributes()
+    products:     selectedProducts.map(p => ({
+      product_id: p.product_id,
+      attributes: p.attributes || {}
+    }))
   };
 }
 
@@ -473,14 +657,22 @@ function clearForm() {
     shopSel.disabled = true;
   }
 
-  ["categorySelect","productSelect"].forEach(id => {
-    const el = document.getElementById(id); if(el) el.value = "";
-  });
-  ["source","status"].forEach(id => {
+  ["status"].forEach(id => {
     const el = document.getElementById(id); if(el) el.selectedIndex = 0;
   });
   document.getElementById("note").value = "";
-  clearDynamicAttributes();
+
+  // reset picker
+  const catSel  = document.getElementById("pickerCategory");
+  const prodSel = document.getElementById("pickerProduct");
+  const attrBox = document.getElementById("pickerAttributes");
+  if (catSel)  catSel.value = "";
+  if (prodSel) prodSel.innerHTML = `<option value="">-- เลือกสินค้า --</option>`;
+  if (attrBox) attrBox.innerHTML = "";
+
+  // clear selected list
+  selectedProducts = [];
+  renderSelectedProducts();
 }
 
 function setDefaultDate() {
@@ -489,7 +681,7 @@ function setDefaultDate() {
 }
 
 // =====================================================
-// PROVINCES / SHOPS / CATEGORIES / PRODUCTS
+// PROVINCES / SHOPS
 // =====================================================
 async function loadProvinces() {
   try {
@@ -526,114 +718,6 @@ async function loadShopsByProvince(province) {
   } catch(e) { console.error("loadShopsByProvince", e); }
 }
 
-async function loadCategories() {
-  try {
-    const { data } = await supabaseClient.from("categories").select("id,name").order("name");
-    const sel = document.getElementById("categorySelect"); if(!sel) return;
-    sel.innerHTML = `<option value="">-- เลือกหมวดสินค้า --</option>`;
-    data?.forEach(c => {
-      const o = document.createElement("option");
-      o.value = c.id; o.textContent = c.name; sel.appendChild(o);
-    });
-  } catch(e) {}
-}
-
-async function loadProducts(categoryId) {
-  const sel = document.getElementById("productSelect"); if(!sel) return;
-  sel.innerHTML = `<option value="">-- เลือกสินค้า --</option>`;
-  clearDynamicAttributes();
-  if (!categoryId) return;
-  try {
-    const { data } = await supabaseClient.from("products")
-      .select("id,name").eq("category_id",categoryId).order("name");
-    data?.forEach(p => {
-      productsMap[p.id] = p.name;
-      const o = document.createElement("option");
-      o.value = p.id; o.textContent = p.name; sel.appendChild(o);
-    });
-  } catch(e) {}
-}
-
-// =====================================================
-// 🔑 LOAD ATTRIBUTES
-// =====================================================
-async function loadAttributesByProduct(productId, savedValues = {}) {
-  const container = document.getElementById("dynamicAttributes");
-  if (!container) return;
-  container.innerHTML = "";
-  if (!productId) return;
-
-  try {
-    const { data: attrs } = await supabaseClient
-      .from("attributes")
-      .select("*")
-      .eq("product_id", productId)
-      .order("order_no", { ascending: true });
-
-    if (!attrs?.length) return;
-
-    for (const attr of attrs) {
-      const wrap = document.createElement("div");
-      wrap.classList.add("form-group");
-
-      const lbl = document.createElement("label");
-      lbl.innerText = attr.name;
-      if (attr.is_required) lbl.innerHTML += ' <span style="color:red">*</span>';
-      wrap.appendChild(lbl);
-
-      if (attr.input_type === "select") {
-        const s = document.createElement("select");
-        s.dataset.attributeId = attr.id;
-        s.classList.add("dynamic-field");
-
-        const { data: opts } = await supabaseClient
-          .from("attribute_options")
-          .select("value")
-          .eq("attribute_id", attr.id)
-          .order("value");
-
-        s.innerHTML = `<option value="">-- เลือก --</option>`;
-        opts?.forEach(o => {
-          const op = document.createElement("option");
-          op.value = o.value;
-          op.textContent = o.value;
-          if (savedValues[attr.id] === o.value) op.selected = true;
-          s.appendChild(op);
-        });
-        wrap.appendChild(s);
-      } else {
-        const inp = document.createElement("input");
-        inp.type = attr.input_type === "number" ? "number" : "text";
-        inp.dataset.attributeId = attr.id;
-        inp.classList.add("dynamic-field");
-        inp.value = savedValues[attr.id] || "";
-        wrap.appendChild(inp);
-      }
-
-      container.appendChild(wrap);
-    }
-  } catch(e) {
-    console.error("loadAttributesByProduct", e);
-  }
-}
-
-async function handleProductChange() {
-  await loadAttributesByProduct(this.value);
-}
-
-function collectDynamicAttributes() {
-  const attrs = {};
-  document.querySelectorAll(".dynamic-field").forEach(f => {
-    if (f.value) attrs[f.dataset.attributeId] = f.value;
-  });
-  return attrs;
-}
-
-function clearDynamicAttributes() {
-  const c = document.getElementById("dynamicAttributes");
-  if (c) c.innerHTML = "";
-}
-
 // =====================================================
 // EVENT LISTENERS
 // =====================================================
@@ -641,14 +725,15 @@ function setupEventListeners() {
   const prov = document.getElementById("provinceSelect");
   if (prov) prov.addEventListener("change", e => loadShopsByProvince(e.target.value));
 
-  const cat = document.getElementById("categorySelect");
-  if (cat) cat.addEventListener("change", e => {
-    loadProducts(e.target.value);
-    clearDynamicAttributes();
-  });
+  // Picker events
+  const pickerCat = document.getElementById("pickerCategory");
+  if (pickerCat) pickerCat.addEventListener("change", e => onPickerCategoryChange(e.target.value));
 
-  const prod = document.getElementById("productSelect");
-  if (prod) prod.addEventListener("change", handleProductChange);
+  const pickerProd = document.getElementById("pickerProduct");
+  if (pickerProd) pickerProd.addEventListener("change", e => onPickerProductChange(e.target.value));
+
+  const addBtn = document.getElementById("addProductBtn");
+  if (addBtn) addBtn.addEventListener("click", addSelectedProduct);
 
   const closeBtn = document.getElementById("closeModalBtn");
   if (closeBtn) closeBtn.addEventListener("click", closeModal);

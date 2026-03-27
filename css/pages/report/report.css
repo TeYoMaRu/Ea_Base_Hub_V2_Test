@@ -721,6 +721,178 @@ tbody tr:last-child td { border-bottom: none; }
 }
 
 /* =====================================================
+   PRODUCT PICKER + SELECTED LIST — เพิ่มใน report.css
+   ===================================================== */
+
+/* --- Picker area --- */
+.product-picker {
+  background: #f8faf8;
+  border: 1px dashed #c5dcc5;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.product-picker .form-grid {
+  margin-bottom: 8px;
+}
+
+.picker-attributes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.picker-attributes:empty {
+  display: none;
+}
+
+.btn-add-product {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #3a7d44;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-add-product:hover {
+  background: #2e6336;
+}
+.btn-add-product:active {
+  transform: scale(0.97);
+}
+
+/* --- Selected products section --- */
+.selected-products-section {
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
+.selected-products-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.selected-count {
+  background: #3a7d44;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.selected-product-list {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.empty-product-list {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-size: 13px;
+}
+
+.selected-product-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.15s;
+}
+.selected-product-item:last-child {
+  border-bottom: none;
+}
+.selected-product-item:hover {
+  background: #f8faf8;
+}
+
+.product-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.product-item-name {
+  font-weight: 500;
+  font-size: 14px;
+  color: #222;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-item-attr {
+  font-size: 12px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-remove-product {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background 0.15s;
+}
+.btn-remove-product:hover {
+  background: #fecaca;
+}
+
+/* --- Responsive: mobile --- */
+@media (max-width: 767px) {
+  .product-picker {
+    padding: 12px;
+  }
+  .picker-attributes {
+    grid-template-columns: 1fr;
+  }
+  .selected-product-item {
+    padding: 10px 12px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+/* =====================================================
    FOOTER
    ===================================================== */
 .footer {

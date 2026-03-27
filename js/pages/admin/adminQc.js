@@ -12,6 +12,19 @@ let filteredClaims = [];   // ข้อมูลหลัง filter
 let currentClaim   = null; // claim ที่กำลังดูใน modal
 
 // =====================================================
+// 🛡️ ESCAPE HTML — ป้องกัน XSS
+// =====================================================
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// =====================================================
 // 🔄 รอให้ Supabase พร้อม
 // =====================================================
 async function waitForSupabase() {
@@ -33,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     setupLogout();
 
-    await protectPage(["admin", "adminQC", "adminqc"]);
+    await protectPage(["admin", "adminQc", "adminqc"]);
 
     // โหลดข้อมูล
     await loadClaims();
@@ -191,9 +204,9 @@ function renderTable(claims) {
     const thumbHtml = buildThumbsHtml(claim.media_urls, 3, 'cell-thumb', 'cell-thumb-video');
     const noMedia   = (!claim.media_urls || claim.media_urls.length === 0);
 
-    // Claim types
+    // Claim types — escape แต่ละ type
     const typesHtml = (claim.claim_types && claim.claim_types.length > 0)
-      ? claim.claim_types.map(t => `<span class="type-tag">${t}</span>`).join('')
+      ? claim.claim_types.map(t => `<span class="type-tag">${escapeHtml(t)}</span>`).join('')
       : '<span style="color:#cbd5e1;font-size:0.75rem;">—</span>';
 
     tr.innerHTML = `
@@ -202,13 +215,13 @@ function renderTable(claims) {
         <div class="cell-sub">${formatDateTime(claim.created_at)}</div>
       </td>
       <td>
-        <div style="font-weight:500;">${claim.emp_name || '—'}</div>
-        <div class="cell-sub">${claim.area || '—'}</div>
+        <div style="font-weight:500;">${escapeHtml(claim.emp_name) || '—'}</div>
+        <div class="cell-sub">${escapeHtml(claim.area) || '—'}</div>
       </td>
-      <td>${claim.customer || '—'}</td>
+      <td>${escapeHtml(claim.customer) || '—'}</td>
       <td class="cell-product">
-        <div>${claim.product || '—'}</div>
-        <div class="cell-sub">${claim.qty || ''}</div>
+        <div>${escapeHtml(claim.product) || '—'}</div>
+        <div class="cell-sub">${escapeHtml(claim.qty) || ''}</div>
       </td>
       <td><div class="cell-types">${typesHtml}</div></td>
       <td>
@@ -246,7 +259,7 @@ function buildThumbsHtml(urls, maxShow, imgClass, vidClass) {
     if (isVideo(url)) {
       html += `<div class="${vidClass}">🎥</div>`;
     } else {
-      html += `<img class="${imgClass}" src="${url}" onerror="this.style.display='none'" alt="">`;
+      html += `<img class="${imgClass}" src="${escapeHtml(url)}" onerror="this.style.display='none'" alt="">`;
     }
   });
 
@@ -267,7 +280,7 @@ function buildStatusBadge(status) {
     rejected:  { label: '❌ ปฏิเสธ',    cls: 'rejected'  },
     draft:     { label: '📝 Draft',      cls: 'draft'     },
   };
-  const s = map[status] || { label: status, cls: '' };
+  const s = map[status] || { label: escapeHtml(status), cls: '' };
   return `<span class="status-badge ${s.cls}">${s.label}</span>`;
 }
 
@@ -285,19 +298,19 @@ function openModal(claim) {
   document.getElementById('modalTitle').textContent =
     `เคลม #${claim.id.substring(0, 8).toUpperCase()}`;
 
-  // Info Grid
+  // Info Grid — escape ทุก field ที่มาจาก DB
   document.getElementById('modalInfoGrid').innerHTML = `
     <div class="info-row">
       <div class="info-label">พนักงานขาย</div>
-      <div class="info-value">${claim.emp_name || '—'}</div>
+      <div class="info-value">${escapeHtml(claim.emp_name) || '—'}</div>
     </div>
     <div class="info-row">
       <div class="info-label">เขตการขาย</div>
-      <div class="info-value">${claim.area || '—'}</div>
+      <div class="info-value">${escapeHtml(claim.area) || '—'}</div>
     </div>
     <div class="info-row">
       <div class="info-label">ร้านค้า / ลูกค้า</div>
-      <div class="info-value">${claim.customer || '—'}</div>
+      <div class="info-value">${escapeHtml(claim.customer) || '—'}</div>
     </div>
     <div class="info-row">
       <div class="info-label">วันที่แจ้งเคลม</div>
@@ -305,46 +318,46 @@ function openModal(claim) {
     </div>
     <div class="info-row full">
       <div class="info-label">สินค้า</div>
-      <div class="info-value">${claim.product || '—'}</div>
+      <div class="info-value">${escapeHtml(claim.product) || '—'}</div>
     </div>
     <div class="info-row">
       <div class="info-label">จำนวน</div>
-      <div class="info-value">${claim.qty || '—'}</div>
+      <div class="info-value">${escapeHtml(claim.qty) || '—'}</div>
     </div>
     <div class="info-row">
       <div class="info-label">วันที่เปิดบิล</div>
-      <div class="info-value">${formatDate(claim.buy_date) || '—'}</div>
+      <div class="info-value">${formatDate(claim.buy_date)}</div>
     </div>
     <div class="info-row">
       <div class="info-label">วันที่ผลิต</div>
-      <div class="info-value">${formatDate(claim.mfg_date) || '—'}</div>
+      <div class="info-value">${formatDate(claim.mfg_date)}</div>
     </div>
     <div class="info-row">
       <div class="info-label">สถานะ</div>
       <div class="info-value">${buildStatusBadge(claim.status)}</div>
     </div>`;
 
-  // Claim Types
+  // Claim Types — escape แต่ละ type
   const typesEl = document.getElementById('modalClaimTypes');
   if (claim.claim_types && claim.claim_types.length > 0) {
     typesEl.innerHTML = claim.claim_types
-      .map(t => `<span class="modal-type-tag">${t}</span>`)
+      .map(t => `<span class="modal-type-tag">${escapeHtml(t)}</span>`)
       .join('');
   } else {
     typesEl.innerHTML = '<span style="color:#94a3b8;">ไม่ระบุ</span>';
   }
 
-  // Detail
+  // Detail — ใช้ textContent ป้องกัน XSS อยู่แล้ว ✓
   document.getElementById('modalDetail').textContent =
     claim.detail || '—';
 
   // Media
   renderModalMedia(claim.media_urls);
 
-  // QC Status current
+  // QC Status current — escape qc_comment
   document.getElementById('qcStatusCurrent').innerHTML =
     `สถานะปัจจุบัน: ${buildStatusBadge(claim.status)}
-     ${claim.qc_comment ? `<br><span style="color:#475569;font-size:0.82rem;">💬 ${claim.qc_comment}</span>` : ''}`;
+     ${claim.qc_comment ? `<br><span style="color:#475569;font-size:0.82rem;">💬 ${escapeHtml(claim.qc_comment)}</span>` : ''}`;
 
   // ล้าง comment input
   document.getElementById('qcComment').value = claim.qc_comment || '';
@@ -368,17 +381,27 @@ function renderModalMedia(urls) {
     item.className = 'media-item';
 
     if (isVideo(url)) {
-      item.innerHTML = `
-        <div class="media-video-wrap">
-          <video src="${url}" preload="metadata"></video>
-          <div class="media-play-icon">▶</div>
-        </div>`;
-      item.onclick = () => {
-        // เปิด video ในแท็บใหม่
-        window.open(url, '_blank');
-      };
+      const video = document.createElement('video');
+      video.src = url;
+      video.preload = 'metadata';
+
+      const playIcon = document.createElement('div');
+      playIcon.className = 'media-play-icon';
+      playIcon.textContent = '▶';
+
+      const wrap = document.createElement('div');
+      wrap.className = 'media-video-wrap';
+      wrap.appendChild(video);
+      wrap.appendChild(playIcon);
+      item.appendChild(wrap);
+
+      item.onclick = () => { window.open(url, '_blank'); };
     } else {
-      item.innerHTML = `<img src="${url}" alt="" onerror="this.parentElement.style.display='none'">`;
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = '';
+      img.onerror = function() { this.parentElement.style.display = 'none'; };
+      item.appendChild(img);
       item.onclick = () => openLightbox(url);
     }
 
@@ -401,31 +424,26 @@ async function updateClaimStatus(newStatus) {
   if (!currentClaim) return;
 
   const comment = document.getElementById('qcComment').value.trim();
-  // ✅ ใส่แทน
-const label = newStatus === 'approved' ? 'อนุมัติ' : 'ปฏิเสธ';
-const type  = newStatus === 'approved' ? 'success' : 'danger';
+  const label = newStatus === 'approved' ? 'อนุมัติ' : 'ปฏิเสธ';
+  const type  = newStatus === 'approved' ? 'success' : 'danger';
 
-const ok = await ConfirmDialog.show({
-  title:   `ยืนยันการ${label}`,
-  message: `ยืนยันการ${label}เคลมนี้?`,
-  okText:  label,
-  type:    type,
-});
-if (!ok) return;
-
-  
+  const ok = await ConfirmDialog.show({
+    title:   `ยืนยันการ${label}`,
+    message: `ยืนยันการ${label}เคลมนี้?`,
+    okText:  label,
+    type:    type,
+  });
+  if (!ok) return;
 
   try {
-    // อัปเดตใน DB
-    // หมายเหตุ: ถ้าต้องการเก็บ qc_comment ให้เพิ่ม column qc_comment (text) ใน table claims
     const { data: { user } } = await supabaseClient.auth.getUser();
 
-const updateData = {
-  status:     newStatus,
-  qc_comment: comment || null,
-  qc_by:      user?.id || null,
-  updated_at: new Date().toISOString()
-};
+    const updateData = {
+      status:     newStatus,
+      qc_comment: comment || null,
+      qc_by:      user?.id || null,
+      updated_at: new Date().toISOString()
+    };
 
     const { error } = await supabaseClient
       .from('claims')
@@ -434,27 +452,22 @@ const updateData = {
 
     if (error) throw error;
 
-    // อัปเดต local state
-    currentClaim.status = newStatus;
-
+    // อัปเดต local state ให้ครบทุก field
     const idx = allClaims.findIndex(c => c.id === currentClaim.id);
-    if (idx !== -1) allClaims[idx].status = newStatus;
+    if (idx !== -1) {
+      allClaims[idx].status     = newStatus;
+      allClaims[idx].qc_comment = comment || null;
+      allClaims[idx].qc_by      = user?.id || null;
+      allClaims[idx].updated_at = updateData.updated_at;
+    }
 
     // Refresh UI
     updateSummaryCards();
     applyFilters();
 
-    // อัปเดต status badge ใน modal
-    document.getElementById('qcStatusCurrent').innerHTML =
-      `สถานะปัจจุบัน: ${buildStatusBadge(newStatus)}`;
-
-  // ✅ ใหม่
-    // ปิด modal เคลมก่อน แล้วค่อยแสดง success
+    // ปิด modal แล้วแสดง toast (เรียกครั้งเดียว)
     closeModal();
-
-  // ✅ ใหม่ (toast หายเองใน 2.5 วิ)
-closeModal();
-showToast(`${label}เคลมสำเร็จ`, type);
+    showToast(`${label}เคลมสำเร็จ`, type);
 
   } catch (err) {
     console.error('❌ updateClaimStatus error:', err);
@@ -491,15 +504,15 @@ function exportPDF() {
 
   const c = currentClaim;
 
-  // สร้าง HTML สำหรับ print
+  // สร้าง HTML สำหรับ print — escape ข้อมูลจาก DB
   const mediaHtml = (c.media_urls && c.media_urls.length > 0)
     ? c.media_urls.filter(u => !isVideo(u))
-        .map(u => `<img src="${u}" style="width:180px;height:180px;object-fit:cover;border-radius:8px;border:1px solid #e2e8f0;" onerror="this.style.display='none'">`)
+        .map(u => `<img src="${escapeHtml(u)}" style="width:180px;height:180px;object-fit:cover;border-radius:8px;border:1px solid #e2e8f0;" onerror="this.style.display='none'">`)
         .join('')
     : '<p style="color:#94a3b8;">ไม่มีรูปภาพ</p>';
 
   const typesHtml = (c.claim_types && c.claim_types.length > 0)
-    ? c.claim_types.map(t => `<span style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:20px;padding:3px 12px;font-size:13px;margin-right:4px;">${t}</span>`).join('')
+    ? c.claim_types.map(t => `<span style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:20px;padding:3px 12px;font-size:13px;margin-right:4px;">${escapeHtml(t)}</span>`).join('')
     : '—';
 
   const printWin = window.open('', '_blank', 'width=900,height=700');
@@ -508,7 +521,7 @@ function exportPDF() {
     <html lang="th">
     <head>
       <meta charset="UTF-8">
-      <title>ใบแจ้งเคลม — ${c.id.substring(0,8).toUpperCase()}</title>
+      <title>ใบแจ้งเคลม — ${escapeHtml(c.id.substring(0,8).toUpperCase())}</title>
       <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
       <style>
         * { box-sizing: border-box; }
@@ -521,7 +534,7 @@ function exportPDF() {
         .info-box { background: #f8fafc; border-radius: 8px; padding: 10px 14px; }
         .info-lbl { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; }
         .info-val { font-weight: 500; font-size: 0.9rem; }
-        .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; line-height: 1.7; min-height: 60px; }
+        .detail-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; line-height: 1.7; min-height: 60px; white-space: pre-wrap; }
         .media-wrap { display: flex; flex-wrap: wrap; gap: 10px; }
         .status-badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
         .submitted { background: #fef9c3; color: #854d0e; }
@@ -533,17 +546,17 @@ function exportPDF() {
     </head>
     <body>
       <h1>⚠️ ใบแจ้งเคลมสินค้า</h1>
-      <div class="sub">เลขที่: ${c.id.toUpperCase()} • สร้างเมื่อ: ${formatDateTime(c.created_at)}</div>
+      <div class="sub">เลขที่: ${escapeHtml(c.id.toUpperCase())} • สร้างเมื่อ: ${formatDateTime(c.created_at)}</div>
 
       <div class="section">
         <div class="section-title">ข้อมูลการแจ้งเคลม</div>
         <div class="grid2">
-          <div class="info-box"><div class="info-lbl">พนักงานขาย</div><div class="info-val">${c.emp_name || '—'}</div></div>
-          <div class="info-box"><div class="info-lbl">เขตการขาย</div><div class="info-val">${c.area || '—'}</div></div>
-          <div class="info-box"><div class="info-lbl">ร้านค้า / ลูกค้า</div><div class="info-val">${c.customer || '—'}</div></div>
+          <div class="info-box"><div class="info-lbl">พนักงานขาย</div><div class="info-val">${escapeHtml(c.emp_name) || '—'}</div></div>
+          <div class="info-box"><div class="info-lbl">เขตการขาย</div><div class="info-val">${escapeHtml(c.area) || '—'}</div></div>
+          <div class="info-box"><div class="info-lbl">ร้านค้า / ลูกค้า</div><div class="info-val">${escapeHtml(c.customer) || '—'}</div></div>
           <div class="info-box"><div class="info-lbl">วันที่แจ้งเคลม</div><div class="info-val">${formatDate(c.claim_date)}</div></div>
-          <div class="info-box" style="grid-column:1/-1"><div class="info-lbl">สินค้า</div><div class="info-val">${c.product || '—'}</div></div>
-          <div class="info-box"><div class="info-lbl">จำนวน</div><div class="info-val">${c.qty || '—'}</div></div>
+          <div class="info-box" style="grid-column:1/-1"><div class="info-lbl">สินค้า</div><div class="info-val">${escapeHtml(c.product) || '—'}</div></div>
+          <div class="info-box"><div class="info-lbl">จำนวน</div><div class="info-val">${escapeHtml(c.qty) || '—'}</div></div>
           <div class="info-box"><div class="info-lbl">สถานะ</div><div class="info-val"><span class="status-badge ${c.status}">${c.status === 'submitted' ? '⏳ รออนุมัติ' : c.status === 'approved' ? '✅ อนุมัติ' : '❌ ปฏิเสธ'}</span></div></div>
         </div>
       </div>
@@ -555,7 +568,7 @@ function exportPDF() {
 
       <div class="section">
         <div class="section-title">รายละเอียด</div>
-        <div class="detail-box">${c.detail || '—'}</div>
+        <div class="detail-box">${escapeHtml(c.detail) || '—'}</div>
       </div>
 
       <div class="section">
@@ -645,7 +658,7 @@ function showTableError(msg) {
   document.getElementById('qcTableBody').innerHTML = `
     <tr>
       <td colspan="8" class="table-loading" style="color:#dc2626;">
-        ❌ ${msg}
+        ❌ ${escapeHtml(msg)}
       </td>
     </tr>`;
 }
@@ -666,7 +679,7 @@ function formatDateTime(ts) {
   return `${formatDate(ts)} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
-console.log('✅ adminQC.js loaded');
+console.log('✅ adminQc.js loaded');
 
 // =====================================================
 // 🔔 TOAST NOTIFICATION
@@ -705,7 +718,7 @@ function showToast(message, type = 'success') {
     transform: translateY(12px);
     transition: opacity 0.3s ease, transform 0.3s ease;
   `;
-  toast.innerHTML = `<span>${c.icon}</span><span>${message}</span>`;
+  toast.innerHTML = `<span>${c.icon}</span><span>${escapeHtml(message)}</span>`;
   document.body.appendChild(toast);
 
   // แสดง

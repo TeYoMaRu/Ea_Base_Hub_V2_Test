@@ -1,259 +1,78 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <base target="_top">
-  <meta charset="UTF-8">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">  
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My App</title>
 
-  <title>รายงานฟอร์ม 2</title>
-  <style>
-    body {
-       font-family: kanit, Tahoma, sans-serif;
-       padding: 20px; background: #f5f5f5;
-       }
-    .paper {
-       max-width: 900px;
-       margin: 0 auto;
-       background: #fff;
-       padding: 30px;
-       border-radius: 8px; 
-      }
-    table { 
-      width: 100%; 
-      border-collapse: collapse; 
-      margin-top: 20px; 
-    }
-    th, td { 
-      border: 1px solid #ccc; 
-      padding: 8px; 
-      text-align: center; 
-    }
-    th { 
-      background: #eee; 
-    }
-    .info { 
-      background: #e3f2fd; 
-      padding: 15px; 
-      border-radius: 6px; 
-      margin-bottom: 20px; 
-      line-height: 1.8; 
-    }
-    .error { 
-      background: #ffebee; 
-      color: #c62828; 
-      padding: 15px; 
-      border-radius: 6px; 
-    }
-    .loading { 
-      text-align: center; 
-      padding: 40px; 
-      color: #666; 
-    }
-    .summary { 
-      background: #fff3e0; 
-      padding: 15px; 
-      border-radius: 6px; 
-      margin-top: 20px; 
-      font-size: 18px; 
-      text-align: center; 
-    }
-    button { padding: 12px 24px; margin: 5px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; }
-    button:disabled { opacity: .5; cursor: not-allowed; }
-    .btn-primary { background: #1976d2; color: #fff; }
-    .btn-export { background: #FF9800; color: #fff; }
-    .btn-secondary { background: #757575; color: #fff; }
+  <!-- FONT -->
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap" rel="stylesheet" />
 
-    /* Loading */
-    .loading-card {
-      background: #fff;
-      padding: 40px 50px;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.4);
-      text-align: center;
-    }
-    .spinner-container {
-      position: relative;
-      width: 130px;
-      height: 130px;
-      margin: 0 auto;
-    }
-    .spinner-ring {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 4px solid rgba(0,128,0,.2);
-      border-top: 4px solid green;
-      animation: spin 1.2s linear infinite;
-      box-sizing: border-box;
-    }
-    .loading-logo {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80px;
-      height: 80px;
-      background: #fff;
-      border-radius: 50%;
-      padding: 6px;
-      object-fit: contain;
-      box-sizing: border-box;
-    }
-    .loading-text {
-      margin-top: 20px;
-      font-weight: bold;
-      color: green;
-      font-size: 16px;
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
+  <!-- ICON -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
 
-    @media print {
-      button { display: none !important; }
-      .paper { box-shadow: none; }
-    }
-  </style>
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/base/layout.css" />
 </head>
 
 <body>
 
-<?!= include('nav'); ?>
-
-<div class="paper">
-  <h1 style="text-align:center;">บริษัท เอิร์นนี่ แอดวานซ์</h1>
-  <h2 style="text-align:center;">รายงานฟอร์ม 2 (เคลียร์ค่าใช้จ่าย)</h2>
-
-  <div id="content">
-    <div class="loading">⏳ กำลังโหลดข้อมูล...</div>
-  </div>
-</div>
-
-<!-- Loading Overlay -->
-<div id="loadingOverlay" style="
-  display:none; position:fixed; inset:0;
-  background:rgba(0,0,0,.45);
-  justify-content:center; align-items:center; z-index:9999;">
-  <div class="loading-card">
-    <div class="spinner-container">
-      <div class="spinner-ring"></div>
-      <img class="loading-logo"
-        src="https://drive.google.com/thumbnail?id=1qtkgeKvcKdqVP2DKctYnYtL-OeRMB9gT&sz=w200"
-        onerror="this.style.display='none'">
+  <!-- ================= HEADER ================= -->
+  <header class="app-header">
+    <div class="logo">
+      <div class="logo-circle">
+        <img src="/assets/icons/icon-192.png" alt="logo" />
+      </div>
+      <h2>EABaseHub</h2>
     </div>
-    <div class="loading-text">กำลังโหลดข้อมูล…</div>
-  </div>
-</div>
 
-<script>
-  var DOC_NO = '';
-  
-  // ดึง doc จาก URL
-  var search = window.location.search;
-  var params = new URLSearchParams(search);
-  DOC_NO = params.get('doc');
-  
-  // ถ้าไม่ได้ ลองวิธีอื่น
-  if (!DOC_NO) {
-    var match = window.location.href.match(/[?&]doc=([^&]*)/);
-    if (match) {
-      DOC_NO = decodeURIComponent(match[1]);
+    <div class="user-box">
+      <div class="user-avatar" id="userAvatar">👤</div>
+      <div class="user-info">
+        <div class="user-name" id="userName">กำลังโหลด...</div>
+      </div>
+
+      <button class="btn-logout" onclick="logout()">
+        <span class="material-symbols-rounded">logout</span>
+      </button>
+    </div>
+  </header>
+
+
+  <!-- ================= NAV ================= -->
+  <nav class="app-nav">
+    <a href="/index.html">หน้าแรก</a>
+    <a href="/pages/reports/report.html">รายงาน</a>
+    <a href="/pages/forms/formClaim.html">เคลมสินค้า</a>
+    <a href="/pages/forms/formHub.html">แบบฟอร์ม</a>
+    <a href="/pages/forms/shopUser.html">ร้านค้าของฉัน</a>
+  </nav>
+
+
+  <!-- ================= MAIN (EMPTY) ================= -->
+  <main>
+    <div class="container">
+      <!-- 👉 เอา content ของแต่ละหน้าใส่ตรงนี้ -->
+    </div>
+  </main>
+
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    © 2026 EABaseHub | ระบบจัดการข้อมูล
+  </footer>
+
+
+  <!-- ================= SCRIPT ================= -->
+  <script src="/js/core/supabaseClient.js"></script>
+  <script src="/js/core/auth.js"></script>
+
+  <script>
+    function logout() {
+      alert("Logout...");
+      // ใส่ logic logout จริงตรงนี้
     }
-  }
-
-  window.onload = function() {
-    var content = document.getElementById('content');
-    var debugEl = document.getElementById('debug');
-    
-    if (debugEl) {
-      debugEl.innerHTML = 'DOC_NO: ' + DOC_NO + '<br>URL: ' + window.location.href;
-    }
-
-    if (!DOC_NO || DOC_NO === 'null' || DOC_NO === 'undefined') {
-      content.innerHTML = '<div class="error">❌ ไม่พบเลขเอกสาร</div>' +
-        '<p>กรุณากลับไปบันทึก Form 1 ใหม่</p>' +
-        '<button class="btn-secondary1" onclick="goForm1()"><i class="material-icons">arrow_back_ios</i>ไป Form 1</button>';
-      return;
-    }
-
-    google.script.run
-      .withSuccessHandler(function(data) {
-        showReport(data);
-      })
-      .withFailureHandler(function(err) {
-        content.innerHTML = '<div class="error">❌ ' + err.message + '</div>' +
-          '<button class="btn-secondary1" onclick="goForm1()"><i class="material-icons">arrow_back_ios</i>ไป Form 1</button>';
-      })
-      .getPlanData(DOC_NO);
-  };
-
-  function showReport(data) {
-    var html = '';
-    
-    html += '<div class="info">';
-    html += '<strong>เลขเอกสาร:</strong> ' + data.docNo + '<br>';
-    html += '<strong>พนักงาน:</strong> ' + data.emp + '<br>';
-    html += '<strong>ภาค:</strong> ' + data.zone + '<br>';
-    html += '<strong>วันที่:</strong> ' + data.start + ' ถึง ' + data.end;
-    html += '</div>';
-
-    html += '<table><thead><tr>';
-    html += '<th>วันที่</th><th>จาก</th><th>ไป</th>';
-    html += '<th>ร้าน 1</th><th>ร้าน 2</th><th>ร้าน 3</th><th>หมายเหตุ</th>';
-    html += '</tr></thead><tbody>';
-
-    for (var i = 0; i < data.rows.length; i++) {
-      var r = data.rows[i];
-      html += '<tr>';
-      html += '<td>' + (r.date || '-') + '</td>';
-      html += '<td>' + (r.from || '-') + '</td>';
-      html += '<td>' + (r.to || '-') + '</td>';
-      html += '<td>' + (r.shop1 || '-') + '</td>';
-      html += '<td>' + (r.shop2 || '-') + '</td>';
-      html += '<td>' + (r.shop3 || '-') + '</td>';
-      html += '<td>' + (r.note || '-') + '</td>';
-      html += '</tr>';
-    }
-
-    html += '</tbody></table><br>';
-    html += '<button class="btn-primary" onclick="exportPDF()">📄 Export PDF</button> ';
-    html += '<button class="btn-secondary" onclick="printPage()">🖨 Print</button> ';
-    html += '<button class="btn-primary" onclick="goForm2()">➡ ไป Form 2</button> ';
-    html += '<button class="btn-secondary" onclick="goBack()">← กลับเมนู</button>';
-
-    document.getElementById('content').innerHTML = html;
-  }
-
-  function exportPDF() {
-    google.script.run
-      .withSuccessHandler(function(url) { window.open(url, '_blank'); })
-      .withFailureHandler(function(err) { alert('Export ไม่สำเร็จ: ' + err.message); })
-      .exportPlanPDF(DOC_NO);
-  }
-
-  function printPage() { window.print(); }
-
-  function goForm1() {
-    google.script.run.withSuccessHandler(function(url) {
-      window.top.location.href = url + '?page=form1';
-    }).getBaseUrl();
-  }
-
-  function goForm2() {
-    google.script.run.withSuccessHandler(function(url) {
-      window.top.location.href = url + '?page=form2&doc=' + encodeURIComponent(DOC_NO);
-    }).getBaseUrl();
-  }
-
-  function goBack() {
-    google.script.run.withSuccessHandler(function(url) {
-      window.top.location.href = url + '?page=menu';
-    }).getBaseUrl();
-  }
-</script>
+  </script>
 
 </body>
 </html>

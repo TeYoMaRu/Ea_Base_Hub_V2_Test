@@ -43,7 +43,7 @@ async function redirectIfLoggedIn() {
     } else if (profile.role === "sales") {
       window.location.href = "/index.html";
     } else if (profile.role === "manager") {
-      window.location.href = "/pages/dashboard/managerDashboard.html";
+      window.location.href = "/pages/reports/reportTracker.html";
     } else if (profile.role === "executive") {
       window.location.href = "/pages/dashboard/executiveDashboard.html";
     }
