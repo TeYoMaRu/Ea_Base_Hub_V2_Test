@@ -79,11 +79,11 @@
     </header>
 
     <!-- NAV -->
-  <nav class="app-nav">
-    <a href="/pages/admin/adminDashboard.html">หน้าหลัก</a>    
-    <a href="/pages/admin/admintor.html" class="active">การจัดการสิทธิ์</a>
-    <a href="/pages/admin/AddProductSpec.html">การจัดการสินค้า</a>    
-  </nav>
+    <nav class="app-nav">
+      <a href="/pages/admin/adminDashboard.html">หน้าหลัก</a>
+      <a href="/pages/admin/admintor.html" class="active">การจัดการสิทธิ์</a>
+      <a href="/pages/admin/AddProductSpec.html">การจัดการสินค้า</a>
+    </nav>
 
     <!-- =====================================================
        MAIN CONTENT
@@ -179,7 +179,7 @@
             Manager
           </div>
 
-          <!-- เพิ่มต่อจาก chip Manager -->
+          <!-- EXECUTIVE -->
           <div class="stat-chip chip-executive" id="statExecutive">
             <span class="material-symbols-outlined"> star </span>
 
@@ -234,13 +234,13 @@
           <!-- FILTER -->
           <div class="filter-group">
             <!-- filter role -->
+            <!-- ⚠️ value ต้องตรงกับค่าใน DB: adminQc (ไม่ใช่ adminQC) -->
             <select id="filterRole" onchange="filterUsers()">
               <option value="">ทุก Role</option>
               <option value="admin">Admin</option>
-              <option value="adminQC">AdminQC</option>
+              <option value="adminQc">AdminQC</option>
               <option value="manager">Manager</option>
               <option value="executive">Executive</option>
-              <!-- ✅ เพิ่ม -->
               <option value="sales">Sales</option>
               <option value="user">User</option>
             </select>
@@ -328,7 +328,7 @@
           </div>
 
           <!-- role + status -->
-
+          <!-- ⚠️ value ต้องตรงกับค่าใน DB: adminQc (ไม่ใช่ adminQC) -->
           <div class="form-row">
             <div class="form-group">
               <label>
@@ -341,7 +341,6 @@
                 <option value="sales">Sales</option>
                 <option value="manager">Manager</option>
                 <option value="executive">Executive</option>
-                <!-- ✅ เพิ่ม -->
                 <option value="adminQc">AdminQC</option>
                 <option value="admin">Admin</option>
               </select>
@@ -432,7 +431,7 @@
     </div>
 
     <!-- ============================================================
-     USER ROW TEMPLATE  
+     USER ROW TEMPLATE
      JS จะ clone template นี้แล้วเติมข้อมูลลงไป
      ต้องการแก้ layout / สี / icon → แก้ใน template นี้ได้เลย
      ไม่ต้องแตะ admintor.js
@@ -511,9 +510,9 @@
     <script src="/js/core/auth.js"></script>
 
     <!-- script ของหน้า admin user -->
-    <script src="/js/pages/admin/renderUsers.js"></script>
+    <!-- ⚠️ ชื่อไฟล์ต้องตรงกับไฟล์จริงบน server (case-sensitive) -->
+    <script src="/js/pages/admin/Renderusers.js"></script>
     <script src="/js/pages/admin/admintor.js"></script>
-
 
     <script src="/js/core/loadingSplash.js"></script>
   </body>
