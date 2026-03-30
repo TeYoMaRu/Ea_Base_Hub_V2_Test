@@ -24,10 +24,7 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
       rel="stylesheet"
     />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 
     <!-- =========================
          PWA CONFIG
@@ -41,9 +38,10 @@
     />
 
     <!-- =========================
-         CSS STYLES - ใช้ไฟล์ใหม่ที่ปรับปรุงแล้ว
+         CSS STYLES
          ========================= -->
     <link rel="stylesheet" href="/css/index.css" />
+    <link rel="stylesheet" href="/css/components/Announcements.css" />
   </head>
 
   <body>
@@ -83,16 +81,12 @@
           </a>
 
           <a class="menu-item" href="/pages/reports/report.html">
-            <span class="material-symbols-outlined menu-icon"
-              >edit_document</span
-            >
+            <span class="material-symbols-outlined menu-icon">edit_document</span>
             <span class="menu-text">เขียนรายงาน</span>
           </a>
 
           <a class="menu-item" href="/pages/forms/formClaim.html">
-            <span class="material-symbols-outlined menu-icon"
-            >assignment_late</span
-            >
+            <span class="material-symbols-outlined menu-icon">assignment_late</span>
             <span class="menu-text">แจ้งเคลมสินค้า</span>
           </a>
           
@@ -108,7 +102,6 @@
           
           <a class="menu-item" href="#">
             <span class="material-symbols-outlined menu-icon">linked_services</span>
-            <!-- <span class="menu-text">Looker Studio</span> -->
             <span class="menu-text">CommingSoon</span>
           </a>
 
@@ -143,7 +136,6 @@
               </div>
 
               <div class="header-right">
-                <!-- <div class="user-badge" id="userEmail">กำลังโหลด...</div> -->
                 <button class="logout-btn" onclick="logout()">
                   <span
                     class="material-symbols-outlined"
@@ -194,31 +186,19 @@
                  ACTION CARDS - การ์ดปุ่มกระทำหลัก
                  ========================= -->
             <div class="actions">
-              <!-- เขียนรายงาน -->
-              <a
-                href="/pages/reports/report.html"
-                class="action-card theme-green"
-              >
+              <a href="/pages/reports/report.html" class="action-card theme-green">
                 <span class="material-symbols-outlined">edit_document</span>
                 <h3>เขียนรายงาน</h3>
                 <p>บันทึกการเยี่ยมร้านลูกค้า</p>
               </a>
 
-              <!-- Forms Hub -->
-              <a
-                href="/pages/forms/formHub.html"
-                class="action-card theme-yellow"
-              >
+              <a href="/pages/forms/formHub.html" class="action-card theme-yellow">
                 <span class="material-symbols-outlined">description</span>
                 <h3>Forms Hub</h3>
                 <p>แบบฟอร์มเบิกค่าใช้จ่าย</p>
               </a>
 
-              <!-- แจ้งเคลมสินค้า -->
-              <a
-                href="/pages/forms/formClaim.html"
-                class="action-card theme-pink"
-              >
+              <a href="/pages/forms/formClaim.html" class="action-card theme-pink">
                 <span class="material-symbols-outlined">assignment_late</span>
                 <h3>แจ้งเคลมสินค้า</h3>
                 <p>แจ้งเคลมสินค้ามีปัญหา</p>
@@ -226,59 +206,32 @@
             </div>
 
             <!-- =========================
-                 PROGRESS CARD - การ์ดแสดงความคืบหน้า
+                 ประชาสัมพันธ์ (ไม่ต้องห่อด้วย progress-card)
                  ========================= -->
-            <!-- <div class="progress-card">
-              <div class="progress-title">
-                <span
-                  class="material-symbols-outlined"
-                  style="
-                    font-size: 20px;
-                    vertical-align: middle;
-                    color: var(--primary-500);
-                  "
-                  >edit_note</span
-                >
-                เขียนรายงานแล้ว <strong id="reportDays">0</strong> วัน
+            <section class="announce-section" id="announceSection">
+              <div class="announce-header">
+                <div class="announce-header-left">
+                  <span class="material-symbols-outlined">campaign</span>
+                  <h3>ประชาสัมพันธ์</h3>
+                  <span class="announce-badge" id="announceBadge" style="display:none">0</span>
+                </div>
+                <div class="announce-header-right">
+                  <a href="announcements.html" class="announce-view-all">ดูทั้งหมด →</a>
+                  <button class="announce-btn-add" id="announceBtnAdd" 
+                          style="display:none"
+                          onclick="location.href='adminAnnouncements.html'">
+                    <span class="material-symbols-outlined">add</span>
+                    สร้างประกาศ
+                  </button>
+                </div>
               </div>
+              <div class="announce-list" id="announceList">
+                <!-- Cards render โดย JS -->
+              </div>
+            </section>
 
-              <div class="progress-bar">
-                <div
-                  class="progress-fill"
-                  id="progressFill"
-                  style="width: 0%"
-                ></div>
-              </div>
-
-              <div class="progress-note">
-                <span
-                  class="material-symbols-outlined"
-                  style="font-size: 14px; vertical-align: middle"
-                  >info</span
-                >
-                ส่งรายงานสัปดาห์ละ 1 ครั้ง
-              </div>
-            </div> -->
-
-            <!-- =========================
-                 MY REPORTS - รายงานของฉัน
-                 ========================= -->
-            <div class="my-report">
-              <h3 style="color: var(--primary-700); margin-bottom: 16px">
-                <span
-                  class="material-symbols-outlined"
-                  style="font-size: 24px; vertical-align: middle"
-                  >folder_open</span>
-                ประชาสัมพันธ์
-              </h3>
-              <div id="myReportList">
-                <!-- รายการรายงานจะถูกเพิ่มที่นี่ผ่าน JavaScript -->
-                <p style="text-align: center; color: #999; padding: 20px">
-                  กำลังโหลดข้อมูล...
-                </p>
-              </div>
-            </div>
           </div>
+          <!-- /.main-content -->
 
           <!-- =========================
                RIGHT COLUMN - คอลัมน์ด้านขวา
@@ -288,7 +241,6 @@
               <!-- =========================
                    PROFILE CARD
                    ========================= -->
-
               <div class="user-card">
                 <div class="avatar-wrapper">
                   <img
@@ -334,9 +286,7 @@
                     </button>
                   </div>
                 </div>
-                <div class="calendar-grid" id="calendarGrid">
-                  <!-- ปฏิทินจะถูกสร้างจาก JavaScript -->
-                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
               </div>
 
               <!-- =========================
@@ -366,7 +316,7 @@
                   color: white;
                   border: none;
                   border-radius: var(--radius-md);
-                  font-family: &quot;Kanit&quot;, sans-serif;
+                  font-family: 'Kanit', sans-serif;
                   font-weight: 500;
                   cursor: pointer;
                   transition: all 0.2s;
@@ -382,11 +332,12 @@
             </aside>
           </div>
         </div>
+        <!-- /.content-layout -->
       </main>
     </div>
 
     <!-- =========================
-         LOADING OVERLAY (Optional)
+         LOADING OVERLAY
          ========================= -->
     <div
       id="loadingOverlay"
@@ -421,12 +372,8 @@
 
     <style>
       @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
       }
     </style>
 
@@ -466,7 +413,6 @@
         }
       }
 
-      // ปิดเมนูเมื่อคลิกข้างนอก (Mobile)
       document.addEventListener("click", (e) => {
         const sidebar = document.getElementById("sidebar");
         const menu = document.getElementById("sidebarMenu");
@@ -486,13 +432,10 @@
       function toggleSidebar() {
         const sidebar = document.getElementById("sidebar");
         sidebar.classList.toggle("collapsed");
-
-        // บันทึกสถานะ
         const isCollapsed = sidebar.classList.contains("collapsed");
         localStorage.setItem("sidebarCollapsed", isCollapsed);
       }
 
-      // โหลดสถานะ sidebar จาก localStorage
       window.addEventListener("load", () => {
         const isCollapsed = localStorage.getItem("sidebarCollapsed") === "true";
         if (isCollapsed) {
@@ -504,7 +447,6 @@
       // OPEN SHOP MODAL
       // ===========================
       function openShopModal() {
-        // TODO: เปลี่ยนเป็น modal จริง
         alert("🏪 ฟีเจอร์เปิดร้านค้าใหม่กำลังพัฒนา");
       }
 
@@ -514,19 +456,13 @@
       async function logout() {
         if (confirm("ต้องการออกจากระบบหรือไม่?")) {
           try {
-            // ลบ session
             if (typeof supabaseClient !== "undefined") {
               await supabaseClient.auth.signOut();
             }
-
-            // ลบข้อมูล localStorage
             localStorage.clear();
-
-            // Redirect
             window.location.href = "login.html";
           } catch (error) {
             console.error("Logout error:", error);
-            // Redirect anyway
             window.location.href = "login.html";
           }
         }
@@ -557,12 +493,7 @@
       }
 
       function renderCalendar() {
-        // ฟังก์ชันนี้จะถูก override โดย home.js
-        console.log(
-          "Rendering calendar for:",
-          currentCalendarMonth,
-          currentCalendarYear,
-        );
+        console.log("Rendering calendar for:", currentCalendarMonth, currentCalendarYear);
       }
 
       // ===========================
@@ -605,6 +536,7 @@
     <script src="/js/core/supabaseClient.js"></script>
     <script src="/js/core/userService.js"></script>
     <script src="/js/core/auth.js"></script>
+    <script src="/js/pages/admin/Announcements.js"></script>
     <script src="/js/index.js"></script>
 
     <script src="/js/core/splash.js"></script> 
