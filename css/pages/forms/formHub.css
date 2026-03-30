@@ -1,14 +1,23 @@
 /* =====================================================
-   FORMS HUB - STYLESHEET
-   ไฟล์ CSS สำหรับหน้า Forms Hub
+   FORMS HUB - Pastel Mint Theme
    ===================================================== */
-   /* CSS VARIABLES - กำหนดค่าสีและค่าคงที่ */
-   
+
 :root {
-  --primary:        #0d9488;
-  --primary-light:  #14b8a6;
-  --primary-dark:   #0f766e;
-  --primary-xdark:  #115e59;
+  /* Pastel Mint */
+  --mint-50:  #f4fdf9;
+  --mint-100: #e0f7ed;
+  --mint-200: #b8ebd4;
+  --mint-300: #8fdfba;
+  --mint-400: #6dd3a3;
+  --mint-500: #4caf8a;
+  --mint-600: #3d8c6f;
+  --mint-700: #2f6b54;
+
+  /* Sage Green */
+  --sage-400: #66b366;
+  --sage-500: #4d994d;
+
+  /* Semantic */
   --accent:         #f59e0b;
   --accent-light:   #fcd34d;
   --danger:         #ef4444;
@@ -16,29 +25,28 @@
   --success:        #10b981;
   --info:           #3b82f6;
 
-  --bg-base:        #f0fdfa;
+  --bg-base:        #f9fcfb;
   --bg-card:        #ffffff;
-  --bg-subtle:      #f0fdf4;
-  --bg-muted:       #ccfbf1;
+  --bg-subtle:      #e8f7f0;
+  --bg-muted:       var(--mint-100);
 
-  --border:         #99f6e4;
-  --border-strong:  #5eead4;
+  --border:         #e0ede5;
+  --border-strong:  var(--mint-200);
 
-  /* --text-primary:   #134e4a;
-  --text-secondary: #0f766e;
-  --text-muted:     #6b7280; */
-  --text-light:     #9ca3af;
+  --text-primary:   #2f5045;
+  --text-secondary: #4a7060;
+  --text-muted:     #7a9b8b;
+  --text-light:     #a0bfbc;
 
-  --shadow-sm:      0 1px 4px rgba(13,148,136,0.08);
-  --shadow-md:      0 4px 16px rgba(13,148,136,0.12);
-  --shadow-lg:      0 8px 32px rgba(13,148,136,0.18);
+  --shadow-sm:      0 1px 4px rgba(92,189,154,0.06);
+  --shadow-md:      0 4px 14px rgba(92,189,154,0.09);
+  --shadow-lg:      0 8px 28px rgba(92,189,154,0.14);
 
-  --radius-sm:      8px;
-  --radius-md:      12px;
-  --radius-lg:      16px;
-  --radius-xl:      20px;
+  --radius-sm:      10px;
+  --radius-md:      14px;
+  --radius-lg:      18px;
+  --radius-xl:      24px;
 
-  /* Tablet base: 14px → scale up */
   --font-xs:    13px;
   --font-sm:    14px;
   --font-base:  15px;
@@ -47,55 +55,21 @@
   --font-xl:    22px;
   --font-2xl:   26px;
 
-  /* === Semantic — ใช้ตาม role === */
-  --bg-main:           #f4faf9;   /* mint-50 — พื้นหลังหน้า */
-  --bg-surface:        #ffffff;   /* card / panel */
-  --bg-sidebar:        #2FA39A;   /* teal-500 */
-  --bg-sidebar-hover:  rgba(255,255,255,0.12);
-  --bg-sidebar-active: rgba(255,255,255,0.22);
-
-  --text-primary:   #0f3330;    /* teal-900 ปรับอ่าน */
-  --text-secondary: #3d6e6a;    /* teal กลาง */
-  --text-muted:     #7aaba7;    /* mint กลาง */
-  --text-on-dark:   #daf1ef;    /* mint-100 บน sidebar */
-
-  --accent:        var(--teal-400);
-  --accent-light:  var(--teal-50);
-  --accent-border: var(--teal-100);
-
-  /* === Border === */
-  --border:        1px solid #cde8e5;   /* mint-200 ปรับ */
-  --border-accent: 1px solid var(--teal-100);
-
-  /* === Shadow — flat minimal === */
-  --shadow-xs: 0 1px 3px rgba(47,163,154,0.08);
-  --shadow-sm: 0 2px 8px rgba(47,163,154,0.10);
-  --shadow-md: 0 4px 16px rgba(47,163,154,0.12);
-
-  /* === Radius === */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-
-  /* === Transition === */
-  --transition: 0.18s ease;
+  --transition: 0.20s ease;
 }
 
-
-
-/* ==============================================================
-PAGE BOX (เนื้อหาด้าใน)
-============================================================== */
-
+/* =====================================================
+   PAGE HEADER
+   ===================================================== */
 .page-header {
-  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-light) 100%);
+  background: linear-gradient(145deg, #7dd9b4 0%, #5cbd9a 50%, #4aa884 100%);
   border-radius: var(--radius-xl);
   padding: 28px 32px;
   margin-bottom: 24px;
   color: #fff;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(92,189,154,0.18);
 }
 
 .page-header::before {
@@ -103,7 +77,7 @@ PAGE BOX (เนื้อหาด้าใน)
   position: absolute;
   top: -40px; right: -40px;
   width: 180px; height: 180px;
-  background: rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.10);
   border-radius: 50%;
 }
 
@@ -112,7 +86,7 @@ PAGE BOX (เนื้อหาด้าใน)
   position: absolute;
   bottom: -30px; left: 30%;
   width: 120px; height: 120px;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.07);
   border-radius: 50%;
 }
 
@@ -128,19 +102,15 @@ PAGE BOX (เนื้อหาด้าใน)
 
 .page-header p {
   font-size: var(--font-base);
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.85);
   position: relative;
   z-index: 1;
   margin: 0;
 }
 
-
-/* ==============================================================
-   PAGE BOX (เนื้อหาด้าใน)
-   ============================================================== */
-
-   /* ================= CARDS ================= */
-
+/* =====================================================
+   CARDS
+   ===================================================== */
 .card,
 .section-card,
 .card-cause {
@@ -148,7 +118,7 @@ PAGE BOX (เนื้อหาด้าใน)
   border-radius: var(--radius-lg);
   padding: 28px 32px;
   margin-bottom: 20px;
-  border: 1.5px solid var(--border);
+  border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -160,8 +130,9 @@ PAGE BOX (เนื้อหาด้าใน)
   box-shadow: var(--shadow-md);
 }
 
-/* ================= HEADINGS ================= */
-
+/* =====================================================
+   HEADINGS
+   ===================================================== */
 h1 {
   font-family: 'Kanit', sans-serif;
   font-size: var(--font-2xl);
@@ -177,7 +148,7 @@ h2 {
   font-family: 'Kanit', sans-serif;
   font-size: var(--font-lg);
   font-weight: 400;
-  color: var(--primary-dark);
+  color: var(--mint-700);
   margin-bottom: 0px;
   display: flex;
   align-items: center;
@@ -187,9 +158,8 @@ h2 {
 h3 {
   font-size: var(--font-md);
   font-weight: 600;
-  color: var(--primary);
+  color: var(--mint-600);
   margin: 20px 0 14px;
-  /* display: flex; */
   align-items: center;
   gap: 8px;
 }
@@ -201,8 +171,9 @@ h4 {
   margin-bottom: 18px;
 }
 
-/* ================= ACTION BUTTONS ================= */
-
+/* =====================================================
+   ACTION BUTTONS
+   ===================================================== */
 .actions {
   display: flex;
   gap: 12px;
@@ -224,8 +195,6 @@ button {
   justify-content: center;
   gap: 8px;
   flex: 1;
-  /* min-width: 100px;   /*ขนาดปุ่ม logout*/
-  /* min-height: 32px;   ขนาดปุ่ม logout */
 } 
 
 button:hover { transform: translateY(-2px); }
@@ -237,38 +206,37 @@ button:disabled {
   transform: none !important;
 }
 
- /* =========================
+/* =====================================================
    LOGOUT BTN
-   ========================= */
+   ===================================================== */
 .logout-btn {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 14px;
+  padding: 8px 15px;
   background: var(--bg-base);
-  border: var(--border);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   font-family: 'Kanit', sans-serif;
   font-size: 13px;
-  color: var(--primary-xdark);
+  color: var(--mint-700);
   cursor: pointer;
   transition: all var(--transition);
 }
 
 .logout-btn:hover {
-  border-color: #e07070;
-  color: #c0392b;
-  background: #fff5f5;
+  border-color: #f5c2c2;
+  color: #d95858;
+  background: #fff8f8;
 }
 
-
-
-/* ================= PAGE TITLE (หัวเรื่องหน้า) ================= */
-
+/* =====================================================
+   SECTION TITLE
+   ===================================================== */
 .section-title {
   font-size: var(--font-base);
   font-weight: 600;
-  color: var(--primary-dark);
+  color: var(--mint-700);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -284,91 +252,84 @@ button:disabled {
 }
 
 .page-title {
-  text-align: center;                  /* จัดข้อความกึ่งกลาง */
-  margin-bottom: 24px;                 /* ระยะห่างด้านล่าง */
+  text-align: center;
+  margin-bottom: 24px;
 }
 
-/* หัวเรื่อง h1 */
 .page-title h1 {
-  font-size: 22px;                     /* ขนาดตัวอักษร */
-  margin-bottom: 6px;                  /* ระยะห่างด้านล่าง */
+  font-size: 22px;
+  margin-bottom: 6px;
 }
 
-/* ข้อความคำอธิบาย */
 .page-title p {
-  font-size: 13px;                     /* ขนาดตัวอักษร */
-  color: #666;                         /* สีเทา */
+  font-size: 13px;
+  color: #666;
 }
 
-
-/* ================= GRID (ระบบกริดสำหรับการ์ด) ================= */
-
+/* =====================================================
+   GRID (Forms Grid)
+   ===================================================== */
 .forms-grid {
-  display: grid;                                    /* ใช้ CSS Grid Layout */
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
-  /* สร้างคอลัมน์อัตโนมัติ ขั้นต่ำ 240px ต่อการ์ด */
-  gap: 16px;                                        /* ระยะห่างระหว่างการ์ด */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
 }
 
-
-/* ================= CARD (การ์ดแบบฟอร์ม) ================= */
-
+/* =====================================================
+   CARD (Form Card)
+   ===================================================== */
 .form-card {
-  background: #fff;                    /* พื้นหลังสีขาว */
-  border-radius: 14px;                 /* มุมโค้งมน */
-  padding: 20px;                       /* ช่องว่างด้านใน */
-  text-align: center;                  /* จัดข้อความกึ่งกลาง */
-  cursor: pointer;                     /* แสดง cursor แบบมือชี้เมื่อ hover */
-  transition: 0.2s;                    /* เอฟเฟกต์การเปลี่ยนแปลงแบบนุ่มนวล 0.2 วินาที */
-  box-shadow: 0 6px 16px rgba(0,0,0,.08); /* เงาใต้การ์ด */
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08);
 }
 
-/* เมื่อ hover การ์ด */
 .form-card:hover {
-  transform: translateY(-4px);         /* เลื่อนการ์ดขึ้นด้านบน 4px */
+  transform: translateY(-4px);
 }
 
-
-/* ================= ICON (ไอคอนในการ์ด) ================= */
-
+/* =====================================================
+   ICON
+   ===================================================== */
 .form-icon {
-  width: 62px;                         /* ความกว้าง */
-  height: 62px;                        /* ความสูง */
-  border-radius: 50%;                  /* ทำให้เป็นวงกลม */
-  display: flex;                       /* ใช้ flexbox */
-  align-items: center;                 /* จัดกึ่งกลางแนวตั้ง */
-  justify-content: center;             /* จัดกึ่งกลางแนวนอน */
-  margin: auto;                        /* จัดกึ่งกลางในการ์ด */
-  color: #fff;                         /* สีไอคอนเป็นสีขาว */
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  color: #fff;
 }
 
-/* คลาสสีน้ำเงิน */
 .blue { 
   background: #1976d2; 
 }
 
-/* คลาสสีเขียว */
 .green { 
-  background: #2e7d32; 
+  background: var(--sage-500); 
 }
 
-
-/* ================= CARD TEXT (ข้อความในการ์ด) ================= */
-
-/* หัวเรื่องการ์ด */
+/* =====================================================
+   CARD TEXT
+   ===================================================== */
 .form-card h3 {
-  font-size: 16px;                     /* ขนาดตัวอักษร */
-  margin: 12px 0 6px;                  /* ระยะห่าง บน 12px ซ้าย-ขวา 0 ล่าง 6px */
+  font-size: 16px;
+  margin: 12px 0 6px;
 }
 
-/* คำอธิบายการ์ด */
 .form-card p {
-  font-size: 12px;                     /* ขนาดตัวอักษร */
-  color: #777;                         /* สีเทา */
+  font-size: 12px;
+  color: #777;
 }
 
-/* ================= TABLET (768px) - PRIMARY BREAKPOINT ================= */
-
+/* =====================================================
+   TABLET (768px) - PRIMARY BREAKPOINT
+   ===================================================== */
 @media (min-width: 768px) and (max-width: 1024px) {
   :root {
     --font-xs:   13px;
@@ -417,8 +378,9 @@ button:disabled {
   }
 }
 
-/* ================= MOBILE (< 768px) ================= */
-
+/* =====================================================
+   MOBILE (< 768px)
+   ===================================================== */
 @media (max-width: 767px) {
   :root {
     --font-xs:   12px;
@@ -432,7 +394,6 @@ button:disabled {
 
   .container { padding: 12px 12px 32px; }
 
-  /* Header */
   .app-header {
     padding: 10px 14px;
     min-height: 64px;
@@ -455,7 +416,6 @@ button:disabled {
     font-size: 12px;
   }
 
-   /* Nav */
   .app-nav {
     top: 56px;
     padding: 7px 12px;
@@ -468,12 +428,11 @@ button:disabled {
   }
 
   .page-header { padding: 20px 20px; border-radius: var(--radius-lg); }
-  /* Page header */
+  
   .page-header h1 {
     font-size: 18px;
   }
 
-  /* Container */
   .container {
     padding: 12px 10px;
   }
@@ -509,8 +468,6 @@ button:disabled {
   .actions { flex-direction: column; }
 
   button { 
-    /* width: 100%; 
-    min-width: unset;  */
     flex: none; 
   }
 
@@ -524,12 +481,11 @@ button:disabled {
   .modal-content { max-width: 100%; border-radius: 16px 16px 0 0; margin: auto 0 0; max-height: 90vh; }
 }
 
-/* ================= SMALL MOBILE (< 480px) ================= */
-
-/* ---- Mobile: ≤ 480px ---- */
+/* =====================================================
+   SMALL MOBILE (< 480px)
+   ===================================================== */
 @media (max-width: 480px) {
 
-  /* Header: ซ่อนชื่อผู้ใช้ เหลือแค่ avatar + logout */
   .app-header {
     padding: 8px 12px;
     min-height: 64px;
@@ -544,18 +500,14 @@ button:disabled {
     height: 38px;
   }
 
-  /* ซ่อน user-info (ชื่อ) บนมือถือเล็ก */
   .user-info {
     display: none;
   }
 
-  
   .logout-btn {
     padding: 4px;
-    /* font-size: 0; */
   }
  
-  /* Nav */
   .app-nav {
     top: 52px;
     padding: 6px 10px;
@@ -566,7 +518,6 @@ button:disabled {
     padding: 5px 9px;
   }
 
-  /* Page header */
   .page-header {
     padding: 14px 12px;
   }
@@ -575,7 +526,6 @@ button:disabled {
     font-size: 16px;
   }
 
-  /* Card/Section */
   .card,
   .section {
     padding: 16px 12px;
@@ -587,7 +537,6 @@ button:disabled {
     font-size: 15px;
   }
 
-  /* Form grid: 1 คอลัมน์บนมือถือ */
   .form-grid {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -605,11 +554,10 @@ button:disabled {
   input,
   select,
   textarea {
-    font-size: 16px; /* ป้องกัน iOS zoom เมื่อ focus */
+    font-size: 16px;
     padding: 10px;
   }
 
-  /* Buttons */
   .actions {
     flex-direction: column;
     gap: 8px;
@@ -624,9 +572,8 @@ button:disabled {
     text-align: center;
   }
 
-  /* Table: horizontal scroll */
   .table-wrapper {
-    margin: 0 -4px; /* ขยายออกนิดหน่อย */
+    margin: 0 -4px;
   }
 
   table {
@@ -643,7 +590,6 @@ button:disabled {
     max-width: 90px;
   }
 
-  /* Export buttons */
   .section .actions {
     flex-direction: column;
   }
@@ -652,10 +598,9 @@ button:disabled {
     width: 100%;
   }
 
-  /* Modal */
   .modal {
     padding: 12px;
-    align-items: flex-end; /* slide up from bottom */
+    align-items: flex-end;
   }
 
   .modal-content {
@@ -665,11 +610,13 @@ button:disabled {
   }
 }
 
-/* ---- Very Small: ≤ 360px ---- */
+/* =====================================================
+   VERY SMALL (≤ 360px)
+   ===================================================== */
 @media (max-width: 360px) {
 
   .app-header .logo h2 {
-    display: none; /* ซ่อนชื่อระบบบนจอเล็กมาก */
+    display: none;
   }
 
   .page-header h1 {
@@ -677,8 +624,9 @@ button:disabled {
   }
 }
 
-/* ================= PRINT ================= */
-
+/* =====================================================
+   PRINT
+   ===================================================== */
 @media print {
   .app-header, .app-nav, .actions,
   .btn-draft-edit, .btn-draft-del, .remove-btn { display: none !important; }
@@ -701,4 +649,3 @@ button:disabled {
     gap: 6px;
   }
 }
-

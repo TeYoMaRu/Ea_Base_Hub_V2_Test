@@ -1,17 +1,24 @@
 /* =====================================================
-   GLOBAL LAYOUT (ใช้ทุกหน้า)
+   GLOBAL LAYOUT (Pastel Mint Theme)
    ===================================================== */
 
 :root{
-  --primary:#0d9488;
-  --primary-dark:#0f766e;
-  --primary-xdark:#115e59;
+  /* Pastel Mint */
+  --mint-300: #8fdfba;
+  --mint-400: #6dd3a3;
+  --mint-500: #4caf8a;
+  --mint-600: #3d8c6f;
+  --mint-700: #2f6b54;
 
-  --bg-base:#f0fdfa;
-  --bg-card:#ffffff;
+  --primary: #4caf8a;
+  --primary-dark: #3d8c6f;
+  --primary-xdark: #2f6b54;
 
-  --border:#99f6e4;
-  --radius-md:12px;
+  --bg-base: #f9fcfb;
+  --bg-card: #ffffff;
+
+  --border: #e0ede5;
+  --radius-md: 14px;
 }
 
 *,
@@ -40,12 +47,12 @@ body{
   top: 0;
   z-index: 1000;
   display: flex;
-  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-xdark) 100%);
+  background: linear-gradient(145deg, #7dd9b4 0%, #5cbd9a 50%, #4aa884 100%);
   padding: 10px 24px;
   height: 64px;  
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 12px rgba(13,148,136,0.3);
+  box-shadow: 0 2px 10px rgba(92,189,154,0.24);
 }
 
 .app-header .logo {
@@ -56,10 +63,6 @@ body{
   font-size: 14px;
   flex-direction: row;
 }
-
-
-
-
 
 .logo{
   display:flex;
@@ -76,6 +79,8 @@ body{
 .logo h2 {
   color: #fff;
   font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .logo-circle{
@@ -86,6 +91,7 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
 }
 
 .logo-circle img{
@@ -105,22 +111,31 @@ body{
   width:32px;
   height:32px;
   border-radius:50%;
-  background:var(--primary);
+  background:var(--mint-400);
   color:#fff;
-
   display:flex;
   align-items:center;
   justify-content:center;
+  box-shadow: 0 2px 6px rgba(92,189,154,0.20);
 }
 
 .logout-btn{
-  padding:4px 10px;
+  padding:6px 12px;
   border:none;
-  border-radius:16px;
+  border-radius:18px;
   background:#fff;
   color:var(--primary-dark);
   font-size:12px;
+  font-weight:500;
   cursor:pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+}
+
+.logout-btn:hover{
+  background:#f0f9f8;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.14);
 }
 
 /* ================= NAV ================= */
@@ -130,8 +145,8 @@ body{
   top:64px;
   z-index:999;
 
-  background:#f0f0f0;
-  border-bottom:1px solid #ddd;
+  background:#f5f8f7;
+  border-bottom:1px solid #e0ede5;
 
   padding:8px 16px;
 
@@ -143,14 +158,23 @@ body{
 
 .app-nav a{
   padding:6px 12px;
-  border-radius:6px;
+  border-radius:8px;
   font-size:13px;
   white-space:nowrap;
+  transition: all 0.2s ease;
+  color: #5a7870;
+}
+
+.app-nav a:hover{
+  background:#e8f7f0;
+  color: var(--mint-700);
 }
 
 .app-nav a.active{
-  background:#1976d2;
+  background: linear-gradient(135deg, var(--mint-600), var(--mint-500));
   color:#fff;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(92,189,154,0.20);
 }
 
 /* ================= CONTAINER ================= */
@@ -160,11 +184,6 @@ body{
   margin:auto;
   padding:20px;
 }
-
-
-
-
-
 
 /* =====================================================
    RESPONSIVE DESIGN
@@ -292,4 +311,3 @@ body{
 }
 
 }
-
