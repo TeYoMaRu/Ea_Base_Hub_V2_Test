@@ -1,10 +1,11 @@
 // =====================================================
-// reportTracker.js - Manager Report Review Page
-// ใช้ area แทน team_id
+// reportTracker.js - Manager Report Review Page v2
+// ใช้ Date Range Picker แทน Week Selector
 // =====================================================
 
+'use strict';
+
 // ⚠️ ไม่ประกาศ let currentUser ซ้ำ เพราะ userService.js
-// ใช้ window.currentUser แทน — เก็บ reference ไว้ใน localUser
 let localUser = null;
 
 let allReports = [];
@@ -13,7 +14,10 @@ let profilesMap = {};
 let shopsMap = {};
 let productsMap = {};
 
-let weekOffset = 0;
+// ── Date Range State ──
+let dateStart = null;
+let dateEnd = null;
+
 let currentPage = 1;
 const PAGE_SIZE = 20;
 
@@ -33,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // ใช้ window.currentUser จาก userService (โหลดโดย protectPage → initUserService)
+  // ใช้ window.currentUser จาก userService
   if (window.currentUser && window.currentUser.id) {
     localUser = {
       id:   window.currentUser.id,
@@ -46,7 +50,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     console.log('✅ Using window.currentUser:', localUser);
   } else {
-    // fallback — ดึงจาก DB ตรงๆ
     localUser = await loadCurrentUserFallback();
     if (!localUser) {
       console.error('❌ No current user');
@@ -61,6 +64,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const avatarEl = document.getElementById('userAvatar');
   if (avatarEl) avatarEl.textContent = localUser.name.charAt(0).toUpperCase();
+
+  // ตั้งค่า Date Range
+  initDateRange();
+  setupDateControls();
 
   // โหลดข้อมูลสนับสนุน
   await Promise.all([
@@ -80,8 +87,148 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // =====================================================
+// 📅 DATE RANGE CONTROLS
+// =====================================================
+function initDateRange() {
+  // ค่าเริ่มต้น: สัปดาห์นี้ (จันทร์ - อาทิตย์)
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  
+  const monday = new Date(today);
+  monday.setDate(today.getDate() + diff);
+  monday.setHours(0, 0, 0, 0);
+  
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  sunday.setHours(23, 59, 59, 999);
+  
+  dateStart = monday;
+  dateEnd = sunday;
+  
+  // ตั้งค่า input
+  const startInput = document.getElementById('dateStart');
+  const endInput = document.getElementById('dateEnd');
+  
+  if (startInput) startInput.value = formatDateForInput(dateStart);
+  if (endInput) endInput.value = formatDateForInput(dateEnd);
+  
+  updateDateRangeLabel();
+}
+
+function setupDateControls() {
+  const startInput = document.getElementById('dateStart');
+  const endInput = document.getElementById('dateEnd');
+  
+  if (startInput) {
+    startInput.addEventListener('change', () => {
+      dateStart = new Date(startInput.value);
+      dateStart.setHours(0, 0, 0, 0);
+      updateDateRangeLabel();
+      loadReports();
+    });
+  }
+  
+  if (endInput) {
+    endInput.addEventListener('change', () => {
+      dateEnd = new Date(endInput.value);
+      dateEnd.setHours(23, 59, 59, 999);
+      updateDateRangeLabel();
+      loadReports();
+    });
+  }
+  
+  // Quick buttons
+  document.querySelectorAll('.quick-range-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const range = btn.dataset.range;
+      setQuickRange(range);
+      
+      document.querySelectorAll('.quick-range-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+}
+
+function setQuickRange(range) {
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+  
+  let start = new Date();
+  start.setHours(0, 0, 0, 0);
+  let end = new Date(today);
+  
+  switch (range) {
+    case 'today':
+      break;
+      
+    case '7days':
+      start.setDate(start.getDate() - 6);
+      break;
+      
+    case '30days':
+      start.setDate(start.getDate() - 29);
+      break;
+      
+    case 'thisWeek':
+      const dayOfWeek = start.getDay();
+      const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+      start.setDate(start.getDate() + diff);
+      break;
+      
+    case 'lastWeek':
+      const dow = start.getDay();
+      const d = dow === 0 ? -6 : 1 - dow;
+      start.setDate(start.getDate() + d - 7);
+      end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      end.setHours(23, 59, 59, 999);
+      break;
+      
+    case 'thisMonth':
+      start = new Date(today.getFullYear(), today.getMonth(), 1);
+      break;
+      
+    case 'lastMonth':
+      start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      end = new Date(today.getFullYear(), today.getMonth(), 0);
+      end.setHours(23, 59, 59, 999);
+      break;
+      
+    default:
+      const defDow = start.getDay();
+      const defDiff = defDow === 0 ? -6 : 1 - defDow;
+      start.setDate(start.getDate() + defDiff);
+  }
+  
+  dateStart = start;
+  dateEnd = end;
+  
+  const startInput = document.getElementById('dateStart');
+  const endInput = document.getElementById('dateEnd');
+  if (startInput) startInput.value = formatDateForInput(dateStart);
+  if (endInput) endInput.value = formatDateForInput(dateEnd);
+  
+  updateDateRangeLabel();
+  loadReports();
+}
+
+function updateDateRangeLabel() {
+  const label = document.getElementById('dateRangeLabel');
+  if (!label) return;
+  
+  const days = Math.ceil((dateEnd - dateStart) / (1000 * 60 * 60 * 24)) + 1;
+  const fmt = d => d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' });
+  
+  label.textContent = `${fmt(dateStart)} – ${fmt(dateEnd)} (${days} วัน)`;
+}
+
+function formatDateForInput(date) {
+  return date.toISOString().split('T')[0];
+}
+
+// =====================================================
 // 👤 LOAD CURRENT USER (fallback)
-// ใช้เมื่อ window.currentUser ยังไม่พร้อม
 // =====================================================
 async function loadCurrentUserFallback() {
   try {
@@ -107,8 +254,7 @@ async function loadCurrentUserFallback() {
 }
 
 // =====================================================
-// 👥 LOAD PROFILES (sales ทั้งหมด)
-// Manager + Admin ดู sales ทุกคนได้ ไม่ filter area
+// 👥 LOAD PROFILES
 // =====================================================
 async function loadProfiles() {
   try {
@@ -126,7 +272,6 @@ async function loadProfiles() {
 
     profilesMap = Object.fromEntries((data || []).map(p => [p.id, p]));
 
-    // Populate filter dropdown
     const select = document.getElementById('filterSales');
     if (select) {
       select.innerHTML = '<option value="">— ทั้งหมด —</option>';
@@ -155,16 +300,10 @@ async function loadShops() {
 
     if (error) {
       console.error('❌ loadShops error:', error);
-      console.warn('⚠️ อาจเป็นปัญหา RLS — ตรวจสอบว่า manager มีสิทธิ์ SELECT จาก shops');
       return;
     }
 
     console.log('✅ Shops loaded:', data?.length || 0);
-
-    if (!data || data.length === 0) {
-      console.warn('⚠️ Shops = 0 — ตรวจสอบ RLS policy ของตาราง shops');
-    }
-
     shopsMap = Object.fromEntries((data || []).map(s => [s.id, s.shop_name]));
   } catch (e) {
     console.error('❌ loadShops error:', e);
@@ -204,10 +343,10 @@ async function loadReports() {
   try {
     console.log('=== 📊 LOADING REPORTS ===');
 
-    const { start, end } = getWeekRange(weekOffset);
-    updateWeekDisplay(start, end);
+    const startStr = dateStart.toISOString();
+    const endStr = dateEnd.toISOString();
 
-    console.log('📅 Week range:', start.toISOString(), 'to', end.toISOString());
+    console.log('📅 Date range:', formatDateForInput(dateStart), 'to', formatDateForInput(dateEnd));
 
     let query = supabaseClient
       .from('reports')
@@ -215,22 +354,18 @@ async function loadReports() {
       .order('submitted_at', { ascending: false, nullsLast: true })
       .order('report_date', { ascending: false, nullsLast: true });
 
-    // Admin + Manager ดู report ทั้งหมด (ไม่ filter by sale_id)
-    // ถ้าอนาคตต้องการจำกัด → เพิ่ม filter ตรงนี้
-
     const { data, error } = await query;
 
     if (error) {
       console.error('❌ reports query error:', error);
-      console.warn('⚠️ ตรวจสอบ RLS policy ของตาราง reports');
       throw error;
     }
 
     console.log('✅ Raw reports from DB:', data?.length || 0);
 
     // Filter วันที่ใน JavaScript
-    const startTime = start.getTime();
-    const endTime = end.getTime();
+    const startTime = dateStart.getTime();
+    const endTime = dateEnd.getTime();
 
     const filtered = (data || []).filter(r => {
       const date = r.submitted_at || r.report_date || r.created_at;
@@ -240,12 +375,7 @@ async function loadReports() {
       return reportTime >= startTime && reportTime <= endTime;
     });
 
-    console.log('✅ Reports in week range:', filtered.length);
-
-    // ถ้า raw > 0 แต่ filtered = 0 → อาจอยู่สัปดาห์อื่น
-    if ((data?.length || 0) > 0 && filtered.length === 0) {
-      console.log('ℹ️ มี report ใน DB แต่ไม่อยู่ในสัปดาห์นี้ — ลองเลื่อนสัปดาห์ดู');
-    }
+    console.log('✅ Reports in date range:', filtered.length);
 
     allReports = filtered;
     filteredReports = [...allReports];
@@ -267,47 +397,6 @@ async function loadReports() {
         </div>`;
     }
   }
-}
-
-// =====================================================
-// 📅 WEEK HELPERS
-// =====================================================
-function getWeekRange(offset = 0) {
-  const now = new Date();
-  const dayOfWeek = now.getDay();
-  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Monday
-
-  const monday = new Date(now);
-  monday.setDate(now.getDate() + diff + (offset * 7));
-  monday.setHours(0, 0, 0, 0);
-
-  const sunday = new Date(monday);
-  sunday.setDate(monday.getDate() + 6);
-  sunday.setHours(23, 59, 59, 999);
-
-  return { start: monday, end: sunday };
-}
-
-function updateWeekDisplay(start, end) {
-  const fmt = d => d.toLocaleDateString('th-TH', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
-  });
-
-  let label = '';
-  if (weekOffset === 0) label = 'สัปดาห์นี้';
-  else if (weekOffset === -1) label = 'สัปดาห์ที่แล้ว';
-  else if (weekOffset < -1) label = `${Math.abs(weekOffset)} สัปดาห์ก่อน`;
-  else label = `อีก ${weekOffset} สัปดาห์`;
-
-  document.getElementById('weekLabel').textContent = label;
-  document.getElementById('weekRange').textContent = `${fmt(start)} – ${fmt(end)}`;
-}
-
-async function changeWeek(direction) {
-  weekOffset += direction;
-  await loadReports();
 }
 
 // =====================================================
@@ -456,7 +545,7 @@ function renderReports() {
   }
 
   if (!pageReports.length) {
-    container.innerHTML = '<div class="loading">ไม่มีรายงาน</div>';
+    container.innerHTML = '<div class="loading">ไม่มีรายงานในช่วงเวลาที่เลือก</div>';
     renderPagination();
     return;
   }
@@ -680,7 +769,6 @@ async function markAsRead() {
 
     if (error) throw error;
 
-    // Update local state
     const idx = allReports.findIndex(r => r.id === currentReportId);
     if (idx !== -1) {
       allReports[idx].manager_acknowledged = true;
@@ -743,7 +831,7 @@ function exportCSV() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `reports_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.download = `reports_${formatDateForInput(dateStart)}_${formatDateForInput(dateEnd)}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 
