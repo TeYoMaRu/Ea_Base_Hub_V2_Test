@@ -258,41 +258,22 @@ position: relative;
    ===================================================== */
 
 .logo-circle {
-
 width:45px;
 height:45px;
-
-border-radius:50%;
-
-/* background วงกลม */
-
-background:white;
-
-/* center logo */
-
+border-radius:50%;  /* background วงกลม */
+background:white;  /* center logo */
 display:flex;
 align-items:center;
-justify-content:center;
-
-/* shadow */
-
-box-shadow:0 15px 30px rgba(0,0,0,0.15);
-
-/* ป้องกัน overflow */
-
+justify-content:center; /* shadow */
+box-shadow:0 15px 30px rgba(0,0,0,0.15); /* ป้องกัน overflow */
 overflow:hidden;
-
 }
 
 .logo-circle img {
-
 width:65%;
 height:65%;
-
 object-fit:contain;
-
 display:block;
-
 }
 
 
