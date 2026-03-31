@@ -41,9 +41,9 @@
   /* === Semantic Colors === */
   --bg-main:           #f9fcfb;   /* mint-50 + warm → พื้นหลังหน้าอ่อนมาก */
   --bg-surface:        #ffffff;   /* card / panel ขาวสะอาด */
-  --bg-sidebar:        #5cbd9a;   /* mint-500 อ่อนกว่าเดิม */
-  --bg-sidebar-hover:  rgba(255,255,255,0.15);
-  --bg-sidebar-active: rgba(255,255,255,0.25);
+  --bg-sidebar:        #e8f8ef;   /* ★ เปลี่ยน: เขียวอ่อนมากๆ */
+  --bg-sidebar-hover:  rgba(111,201,159,0.15);
+  --bg-sidebar-active: rgba(111,201,159,0.25);
 
   --text-primary:   #2f5045;    /* เขียวเข้มแต่อ่านง่าย */
   --text-secondary: #4a7060;    /* เขียวกลาง */
@@ -103,7 +103,7 @@ body {
 }
 
 /* =========================
-   SIDEBAR — Pastel Mint Gradient
+   SIDEBAR — Very Light Pastel Green
    ========================= */
 .sidebar {
   width: 220px;
@@ -111,7 +111,7 @@ body {
   position: sticky;
   top: 12px;
   align-self: flex-start;
-  background: linear-gradient(170deg, #7dd9b4 0%, #5cbd9a 50%, #4aa884 100%);
+  background: linear-gradient(170deg, #eefbf3 0%, #ddf5e8 50%, #d0f0de 100%);
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -122,6 +122,7 @@ body {
   transition: width var(--transition);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
+  border: 1px solid #c8e8d6;
 }
 
 /* Logo */
@@ -137,8 +138,8 @@ body {
   width: 76px;
   height: 76px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.18);
-  border: 2px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.55);
+  border: 2px solid rgba(111,201,159,0.30);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -150,7 +151,7 @@ body {
 .brand {
   font-size: 13.5px;
   font-weight: 600;
-  color: #fff;
+  color: var(--mint-700);
   letter-spacing: 0.6px;
   opacity: 0.95;
 }
@@ -169,7 +170,7 @@ body {
   gap: 10px;
   padding: 10px 14px;
   border-radius: var(--radius-sm);
-  color: rgba(255,255,255,0.80);
+  color: var(--mint-700);
   text-decoration: none;
   font-size: 13.5px;
   font-weight: 400;
@@ -178,20 +179,21 @@ body {
 }
 
 .menu-item:hover {
-  background: var(--bg-sidebar-hover);
-  color: #fff;
+  background: rgba(111,201,159,0.18);
+  color: var(--mint-800);
 }
 
 .menu-item.active {
-  background: var(--bg-sidebar-active);
-  color: #fff;
+  background: rgba(111,201,159,0.28);
+  color: var(--mint-800);
   font-weight: 600;
 }
 
 .menu-icon {
   font-size: 19px;
-  opacity: 0.9;
+  opacity: 0.85;
   flex-shrink: 0;
+  color: var(--mint-600);
 }
 
 /* Hamburger */
@@ -200,7 +202,7 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  color: #fff;
+  color: var(--mint-600);
   padding: 5px;
   align-self: flex-start;
 }
@@ -211,8 +213,8 @@ body {
   padding: 10px 14px;
   background: none;
   border: none;
-  border-top: 1px solid rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.65);
+  border-top: 1px solid rgba(111,201,159,0.20);
+  color: var(--mint-600);
   cursor: pointer;
   font-family: 'Kanit', sans-serif;
   font-size: 13px;
@@ -224,7 +226,7 @@ body {
   border-radius: 0 0 var(--radius-sm) var(--radius-sm);
 }
 
-.toggle-btn:hover { color: #fff; }
+.toggle-btn:hover { color: var(--mint-800); }
 
 /* Collapsed */
 .sidebar.collapsed { width: 68px; }
@@ -892,7 +894,7 @@ body.is-admin .admin-only:hover {
 
   .toggle-btn { display: none !important; }
 
-  /* Topbar: ขาว นิ่ม ขอบล่าง mint */
+  /* Topbar: เขียวอ่อน นุ่ม */
   .sidebar {
     width: 100%;
     height: auto;
@@ -902,9 +904,10 @@ body.is-admin .admin-only:hover {
     margin: 0;
     padding: 0 16px;
     border-radius: 0;
-    background: var(--bg-surface);
-    border-bottom: 2.5px solid var(--mint-300);
-    box-shadow: 0 2px 8px rgba(92,189,154,0.12);
+    background: #f0faf4;
+    border: none;
+    border-bottom: 2.5px solid var(--mint-200);
+    box-shadow: 0 2px 8px rgba(92,189,154,0.10);
     flex-direction: column;
     align-items: stretch;
   }

@@ -85,7 +85,7 @@ body {
    PAGE HEADER
    ===================================================== */
 .page-header {
-  background: linear-gradient(145deg, #7dd9b4 0%, #5cbd9a 50%, #4aa884 100%);
+  background: #25A385;
   border-radius: var(--radius-xl);
   padding: 32px 36px 28px;
   margin-bottom: 28px;
