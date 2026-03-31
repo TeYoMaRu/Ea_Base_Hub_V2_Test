@@ -13,6 +13,21 @@
   --mint-700: #2f6b54;      /* เข้มพอใช้ text */
   --mint-800: #234d3d;
   --mint-900: #1a3d30;
+  --mint-1000: #25A385;
+
+
+   --mint-light-50: #E8F6F3;
+  --mint-light-100: #B5E3D9;
+  --mint-light-200: #82D1BF;
+  --mint-light-300: #4FBEA5;
+  --mint-light-400: #25A385;    /* base */
+
+  --mint-dark-500: #1E826A;
+  --mint-dark-600: #176250;
+  --mint-dark-700: #104135;
+  --mint-dark-800: #08211B;
+
+
 
   /* === Sage Green — secondary / badge / tag === */
   --sage-50:  #f0f6f0;
@@ -49,6 +64,7 @@
   --text-secondary: #4a7060;    /* เขียวกลาง */
   --text-muted:     #7a9b8b;    /* เขียวอ่อน */
   --text-on-dark:   #e8f5f0;    /* บน sidebar */
+  --text-dark:   #ffffff;    /* บน sidebar */
 
   --accent:        var(--mint-300);  /* accent หลัก — อ่อนกว่าเดิมเยอะ */
   --accent-light:  var(--mint-100);
@@ -89,7 +105,7 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
@@ -111,7 +127,7 @@ body {
   position: sticky;
   top: 12px;
   align-self: flex-start;
-  background: linear-gradient(170deg, #eefbf3 0%, #ddf5e8 50%, #d0f0de 100%);
+  background: var(--mint-light-400);
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -149,9 +165,9 @@ body {
 .logo-circle img { width: 50px; }
 
 .brand {
-  font-size: 13.5px;
+  font-size: 24px;
   font-weight: 600;
-  color: var(--mint-700);
+  color: var(--bg-surface);
   letter-spacing: 0.6px;
   opacity: 0.95;
 }
@@ -170,9 +186,9 @@ body {
   gap: 10px;
   padding: 10px 14px;
   border-radius: var(--radius-sm);
-  color: var(--mint-700);
+  color: var(--bg-surface);
   text-decoration: none;
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 400;
   transition: all var(--transition);
   white-space: nowrap;
@@ -184,17 +200,19 @@ body {
 }
 
 .menu-item.active {
-  background: rgba(111,201,159,0.28);
-  color: var(--mint-800);
+  background: var(--mint-light-300);
+  color: var(--text-dark);
   font-weight: 600;
 }
+
 
 .menu-icon {
   font-size: 19px;
   opacity: 0.85;
   flex-shrink: 0;
-  color: var(--mint-600);
+  color: var(--mint-200);
 }
+
 
 /* Hamburger */
 .hamburger {
@@ -202,7 +220,7 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--mint-600);
+  color: var(--mint --mint-1000);
   padding: 5px;
   align-self: flex-start;
 }
@@ -471,11 +489,11 @@ body {
 
 /* Action Themes — Pastel */
 .theme-green {
-  background: linear-gradient(145deg, #e8f7f0 0%, #d4f0e3 100%);
+  background: var(--mint-100);
   color: var(--text-primary);
   border-color: var(--mint-200);
 }
-.theme-green::before { background: var(--mint-400); }
+.theme-green::before { background: var(--mint-light-400); }
 
 .theme-yellow {
   background: linear-gradient(145deg, #fef9ed 0%, #fcf2d9 100%);
@@ -868,7 +886,7 @@ body.is-admin .admin-only:hover {
   .sidebar { width: 190px; padding: 18px 12px; margin: 10px 0 10px 10px; }
   .logo-circle { width: 64px; height: 64px; }
   .logo-circle img { width: 42px; }
-  .brand { font-size: 12.5px; }
+  .brand { font-size: 18px; }
   .menu-item { font-size: 13px; padding: 9px 12px; }
 
   .content { padding: 16px 16px 16px 14px; }
@@ -906,7 +924,7 @@ body.is-admin .admin-only:hover {
     border-radius: 0;
     background: #f0faf4;
     border: none;
-    border-bottom: 2.5px solid var(--mint-200);
+    border-bottom: 2.5px solid var(--mint-1000);
     box-shadow: 0 2px 8px rgba(92,189,154,0.10);
     flex-direction: column;
     align-items: stretch;

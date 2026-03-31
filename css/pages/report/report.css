@@ -16,6 +16,19 @@
   --mint-700: #2f6b54;
   --mint-800: #234d3d;
 
+  --mint-900: #25A385;     /* base */
+
+  --mint-light-50: #E8F6F3;
+  --mint-light-100: #B5E3D9;
+  --mint-light-200: #82D1BF;
+  --mint-light-300: #4FBEA5;
+  --mint-light-400: #25A385;    /* base */
+
+  --mint-dark-500: #1E826A;
+  --mint-dark-600: #176250;
+  --mint-dark-700: #104135;
+  --mint-dark-800: #08211B;
+
   /* Sage Green */
   --sage-100: #d9ebd9;
   --sage-300: #8cc68c;
@@ -85,7 +98,7 @@ body {
    PAGE HEADER
    ===================================================== */
 .page-header {
-  background: #25A385;
+  background:var(--mint-900);
   border-radius: var(--radius-xl);
   padding: 32px 36px 28px;
   margin-bottom: 28px;
@@ -300,7 +313,7 @@ button:active { transform: scale(0.97); }
 }
 
 .btn-submit-all {
-  background: linear-gradient(135deg, var(--mint-600), var(--mint-400));
+  background:var(--mint-light-400);
   color: #fff;
   box-shadow: 0 2px 10px rgba(92,189,154,0.22);
   padding: 12px 28px;
@@ -744,7 +757,7 @@ tbody tr:last-child td { border-bottom: none; }
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--sage-500);
+  background: var(--mint-900);
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -778,7 +791,7 @@ tbody tr:last-child td { border-bottom: none; }
 }
 
 .selected-count {
-  background: var(--sage-500);
+  background: var(--mint-900);
   color: #fff;
   font-size: 12px;
   font-weight: 600;
