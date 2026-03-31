@@ -329,6 +329,33 @@
                 >
                 จัดการผู้ใช้
               </button>
+
+              <!-- 🆕 ปุ่มสำหรับ Manager -->
+              <button
+                id="managerDashboardBtn"
+                onclick="goToManagerDashboard()"
+                style="
+                  display: none;
+                  width: 100%;
+                  padding: 12px;
+                  margin-top: 8px;
+                  background: linear-gradient(135deg, #1a365d 0%, #2d4a6f 100%);
+                  color: white;
+                  border: none;
+                  border-radius: var(--radius-md);
+                  font-family: 'Kanit', sans-serif;
+                  font-weight: 500;
+                  cursor: pointer;
+                  transition: all 0.2s;
+                "
+              >
+                <span
+                  class="material-symbols-outlined"
+                  style="font-size: 18px; vertical-align: middle"
+                  >monitoring</span
+                >
+                Manager Dashboard
+              </button>
             </aside>
           </div>
         </div>
@@ -501,6 +528,13 @@
       // ===========================
       function goToAdmin() {
         window.location.href = "/pages/admin/adminDashboard.html";
+      }
+
+      // ===========================
+      // 🆕 GO TO MANAGER DASHBOARD
+      // ===========================
+      function goToManagerDashboard() {
+        window.location.href = "/pages/manager/managerDashboard.html";
       }
 
       // ===========================
